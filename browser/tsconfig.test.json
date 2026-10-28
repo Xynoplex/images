@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Test-specific compiler options
+    "jsx": "react-jsx",
+    "types": ["vitest", "vitest/globals", "@testing-library/jest-dom", "node", "react", "react-dom"],
+    // Allow test files to use the same strict settings
+    "noEmit": true,
+    "allowJs": true
+  },
+  "include": [
+    "vitest.setup.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/**/__tests__/**/*",
+    "src/types/**/*"
+  ],
+  "exclude": ["node_modules"]
+}
