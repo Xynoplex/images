@@ -1,16 +1,17 @@
-.PHONY: help local-build build image clean
+.PHONY: help local build image clean
 
 IMAGE_NAMES := gateway archivist dispatcher browser librarian smelter weaver worker
 
 help:
 	@echo "Xynoplex Images"
+	@echo "  make local        Build all eight images locally"
 	@echo "  make build        Build all eight images locally"
 	@echo "  make image NAME=gateway   Build one image"
 	@echo "  make clean        Remove local image tags"
 
-build: local-build
+build: local
 
-local-build:
+local:
 	@./scripts/build-session.sh all
 
 image:

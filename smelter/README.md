@@ -238,7 +238,7 @@ docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh)
   --file smelter/Dockerfile --tag ghcr.io/xynoplex/xynoplex-smelter:local .
 ```
 
-[`make local-build`](../Makefile) builds it so with the other
+[`make local`](../Makefile) builds it so with the other
 images, and [`scripts/check-python-image.sh`](../scripts/check-python-image.sh)
 checks what a built one promises.
 

@@ -1,18 +1,16 @@
 # Containers and rebuild flow
 
 The e2e harness drives the Browser **container**, which talks to the
-gateway **container**. Every Semiont image bundles `@semiont/*`
-packages — a change to a package isn't visible to the tests until the
-images are rebuilt and the stack is restarted from them. This doc walks
-through that lifecycle.
+gateway **container**. This doc describes how to rebuild the images used by
+the test stack from this repository.
 
 ## The moving parts
 
 | Container | What's inside | Where it comes from |
 |---|---|---|
-| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make local-build` |
-| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make local-build` |
-| `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make local-build` |
+| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make local` |
+| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make local` |
+| `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make local` |
 | plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynaut start` |
 
 A knowledge base's containers are named `semiont-<kb>-<product>`, where
@@ -22,24 +20,19 @@ worker, Ollama and Jaeger are shared by every knowledge base, and keep
 `semiont-<name>`. See
 [the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names).
 
-**Key fact:** `make local-build` (in this repo) publishes the
-`@semiont/*` packages to a throwaway local Verdaccio and builds **every**
-Semiont image from them as a local-only `:local` tag (plus the
-launcher binary). KB repos build nothing — the stack runs the `:local`
-images only when the KB's `.semiont/stack/*.yaml` documents name them
-(`ghcr.io/xynoplex/xynoplex-<service>:local`) and the Browser's and the
-worker's own documents name theirs (`xynaut settings browser --path`,
-`xynaut settings worker --path`); an image still named
-`:latest` is pulled as published, and your local changes are invisible.
+**Key fact:** `make local` builds all eight images from this checkout and tags
+them `ghcr.io/xynoplex/xynoplex-<service>:local`. It does not publish npm
+packages or push container images. `make image NAME=<service>` rebuilds one
+image. The knowledge base must be configured to use a `:local` image for that
+image to run; an image still named `:latest` is pulled as published.
 
 So the "full rebuild" flow depends on what changed:
 
 | Change in | Rebuild | Restart |
 |---|---|---|
-| `packages/typescript/react-ui`, `packages/typescript/http-transport`, `packages/typescript/core` | `make local-build` | browser |
-| `browser` only | `make local-build` | browser |
-| `librarian`, `worker`, `weaver`, `smelter`, or a Python package one of them runs on | `make local-build` (rebuilds the `:local` images) | the stack: `xynaut start` |
-| `gateway` | `make local-build` | the stack: `xynaut start` |
+| `browser` | `make image NAME=browser` | browser |
+| `gateway`, `archivist`, `dispatcher`, `librarian`, `smelter`, `weaver`, or `worker` | `make image NAME=<service>` | the stack: `xynaut start` |
+| Several images or shared image inputs | `make local` | the affected services |
 
 ## Apple container CLI primer
 
@@ -83,24 +76,18 @@ container ls | grep -E 'semiont-(browser|.+-gateway)'    # inspection only
 ## Building the `:local` images
 
 ```sh
-make local-build                 # everything
-make local-build PACKAGE_NAMES=<list>  # narrow the package set (<language>/<name>, or a language)
-make local-build IMAGE_NAMES=<list>    # narrow the image set
+make local                      # build all eight images
+make image NAME=browser         # build one image
+make image NAME=gateway
 ```
 
-`--help` lists the full package set. The script:
+The script:
 
-1. Starts a fresh `semiont-verdaccio` container on `:4873`.
-2. Builds each package in a Node container (Alpine) and publishes it
-   to Verdaccio.
-3. Builds every Semiont image against Verdaccio, tagged
-   `ghcr.io/xynoplex/xynoplex-<svc>:local` (never pushed), and
-   loads them into every container engine on the machine.
-4. Builds the launcher binary to `apps/launcher/dist/semiont`.
+1. Detects the available container runtime, or uses `CONTAINER_RUNTIME` if set.
+2. Builds the selected image or all eight images from their Dockerfiles.
+3. Tags the images `ghcr.io/xynoplex/xynoplex-<service>:local` in that runtime.
 
-Output ends with a `DONE ✓` banner. `--no-cache` matters when you
-republish the **same package version**: the `npm install` layer is
-cached by version, so a same-version republish is invisible without it.
+Images remain local and are not pushed.
 
 ## Restarting the stack on new images
 

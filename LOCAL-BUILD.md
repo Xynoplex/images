@@ -4,12 +4,12 @@ The root [Makefile](Makefile) is the supported build interface:
 
 ```sh
 make help
-make build
+make local
 make image NAME=worker
 make clean
 ```
 
-`make build` builds the eight images from their Dockerfiles using Docker, Podman, or Apple Container. It detects an available runtime, preferring Apple Container, then Docker, then Podman. Set `CONTAINER_RUNTIME` to select one explicitly.
+`make local` builds the eight images from their Dockerfiles using Docker, Podman, or Apple Container. It detects an available runtime, preferring Apple Container, then Docker, then Podman. Set `CONTAINER_RUNTIME` to select one explicitly.
 
 Each image is tagged locally as `ghcr.io/xynoplex/xynoplex-<name>:local`. Builds do not push images. `make clean` removes only those local tags.
 

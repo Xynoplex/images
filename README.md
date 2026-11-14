@@ -21,12 +21,12 @@ A root Makefile is the primary build interface. Install Docker, Podman, or Apple
 
 ```sh
 make help
-make build
+make local
 make image NAME=gateway
 make clean
 ```
 
-Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make build`.
+Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make local`.
 
 ## Repository layout
 
