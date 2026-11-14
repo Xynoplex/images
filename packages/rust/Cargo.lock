@@ -150,7 +150,6 @@ dependencies = [
  "percent-encoding",
  "pin-project-lite",
  "serde_core",
- "serde_json",
  "serde_path_to_error",
  "serde_urlencoded",
  "sync_wrapper",
@@ -1531,7 +1530,6 @@ dependencies = [
  "portable-atomic",
  "rand 0.9.5",
  "thiserror",
- "tokio",
 ]
 
 [[package]]
@@ -2211,26 +2209,6 @@ dependencies = [
  "semiont-observability",
  "serde_json",
  "tokio",
-]
-
-[[package]]
-name = "semiont-conformance-drivers"
-version = "0.0.0"
-dependencies = [
- "base64 0.23.1",
- "bytes",
- "chrono",
- "futures",
- "opentelemetry",
- "reqwest",
- "rustls",
- "semiont-observability",
- "serde",
- "serde_json",
- "tokio",
- "xynoplex",
- "xynoplex-http-transport",
- "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -3319,11 +3297,9 @@ version = "0.7.3"
 dependencies = [
  "base64 0.23.1",
  "bytes",
- "encoding_rs",
  "futures-core",
  "getrandom 0.4.3",
  "log",
- "opentelemetry",
  "percent-encoding",
  "proptest",
  "rand_core 0.10.1",
@@ -3334,7 +3310,6 @@ dependencies = [
  "tokio-stream",
  "uuid",
  "windows-sys 0.61.2",
- "xynoplex",
  "xynoplex-codegen",
 ]
 
@@ -3349,25 +3324,17 @@ dependencies = [
 name = "xynoplex-http-transport"
 version = "0.7.3"
 dependencies = [
- "axum",
  "base64 0.23.1",
  "bytes",
  "futures",
- "http-body-util",
- "opentelemetry",
- "opentelemetry_sdk",
- "proptest",
  "rand_core 0.10.1",
  "reqwest",
  "ring",
- "rustls",
  "serde",
  "serde_json",
  "tokio",
- "tokio-stream",
  "uuid",
  "xynoplex",
- "xynoplex-http-transport",
  "xynoplex-telemetry",
 ]
 
@@ -3376,9 +3343,6 @@ name = "xynoplex-telemetry"
 version = "0.7.3"
 dependencies = [
  "opentelemetry",
- "opentelemetry_sdk",
- "serde_json",
- "tokio",
  "xynoplex",
 ]
 

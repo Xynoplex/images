@@ -108,7 +108,7 @@ vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
-    useSemiont: () => mockBrowser,
+    useXynoplex: () => mockBrowser,
     useKBDiscovery: () => discoveryHolder.current,
     defaultProtocol: (host: string) => host === 'localhost' || host === '127.0.0.1' ? 'http' : 'https',
   };

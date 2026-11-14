@@ -6,7 +6,7 @@ use std::path::Path;
 
 /// The project file's schema. The launcher holds the file to it too.
 const PROJECT_CONFIG_SCHEMA: &str =
-    include_str!("../../../../protocol/specs/src/kb-identity/ProjectConfig.json");
+    include_str!("../../../protocol/specs/src/kb-identity/ProjectConfig.json");
 
 /// The keys of the committed project file the Archivist reads.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -4,7 +4,7 @@
  * Exercises the full chain end-to-end (in jsdom):
  *
  *   localStorage seeded with a KB + token
- *     → fresh SemiontBrowser constructs SemiontSession for the active KB
+ *     → fresh XynoplexBrowser constructs XynoplexSession for the active KB
  *     → session asks the gateway who the stored token is
  *     → on 401: session clears token + raises sessionEnded$
  *     → SessionEndedModal (mounted by AuthShell) reads sessionEnded$
@@ -25,9 +25,9 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
-import { SemiontProvider, TranslationProvider, WebBrowserStorage } from '@xynoplex/react-ui';
+import { XynoplexProvider, TranslationProvider, WebBrowserStorage } from '@xynoplex/react-ui';
 import { englishTranslationManager } from '@xynoplex/react-ui/test-utils';
-import { SemiontBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
+import { XynoplexBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
 import en from '@xynoplex/react-ui/translations/en';
 
 // The shell is mounted under react-ui's own English, and the copy is read
@@ -91,7 +91,7 @@ function seedSession(access: string, refresh: string) {
 }
 
 function renderShell(children: React.ReactNode) {
-  const browser = new SemiontBrowser({
+  const browser = new XynoplexBrowser({
     storage: new WebBrowserStorage(),
     sessionFactory: createHttpSessionFactory(),
   });
@@ -100,9 +100,9 @@ function renderShell(children: React.ReactNode) {
     ...render(
       <MemoryRouter>
         <TranslationProvider translationManager={englishTranslationManager}>
-          <SemiontProvider browser={browser}>
+          <XynoplexProvider browser={browser}>
             <AuthShell>{children}</AuthShell>
-          </SemiontProvider>
+          </XynoplexProvider>
         </TranslationProvider>
       </MemoryRouter>
     ),

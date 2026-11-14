@@ -6,7 +6,7 @@ import { defaultProtocol, isValidHostname, type KbRead, type KbReadVerdict, type
 import { usePathname } from '@/i18n/routing';
 import type { DiscoveredKB } from '@xynoplex/core';
 import {
-  useSemiont,
+  useXynoplex,
   useObservable,
   useKBDiscovery,
 } from '@xynoplex/react-ui';
@@ -177,7 +177,7 @@ function ReauthPrompt({ t, onSubmit, onCancel, error, isSubmitting }: {
 export function KnowledgeBasePanel() {
   const pathname = usePathname();
   const { t, i18n } = useTranslation(undefined, { keyPrefix: 'KnowledgeBasePanel' });
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const knowledgeBases = useObservable(semiont.kbs$) ?? [];
   const activeKnowledgeBase = useObservable(semiont.activeSession$)?.kb ?? null;
   const setActiveKnowledgeBase = (id: string) => {

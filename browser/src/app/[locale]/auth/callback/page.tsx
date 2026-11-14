@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from '@/i18n/routing';
-import { MainContent, useSemiont, useToast } from '@xynoplex/react-ui';
+import { MainContent, useXynoplex, useToast } from '@xynoplex/react-ui';
 import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
 
 /**
@@ -13,7 +13,7 @@ import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
  */
 export default function AuthCallback() {
   const { t } = useTranslation(undefined, { keyPrefix: 'KnowledgeBasePanel' });
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const router = useRouter();
   const { showWarning, showError } = useToast();
   const started = useRef(false);

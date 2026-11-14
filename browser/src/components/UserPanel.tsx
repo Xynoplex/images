@@ -4,10 +4,10 @@ import {
   sanitizeImageURL,
   useSessionExpiry,
   formatTime,
-  useSemiont,
+  useXynoplex,
   useObservable,
 } from '@xynoplex/react-ui';
-import type { SemiontSession } from '@xynoplex/sdk';
+import type { XynoplexSession } from '@xynoplex/sdk';
 import { useRouter } from '@/i18n/routing';
 
 // Fallback avatar when image fails to load or is invalid
@@ -15,7 +15,7 @@ const FALLBACK_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdod
 
 export function UserPanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'UserPanel' });
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const session = useObservable(semiont.activeSession$);
   const user = useObservable(session?.user$) ?? null;
   const activeKnowledgeBase = session?.kb ?? null;
@@ -114,8 +114,8 @@ export function UserPanel() {
  * the refresh token at the issuer. The gateway has no part in it — it never
  * issued the session, so it has nothing to revoke.
  */
-function SignOutButton({ session, label }: { session: SemiontSession; label: string }) {
-  const semiont = useSemiont();
+function SignOutButton({ session, label }: { session: XynoplexSession; label: string }) {
+  const semiont = useXynoplex();
   const router = useRouter();
 
   const handleSignOut = async () => {

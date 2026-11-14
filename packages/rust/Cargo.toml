@@ -4,14 +4,9 @@
 [workspace]
 resolver = "3"
 members = [
-    "codegen",
     "core",
     "http-service",
-    "http-transport",
-    "http-transport/conformance",
     "observability",
-    "sdk",
-    "telemetry",
     "../../archivist",
     "../../archivist/record",
     "../../archivist/staging",
@@ -32,17 +27,17 @@ repository = "https://github.com/Xynoplex/images"
 # Every crate a member uses, by version, once: a member names the ones it uses
 # with `.workspace = true` and adds the features it needs.
 [workspace.dependencies]
-xynoplex = { path = "sdk", version = "0.7.3" }
-xynoplex-codegen = { path = "codegen", version = "0.7.3" }
+xynoplex = "0.7.3"
+xynoplex-codegen = "0.7.3"
 semiont-archivist-record = { path = "../../archivist/record" }
 semiont-archivist-staging = { path = "../../archivist/staging" }
 semiont-dispatcher-handlers = { path = "../../dispatcher/handlers" }
 semiont-dispatcher-jetstream = { path = "../../dispatcher/jetstream" }
 semiont-core = { path = "core" }
 semiont-http-service = { path = "http-service" }
-xynoplex-http-transport = { path = "http-transport" }
+xynoplex-http-transport = "0.7.3"
 semiont-observability = { path = "observability" }
-xynoplex-telemetry = { path = "telemetry", version = "0.7.3" }
+xynoplex-telemetry = "0.7.3"
 async-nats = { version = "0.50.0", default-features = false }
 axum = { version = "0.8.9", default-features = false }
 base64 = "0.23.1"

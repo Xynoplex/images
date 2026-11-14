@@ -5,7 +5,7 @@ import {
   ResizeHandle,
   usePanelWidth,
   useEventSubscriptions,
-  useSemiont,
+  useXynoplex,
   useObservable,
   useHoverDelay,
   useTheme,
@@ -68,7 +68,7 @@ export function ToolbarPanels({
   // The Settings panel opens keyboard help.
   const { openKeyboardHelp } = useKeyboardShortcutsContext();
   const { t: _t } = useTranslation();
-  const session = useObservable(useSemiont().activeSession$);
+  const session = useObservable(useXynoplex().activeSession$);
   const user = useObservable(session?.user$);
   const isAuthenticated = !!user;
   const locale = useLocale();

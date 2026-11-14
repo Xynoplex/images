@@ -10,16 +10,16 @@
 import { useEffect, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { useLocale } from '@/i18n/routing';
-import { useSemiont, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@xynoplex/react-ui';
+import { useXynoplex, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@xynoplex/react-ui';
 import { isResourceId, type ResourceId } from '@xynoplex/core';
-import type { SemiontSession } from '@xynoplex/sdk';
+import type { XynoplexSession } from '@xynoplex/sdk';
 import { Link, routes } from '@/lib/routing';
 
 // Feature components
 import { ResourceLoadingState, ResourceErrorState, ResourceViewerPage } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 import NotFound from '../../../not-found';
-import type { SemiontResource } from '@xynoplex/react-ui';
+import type { XynoplexResource } from '@xynoplex/react-ui';
 
 /**
  * Main page component — routing, session gating, and initial resource load.
@@ -42,7 +42,7 @@ import type { SemiontResource } from '@xynoplex/react-ui';
  */
 export default function KnowledgeResourcePage() {
   const params = useParams<{ id: string }>();
-  const session = useObservable(useSemiont().activeSession$) ?? null;
+  const session = useObservable(useXynoplex().activeSession$) ?? null;
 
   // A URL carries any text: an old bookmark, a mistyped address, or nothing
   // at all if the route pattern is ever renamed. Text that is not a resource's
@@ -69,7 +69,7 @@ function KnowledgeResourcePageInner({
   session,
   rId,
 }: {
-  session: SemiontSession;
+  session: XynoplexSession;
   rId: ResourceId;
 }) {
   const locale = useLocale();
@@ -108,7 +108,7 @@ function KnowledgeResourcePageInner({
     return <ResourceErrorState error={new Error(`Resource ${rId} not found`)} onRetry={refetchDocument} />;
   }
 
-  const resource = resourceData as SemiontResource;
+  const resource = resourceData as XynoplexResource;
 
   // Render with minimal props - all data loading/events handled inside ResourceViewerPage
   return (

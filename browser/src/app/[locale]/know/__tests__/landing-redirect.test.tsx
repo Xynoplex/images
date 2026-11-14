@@ -47,7 +47,7 @@ const { lastViewedResource$, activeSession$, sessionActivating$, mockBrowser } =
 
 vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
-  return { ...actual, useSemiont: () => mockBrowser };
+  return { ...actual, useXynoplex: () => mockBrowser };
 });
 
 import KnowledgePage from '../page';

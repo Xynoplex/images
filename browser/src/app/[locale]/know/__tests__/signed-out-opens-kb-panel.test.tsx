@@ -10,9 +10,9 @@
  * works signed out — theme, locale and line numbers are exactly what you can
  * change without a session — and must NOT be hijacked.
  *
- * A real `SemiontBrowser` goes through `SemiontProvider` rather than a faked
- * `useSemiont`: `useShellStateUnit` resolves from react-ui's dist bundle, whose
- * internal `useSemiont` call a package-level mock cannot rewire. It also keeps
+ * A real `XynoplexBrowser` goes through `XynoplexProvider` rather than a faked
+ * `useXynoplex`: `useShellStateUnit` resolves from react-ui's dist bundle, whose
+ * internal `useXynoplex` call a package-level mock cannot rewire. It also keeps
  * the real bus, which this depends on — `openPanel` EMITS `panel:open` and the
  * ShellStateUnit listens for it, so a stubbed bus would leave the fix inert here
  * while working in the app.
@@ -21,8 +21,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import type { LinkComponentProps } from '@xynoplex/react-ui';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { SemiontProvider, ThemeProvider, WebBrowserStorage, createShellStateUnit } from '@xynoplex/react-ui';
-import { SemiontBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
+import { XynoplexProvider, ThemeProvider, WebBrowserStorage, createShellStateUnit } from '@xynoplex/react-ui';
+import { XynoplexBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
@@ -60,16 +60,16 @@ vi.mock('@xynoplex/react-ui', async () => {
 import KnowledgeLayout from '../layout';
 
 function renderSignedOut() {
-  const browser = new SemiontBrowser({
+  const browser = new XynoplexBrowser({
     storage: new WebBrowserStorage(),
     sessionFactory: createHttpSessionFactory(),
   });
   return render(
-    <SemiontProvider browser={browser}>
+    <XynoplexProvider browser={browser}>
       <ThemeProvider>
         <KnowledgeLayout />
       </ThemeProvider>
-    </SemiontProvider>,
+    </XynoplexProvider>,
   );
 }
 
@@ -137,7 +137,7 @@ describe('logging in opens the Knowledge Base panel', () => {
   it('takes over from Settings when a session arrives', () => {
     localStorage.setItem('activeToolbarPanel', 'settings');
     const fake = fakeBrowser();
-    const browser = fake as unknown as SemiontBrowser;
+    const browser = fake as unknown as XynoplexBrowser;
 
     // A second unit on the same bus, purely as a probe.
     const probe = createShellStateUnit(browser, { initialPanel: 'settings' });
@@ -145,11 +145,11 @@ describe('logging in opens the Knowledge Base panel', () => {
     probe.activePanel$.subscribe((v) => panels.push(v));
 
     render(
-      <SemiontProvider browser={browser}>
+      <XynoplexProvider browser={browser}>
         <ThemeProvider>
           <KnowledgeLayout />
         </ThemeProvider>
-      </SemiontProvider>,
+      </XynoplexProvider>,
     );
     expect(panels.at(-1)).toBe('settings');
 

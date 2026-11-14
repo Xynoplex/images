@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MainContent, SemiontBranding, buttonStyles, useSemiont, useObservable } from '@xynoplex/react-ui';
+import { MainContent, XynoplexBranding, buttonStyles, useXynoplex, useObservable } from '@xynoplex/react-ui';
 import { useRouter } from '@/i18n/routing';
 
 const AUTO_TRANSITION_MS = 5000;
@@ -9,7 +9,7 @@ export default function Home() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Home' });
   const router = useRouter();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const session = useObservable(semiont.activeSession$);
 
   // The splash is the FIRST-CONTACT screen, not a toll booth. Every exit goes
@@ -51,7 +51,7 @@ export default function Home() {
         gap: '2rem',
       }}
     >
-      <SemiontBranding t={t} size="xl" animated={true} />
+      <XynoplexBranding t={t} size="xl" animated={true} />
       <button onClick={goToWorkspace} className={buttonStyles.primary.base}>
         {t('begin')}
       </button>

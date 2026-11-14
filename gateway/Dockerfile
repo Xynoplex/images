@@ -11,14 +11,18 @@
 # There is no default: without it the first FROM names no image and the build
 # stops, rather than building with a toolchain nothing pinned.
 ARG RUST_TOOLCHAIN
+ARG SDK_ARTIFACT_BUNDLE
 
 FROM rust:${RUST_TOOLCHAIN}-alpine AS builder
+ARG SDK_ARTIFACT_BUNDLE
 # make builds jemalloc, the allocator tikv-jemalloc-sys compiles into the binary.
 RUN apk add --no-cache make
 # cargo-auditable writes the crates the binary links into the binary itself,
 # which is how the image scan (Trivy) sees them in an image with no Cargo.lock.
 RUN cargo install cargo-auditable --locked --version 0.7.6
 WORKDIR /build
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local /sdk/cargo-local
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local/config.toml /usr/local/cargo/config.toml
 COPY version.json ./
 COPY protocol/specs/src protocol/specs/src
 # The workspace (packages/rust/Cargo.toml): cargo loads every member
@@ -38,25 +42,12 @@ COPY dispatcher/handlers/Cargo.toml dispatcher/handlers/
 COPY dispatcher/handlers/src dispatcher/handlers/src
 COPY dispatcher/jetstream/Cargo.toml dispatcher/jetstream/build.rs dispatcher/jetstream/
 COPY dispatcher/jetstream/src dispatcher/jetstream/src
-COPY packages/rust/codegen/Cargo.toml packages/rust/codegen/
-COPY packages/rust/codegen/src packages/rust/codegen/src
 COPY packages/rust/core/Cargo.toml packages/rust/core/build.rs packages/rust/core/
 COPY packages/rust/core/src packages/rust/core/src
 COPY packages/rust/http-service/Cargo.toml packages/rust/http-service/
 COPY packages/rust/http-service/src packages/rust/http-service/src
-COPY packages/rust/http-transport/Cargo.toml packages/rust/http-transport/
-COPY packages/rust/http-transport/src packages/rust/http-transport/src
-COPY packages/rust/http-transport/conformance/Cargo.toml packages/rust/http-transport/conformance/
-COPY packages/rust/http-transport/conformance/src packages/rust/http-transport/conformance/src
 COPY packages/rust/observability/Cargo.toml packages/rust/observability/
 COPY packages/rust/observability/src packages/rust/observability/src
-COPY packages/rust/sdk/Cargo.toml packages/rust/sdk/build.rs packages/rust/sdk/
-COPY packages/rust/sdk/src packages/rust/sdk/src
-# The SDK's build script reads the spec through its own `specs`, a link in the
-# repository: made here, where only what is named is copied.
-RUN ln -s ../../../protocol/specs/src packages/rust/sdk/specs
-COPY packages/rust/telemetry/Cargo.toml packages/rust/telemetry/
-COPY packages/rust/telemetry/src packages/rust/telemetry/src
 # The builder stage is the same in each Rust service's Dockerfile
 # (lint:rust-images): it builds every service's binary, so an image built
 # after, or beside, another reuses its stage instead of compiling the

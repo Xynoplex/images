@@ -18,6 +18,7 @@ ARG PYTHON_FLOOR
 FROM ghcr.io/astral-sh/uv:0.13.7 AS uv
 
 FROM python:${PYTHON_FLOOR}-alpine AS builder
+ARG SDK_ARTIFACT_BUNDLE
 COPY --from=uv /uv /usr/local/bin/uv
 WORKDIR /build
 # Each package below takes its version from version.json when it is built.
@@ -27,7 +28,7 @@ COPY version.json ./
 # against: each is built from its manifest, the README its manifest names,
 # where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
-COPY packages/python/sdk/src packages/python/sdk/src
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /tmp/sdk/
 COPY shared/python/inference/pyproject.toml shared/python/inference/README.md shared/python/inference/
 COPY shared/python/inference/src shared/python/inference/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -53,7 +54,8 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # library that provider is asked through. An image for one provider names
 # that provider's extra in its place (`--extra anthropic`), and one for Ollama
 # alone names none: Ollama is asked with what every install has.
-RUN uv sync --project worker --locked --no-dev --no-editable --all-extras
+RUN uv sync --project worker --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
+    uv pip install --python /opt/venv/bin/python --no-deps /tmp/sdk/*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the

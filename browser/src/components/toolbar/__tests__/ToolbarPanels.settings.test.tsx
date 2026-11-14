@@ -39,7 +39,7 @@ vi.mock('@xynoplex/react-ui', async () => {
     },
     useTheme: () => ({ theme: 'system', resolvedTheme: 'light', setTheme: spies.setTheme }),
     useLineNumbers: () => ({ showLineNumbers: false, toggleLineNumbers: spies.toggleLineNumbers }),
-    useSemiont: () => ({ activeSession$: new BehaviorSubject(null) }),
+    useXynoplex: () => ({ activeSession$: new BehaviorSubject(null) }),
     useHoverDelay: () => ({ hoverDelayMs: 150 }),
     usePanelWidth: () => ({ width: 320, setWidth: vi.fn(), minWidth: 200, maxWidth: 600 }),
   };

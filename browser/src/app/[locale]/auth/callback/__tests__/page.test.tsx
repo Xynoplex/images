@@ -39,7 +39,7 @@ vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
-    useSemiont: () => ({ completeSignIn: mockCompleteSignIn }),
+    useXynoplex: () => ({ completeSignIn: mockCompleteSignIn }),
     useToast: () => ({ showWarning: mockShowWarning, showError: mockShowError }),
   };
 });

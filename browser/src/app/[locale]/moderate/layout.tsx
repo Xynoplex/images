@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   LeftSidebar,
   MainContent,
-  useSemiont,
+  useXynoplex,
   useObservable,
 } from '@xynoplex/react-ui';
 import { ModerationNavigation } from '@/components/moderation/ModerationNavigation';
@@ -13,7 +13,7 @@ import { useRouter } from '@/i18n/routing';
 function ModerateLayoutBody() {
   const { t: tNav } = useTranslation(undefined, { keyPrefix: 'Navigation' });
   const { t: tHome } = useTranslation(undefined, { keyPrefix: 'Home' });
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const session = useObservable(semiont.activeSession$);
   const user = useObservable(session?.user$);
   const activeKnowledgeBase = session?.kb ?? null;

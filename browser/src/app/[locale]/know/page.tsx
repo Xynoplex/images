@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslation } from 'react-i18next';
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynoplex, useObservable } from '@xynoplex/react-ui';
 
 /**
  * The /know landing route: resume where the user left off in the ACTIVE
@@ -15,7 +15,7 @@ import { useSemiont, useObservable } from '@xynoplex/react-ui';
 export default function KnowledgePage() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Sidebar' });
   const router = useRouter();
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
 
   const session = useObservable(semiont.activeSession$) ?? null;
   const activating = useObservable(semiont.sessionActivating$) ?? false;

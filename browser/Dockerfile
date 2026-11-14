@@ -1,15 +1,15 @@
 # Stage 1: install (npm runs here, then is discarded).
 FROM node:26-alpine AS installer
-ARG NPM_REGISTRY=https://registry.npmjs.org
 ARG SEMIONT_BROWSER_VERSION=latest
+ARG BROWSER_PACKAGE_DIR
 WORKDIR /app
+COPY ${BROWSER_PACKAGE_DIR}/ /sdk-artifacts/browser/
 # Cache mount: persists across --no-cache builds, never enters the image, and
 # republished @xynoplex/* still fetch fresh. No `npm cache clean` — the cache
 # never reaches a layer.
 RUN --mount=type=cache,target=/root/.npm \
-    npm config set registry $NPM_REGISTRY && \
     npm init -y && \
-    npm install @xynoplex/browser@${SEMIONT_BROWSER_VERSION}
+    npm install /sdk-artifacts/browser/xynoplex-browser-${SEMIONT_BROWSER_VERSION}.tgz
 
 # Stage 2: minimal runtime — node only, no npm. The runtime entrypoint is
 # `node server.js`, so npm is build-only baggage. Removing it also drops

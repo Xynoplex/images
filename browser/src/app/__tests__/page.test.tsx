@@ -16,8 +16,8 @@ vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual('@xynoplex/react-ui');
   return {
     ...actual,
-    useSemiont: () => ({ activeSession$: session$ }),
-    SemiontBranding: ({ className }: { className?: string }) => (
+    useXynoplex: () => ({ activeSession$: session$ }),
+    XynoplexBranding: ({ className }: { className?: string }) => (
       <div data-testid="semiont-branding" className={className}>
         <h2>Semiont</h2>
       </div>

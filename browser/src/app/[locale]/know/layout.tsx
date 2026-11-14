@@ -6,7 +6,7 @@ import {
   MainContent,
   ResourceAnnotationsProvider,
   Toolbar,
-  useSemiont,
+  useXynoplex,
   useShellStateUnit,
   useObservable,
   useTheme,
@@ -25,7 +25,7 @@ function GlobalEventsConnector() {
  */
 export function DiscoverEmptyState() {
   const { t } = useTranslation(undefined, { keyPrefix: 'DiscoverEmptyState' });
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const knowledgeBases = useObservable(semiont.kbs$) ?? [];
   // Launcher discovery: with zero registered KBs, say what's running on this
   // machine instead of only linking docs.
@@ -120,7 +120,7 @@ function UnauthenticatedKnowledgeLayout() {
 }
 
 function KnowledgeLayoutBody() {
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const activeKbId = useObservable(semiont.activeKbId$);
   const session = useObservable(semiont.activeSession$);
   const sessionActivating = useObservable(semiont.sessionActivating$);

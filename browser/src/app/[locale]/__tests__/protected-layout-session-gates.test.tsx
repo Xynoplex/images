@@ -4,7 +4,7 @@
  * null, and the page is remounted when a session is replaced.
  *
  * The API enforces what this gate guards — state-unit factories take a
- * `SemiontSession` and construction goes through `useSessionStateUnit`, which
+ * `XynoplexSession` and construction goes through `useSessionStateUnit`, which
  * builds nothing without a session — so the gate is defense in depth and UX
  * (loading order), not the safety mechanism.
  */
@@ -64,7 +64,7 @@ vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
-    useSemiont: () => harness.browser,
+    useXynoplex: () => harness.browser,
     LeftSidebar: ({ children }: { children: ReactNode | ((isCollapsed: boolean, toggleCollapsed: () => void, navigationMenu: null) => ReactNode) }) =>
       typeof children === 'function' ? children(false, () => {}, null) : children,
   };

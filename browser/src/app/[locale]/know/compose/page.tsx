@@ -6,7 +6,7 @@ import { useLocale } from '@/i18n/routing';
 import { useRouter } from '@/i18n/routing';
 import { useSearchParams } from 'react-router';
 import {
-  useSemiont,
+  useXynoplex,
   useToast,
   useTheme,
   useShellStateUnit,
@@ -26,7 +26,7 @@ function ComposeResourceContent() {
   const locale = useLocale();
   const router = useRouter();
   const [searchParams] = useSearchParams();
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const activeKbId = useObservable(semiont.activeKbId$);
   const session = useObservable(semiont.activeSession$);
   const user = useObservable(session?.user$);

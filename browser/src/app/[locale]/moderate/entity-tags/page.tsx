@@ -4,7 +4,7 @@ import {
   useTheme,
   useShellStateUnit,
   useObservable,
-  useSemiont,
+  useXynoplex,
   useSessionStateUnit,
   EntityTagsPage,
 } from '@xynoplex/react-ui';
@@ -13,7 +13,7 @@ import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 
 export default function EntityTagsPageWrapper() {
   const { t } = useTranslation(undefined, { keyPrefix: 'ModerateEntityTags' });
-  const session = useObservable(useSemiont().activeSession$) ?? undefined;
+  const session = useObservable(useXynoplex().activeSession$) ?? undefined;
 
   const browseStateUnit = useShellStateUnit();
   const stateUnit = useSessionStateUnit(session, (s) => createEntityTagsStateUnit(s, browseStateUnit));

@@ -3,9 +3,9 @@
  *
  * Mounts the protected error boundary and the session modals (session
  * ended, permission denied, KB identity conflict).
- * The session state (KB list, active KB, per-KB SemiontSession) is owned
- * by the module-scoped `SemiontBrowser` singleton, made available via
- * `<SemiontProvider>` at the app root; the modals read the active
+ * The session state (KB list, active KB, per-KB XynoplexSession) is owned
+ * by the module-scoped `XynoplexBrowser` singleton, made available via
+ * `<XynoplexProvider>` at the app root; the modals read the active
  * `SessionSignals`.
  *
  * `ProtectedLayout` in App.tsx mounts this once above the authenticated

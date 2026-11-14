@@ -13,7 +13,7 @@
  * It is NOT sufficient on its own: the page remounts against the new
  * session while the URL still names the previous KB's resource.
  *
- * The API enforces what this gate guards — factories take a `SemiontSession`
+ * The API enforces what this gate guards — factories take a `XynoplexSession`
  * and construction goes through `useSessionStateUnit`, which builds nothing
  * without a session — so the layout gates are defense in depth and UX
  * (loading order), not the safety mechanism.
@@ -94,7 +94,7 @@ vi.mock('@xynoplex/react-ui', async () => {
   const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
-    useSemiont: () => harness.browser,
+    useXynoplex: () => harness.browser,
     useKBDiscovery: () => ({ state: null, kbs: [] }),
     Toolbar: () => null,
     GlobalEvents: () => null,

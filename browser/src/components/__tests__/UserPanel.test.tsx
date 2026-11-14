@@ -22,7 +22,7 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 // Mock react-ui. The UserPanel reads user info and kb off
-// `useSemiont().activeSession$`, and signs out via `semiont.signOut(kb.id)`.
+// `useXynoplex().activeSession$`, and signs out via `semiont.signOut(kb.id)`.
 // The mock browser exposes controllable subjects so tests can flip the shape
 // the panel sees.
 const { mockSignOut, mockUseSessionExpiry, mockFormatTime, mockSanitizeImageURL, mockBrowser, mockClient, user$, activeSession$ } = vi.hoisted(() => {
@@ -74,7 +74,7 @@ vi.mock('@xynoplex/react-ui', async () => {
     useSessionExpiry: () => mockUseSessionExpiry(),
     formatTime: (time: number) => mockFormatTime(time),
     sanitizeImageURL: (url: string) => mockSanitizeImageURL(url),
-    useSemiont: () => mockBrowser,
+    useXynoplex: () => mockBrowser,
   };
 });
 

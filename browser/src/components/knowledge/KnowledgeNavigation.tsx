@@ -4,7 +4,7 @@ import { usePathname, useRouter } from '@/i18n/routing';
 import { Link } from '@/lib/routing';
 import { PlusIcon, ChevronLeftIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import {
-  useSemiont,
+  useXynoplex,
   useObservable,
   useEventSubscriptions,
   CollapsibleResourceNavigation,
@@ -27,7 +27,7 @@ export function KnowledgeNavigation({ isCollapsed, toggleCollapsed, navigationMe
   const { t } = useTranslation(undefined, { keyPrefix: 'Sidebar' });
   const pathname = usePathname();
   const router = useRouter();
-  const semiont = useSemiont();
+  const semiont = useXynoplex();
   const openResources = useObservable(semiont.openResources$) ?? [];
   const removeResource = semiont.removeOpenResource.bind(semiont);
   const reorderResources = semiont.reorderOpenResources.bind(semiont);

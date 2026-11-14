@@ -3,7 +3,7 @@ import { isReady } from '@xynoplex/sdk';
 import { useTranslation } from 'react-i18next';
 import { Toolbar } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
-import { useTheme, useShellStateUnit, useObservable, useSemiont } from '@xynoplex/react-ui';
+import { useTheme, useShellStateUnit, useObservable, useXynoplex } from '@xynoplex/react-ui';
 import { TagSchemasPage } from '@xynoplex/react-ui';
 
 export default function TagSchemasPageWrapper() {
@@ -20,7 +20,7 @@ export default function TagSchemasPageWrapper() {
   // registered by the KB at session start (frame.addTagSchema). The
   // observable yields `undefined` during the initial fetch — surfaced as
   // `isLoading` to the page component.
-  const session = useObservable(useSemiont().activeSession$);
+  const session = useObservable(useXynoplex().activeSession$);
   const tagSchemas$ = useMemo(
     () => session?.client.browse.tagSchemas() ?? null,
     [session],

@@ -89,7 +89,7 @@ vi.mock('@xynoplex/react-ui', async () => {
   const { of } = await vi.importActual<typeof import('rxjs')>('rxjs');
   return {
     ...actual,
-    useSemiont: () => harness.browser,
+    useXynoplex: () => harness.browser,
     createResourceLoaderStateUnit: (session: ReturnType<typeof harness.makeSession> | null, rId: string) => {
       vmFactoryCalls.push(rId);
       vmFactoryClients.push(session?.client?.tag ?? 'none');

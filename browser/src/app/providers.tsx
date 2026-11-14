@@ -5,7 +5,7 @@ import {
   TranslationProvider,
   ThemeProvider,
   LineNumbersProvider,
-  SemiontProvider,
+  XynoplexProvider,
 } from '@xynoplex/react-ui';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
 import { NavigationHandler } from '@/components/knowledge/NavigationHandler';
@@ -16,8 +16,8 @@ import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager
  *
  * Wires up GLOBAL contexts that every page needs.
  *
- * The module-scoped `SemiontBrowser` singleton (KB list, active KB,
- * per-KB SemiontSession) is made available via `<SemiontProvider>` at
+ * The module-scoped `XynoplexBrowser` singleton (KB list, active KB,
+ * per-KB XynoplexSession) is made available via `<XynoplexProvider>` at
  * the app root — mounting it here is cheap because the singleton itself
  * survives every React re-render and route change.
  *
@@ -27,17 +27,17 @@ import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager
  * routes (landing, OAuth flow) intentionally do NOT mount AuthShell —
  * they have no session UI.
  *
- * The `SemiontClient` is owned by the per-KB `SemiontSession`, which
- * `SemiontBrowser` constructs on demand. Components read
- * `useObservable(useSemiont().activeSession$)?.client`.
+ * The `SemiontClient` is owned by the per-KB `XynoplexSession`, which
+ * `XynoplexBrowser` constructs on demand. Components read
+ * `useObservable(useXynoplex().activeSession$)?.client`.
  *
- * The event bus lives inside the client (owned by `SemiontSession`).
+ * The event bus lives inside the client (owned by `XynoplexSession`).
  * Components emit via `session?.emit(...)` and subscribe via
  * `useEventSubscription[s]`.
  *
  * Provider order — outer to inner:
  * 1. TranslationProvider     — i18n
- * 2. SemiontProvider         — SemiontBrowser singleton
+ * 2. XynoplexProvider         — XynoplexBrowser singleton
  * 3. ToastProvider           — toast notifications
  * 4. LiveRegionProvider      — a11y live region
  * 5. KeyboardShortcutsProvider — keyboard shortcuts
@@ -50,7 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <TranslationProvider translationManager={translationManager}>
-      <SemiontProvider>
+      <XynoplexProvider>
         <ToastProvider>
           <LiveRegionProvider>
             <KeyboardShortcutsProvider>
@@ -63,7 +63,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </KeyboardShortcutsProvider>
           </LiveRegionProvider>
         </ToastProvider>
-      </SemiontProvider>
+      </XynoplexProvider>
     </TranslationProvider>
   );
 }

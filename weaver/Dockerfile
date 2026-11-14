@@ -18,6 +18,7 @@ ARG PYTHON_FLOOR
 FROM ghcr.io/astral-sh/uv:0.13.7 AS uv
 
 FROM python:${PYTHON_FLOOR}-alpine AS builder
+ARG SDK_ARTIFACT_BUNDLE
 COPY --from=uv /uv /usr/local/bin/uv
 WORKDIR /build
 # Each package below takes its version from version.json when it is built.
@@ -27,7 +28,7 @@ COPY version.json ./
 # against: each is built from its manifest, the README its manifest names,
 # where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
-COPY packages/python/sdk/src packages/python/sdk/src
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /tmp/sdk/
 COPY shared/python/graph/pyproject.toml shared/python/graph/README.md shared/python/graph/
 COPY shared/python/graph/src shared/python/graph/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -52,7 +53,8 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # brings the graph stores' extra of the same name, and with it the client
 # that database is asked through. An image for one database names that
 # database's extra in its place (`--extra neo4j`).
-RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras
+RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
+    uv pip install --python /opt/venv/bin/python --no-deps /tmp/sdk/*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
