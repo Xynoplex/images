@@ -10,7 +10,7 @@ use std::path::PathBuf;
 fn main() {
     let crate_dir =
         PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("cargo sets CARGO_MANIFEST_DIR"));
-    let spec = crate_dir.join("../../../protocol/specs/src/jobs/storage.json");
+    let spec = crate_dir.join("../../protocol/specs/src/jobs/storage.json");
     println!("cargo:rerun-if-changed={}", spec.display());
     let layout: Value = serde_json::from_str(
         &std::fs::read_to_string(&spec).unwrap_or_else(|e| panic!("{}: {e}", spec.display())),
