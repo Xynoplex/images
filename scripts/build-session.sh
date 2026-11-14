@@ -34,13 +34,8 @@ done
 languages_csv="$(printf '%s\n' "${languages[@]}" | sort -u | paste -sd, -)"
 IFS=, read -r -a selected_languages <<< "$languages_csv"
 bundle="$(bash "$REPO_ROOT/scripts/prepare-sdk-artifacts.sh" "${selected_languages[@]}")"
-bundle_dir=".local/sdk-artifacts/$(basename "$bundle")"
-bundle_id="$(basename "$bundle")"
-mkdir -p "$bundle_dir"
-cp -a "$bundle/." "$bundle_dir/"
-if [[ " ${selected_languages[*]} " == *" rust "* ]]; then
-  python3 "$REPO_ROOT/scripts/prepare-rust-sdk-artifacts.py" "$bundle_dir" "$bundle_dir/cargo-local"
-fi
+bundle_id="$(SDK_ARTIFACTS="$bundle" bash "$REPO_ROOT/scripts/stage-sdk-artifacts.sh" "${selected_languages[@]}")"
+bundle_dir=".local/sdk-artifacts/$bundle_id"
 
 for service in "$@"; do
   case "$service" in

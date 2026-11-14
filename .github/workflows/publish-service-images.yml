@@ -134,6 +134,26 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Read immutable SDK artifact pin
+        id: sdk-pin
+        run: node -e 'const p = JSON.parse(require("node:fs").readFileSync("sdk.lock", "utf8")); for (const [k, v] of Object.entries(p)) console.log(`${k}=${v}`)' >> "$GITHUB_OUTPUT"
+
+      - name: Download verified SDK artifacts
+        id: sdk
+        uses: Xynoplex/sdk/.github/actions/download-bundle@e15cfe2996b0da2e115cdc2e2e8f9bb1551c208d
+        with:
+          tag: ${{ steps.sdk-pin.outputs.tag }}
+          commit: ${{ steps.sdk-pin.outputs.commit }}
+          protocol-commit: ${{ steps.sdk-pin.outputs.protocol }}
+          sha256: ${{ steps.sdk-pin.outputs.sha256 }}
+          languages: python,rust
+
+      - name: Stage SDK artifacts for image builders
+        id: sdk-stage
+        env:
+          SDK_ARTIFACTS: ${{ steps.sdk.outputs.path }}
+        run: echo "id=$(bash scripts/stage-sdk-artifacts.sh python rust)" >> "$GITHUB_OUTPUT"
+
       # The license gate runs node; an arm64 runner's image need not carry it.
       - name: Set up Node
         uses: actions/setup-node@v7
@@ -162,6 +182,7 @@ jobs:
           {
             echo "args<<EOF"
             echo "$argument"
+            echo "SDK_ARTIFACT_BUNDLE=${{ steps.sdk-stage.outputs.id }}"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
