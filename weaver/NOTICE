@@ -1,9 +1,16 @@
-Xynoplex
-Copyright 2025-2026 Xynoplex
+Xynoplex contributions
+Copyright 2026 Xynoplex.
+
+This container image includes work created by Xynoplex after August 26, 2026:
+the Python Weaver implementation and Xynoplex's image-specific changes.
+
+Upstream attribution
+Copyright 2025-2026 The AI Alliance
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by Xynoplex.
+This product includes software developed by The AI Alliance
+(https://thealliance.ai/).
 
 This container image (xynoplex-weaver) includes the following third-party
 components:

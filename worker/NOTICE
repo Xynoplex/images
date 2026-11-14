@@ -1,9 +1,17 @@
-Xynoplex
-Copyright 2025-2026 Xynoplex
+Xynoplex contributions
+Copyright 2026 Xynoplex.
+
+Xynoplex's post-August 26, 2026 Worker work includes the new Python service and
+architecture; the SDK-level `job.claim` interface and worker contract;
+multi-KB operation and per-KB worker identity; and image-specific changes.
+
+Upstream attribution
+Copyright 2025-2026 The AI Alliance
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by Xynoplex.
+This product includes software developed by The AI Alliance
+(https://thealliance.ai/).
 
 This container image (xynoplex-worker) includes the following third-party
 components:

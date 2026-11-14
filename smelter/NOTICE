@@ -1,9 +1,18 @@
-Xynoplex
-Copyright 2025-2026 Xynoplex
+Xynoplex contributions
+Copyright 2026 Xynoplex.
+
+Xynoplex substantially reimplemented the Smelter after August 26, 2026 as a
+standalone Python service, including its event-driven vector-indexing and
+reconciliation pipeline, PDF text extraction, page anchoring and OCR, per-KB
+index isolation, and service identity and integrations.
+
+Upstream attribution
+Copyright 2025-2026 The AI Alliance
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by Xynoplex.
+This product includes software developed by The AI Alliance
+(https://thealliance.ai/).
 
 This container image (xynoplex-smelter) includes the following third-party
 components:
@@ -17,7 +26,7 @@ components:
     Installed as Alpine Linux packages it. Alpine installs with it the
     packages it depends on, each as Alpine built it. The image's own record
     names every one of them (`apk info`), and the license Alpine states for
-    each (`apk info --license <name>`). Xynoplex links none of them: the
+    each (`apk info --license <name>`). The image links none of them: the
     Smelter runs `tesseract` as a program of its own. The source of each,
     and of Tesseract as packaged, is Alpine's
     (https://gitlab.alpinelinux.org/alpine/aports), at the release of Alpine
