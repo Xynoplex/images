@@ -143,10 +143,10 @@ does. A Weaver that finds none takes the whole record again and ends with the sa
 
 The service, and the three Python packages of this repository it runs on:
 
-- the SDK ([`packages/python/sdk`](../../packages/python/sdk/)), its client of the gateway
-- the graph stores ([`packages/python/graph`](../../packages/python/graph/)), which ask a graph
+- the SDK ([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway
+- the graph stores ([`shared/python/graph`](../../shared/python/graph/)), which ask a graph
   database
-- what every Python service is built on ([`packages/python/service`](../../packages/python/service/)),
+- what every Python service is built on ([`shared/python/service`](../../shared/python/service/)),
   which reads its configuration, answers for its health, writes its log and exports its telemetry
 
 All four are built into the image from the commit it is published from, and carry
@@ -155,7 +155,7 @@ All four are built into the image from the commit it is published from, and carr
 
 **Every graph database's client is in it.** The stores ask each database through that
 database's own client, which their package brings as an extra named for the store
-([what an install has](../../packages/python/graph/README.md#what-an-install-has)). The image is
+([what an install has](../../shared/python/graph/README.md#what-an-install-has)). The image is
 built with every extra, so it is not rebuilt to be pointed at another database.
 
 **The launcher writes its document for Neo4j alone,** the one graph database it runs and the one
@@ -195,11 +195,10 @@ reach no database: the Weaver as a process is the conformance suite's.
 
 ## Building it
 
-From the repository root, on the Python [`packages/python/scripts/python-floor.sh`](../../packages/python/scripts/python-floor.sh)
-prints:
+After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
-docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
+docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
   --file weaver/Dockerfile --tag ghcr.io/xynoplex/xynoplex-weaver:local .
 ```
 
@@ -210,7 +209,7 @@ checks what a built one promises.
 ## Related
 
 - [WEAVER.md](../../protocol/contract/WEAVER.md) — what a Weaver does, rule by rule
-- [`semiont-graph`](../../packages/python/graph/) — the graph stores, and what the graph holds
+- [`semiont-graph`](../../shared/python/graph/) — the graph stores, and what the graph holds
 - [Gateway](../gateway) — the bus it rides
 - [Librarian](../librarian) — the reader whose barrier waits on its signals
 - [Archivist](../archivist) — the record it reads, by position, and a resource's annotations

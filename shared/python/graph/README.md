@@ -147,5 +147,5 @@ constraints and the indexes a store makes, and a store that connects makes
 them again.
 
 [semiont]: https://github.com/Xynoplex/images
-[sdk-python]: https://github.com/Xynoplex/images/tree/main/packages/python/sdk
+[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python
 [codec-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/graph/codec-cases.json

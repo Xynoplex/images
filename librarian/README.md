@@ -144,14 +144,14 @@ that does not serve an actor's model, and a port it cannot listen on.
 
 The service, and the five Python packages of this repository it runs on:
 
-- the SDK ([`packages/python/sdk`](../../packages/python/sdk/)), its client of the gateway;
-- the graph stores ([`packages/python/graph`](../../packages/python/graph/)), which ask a
+- the SDK ([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway;
+- the graph stores ([`shared/python/graph`](../../shared/python/graph/)), which ask a
   graph database;
-- the vector stores and embedding providers ([`packages/python/vectors`](../../packages/python/vectors/)),
+- the vector stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
   which ask a Qdrant and a provider over HTTP;
-- the inference drivers ([`packages/python/inference`](../../packages/python/inference/)),
+- the inference drivers ([`shared/python/inference`](../../shared/python/inference/)),
   which ask a model provider;
-- what every Python service is built on ([`packages/python/service`](../../packages/python/service/)),
+- what every Python service is built on ([`shared/python/service`](../../shared/python/service/)),
   which reads its configuration, answers for its health, writes its log, exports its telemetry
   and reads a resource's bytes from the Archivist.
 
@@ -164,8 +164,8 @@ path the launcher writes into `modelCatalogue`.
 **Every graph database's client and every provider's library is in it.** The stores ask each
 database through that database's own client, and the drivers ask each provider through that
 provider's own library. Each is an extra of its package, named for the store or the provider
-(what an install has: [the stores'](../../packages/python/graph/README.md#what-an-install-has),
-[the drivers'](../../packages/python/inference/README.md#what-an-install-has)). The image is
+(what an install has: [the stores'](../../shared/python/graph/README.md#what-an-install-has),
+[the drivers'](../../shared/python/inference/README.md#what-an-install-has)). The image is
 built with every extra, so it is not rebuilt to be pointed at another database or another
 provider. The vector stores and the embedding providers have no extra: each is asked with
 what every install has.
@@ -204,11 +204,10 @@ writes.
 
 ## Building it
 
-From the repository root, on the Python [`packages/python/scripts/python-floor.sh`](../../packages/python/scripts/python-floor.sh)
-prints:
+After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
-docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
+docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
   --file librarian/Dockerfile --tag ghcr.io/xynoplex/xynoplex-librarian:local .
 ```
 
@@ -220,8 +219,8 @@ checks what a built one promises.
 
 - [LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) — what a Librarian does, rule by rule
 - [Gather flow](../../protocol/contract/flows/GATHER.md) · [Match flow](../../protocol/contract/flows/MATCH.md) — the client's side of what it answers
-- [`semiont-graph`](../../packages/python/graph/), [`semiont-vectors`](../../packages/python/vectors/)
-  and [`semiont-inference`](../../packages/python/inference/) — the stores, the embedding
+- [`semiont-graph`](../../shared/python/graph/), [`semiont-vectors`](../../shared/python/vectors/)
+  and [`semiont-inference`](../../shared/python/inference/) — the stores, the embedding
   providers and the drivers it reads and asks through
 - [Gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — the other half of the pair: it holds the record and answers

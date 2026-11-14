@@ -349,7 +349,7 @@ def test_the_distribution_is_named_for_the_service() -> None:
 def test_it_is_a_service_s_code_and_no_library() -> None:
     assert not (SRC / "py.typed").exists()
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
-    for other in sorted(ROOT.glob("packages/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
+    for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PACKAGE:
             assert "semiont-smelter" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Smelter"
 

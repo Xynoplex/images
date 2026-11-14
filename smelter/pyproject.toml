@@ -41,13 +41,13 @@ dependencies = [
 # types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../packages/python/sdk", editable = true }
+xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
 semiont-service = { path = "../shared/python/service", editable = true }
 semiont-vectors = { path = "../shared/python/vectors", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
-# packages/python/sdk/pyproject.toml.
+# the pinned SDK artifact bundle.
 [dependency-groups]
 dev = [
     # What makes the histories of tests/test_properties.py.

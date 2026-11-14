@@ -1,23 +1,33 @@
 #!/bin/sh
-# python-floor.sh — the oldest Python the SDK supports, printed: the X.Y of
-# `requires-python = ">=X.Y"` in packages/python/sdk/pyproject.toml.
-#
-# An installer reads that line itself, and so does ruff. What cannot asks
-# here, so the line is read in one place and one way: scripts/build-session.sh
-# (its Python image is python:<floor>-alpine), the SDK's model generator (the
-# Python its classes are written for), whatever builds the worker image (the
-# Python it runs on, which worker/Dockerfile takes as PYTHON_FLOOR:
-# the local-build session and publish-service-images.yml), and lint:python-version,
-# which holds every restatement of the floor to it.
-#
-# With no floor it prints nothing and fails, so a build that cannot name its
-# Python stops. It is plain sh: an image with no bash can run it.
+# Print the oldest Python supported by the pinned SDK wheel's metadata.
 set -eu
 cd "$(dirname "$0")/../.."
 
-floor=$(sed -n 's/^requires-python = ">=\([0-9][0-9.]*\)"$/\1/p' packages/python/sdk/pyproject.toml)
-if [ -z "$floor" ]; then
-  echo "python-floor.sh: packages/python/sdk/pyproject.toml has no 'requires-python = \">=X.Y\"' line" >&2
-  exit 1
+bundle=${1:-}
+if [ -z "$bundle" ]; then
+  echo "Usage: $0 STAGED_SDK_ARTIFACT_BUNDLE" >&2
+  exit 2
 fi
-echo "$floor"
+
+python3 - "$bundle" <<'PY'
+import email.parser
+import pathlib
+import re
+import sys
+import zipfile
+
+wheel_dir = pathlib.Path(sys.argv[1]) / "python"
+wheels = sorted(wheel_dir.glob("xynoplex-*-py3-none-any.whl"))
+if len(wheels) != 1:
+    raise SystemExit(f"python-floor.sh: expected one xynoplex wheel in {wheel_dir}, found {len(wheels)}")
+with zipfile.ZipFile(wheels[0]) as wheel:
+    metadata_path = next((name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")), None)
+    if metadata_path is None:
+        raise SystemExit(f"python-floor.sh: no wheel METADATA in {wheels[0]}")
+    metadata = email.parser.BytesParser().parsebytes(wheel.read(metadata_path))
+requirement = metadata.get("Requires-Python", "")
+match = re.fullmatch(r">=([0-9]+\.[0-9]+)(?:,.*)?", requirement)
+if not match:
+    raise SystemExit(f"python-floor.sh: unsupported Requires-Python value {requirement!r} in {wheels[0]}")
+print(match.group(1))
+PY

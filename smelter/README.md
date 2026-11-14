@@ -178,10 +178,10 @@ Qdrant it runs, and for one somebody else runs is handed it in the variable the 
 
 The image, `ghcr.io/xynoplex/xynoplex-smelter`, carries the service and the three
 Python packages of this repository it runs on: the SDK
-([`packages/python/sdk`](../../packages/python/sdk/)), its client of the gateway; the vector
-stores and embedding providers ([`packages/python/vectors`](../../packages/python/vectors/)),
+([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway; the vector
+stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
 which ask a Qdrant and a provider over HTTP; and what every Python service is built on
-([`packages/python/service`](../../packages/python/service/)), which reads its configuration,
+([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
 answers for its health, writes its log and exports its telemetry. All four are built into
 the image from the commit it is published from, and carry
 [`version.json`](../version.json)'s version. Everything else in its environment is what
@@ -217,7 +217,7 @@ The code is in [`src/semiont_smelter`](src/semiont_smelter).
 
 How it follows the record, what reads a resource's bytes and its annotations, the reader that
 asks the Archivist for them and for the record by position, and what white space is are every
-Python service's, in [`semiont-service`](../../packages/python/service/README.md) (`follower`,
+Python service's, in [`semiont-service`](../../shared/python/service/README.md) (`follower`,
 `content`, `archivist`, `white_space`).
 
 ```sh
@@ -230,11 +230,10 @@ which [`make-pdf-fixtures.py`](tools/fixtures/scripts/make-pdf-fixtures.py) writ
 
 ## Building it
 
-From the repository root, on the Python [`packages/python/scripts/python-floor.sh`](../../packages/python/scripts/python-floor.sh)
-prints:
+After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
-docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
+docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
   --file smelter/Dockerfile --tag ghcr.io/xynoplex/xynoplex-smelter:local .
 ```
 
@@ -248,7 +247,7 @@ checks what a built one promises.
 - [smelter conformance suite](../../protocol/conformance/smelter/README.md) — holds a Smelter to
   each rule, as a process behind a real gateway, a real Archivist and a real Qdrant, with an
   embedding provider the suite plays
-- [`semiont-vectors`](../../packages/python/vectors/) — the vector stores and the embedding
+- [`semiont-vectors`](../../shared/python/vectors/) — the vector stores and the embedding
   providers, and what the index holds
 - [gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — serves the bytes, keeps the anchored-text store the Smelter

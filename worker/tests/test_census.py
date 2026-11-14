@@ -171,18 +171,17 @@ def test_the_sdk_the_inference_drivers_and_the_service_package_are_the_ones_in_t
     # that package is the project, so without the SDK's own line here the SDK would come from an index.
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "semiont": {"path": "../../packages/python/sdk", "editable": True},
+        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
         "semiont-inference": {"path": "../../shared/python/inference", "editable": True},
         "semiont-service": {"path": "../../shared/python/service", "editable": True},
     }
-    assert (PROJECT / "../../packages/python/sdk").resolve() == SDK.resolve()
     assert (PROJECT / "../../shared/python/inference").resolve() == INFERENCE.resolve()
     assert (PROJECT / "../../shared/python/service").resolve() == SHARED.resolve()
     # And the lockfile took each from there.
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
-    assert taken_from["semiont"] == {"editable": "../../packages/python/sdk"}
+    assert taken_from["xynoplex"] == {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"}
     assert taken_from["semiont-inference"] == {"editable": "../../shared/python/inference"}
     assert taken_from["semiont-service"] == {"editable": "../../shared/python/service"}
     assert taken_from["semiont-worker"] == {"editable": "."}

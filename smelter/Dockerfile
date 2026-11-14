@@ -5,10 +5,9 @@
 # when the container starts: the entrypoint runs the service.
 #
 # Built from the repository root, on the oldest Python the repository's Python
-# packages support, which packages/python/sdk/pyproject.toml states
-# (requires-python), the one place it is written:
+# packages support, which the pinned SDK wheel's metadata states:
 #
-#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -27,8 +26,7 @@ COPY version.json ./
 # this repository's, and no index holds the version the service is written
 # against: each is built from its manifest, the README its manifest names,
 # where it names one, and its source.
-COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
-COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /tmp/sdk/
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
 COPY shared/python/vectors/pyproject.toml shared/python/vectors/README.md shared/python/vectors/
 COPY shared/python/vectors/src shared/python/vectors/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -56,7 +54,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # built for Alpine's C library with its C++ runtime inside it. It asks for no
 # package of the system, in this stage or the next.
 RUN uv sync --project smelter --locked --no-dev --no-editable --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps /tmp/sdk/*.whl
+    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the

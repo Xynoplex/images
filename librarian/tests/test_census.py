@@ -250,18 +250,19 @@ def test_what_the_source_imports_the_manifest_requires() -> None:
 def test_the_sdk_and_the_packages_it_is_built_on_are_the_ones_in_this_repository() -> None:
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "semiont": {"path": "../../packages/python/sdk", "editable": True},
+        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
         "semiont-graph": {"path": "../../shared/python/graph", "editable": True},
         "semiont-inference": {"path": "../../shared/python/inference", "editable": True},
         "semiont-service": {"path": "../../shared/python/service", "editable": True},
         "semiont-vectors": {"path": "../../shared/python/vectors", "editable": True},
     }
-    for there in (SDK, GRAPH, INFERENCE, SHARED, VECTORS):
-        assert (PROJECT / "../../packages/python" / there.name / "pyproject.toml").resolve() == there / "pyproject.toml"
+    assert (SDK / "pyproject.toml").is_file()
+    for there in (GRAPH, INFERENCE, SHARED, VECTORS):
+        assert (PROJECT / "../../shared/python" / there.name / "pyproject.toml").resolve() == there / "pyproject.toml"
         assert (there / "pyproject.toml").is_file(), there.name
     # Every one of them the manifest requires is taken from here, and nothing else is.
     requirements = listed(table(MANIFEST["project"], "project")["dependencies"], "dependencies")
-    assert {name_of(requirement) for requirement in requirements if name_of(requirement).startswith("semiont")} == set(sources)
+    assert {name_of(requirement) for requirement in requirements if name_of(requirement).startswith("semiont")} == {name for name in sources if name.startswith("semiont")}
 
 
 def test_the_distribution_is_named_for_the_service() -> None:
@@ -276,7 +277,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     beside = sorted(str(path.relative_to(SRC)) for path in SRC.rglob("*") if path.is_file() and path.suffix not in (".py", ".pyc"))
     assert beside == []
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
-    for other in sorted(ROOT.glob("packages/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
+    for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PROJECT:
             assert "semiont-librarian" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Librarian"
 

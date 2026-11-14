@@ -32,8 +32,8 @@ first; the `bearerAuth` and `mediaToken` schemes in
 | Which token it is, and the principal it names | [src/principal.rs](../src/principal.rs) |
 | The issuer's keys: discovery, the key set, when it is fetched | [issuer.rs](../../packages/rust/http-service/src/issuer.rs), in the crate the Rust services that serve HTTP share |
 | The key ring and media tokens | [src/tokens.rs](../src/tokens.rs) |
-| How a person and an agent are named | the `semiont` crate's [identity.rs](../../packages/rust/sdk/src/identity.rs), held to [protocol/specs/src/principals/cases.json](../../protocol/specs/src/principals/cases.json) |
-| The role names, and the claim that marks an agent's account | the `semiont` crate's [roles.rs](../../packages/rust/sdk/src/roles.rs), held to the launcher's by `npm run lint:service-role` |
+| How a person and an agent are named | the Rust SDK's [identity.rs](https://github.com/Xynoplex/sdk/blob/main/rust/sdk/src/identity.rs), held to [protocol/specs/src/principals/cases.json](../../protocol/specs/src/principals/cases.json) |
+| The role names, and the claim that marks an agent's account | the Rust SDK's [roles.rs](https://github.com/Xynoplex/sdk/blob/main/rust/sdk/src/roles.rs), held to the launcher's by `npm run lint:service-role` |
 
 A protected handler takes `Authenticated` (or `MediaOrBearer`), which runs
 before its body is read, so an unauthenticated request never reaches a parser.

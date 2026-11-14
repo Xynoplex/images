@@ -141,11 +141,10 @@ def test_what_the_manifest_requires_is_what_the_source_imports() -> None:
 def test_the_sdk_the_graph_stores_and_the_service_package_are_the_ones_in_this_repository() -> None:
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "semiont": {"path": "../../packages/python/sdk", "editable": True},
+        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
         "semiont-graph": {"path": "../../shared/python/graph", "editable": True},
         "semiont-service": {"path": "../../shared/python/service", "editable": True},
     }
-    assert (PROJECT / "../../packages/python/sdk/pyproject.toml").resolve() == SDK / "pyproject.toml"
     assert (PROJECT / "../../shared/python/graph/pyproject.toml").resolve() == GRAPH / "pyproject.toml"
     assert (PROJECT / "../../shared/python/service/pyproject.toml").resolve() == SHARED / "pyproject.toml"
 
@@ -159,7 +158,7 @@ def test_the_distribution_is_named_for_the_service() -> None:
 def test_it_is_a_service_s_code_and_no_library() -> None:
     assert not (SRC / "py.typed").exists()
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
-    for other in sorted(ROOT.glob("packages/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
+    for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PROJECT:
             assert "semiont-weaver" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Weaver"
 

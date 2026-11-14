@@ -16,7 +16,7 @@ Python Smelter's tests read: it is written there by giving that path.
 
 From the repository root, run it in a container with Pillow and DejaVu:
 
-    container run --rm -v "$PWD":/out -w /out "python:$(shared/python/python-floor.sh)-slim" sh -c \
+    container run --rm -v "$PWD":/out -w /out "python:$(shared/python/python-floor.sh .local/sdk-artifacts/current)-slim" sh -c \
       'pip install --quiet pillow && apt-get update -qq && \
        apt-get install -y -qq fonts-dejavu-core && \
        python smelter/tools/fixtures/scripts/make-legible-scan.py /out/legible-scan.pdf'

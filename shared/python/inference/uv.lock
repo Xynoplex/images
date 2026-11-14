@@ -1355,41 +1355,6 @@ wheels = [
 ]
 
 [[package]]
-name = "xynoplex"
-source = { editable = "../sdk" }
-dependencies = [
-    { name = "cryptography" },
-    { name = "httpx" },
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cryptography", specifier = ">=50,<51" },
-    { name = "httpx", specifier = ">=0.28,<1" },
-    { name = "hypothesis", marker = "extra == 'axioms'", specifier = ">=6.130,<7" },
-    { name = "opentelemetry-api", specifier = ">=1.30,<2" },
-    { name = "pydantic", specifier = ">=2.12,<3" },
-]
-provides-extras = ["axioms"]
-
-[package.metadata.requires-dev]
-conformance = [
-    { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
-    { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
-]
-dev = [
-    { name = "datamodel-code-generator", specifier = "==0.89.0" },
-    { name = "hypothesis", specifier = ">=6.130,<7" },
-    { name = "mypy", specifier = "==2.4.1" },
-    { name = "pyright", specifier = "==1.1.414" },
-    { name = "pytest", specifier = ">=9.1,<10" },
-    { name = "pytest-cov", specifier = "==7.1.0" },
-    { name = "ruff", specifier = "==0.17.3" },
-]
-
-[[package]]
 name = "semiont-inference"
 source = { editable = "." }
 dependencies = [
@@ -1440,8 +1405,8 @@ requires-dist = [
     { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "xynoplex", editable = "../sdk" },
     { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
+    { name = "xynoplex", path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" },
 ]
 provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
 
@@ -1620,3 +1585,27 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a2/6e/fbac6ed878dd362fbad7d415fa4f84d38e3e33fed8cde45c64e783acf826/websockets-16.1.1-cp314-cp314t-win_amd64.whl", hash = "sha256:bcce07e23e5769375158f5efdcdafa8d5cd014b93c6683865b840ed65b96f231", size = 180072, upload-time = "2026-07-17T22:50:54.969Z" },
     { url = "https://files.pythonhosted.org/packages/be/4d/2d0d67834092e354d2b0498f014a41249a89556bc406cf86f3e1557bb463/websockets-16.1.1-py3-none-any.whl", hash = "sha256:6abbd3e82c731c8e531714466acd5d87b5e88ac3243465337ba71d68e23ae7e3", size = 173814, upload-time = "2026-07-17T22:51:04.184Z" },
 ]
+
+[[package]]
+name = "xynoplex"
+version = "0.7.3"
+source = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "httpx" },
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+]
+wheels = [
+    { filename = "xynoplex-0.7.3-py3-none-any.whl", hash = "sha256:81a4330ca386853f80045d8428ac2b78836354666046379c44ac279910545b91" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cryptography", specifier = ">=50,<51" },
+    { name = "httpx", specifier = ">=0.28,<1" },
+    { name = "hypothesis", marker = "extra == 'axioms'", specifier = ">=6.130,<7" },
+    { name = "opentelemetry-api", specifier = ">=1.30,<2" },
+    { name = "pydantic", specifier = ">=2.12,<3" },
+]
+provides-extras = ["axioms"]

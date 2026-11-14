@@ -59,7 +59,7 @@ vllm = ["semiont-inference[vllm]"]
 # Each is named, because a source another package states for the SDK is read
 # only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../packages/python/sdk", editable = true }
+xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
 semiont-graph = { path = "../shared/python/graph", editable = true }
 semiont-inference = { path = "../shared/python/inference", editable = true }
 semiont-service = { path = "../shared/python/service", editable = true }
@@ -67,7 +67,7 @@ semiont-vectors = { path = "../shared/python/vectors", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
-# packages/python/sdk/pyproject.toml.
+# the pinned SDK artifact bundle.
 [dependency-groups]
 dev = [
     # Every extra: the service is checked with every database's client and every provider's library, as its image has them.

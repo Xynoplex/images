@@ -172,10 +172,10 @@ the `jobs` it claims, and what its claims say of themselves: `lastQueuedEventAt`
 ## What the image carries
 
 The service, and the three Python packages of this repository it runs on: the SDK
-([`packages/python/sdk`](../../packages/python/sdk/)), its client of the gateway; the
-inference drivers ([`packages/python/inference`](../../packages/python/inference/)), which
+([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway; the
+inference drivers ([`shared/python/inference`](../../shared/python/inference/)), which
 ask a model provider; and what every Python service is built on
-([`packages/python/service`](../../packages/python/service/)), which reads its configuration,
+([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
 answers for its health, writes its log and exports its telemetry. All four are built into
 the image from the commit it is published from, and carry
 [`version.json`](../version.json)'s version. Everything else in its environment is what
@@ -184,7 +184,7 @@ starts.
 
 **Every provider's library is in it.** The drivers ask each provider through that provider's
 own library, which their package brings as an extra named for the provider
-([what an install has](../../packages/python/inference/README.md#what-an-install-has)). The
+([what an install has](../../shared/python/inference/README.md#what-an-install-has)). The
 image is built with every extra, so it is not rebuilt to be pointed at another provider.
 
 **The service can be configured for any of the seven providers the protocol names:**
@@ -231,11 +231,10 @@ image the [Dockerfile](Dockerfile) copies it from. The checkers are `uv run mypy
 
 ## Building it
 
-From the repository root, on the Python [`packages/python/scripts/python-floor.sh`](../../packages/python/scripts/python-floor.sh)
-prints:
+After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
-docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
+docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
   --file worker/Dockerfile --tag ghcr.io/xynoplex/xynoplex-worker:local .
 ```
 

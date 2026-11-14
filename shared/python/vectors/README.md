@@ -232,7 +232,7 @@ collection of that Qdrant before each case, and fails, and is not skipped,
 without either variable.
 
 [semiont]: https://github.com/Xynoplex/images
-[sdk-python]: https://github.com/Xynoplex/images/tree/main/packages/python/sdk
+[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python
 [payload-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/payload-cases.json
 [store-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/store-cases.json
 [token-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/token-cases.json

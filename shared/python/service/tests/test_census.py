@@ -192,15 +192,15 @@ def test_a_dependency_the_sdk_bounds_is_named_here_without_a_bound_of_its_own() 
             assert requirement == name_of(requirement), f"{requirement}: the versions of {name_of(requirement)} are stated elsewhere"
 
 
-def test_the_sdk_is_the_one_in_this_repository() -> None:
+def test_the_sdk_source_is_the_pinned_artifact() -> None:
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
-    assert sources == {"semiont": {"path": "../sdk", "editable": True}}
-    assert (PROJECT / "../sdk").resolve() == SDK.resolve()
-    # And the lockfile took it from there.
+    expected = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"
+    assert sources == {"xynoplex": {"path": expected}}
+    # The lockfile points to the same immutable local artifact.
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
-    assert taken_from["semiont"] == {"editable": "../sdk"}
+    assert taken_from["xynoplex"] == {"path": "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"}
     assert taken_from["semiont-service"] == {"editable": "."}
 
 
@@ -218,7 +218,7 @@ def test_it_is_the_services_own_code_and_every_python_service_is_built_on_it() -
         assert "semiont-service" in required(manifest), f"{service.name} is not built on semiont-service"
         sources = table(table(table(manifest["tool"], "tool")["uv"], "uv")["sources"], "sources")
         assert sources["semiont-service"] == {"path": "../../shared/python/service", "editable": True}, service.name
-    for package in sorted(path.parent for path in ROOT.glob("packages/python/*/pyproject.toml")):
+    for package in sorted(path.parent for path in ROOT.glob("shared/python/*/pyproject.toml")):
         if package != PROJECT:
             requires = {name_of(requirement) for requirement in required(toml(package / "pyproject.toml"))}
             assert "semiont-service" not in requires, package.name

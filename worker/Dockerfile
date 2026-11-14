@@ -5,10 +5,9 @@
 # service.
 #
 # Built from the repository root, on the oldest Python the repository's Python
-# packages support, which packages/python/sdk/pyproject.toml states
-# (requires-python), the one place it is written:
+# packages support, which the pinned SDK wheel's metadata states:
 #
-#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -23,12 +22,9 @@ COPY --from=uv /uv /usr/local/bin/uv
 WORKDIR /build
 # Each package below takes its version from version.json when it is built.
 COPY version.json ./
-# The SDK, the inference drivers and what every Python service is built on
-# are this repository's, and no index holds the version the service is written
-# against: each is built from its manifest, the README its manifest names,
-# where it names one, and its source.
-COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
-COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /tmp/sdk/
+# The SDK wheel is built and pinned by the SDK repository. The inference
+# drivers and shared service packages are owned here.
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
 COPY shared/python/inference/pyproject.toml shared/python/inference/README.md shared/python/inference/
 COPY shared/python/inference/src shared/python/inference/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -55,7 +51,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # that provider's extra in its place (`--extra anthropic`), and one for Ollama
 # alone names none: Ollama is asked with what every install has.
 RUN uv sync --project worker --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps /tmp/sdk/*.whl
+    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
