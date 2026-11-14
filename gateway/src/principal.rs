@@ -2,9 +2,9 @@
 //! with no row behind it. The DID is the identity; everything downstream keys
 //! on it.
 
-use semiont::identity;
-use semiont::roles::{is_agent, roles_of};
-use semiont::types::UserId;
+use xynoplex::identity;
+use xynoplex::roles::{is_agent, roles_of};
+use xynoplex::types::UserId;
 use semiont_http_service::IssuerVerifier;
 use serde_json::Value;
 

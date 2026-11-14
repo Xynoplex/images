@@ -10,8 +10,8 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { SemiontBrowser, createHttpSessionFactory } from '@semiont/sdk';
-import { WebBrowserStorage, createShellStateUnit, type ToolbarPanelType } from '@semiont/react-ui';
+import { SemiontBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
+import { WebBrowserStorage, createShellStateUnit, type ToolbarPanelType } from '@xynoplex/react-ui';
 import { useKbPanelOnLogin } from '../useKbPanelOnLogin';
 
 function shellShowing(panel: ToolbarPanelType) {

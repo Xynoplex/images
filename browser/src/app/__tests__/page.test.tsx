@@ -12,8 +12,8 @@ const { routerPush, routerReplace, session$ } = vi.hoisted(() => {
   };
 });
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual('@xynoplex/react-ui');
   return {
     ...actual,
     useSemiont: () => ({ activeSession$: session$ }),

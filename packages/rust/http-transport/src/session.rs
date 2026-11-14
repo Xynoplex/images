@@ -23,23 +23,23 @@ use crate::transport::{HttpTransport, HttpTransportConfig, Timing, TokenRefreshe
 use futures::FutureExt;
 use futures::future::Shared;
 use rand_core::Rng;
-use semiont::bus::reply_channels_for;
-use semiont::channels::{BRIDGED_CHANNELS, BrowseKbRequested, Channel};
-use semiont::client::{CachePersistence, ClientOptions, SemiontClient};
-use semiont::errors::{
+use xynoplex::bus::reply_channels_for;
+use xynoplex::channels::{BRIDGED_CHANNELS, BrowseKbRequested, Channel};
+use xynoplex::client::{CachePersistence, ClientOptions, SemiontClient};
+use xynoplex::errors::{
     BusRequestErrorCode, IdentityUnverifiable, IdentityUnverifiableReason, SemiontError,
     SessionError, SessionErrorCode, SignInError, SignInErrorCode,
 };
-use semiont::resume::CoupledBookmarks;
-use semiont::session::{
+use xynoplex::resume::CoupledBookmarks;
+use xynoplex::session::{
     BROWSER_CLIENT_ID, OnAuthFailed, OpenedSession, Refresh, SCRIPT_CLIENT_ID, SemiontBrowser,
     SemiontSession, SemiontSessionConfig, SessionFactory, SessionFactoryOptions, SessionRenewer,
     SignInKept, SignInOutcome, SignedIn, StoredSession, Validate, kept_in, last_event_id_key,
     person_key, stored_session,
 };
-use semiont::storage::SessionStorage;
-use semiont::transport::BoxFuture;
-use semiont::types::{HttpEndpoint, KbDescription, KbEndpoint, KbTarget, UserId};
+use xynoplex::storage::SessionStorage;
+use xynoplex::transport::BoxFuture;
+use xynoplex::types::{HttpEndpoint, KbDescription, KbEndpoint, KbTarget, UserId};
 use std::collections::HashMap;
 use std::error::Error;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -220,9 +220,9 @@ async fn revoked(sign_in: &StoredSession, http: &reqwest::Client) {
 pub struct SessionFromKept {
     pub kb: KbTarget,
     /// Where the sign-in is kept: the file `semiont login` keeps
-    /// (`semiont::sign_in_store::SignInStore::entry`), memory
-    /// (`semiont::session::MemorySignIn`), a registry's storage
-    /// (`semiont::session::kept_in`), or anywhere else.
+    /// (`xynoplex::sign_in_store::SignInStore::entry`), memory
+    /// (`xynoplex::session::MemorySignIn`), a registry's storage
+    /// (`xynoplex::session::kept_in`), or anywhere else.
     pub kept: Arc<dyn SignInKept>,
     /// Whether the gateway is asked who the token is: how the session
     /// learns whose caches its client keeps when the sign-in names nobody
@@ -344,7 +344,7 @@ pub async fn sign_in_device(
 /// issuer says where, and kept no more. It is forgotten whatever the issuer
 /// answers: a person who signs out is signed out here, and an issuer that
 /// could not be told forgets the token when it expires. Forgetting a sign-in
-/// a registry keeps (`semiont::session::kept_in`) deletes what was kept for
+/// a registry keeps (`xynoplex::session::kept_in`) deletes what was kept for
 /// the person it named too; one kept anywhere else deletes nothing. With
 /// nothing kept, nothing is asked. What the sign-in kept could not read or
 /// forget is its own error.
@@ -599,7 +599,7 @@ pub async fn describe_connection(
         }
     };
     // A domain no did can hold says nothing of who this is.
-    let did = semiont::identity::kb_did(&description.domain)
+    let did = xynoplex::identity::kb_did(&description.domain)
         .parse::<UserId>()
         .map_err(|invalid| {
             unverifiable(IdentityUnverifiableReason::NotReported, invalid.to_string())
@@ -660,9 +660,9 @@ pub async fn complete_sign_in(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use semiont::session::MemorySignIn;
-    use semiont::testing::{TestClientOptions, create_test_client};
-    use semiont::types::LocalEndpoint;
+    use xynoplex::session::MemorySignIn;
+    use xynoplex::testing::{TestClientOptions, create_test_client};
+    use xynoplex::types::LocalEndpoint;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     /// A session whose renewal answers `renewed`, counted each time it is asked.

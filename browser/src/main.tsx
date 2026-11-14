@@ -7,7 +7,7 @@ import App from './App';
 import './i18n/config'; // initialise i18next
 import './app/globals.css';
 import './styles/animations.css';
-import { setPdfWorkerSrc, setPdfWasmUrl } from '@semiont/react-ui';
+import { setPdfWorkerSrc, setPdfWasmUrl } from '@xynoplex/react-ui';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 // Hand react-ui the (Vite-resolved) pdf.js worker URL once at startup. This is

@@ -1428,7 +1428,7 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont"
+name = "xynoplex"
 source = { editable = "../sdk" }
 dependencies = [
     { name = "cryptography" },
@@ -1467,7 +1467,7 @@ name = "semiont-graph"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.optional-dependencies]
@@ -1497,7 +1497,7 @@ requires-dist = [
     { name = "gremlinpython", marker = "extra == 'neptune'", specifier = ">=3.8,<4" },
     { name = "neo4j", marker = "extra == 'neo4j'", specifier = ">=6.4,<7" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../sdk" },
+    { name = "xynoplex", editable = "../sdk" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 

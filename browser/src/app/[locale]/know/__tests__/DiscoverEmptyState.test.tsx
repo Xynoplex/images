@@ -31,8 +31,8 @@ vi.mock('react-i18next', () => ({
 
 const discoveryHolder = vi.hoisted(() => ({
   current: { state: null, kbs: [] } as {
-    state: import('@semiont/sdk').DiscoveryState | null;
-    kbs: import('@semiont/core').DiscoveredKB[];
+    state: import('@xynoplex/sdk').DiscoveryState | null;
+    kbs: import('@xynoplex/core').DiscoveredKB[];
   },
 }));
 
@@ -49,8 +49,8 @@ const { kbs$, activeSession$, mockBrowser } = vi.hoisted(() => {
   return { kbs$, activeSession$, mockBrowser };
 });
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     useSemiont: () => mockBrowser,

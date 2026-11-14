@@ -10,16 +10,16 @@
 import { useEffect, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { useLocale } from '@/i18n/routing';
-import { useSemiont, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@semiont/react-ui';
-import { isResourceId, type ResourceId } from '@semiont/core';
-import type { SemiontSession } from '@semiont/sdk';
+import { useSemiont, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@xynoplex/react-ui';
+import { isResourceId, type ResourceId } from '@xynoplex/core';
+import type { SemiontSession } from '@xynoplex/sdk';
 import { Link, routes } from '@/lib/routing';
 
 // Feature components
-import { ResourceLoadingState, ResourceErrorState, ResourceViewerPage } from '@semiont/react-ui';
+import { ResourceLoadingState, ResourceErrorState, ResourceViewerPage } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 import NotFound from '../../../not-found';
-import type { SemiontResource } from '@semiont/react-ui';
+import type { SemiontResource } from '@xynoplex/react-ui';
 
 /**
  * Main page component — routing, session gating, and initial resource load.

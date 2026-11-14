@@ -109,7 +109,7 @@ impl MarkNamespace {
     /// others.
     ///
     /// ```
-    /// use semiont::types::{LinkingJobParams, MarkJobParams};
+    /// use xynoplex::types::{LinkingJobParams, MarkJobParams};
     ///
     /// let params: MarkJobParams = LinkingJobParams {
     ///     include_descriptive_references: Some(true),
@@ -123,7 +123,7 @@ impl MarkNamespace {
     /// job given instructions does not compile.
     ///
     /// ```compile_fail,E0560
-    /// use semiont::types::LinkingJobParams;
+    /// use xynoplex::types::LinkingJobParams;
     ///
     /// let params = LinkingJobParams {
     ///     instructions: Some("who is related to whom".to_owned()),
@@ -135,7 +135,7 @@ impl MarkNamespace {
     /// its schema and its categories.
     ///
     /// ```compile_fail,E0061
-    /// use semiont::types::TaggingJobParams;
+    /// use xynoplex::types::TaggingJobParams;
     ///
     /// let params = TaggingJobParams::new();
     /// ```

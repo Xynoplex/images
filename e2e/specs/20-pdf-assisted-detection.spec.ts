@@ -18,7 +18,7 @@ import { openResourceByName } from '../fixtures/discover';
  *   - linking    → an entity-reference body (entity extraction).
  * Both anchor through `annotationOfSpan`, so both surface as <rect>s; the
  * per-body-shape detail is covered deterministically elsewhere (the Worker
- * service's conformance suite: its `pdf` cases; @semiont/core:
+ * service's conformance suite: its `pdf` cases; @xynoplex/core:
  * annotation-of-span).
  *
  * Seed dependency: `scripts/seed.ts` yields an `application/pdf` resource named

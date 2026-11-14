@@ -10,7 +10,7 @@
 //! the job needs no registry. An announcement carries the description alone,
 //! without the job's input.
 
-use semiont::types::{
+use xynoplex::types::{
     CommandErrorCode, GatheredContextFocus, GenerationJobParams, JobCreateCommand, JobId,
     JobMetadata, JobParams, JobPending, JobPendingStatus, JobQueuedEvent, JobType, MarkJobParams,
     MarkJobQueuedEvent, TagSchema, YieldJobQueuedEvent,

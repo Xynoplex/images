@@ -10,7 +10,7 @@ description = "The Archivist's record, as protocol/contract/ARCHIVIST.md states 
 chrono = { workspace = true, features = ["clock", "std"] }
 jsonschema.workspace = true
 ring.workspace = true
-semiont.workspace = true
+xynoplex.workspace = true
 serde-saphyr.workspace = true
 serde_json = { workspace = true, features = ["preserve_order"] }
 unicode-normalization.workspace = true

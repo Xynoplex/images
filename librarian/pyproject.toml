@@ -28,7 +28,7 @@ classifiers = [
 dependencies = [
     "opentelemetry-api",
     "pydantic",
-    "semiont",
+    "xynoplex",
     "semiont-graph",
     "semiont-inference",
     "semiont-service",
@@ -59,7 +59,7 @@ vllm = ["semiont-inference[vllm]"]
 # Each is named, because a source another package states for the SDK is read
 # only where that package is the project.
 [tool.uv.sources]
-semiont = { path = "../packages/python/sdk", editable = true }
+xynoplex = { path = "../packages/python/sdk", editable = true }
 semiont-graph = { path = "../shared/python/graph", editable = true }
 semiont-inference = { path = "../shared/python/inference", editable = true }
 semiont-service = { path = "../shared/python/service", editable = true }

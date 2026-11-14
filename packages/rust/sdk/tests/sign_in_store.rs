@@ -4,13 +4,13 @@
 //! kept and renewed as the launcher keeps one, and two writers that lose
 //! nothing of each other's. Where the file is, is the `cases` of
 //! protocol/specs/src/sign-in-store/cases.json; its `renewals` are run where the
-//! renewal is, in semiont-http-transport's tests/sign_in.rs.
+//! renewal is, in xynoplex-http-transport's tests/sign_in.rs.
 
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use semiont::errors::{SignInError, SignInErrorCode};
-use semiont::session::{SignInKept, StoredSession, person_key};
-use semiont::sign_in_store::{SignInStore, System, state_dir};
+use xynoplex::errors::{SignInError, SignInErrorCode};
+use xynoplex::session::{SignInKept, StoredSession, person_key};
+use xynoplex::sign_in_store::{SignInStore, System, state_dir};
 use serde_json::{Value, json};
 use std::error::Error;
 use std::path::PathBuf;

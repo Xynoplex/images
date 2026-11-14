@@ -31,7 +31,7 @@ dependencies = [
     "httpx",
     "pydantic",
     "pypdfium2>=5.14,<6",
-    "semiont",
+    "xynoplex",
     "semiont-service",
     "semiont-vectors",
 ]
@@ -41,7 +41,7 @@ dependencies = [
 # types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-semiont = { path = "../packages/python/sdk", editable = true }
+xynoplex = { path = "../packages/python/sdk", editable = true }
 semiont-service = { path = "../shared/python/service", editable = true }
 semiont-vectors = { path = "../shared/python/vectors", editable = true }
 

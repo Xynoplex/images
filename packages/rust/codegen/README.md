@@ -1,14 +1,14 @@
-# semiont-codegen
+# xynoplex-codegen
 
-[![crates.io](https://img.shields.io/crates/v/semiont-codegen.svg)](https://crates.io/crates/semiont-codegen)
-[![docs.rs](https://img.shields.io/docsrs/semiont-codegen)](https://docs.rs/semiont-codegen)
+[![crates.io](https://img.shields.io/crates/v/xynoplex-codegen.svg)](https://crates.io/crates/xynoplex-codegen)
+[![docs.rs](https://img.shields.io/docsrs/xynoplex-codegen)](https://docs.rs/xynoplex-codegen)
 [![CI](https://github.com/Xynoplex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Xynoplex/actions/workflows/ci.yml?query=branch%3Amain)
-[![License](https://img.shields.io/crates/l/semiont-codegen.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
+[![License](https://img.shields.io/crates/l/xynoplex-codegen.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-codegen)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The build-time code generator of the [Semiont Rust SDK](../sdk/README.md).
 It turns the [Semiont specification](../../../protocol/specs/README.md), an OpenAPI
-document and its JSON Schemas, into the Rust types of `semiont::types`.
+document and its JSON Schemas, into the Rust types of `xynoplex::types`.
 
 ## You do not need to add it
 
@@ -18,7 +18,7 @@ in the SDK's build script and is linked into no program. It is published
 because a published crate's build dependencies have to be.
 
 To use Semiont from Rust, add `semiont` and
-[`semiont-http-transport`](../http-transport/README.md).
+[`xynoplex-http-transport`](../http-transport/README.md).
 
 ## What it does
 
@@ -38,7 +38,7 @@ Two build scripts use it, and each is a worked example:
 [the services' shared crate's](../core/build.rs), for the types only a
 service needs. One generator, so the two are never generated two ways.
 
-Every item is documented on [docs.rs](https://docs.rs/semiont-codegen).
+Every item is documented on [docs.rs](https://docs.rs/xynoplex-codegen).
 
 ## License
 

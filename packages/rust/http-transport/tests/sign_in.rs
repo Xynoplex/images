@@ -21,57 +21,57 @@ use bytes::Bytes;
 use futures::FutureExt;
 use quick_clock::QuickClock;
 use ring::signature::{RSA_PKCS1_2048_8192_SHA256, RsaPublicKeyComponents};
-use semiont::annotations::{QuotedText, annotation_of_span, reconcile};
-use semiont::cache::CacheState;
-use semiont::channels::{BRIDGED_CHANNELS, PrincipalProfile};
-use semiont::claims::{ClaimOptions, HeldJob, JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, JobFailure};
-use semiont::client::ClientOptions;
-use semiont::discovery::{
+use xynoplex::annotations::{QuotedText, annotation_of_span, reconcile};
+use xynoplex::cache::CacheState;
+use xynoplex::channels::{BRIDGED_CHANNELS, PrincipalProfile};
+use xynoplex::claims::{ClaimOptions, HeldJob, JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, JobFailure};
+use xynoplex::client::ClientOptions;
+use xynoplex::discovery::{
     DiscoveryAbsentReason, DiscoveryRead, DiscoveryState, DiscoveryTransport,
 };
-use semiont::errors::{
+use xynoplex::errors::{
     BusRequestErrorCode, IdentityUnverifiable, IdentityUnverifiableReason, SemiontError,
     SessionError, SessionErrorCode, SignInError, SignInErrorCode,
 };
-use semiont::identity::agent_did;
-use semiont::refresh::CacheQuery;
-use semiont::roles::{AGENT_KIND, KIND_CLAIM, is_agent};
-use semiont::session::{
+use xynoplex::identity::agent_did;
+use xynoplex::refresh::CacheQuery;
+use xynoplex::roles::{AGENT_KIND, KIND_CLAIM, is_agent};
+use xynoplex::session::{
     MemorySignIn, OpenedSession, SemiontBrowser, SemiontBrowserConfig, SemiontSession,
     SessionEndReason, SignInKept, StoredSession, cache_key, kept_in, last_event_id_key, person_key,
     save_knowledge_bases, store_session, stored_session,
 };
-use semiont::sign_in_store::{FILE_NAME, SignInStore};
-use semiont::storage::{
+use xynoplex::sign_in_store::{FILE_NAME, SignInStore};
+use xynoplex::storage::{
     InMemorySessionStorage, SessionStorage, StorageChange, StorageSubscription,
 };
-use semiont::testing::as_id;
-use semiont::testing::examples::{assert_blocks_are_examples, assert_readme_shows};
-use semiont::timing::{DEVICE_SLOW_DOWN, HTTP_REQUEST_TIMEOUT, REFRESH_RETRY, SAVE_DEBOUNCE};
-use semiont::transport::{BoxFuture, Envelope, Events, Lagged, PutBinaryRequest};
-use semiont::types::{
+use xynoplex::testing::as_id;
+use xynoplex::testing::examples::{assert_blocks_are_examples, assert_readme_shows};
+use xynoplex::timing::{DEVICE_SLOW_DOWN, HTTP_REQUEST_TIMEOUT, REFRESH_RETRY, SAVE_DEBOUNCE};
+use xynoplex::transport::{BoxFuture, Envelope, Events, Lagged, PutBinaryRequest};
+use xynoplex::types::{
     AgentSoftware, Annotation, FailureClass, HttpEndpoint, HttpEndpointProtocol,
     JobCompleteCommand, JobProgress, KbEndpoint, KbTarget, KnowledgeBase, LocalEndpoint,
     MarkJobDone, MarkJobFilter, MarkJobFilterParams, Motivation, PrincipalProfileCommand,
 };
-use semiont_http_transport::agent::{AgentSignInError, AgentToken};
-use semiont_http_transport::client::client;
-use semiont_http_transport::client_assertion::{JWT_BEARER, LIFETIME_SECONDS, thumbprint};
-use semiont_http_transport::discovery::http_discovery;
-use semiont_http_transport::loopback::LoopbackRedirect;
-use semiont_http_transport::oauth::{
+use xynoplex_http_transport::agent::{AgentSignInError, AgentToken};
+use xynoplex_http_transport::client::client;
+use xynoplex_http_transport::client_assertion::{JWT_BEARER, LIFETIME_SECONDS, thumbprint};
+use xynoplex_http_transport::discovery::http_discovery;
+use xynoplex_http_transport::loopback::LoopbackRedirect;
+use xynoplex_http_transport::oauth::{
     BeginAuthorization, DeviceCode, PENDING_AUTHORIZATION_KEY, PendingAuthorization,
     begin_authorization, code_challenge, complete_authorization, discover_issuer,
     refresh_at_issuer, renew_kept, revoke_at_issuer, sign_in_with_device_grant,
 };
-use semiont_http_transport::service_account::{
+use xynoplex_http_transport::service_account::{
     Credential, KeyCredential, KeyError, SecretCredential, ServiceToken, private_key_from_pem,
 };
-use semiont_http_transport::session::{
+use xynoplex_http_transport::session::{
     HttpSessionFactory, SessionFromKept, begin_sign_in, complete_sign_in, describe_connection,
     session_from_kept, sign_in_device, sign_out,
 };
-use semiont_http_transport::transport::{HttpTransportConfig, Timing, TokenRefresher};
+use xynoplex_http_transport::transport::{HttpTransportConfig, Timing, TokenRefresher};
 use serde_json::{Value, json};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::error::Error;
@@ -3462,7 +3462,7 @@ impl World {
     }
 
     /// A client of the gateway, signed in with `token`.
-    fn client(&self, token: &str) -> semiont::client::SemiontClient {
+    fn client(&self, token: &str) -> xynoplex::client::SemiontClient {
         client(
             HttpTransportConfig {
                 base_url: self.origin.clone(),
@@ -3486,12 +3486,12 @@ async fn ends<T>(waited: impl std::future::Future<Output = T>) -> T {
         .expect("it ends")
 }
 
-fn message(error: semiont::errors::SemiontError) -> String {
+fn message(error: xynoplex::errors::SemiontError) -> String {
     match error {
-        semiont::errors::SemiontError::Bus(error) => error.message,
-        semiont::errors::SemiontError::Transport(error) => error.message,
-        semiont::errors::SemiontError::Job(error) => error.message,
-        semiont::errors::SemiontError::Session(error) => error.message,
+        xynoplex::errors::SemiontError::Bus(error) => error.message,
+        xynoplex::errors::SemiontError::Transport(error) => error.message,
+        xynoplex::errors::SemiontError::Job(error) => error.message,
+        xynoplex::errors::SemiontError::Session(error) => error.message,
     }
 }
 

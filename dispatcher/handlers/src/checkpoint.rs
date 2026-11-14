@@ -2,7 +2,7 @@
 //! units by union, and one cursor for each unit, finished or not, replaced
 //! only by one that got further.
 
-use semiont::types::{JobMetadata, UnitCursor};
+use xynoplex::types::{JobMetadata, UnitCursor};
 use std::collections::BTreeMap;
 
 /// The units recorded, then the incoming ones not already among them.

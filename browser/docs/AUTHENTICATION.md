@@ -9,11 +9,11 @@ atomically. The Browser stores one JWT pair per KB in
 `GET /api/users/me` endpoint.
 
 There is no httpOnly cookie and no global session. Session state is owned by a
-single `SemiontBrowser` singleton that lives in `@semiont/sdk` and is exposed to
-React via the `SemiontProvider` + `useSemiont()` pair in `@semiont/react-ui`.
+single `SemiontBrowser` singleton that lives in `@xynoplex/sdk` and is exposed to
+React via the `SemiontProvider` + `useSemiont()` pair in `@xynoplex/react-ui`.
 
 For the class-level story (observables, lifetimes, invariants), see
-[SESSION.md in `@semiont/react-ui`](../../../docs/builder/react-ui/SESSION.md).
+[SESSION.md in `@xynoplex/react-ui`](../../../docs/builder/react-ui/SESSION.md).
 This doc covers the **Browser-app** concerns: where providers mount,
 how route protection is expressed, how sign-in / sign-out flow, and
 how out-of-tree code signals the provider.
@@ -24,7 +24,7 @@ how out-of-tree code signals the provider.
 
 App-level container owning the KB list, active selection, session,
 open-resources tab state, identity token, and the app-scoped event bus
-(each session's client owns the other). Lives in `@semiont/sdk` so CLI / MCP /
+(each session's client owns the other). Lives in `@xynoplex/sdk` so CLI / MCP /
 workers can use it too.
 
 Key observables the UI reads:
@@ -47,7 +47,7 @@ app root — not only inside protected routes. The provider is cheap;
 zero-KB and signed-out are first-class states, not pre-app states.
 
 ```tsx
-import { SemiontProvider } from '@semiont/react-ui';
+import { SemiontProvider } from '@xynoplex/react-ui';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return <SemiontProvider>{children}</SemiontProvider>;
@@ -57,7 +57,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 Inside components:
 
 ```tsx
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 function Whatever() {
   const semiont = useSemiont();
@@ -238,8 +238,8 @@ callback.
 
 ## Related
 
-- [SESSION.md (`@semiont/react-ui`)](../../../docs/builder/react-ui/SESSION.md)
+- [SESSION.md (`@xynoplex/react-ui`)](../../../docs/builder/react-ui/SESSION.md)
   — class model, observables, invariants.
-- [EVENTS.md (`@semiont/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
+- [EVENTS.md (`@xynoplex/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
   — bus architecture, channel routing.
 - [AUTHORIZATION.md](AUTHORIZATION.md) — permission model.

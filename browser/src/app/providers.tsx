@@ -6,7 +6,7 @@ import {
   ThemeProvider,
   LineNumbersProvider,
   SemiontProvider,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
 import { NavigationHandler } from '@/components/knowledge/NavigationHandler';
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';

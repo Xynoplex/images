@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { KnowledgeBasePanel } from '../KnowledgeBasePanel';
-import { SignInError, type KnowledgeBase } from '@semiont/sdk';
+import { SignInError, type KnowledgeBase } from '@xynoplex/sdk';
 const translations: Record<string, string> = {
   'KnowledgeBasePanel.title': 'Knowledge Bases',
   'KnowledgeBasePanel.connectTitle': 'Connect to Knowledge Base',
@@ -93,8 +93,8 @@ const {
 // through this holder (reset in beforeEach, set per test).
 const discoveryHolder = vi.hoisted(() => ({
   current: { state: null, kbs: [] } as {
-    state: import('@semiont/sdk').DiscoveryState | null;
-    kbs: import('@semiont/core').DiscoveredKB[];
+    state: import('@xynoplex/sdk').DiscoveryState | null;
+    kbs: import('@xynoplex/core').DiscoveredKB[];
   },
 }));
 
@@ -104,8 +104,8 @@ vi.mock('@/i18n/routing', () => ({
   usePathname: () => pathHolder.current,
 }));
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     useSemiont: () => mockBrowser,

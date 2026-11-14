@@ -8,26 +8,26 @@
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use futures_core::Stream;
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::SemiontClient;
-use semiont::errors::{
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::SemiontClient;
+use xynoplex::errors::{
     SemiontError, SessionError, SessionErrorCode, SignInError, SignInErrorCode, TransportError,
 };
-use semiont::session::{
+use xynoplex::session::{
     OpenedSession, SemiontSession, SemiontSessionConfig, SessionEndReason, SessionSignals,
     SignInKept, StoredSession, kept_in, store_session, stored_session,
 };
-use semiont::state_unit::StateUnit;
-use semiont::testing::axioms::{
+use xynoplex::state_unit::StateUnit;
+use xynoplex::testing::axioms::{
     AxiomSubject, Fresh, StreamSurface, Surface, assert_state_unit_axioms,
 };
-use semiont::testing::{
+use xynoplex::testing::{
     FaultyTransport, SharedStorage, TestClientOptions, TestSessionOptions, create_test_client,
     create_test_session,
 };
-use semiont::timing::{MAX_RECONNECT, RECONNECT};
-use semiont::transport::{BoxFuture, Events};
-use semiont::types::{HttpEndpointProtocol, KbTarget, UserResponse};
+use xynoplex::timing::{MAX_RECONNECT, RECONNECT};
+use xynoplex::transport::{BoxFuture, Events};
+use xynoplex::types::{HttpEndpointProtocol, KbTarget, UserResponse};
 use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::pin::Pin;

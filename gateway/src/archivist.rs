@@ -14,10 +14,10 @@ use bytes::Bytes;
 use futures::{Stream, StreamExt, TryStreamExt};
 use opentelemetry::KeyValue;
 use opentelemetry::trace::SpanKind;
-use semiont::identity::encode_uri_component;
-use semiont::types::ResourceId;
+use xynoplex::identity::encode_uri_component;
+use xynoplex::types::ResourceId;
 use semiont_core::spec::{Spec, spec};
-use semiont_http_transport::service_account::{Credential, ServiceToken};
+use xynoplex_http_transport::service_account::{Credential, ServiceToken};
 use semiont_observability::logging;
 use serde_json::{Value, json};
 use std::task::Poll;
@@ -201,7 +201,7 @@ fn path(template: &str, value: &str) -> String {
 }
 
 async fn in_client_span<T>(operation: &str, work: impl std::future::Future<Output = T>) -> T {
-    semiont_telemetry::in_span(
+    xynoplex_telemetry::in_span(
         format!("archivist.{operation}"),
         SpanKind::Client,
         vec![KeyValue::new("peer.service", "archivist")],

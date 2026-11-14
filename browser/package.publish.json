@@ -1,5 +1,5 @@
 {
-  "name": "@semiont/browser",
+  "name": "@xynoplex/browser",
   "version": "0.7.3",
   "description": "Semiont Browser - pre-built Vite SPA with static file server",
   "main": "server.js",

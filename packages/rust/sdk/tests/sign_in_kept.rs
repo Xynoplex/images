@@ -2,7 +2,7 @@
 //! lives: held until it is forgotten, renewed against what it holds, and
 //! naming the person the gateway said its token is, recorded as one step.
 
-use semiont::session::{MemorySignIn, SignInKept, StoredSession, person_key};
+use xynoplex::session::{MemorySignIn, SignInKept, StoredSession, person_key};
 
 fn signed_in(access: &str, refresh: &str) -> StoredSession {
     StoredSession {

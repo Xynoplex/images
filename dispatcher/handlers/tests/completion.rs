@@ -6,7 +6,7 @@
 
 mod support;
 
-use semiont::types::Job;
+use xynoplex::types::Job;
 use serde_json::{Value, json};
 
 /// A job of `job_type`, running.

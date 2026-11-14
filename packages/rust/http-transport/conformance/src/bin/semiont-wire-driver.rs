@@ -4,27 +4,27 @@
 //! protocol/conformance/sdk/README.md is the protocol.
 //!
 //! It reaches the transport only as an application does, through what
-//! `semiont` and `semiont-http-transport` export, so what the suite observes
+//! `semiont` and `xynoplex-http-transport` export, so what the suite observes
 //! is what a caller of the SDK gets.
 
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
 use bytes::Bytes;
 use futures::StreamExt;
-use semiont::bus::{Bus, operation};
-use semiont::errors::SemiontError;
-use semiont::retry::RetryPolicy;
-use semiont::transport::{
+use xynoplex::bus::{Bus, operation};
+use xynoplex::errors::SemiontError;
+use xynoplex::retry::RetryPolicy;
+use xynoplex::transport::{
     BoxFuture, ConnectionState, ContentTransport, Envelope, GatewayOperations, PutBinaryRequest,
     ResourceHold, Transport,
 };
-use semiont::types::ResourceId;
+use xynoplex::types::ResourceId;
 use semiont_conformance_drivers::{
     Arguments, Driver, Ended, Running, count, failure, identifier, locked, object,
     optional_identifier, optional_text, say, serve, text, texts,
 };
-use semiont_http_transport::content::HttpContentTransport;
-use semiont_http_transport::transport::{
+use xynoplex_http_transport::content::HttpContentTransport;
+use xynoplex_http_transport::transport::{
     HttpTransport, HttpTransportConfig, Timing, TokenRefresher,
 };
 use serde_json::{Value, json};

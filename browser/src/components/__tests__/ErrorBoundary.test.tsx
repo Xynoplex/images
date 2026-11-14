@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ErrorBoundary, AsyncErrorBoundary } from '@semiont/react-ui';
+import { ErrorBoundary, AsyncErrorBoundary } from '@xynoplex/react-ui';
 
 // Mock component that throws an error
 const ThrowError = ({ shouldThrow = false, message = 'Test error' }: { shouldThrow?: boolean; message?: string }) => {

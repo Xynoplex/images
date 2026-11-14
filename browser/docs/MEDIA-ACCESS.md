@@ -52,7 +52,7 @@ header.
 **This preserves authentication — it doesn't bypass it.** Getting a media token
 requires a valid session. The full claim format, validation, and OpenAPI spec
 live in the canonical
-[`@semiont/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md);
+[`@xynoplex/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md);
 this doc covers how the SPA uses it.
 
 ### Isn't a token in the URL a security hole?
@@ -70,11 +70,11 @@ section of [MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/ME
 ## React usage
 
 Components don't manage tokens by hand. The `useMediaToken` hook from
-`@semiont/react-ui` fetches a token on mount and refreshes it every **4 minutes**
+`@xynoplex/react-ui` fetches a token on mount and refreshes it every **4 minutes**
 — ahead of the 5-minute expiry, so an in-flight load never races the rollover:
 
 ```typescript
-import { useMediaToken, mediaUrl } from '@semiont/react-ui';
+import { useMediaToken, mediaUrl } from '@xynoplex/react-ui';
 
 // Takes the SemiontClient explicitly (bring-your-own-session embedding);
 // pass null to skip fetching (e.g. for non-binary resources).
@@ -128,7 +128,7 @@ The split is **display vs programmatic**, not text vs binary:
 
 ## Related documentation
 
-- [`@semiont/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) — the canonical media-token spec (claims, threat model, OpenAPI)
+- [`@xynoplex/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) — the canonical media-token spec (claims, threat model, OpenAPI)
 - [Browser Authentication Architecture](AUTHENTICATION.md) — the SPA's bearer-only session model
 - [Gateway Authentication Guide](../../gateway/docs/AUTHENTICATION.md) — JWT validation, including the `?token=` media path
 - [System Authentication Architecture](../../../docs/operator/administration/AUTHENTICATION.md) — end-to-end auth flows

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from '@/i18n/routing';
-import { MainContent, useSemiont, useToast } from '@semiont/react-ui';
-import { IdentityUnverifiableError, SignInError } from '@semiont/sdk';
+import { MainContent, useSemiont, useToast } from '@xynoplex/react-ui';
+import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
 
 /**
  * Where the issuer sends the user back. Completes the pending sign-in once

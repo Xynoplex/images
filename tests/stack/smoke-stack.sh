@@ -44,8 +44,8 @@
 # made against a knowledge base no earlier run touched: some of them hold only
 # on a fresh one. The image reaches the stack at localhost
 # through `--network host` on Docker and Podman, or the existing localhost
-# bridge on Apple container. The suite's packages, @semiont/core and
-# @semiont/sdk, link to this checkout's packages/, which must be built:
+# bridge on Apple container. The suite's packages, @xynoplex/core and
+# @xynoplex/sdk, link to this checkout's packages/, which must be built:
 # scripts/build-session.sh builds them, as `npm run build:packages` does.
 #
 # DOWN stops, cleans, forgets and removes each knowledge base a failed E2E

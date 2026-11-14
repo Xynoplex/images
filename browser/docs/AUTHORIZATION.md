@@ -17,7 +17,7 @@ the error.
 The active session's `user$` emits exactly what `GET /api/users/me` returns:
 
 ```typescript
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 const session = useObservable(useSemiont().activeSession$);
 const user = useObservable(session?.user$);
@@ -55,9 +55,9 @@ flowchart TD
     E --> G[PermissionDeniedModal shows]
 ```
 
-1. **The transport** (`@semiont/http-transport`) throws an `APIError` with status 403 and code
+1. **The transport** (`@xynoplex/http-transport`) throws an `APIError` with status 403 and code
    `forbidden`, and republishes it on the session's `errors$`.
-2. **`SemiontBrowser`** (`@semiont/sdk`) observes the active session's errors and raises the
+2. **`SemiontBrowser`** (`@xynoplex/sdk`) observes the active session's errors and raises the
    signal:
 
    ```typescript
@@ -73,7 +73,7 @@ flowchart TD
    });
    ```
 
-3. **`PermissionDeniedModal`** (`@semiont/react-ui`), mounted in `AuthShell` beside
+3. **`PermissionDeniedModal`** (`@xynoplex/react-ui`), mounted in `AuthShell` beside
    `SessionEndedModal`, reads `permissionDenied$` from `activeSignals$` and shows. Its own copy
    is in the person's language; beneath it is the refusal's message, unaltered and marked as the
    knowledge base's. It offers going back, going home, and signing in as someone else, and
@@ -104,7 +104,7 @@ Raise the signal on a test browser and render the modal against it. This is the 
 replaces `@headlessui/react`'s `Dialog` and `Transition` with plain elements:
 
 ```tsx
-import { renderWithProviders, createTestBrowserWithSignals, screen } from '@semiont/react-ui/test-utils';
+import { renderWithProviders, createTestBrowserWithSignals, screen } from '@xynoplex/react-ui/test-utils';
 
 const SAID = 'Archiving needs the curator role.';
 

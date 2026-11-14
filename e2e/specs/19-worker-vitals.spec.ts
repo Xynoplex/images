@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { MARK_MOTIVATIONS, kbDid, type components, type JobFilter } from '@semiont/core';
-import { validators, formatErrors } from '@semiont/core/openapi';
+import { MARK_MOTIVATIONS, kbDid, type components, type JobFilter } from '@xynoplex/core';
+import { validators, formatErrors } from '@xynoplex/core/openapi';
 import { GATEWAY_URL } from '../playwright.config';
 import { signInSession } from '../fixtures/sdk-session';
 

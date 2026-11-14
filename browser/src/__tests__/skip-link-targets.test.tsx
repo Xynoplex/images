@@ -14,7 +14,7 @@ import { resolve } from 'node:path';
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { createRoutesFromElements, MemoryRouter, type RouteObject } from 'react-router';
-import type { SemiontBrowser } from '@semiont/sdk';
+import type { SemiontBrowser } from '@xynoplex/sdk';
 
 const harness = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -53,7 +53,7 @@ const harness = vi.hoisted(() => {
 
 vi.mock('@/app/providers', async () => {
   const { SemiontProvider, ThemeProvider, ToastProvider, TranslationProvider } =
-    await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+    await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   const { useMergedTranslationManager } = await import('@/hooks/useMergedTranslationManager');
   return {
     Providers: ({ children }: { children: ReactNode }) => (
@@ -80,8 +80,8 @@ vi.mock('@/i18n/routing', () => ({
   useLocale: () => 'en',
 }));
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     Toolbar: () => null,

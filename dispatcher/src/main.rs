@@ -13,15 +13,15 @@ use axum::response::IntoResponse;
 use axum::routing::any;
 use futures::StreamExt;
 use opentelemetry::KeyValue;
-use semiont::bus::{Bus, payload_of, reply_channels_for};
-use semiont::channels::{
+use xynoplex::bus::{Bus, payload_of, reply_channels_for};
+use xynoplex::channels::{
     BrowseEntityTypesRequested, BrowseTagSchemasRequested, Channel, JobQueued, Request,
 };
-use semiont::errors::relayed_failure_code;
-use semiont::identity::kb_did;
-use semiont::timing::BUS_REQUEST_TIMEOUT;
-use semiont::transport::{Envelope, Transport};
-use semiont::types::{BrowseEntityTypesRequest, BrowseTagSchemasRequest, BusFrame, TagSchema};
+use xynoplex::errors::relayed_failure_code;
+use xynoplex::identity::kb_did;
+use xynoplex::timing::BUS_REQUEST_TIMEOUT;
+use xynoplex::transport::{Envelope, Transport};
+use xynoplex::types::{BrowseEntityTypesRequest, BrowseTagSchemasRequest, BusFrame, TagSchema};
 use semiont_core::config::{self, Document};
 use semiont_core::types::{
     DispatcherConfig, DispatcherHealth, DispatcherHealthQueue, DispatcherHealthStatus,
@@ -30,9 +30,9 @@ use semiont_dispatcher_handlers::admission::{Refusal, Vocabulary};
 use semiont_dispatcher_handlers::handlers::{COMMANDS, Handlers, Reply};
 use semiont_dispatcher_handlers::queue::{JobQueue, Stats};
 use semiont_dispatcher_jetstream::{JetStreamQueue, Settings};
-use semiont_http_transport::agent::AgentToken;
-use semiont_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
-use semiont_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynoplex_http_transport::agent::AgentToken;
+use xynoplex_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
+use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
 use semiont_observability::{logging, telemetry};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
@@ -213,7 +213,7 @@ async fn serve(
             // In the trace the frame arrived in, so the replies are too.
             tokio::spawn(async move {
                 let trace = frame.trace.clone();
-                semiont_telemetry::continuing(trace.as_ref(), async {
+                xynoplex_telemetry::continuing(trace.as_ref(), async {
                     let command = BusFrame {
                         channel: frame.channel,
                         correlation_id: frame.correlation_id,

@@ -8,7 +8,7 @@
 //! neither an endpoint nor the console exporter, or with the SDK disabled,
 //! nothing is exported and no trace context travels. What it builds it
 //! registers as the process's (`opentelemetry::global`), which is what
-//! `semiont-telemetry`'s spans and the transport's count report to. A
+//! `xynoplex-telemetry`'s spans and the transport's count report to. A
 //! service's own instruments are made on `meter()`.
 
 use opentelemetry::KeyValue;
@@ -40,7 +40,7 @@ fn telemetry() -> Option<&'static Telemetry> {
 
 /// Start exporting, as the environment says, as `service_name` (unless
 /// `OTEL_SERVICE_NAME` says otherwise) at `version`, for `kb`: the DID of the
-/// knowledge base the process serves (`semiont::identity::kb_did` of its
+/// knowledge base the process serves (`xynoplex::identity::kb_did` of its
 /// domain), or none, for a process that serves none. Call
 /// once, before the runtime starts: the OTLP exporter's HTTP client runs
 /// threads of its own.
@@ -49,7 +49,7 @@ pub fn initialize(service_name: &str, version: &str, kb: Option<&str>) -> Result
     if TELEMETRY.set(configured).is_err() {
         panic!("telemetry is initialized once");
     }
-    semiont::bus_log::set_trace_id_provider(semiont_telemetry::active_trace_id);
+    xynoplex::bus_log::set_trace_id_provider(xynoplex_telemetry::active_trace_id);
     install_fatal_hook();
     if let Some(t) = telemetry() {
         // The process's telemetry is what any library in it reports to.
@@ -184,7 +184,7 @@ pub fn shutdown(within: Duration) {
 pub fn record_bus_emit(channel: &str, scope: Option<&str>) {
     let Some(t) = telemetry() else { return };
     t.emits
-        .add(1, &semiont_telemetry::on_the_bus(channel, scope));
+        .add(1, &xynoplex_telemetry::on_the_bus(channel, scope));
 }
 
 /// The meter a service makes its own instruments on, when it exports.
@@ -400,7 +400,7 @@ mod tests {
     use super::resource;
     use opentelemetry::Key;
     use opentelemetry_sdk::Resource;
-    use semiont::identity::kb_did;
+    use xynoplex::identity::kb_did;
     use serde_json::Value;
     use std::collections::BTreeSet;
 

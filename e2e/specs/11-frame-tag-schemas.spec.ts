@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures/auth';
-import { resourceId as ridBrand, type TagSchema } from '@semiont/sdk';
+import { resourceId as ridBrand, type TagSchema } from '@xynoplex/sdk';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**

@@ -17,19 +17,19 @@ mod naming;
 mod surface;
 
 use archivist::Archivist;
-use semiont::bus::{Bus, reply_channels_for};
-use semiont::channels::{Channel, FrameEntityTypeAdded};
-use semiont::identity::{kb_did, kb_resource};
-use semiont::transport::{GatewayOperations, Transport};
+use xynoplex::bus::{Bus, reply_channels_for};
+use xynoplex::channels::{Channel, FrameEntityTypeAdded};
+use xynoplex::identity::{kb_did, kb_resource};
+use xynoplex::transport::{GatewayOperations, Transport};
 use semiont_archivist_record::record::Record;
 use semiont_archivist_record::{Object, kb};
 use semiont_archivist_staging::{Bounds, staging_for};
 use semiont_core::config::{self, Document};
 use semiont_core::types::ArchivistConfig;
 use semiont_http_service::{IssuerVerifier, KeyTimings};
-use semiont_http_transport::agent::AgentToken;
-use semiont_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
-use semiont_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynoplex_http_transport::agent::AgentToken;
+use xynoplex_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
+use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
 use semiont_observability::{logging, telemetry};
 use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
@@ -361,7 +361,7 @@ mod tests {
     use axum::Router;
     use axum::http::header;
     use axum::routing::get;
-    use semiont::types::{
+    use xynoplex::types::{
         ProtectedResourceMetadata, ProtectedResourceMetadataBearerMethodsSupportedItem,
     };
     use std::path::Path;

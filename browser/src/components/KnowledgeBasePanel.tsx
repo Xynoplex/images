@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { CheckIcon, PlusIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { defaultProtocol, isValidHostname, type KbRead, type KbReadVerdict, type KnowledgeBase, type KbSessionStatus } from '@semiont/sdk';
+import { defaultProtocol, isValidHostname, type KbRead, type KbReadVerdict, type KnowledgeBase, type KbSessionStatus } from '@xynoplex/sdk';
 import { usePathname } from '@/i18n/routing';
-import type { DiscoveredKB } from '@semiont/core';
+import type { DiscoveredKB } from '@xynoplex/core';
 import {
   useSemiont,
   useObservable,
   useKBDiscovery,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 
 type T = TFunction<'translation', 'KnowledgeBasePanel'>;
 

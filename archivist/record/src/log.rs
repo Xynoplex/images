@@ -370,7 +370,7 @@ impl Log {
 #[cfg(test)]
 mod tests {
     use super::{Log, file_name};
-    use semiont::channels::{Channel, MarkArchived, MarkUnarchived};
+    use xynoplex::channels::{Channel, MarkArchived, MarkUnarchived};
     use serde_json::{Map, json};
 
     #[test]

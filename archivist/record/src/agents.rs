@@ -2,7 +2,7 @@
 //! the attribution of something asked for by one and sent by another.
 
 use crate::Object;
-use semiont::identity::{Kind, kind_of};
+use xynoplex::identity::{Kind, kind_of};
 use serde_json::{Value, json};
 
 /// Whether `value` reads as a URI: a scheme, a colon, and something after it.

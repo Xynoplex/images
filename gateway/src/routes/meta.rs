@@ -5,7 +5,7 @@ use crate::http::{Authenticated, json_response};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::Response;
-use semiont::types::{
+use xynoplex::types::{
     HealthResponse, ProtectedResourceMetadata, ProtectedResourceMetadataBearerMethodsSupportedItem,
     StatusResponse, StatusResponseFeatures, UserResponse,
 };

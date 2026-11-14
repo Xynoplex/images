@@ -8,10 +8,10 @@ import {
   useSemiont,
   useSessionStateUnit,
   ResourceDiscoveryPage,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
-import { useShellStateUnit } from '@semiont/react-ui';
-import { createDiscoverStateUnit } from '@semiont/react-ui';
+import { useShellStateUnit } from '@xynoplex/react-ui';
+import { createDiscoverStateUnit } from '@xynoplex/react-ui';
 export default function DiscoverPage() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Discover' });
   const router = useRouter();

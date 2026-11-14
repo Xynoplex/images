@@ -1,7 +1,7 @@
 # semiont
 
 [![crates.io](https://img.shields.io/crates/v/semiont.svg)](https://crates.io/crates/semiont)
-[![docs.rs](https://img.shields.io/docsrs/semiont)](https://docs.rs/semiont)
+[![docs.rs](https://img.shields.io/docsrs/semiont)](https://docs.rs/xynoplex)
 [![CI](https://github.com/Xynoplex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Xynoplex/actions/workflows/ci.yml?query=branch%3Amain)
 [![License](https://img.shields.io/crates/l/semiont.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-sdk)](https://app.codecov.io/gh/Xynoplex/images/components)
@@ -28,14 +28,14 @@ are this crate's too.
 
 ```bash
 cargo add semiont
-cargo add semiont-http-transport --features sign-in
+cargo add xynoplex-http-transport --features sign-in
 ```
 
 Two crates, because the client does no networking of its own:
 
 - **`semiont`** is the client, the protocol's types, and what an application
   holds: sessions, state, storage. It links no HTTP library.
-- **[`semiont-http-transport`](../http-transport/README.md)** carries
+- **[`xynoplex-http-transport`](../http-transport/README.md)** carries
   it to a knowledge base's gateway and signs people and services in. Its
   README covers TLS and each way to sign in.
 
@@ -49,7 +49,7 @@ machine.
 | `charsets` | A resource's text in every encoding of the Encoding Standard that every reader decodes, read as a browser reads it: by [the rule every Semiont reader keeps](../../../protocol/contract/W3C-SELECTORS.md#the-text-of-a-resource), which refuses the standard's seven legacy multi-byte encodings by name. Without the feature, `browse.resource_content` reads UTF-8 alone, by the same rule, and refuses by name any other charset and bytes that begin with UTF-16's mark. With it or without, a resource whose text is not its bytes is refused by its media type: a PDF, whose text is `browse.resource_anchored_text`'s, and an image, which has none. `browse.resource_representation` gives the bytes either way. |
 | `testing` | Doubles and harnesses for the tests of code built on the client. See [Testing your code](#testing-your-code). |
 
-Every type and method is documented on [docs.rs](https://docs.rs/semiont).
+Every type and method is documented on [docs.rs](https://docs.rs/xynoplex).
 
 ## Connect
 
@@ -349,7 +349,7 @@ builders to the same answers.
   claim's: a `TraceCarrier` (`traceparent`, and `tracestate` when there is
   one), or `None` for a reply that arrived in none. A worker that exports
   telemetry runs the job in it with one call,
-  `semiont_telemetry::continuing(job.trace(), work).await`, and the spans
+  `xynoplex_telemetry::continuing(job.trace(), work).await`, and the spans
   `work` opens, and what the job sends from inside it, continue that trace.
   The carrier is a value: it can be handed to whatever else the worker
   starts for the job.
@@ -407,7 +407,7 @@ every Semiont SDK shares for it.
 
 A resource, an annotation, a job and whoever did something are each named by
 an id of its own type: `ResourceId`, `AnnotationId`, `JobId`, `UserId`
-(`semiont::types`). The rule each is held to is the spec's
+(`xynoplex::types`). The rule each is held to is the spec's
 ([`protocol/specs/src/identifiers/kinds.json`](../../../protocol/specs/src/identifiers/kinds.json)):
 the first three are a name of 1 to 128 letters, digits, `_` and `-`, never a
 URI or a path, and the last is a DID.
@@ -457,17 +457,17 @@ another: `mark.delete(&annotation_id, &resource_id)` does not compile.
 - **`SessionFactory`** builds a knowledge base's session. A browser is given
   one, and so knows nothing of how a knowledge base is reached. A factory
   reads nothing of what its sessions say, so a factory of your own is read
-  the same way. `semiont-http-transport` has the one over a gateway.
+  the same way. `xynoplex-http-transport` has the one over a gateway.
 
 What must outlive a client is kept in a `SessionStorage`
-(`semiont::storage`). A write it could not make is its own error, a
+(`xynoplex::storage`). A write it could not make is its own error, a
 `Box<dyn std::error::Error + Send + Sync>`; a cache's save that fails is a
 warning through the `log` facade, and the cache goes on as it was.
 A session's sign-in is kept wherever a `SignInKept` keeps it: a session is
 built from it, renews through it and forgets it. A registry keeps its
 sign-ins in its storage (`kept_in`), and a script that keeps nothing past
 its process keeps one in memory (`MemorySignIn`).
-`semiont::sign_in_store` is the sign-ins
+`xynoplex::sign_in_store` is the sign-ins
 `semiont login` keeps ([sign-in store](../../../protocol/specs/src/sign-in-store/README.md)),
 each an entry kept (`SignInStore::entry`), so one sign-in serves the
 launcher and a script built on this SDK.
@@ -573,11 +573,11 @@ and the same case tables. What differs is how each language says "later".
 | a method returning `void` | a plain `fn` | A signal. One that fails is said on the transport's failure stream. |
 | `client.yield`, `client.match` | `client.yield_`, `client.match_` | `yield` and `match` are Rust's own words. |
 | RxJS operators | `futures::StreamExt`, `tokio-stream` | The crate brings no operator library. |
-| `@semiont/sdk/testing` | `semiont::testing`, behind the `testing` feature | |
+| `@xynoplex/sdk/testing` | `xynoplex::testing`, behind the `testing` feature | |
 
 ## What is in the crate
 
-Each module is documented on [docs.rs](https://docs.rs/semiont).
+Each module is documented on [docs.rs](https://docs.rs/xynoplex).
 
 | Module | What it holds |
 |---|---|
@@ -610,9 +610,9 @@ environment and says what it found.
 
 | Crate | |
 |---|---|
-| [`semiont-http-transport`](../http-transport/README.md) | The transport over a gateway, and signing in. A program that reaches a knowledge base uses it. |
-| [`semiont-telemetry`](../telemetry/README.md) | The spans and counts the transport reports, to whatever OpenTelemetry an application installs. Its README says how to turn tracing on. |
-| [`semiont-codegen`](../codegen/README.md) | The build-time generator of `semiont::types`. Cargo builds it for you. |
+| [`xynoplex-http-transport`](../http-transport/README.md) | The transport over a gateway, and signing in. A program that reaches a knowledge base uses it. |
+| [`xynoplex-telemetry`](../telemetry/README.md) | The spans and counts the transport reports, to whatever OpenTelemetry an application installs. Its README says how to turn tracing on. |
+| [`xynoplex-codegen`](../codegen/README.md) | The build-time generator of `xynoplex::types`. Cargo builds it for you. |
 
 ## License
 

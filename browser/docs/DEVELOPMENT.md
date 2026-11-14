@@ -65,7 +65,7 @@ knowledge base's `.semiont/stack/` documents for the services. An image still na
 | `npm run test:a11y` | The accessibility tests |
 
 Translations are generated before `dev`, `build`, `start` and the test scripts run:
-`scripts/merge-translations.js` merges `messages-source/` with `@semiont/react-ui`'s strings
+`scripts/merge-translations.js` merges `messages-source/` with `@xynoplex/react-ui`'s strings
 into `messages/` and `public/messages/`. Edit `messages-source/`, never the generated
 directories ([Internationalization](INTERNATIONALIZATION.md)).
 
@@ -80,7 +80,7 @@ and a route registered for it in `src/App.tsx`.
 
 ```tsx sketch
 // src/app/[locale]/know/timeline/page.tsx
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 export default function TimelinePage() {
   const session = useObservable(useSemiont().activeSession$);
@@ -111,20 +111,20 @@ A page reads and writes through the session's client and nothing else. The app c
 `fetch` call. [API Integration](API-INTEGRATION.md) has the client's namespaces and how live
 queries refresh themselves.
 
-A component that could serve another host application belongs in `@semiont/react-ui`, not
+A component that could serve another host application belongs in `@xynoplex/react-ui`, not
 here. This app holds routes, providers and the few components that make sense nowhere else
 ([Component Library](COMPONENT-LIBRARY.md)).
 
 ## Styles
 
-`src/app/globals.css` imports `@semiont/react-ui/styles` and then Tailwind:
+`src/app/globals.css` imports `@xynoplex/react-ui/styles` and then Tailwind:
 
-- **`@semiont/react-ui`'s semantic classes** style every library component. Do not override
+- **`@xynoplex/react-ui`'s semantic classes** style every library component. Do not override
   them from the app.
 - **Tailwind utilities** are for this app's own layout: page containers, spacing, positioning.
 
 ```tsx
-import { Button } from '@semiont/react-ui';
+import { Button } from '@xynoplex/react-ui';
 
 // Good: spacing around a library component
 <Button variant="primary" className="mt-4">Submit</Button>;

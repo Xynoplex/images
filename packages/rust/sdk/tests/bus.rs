@@ -2,11 +2,11 @@
 //! sends, when, and how it settles (protocol/contract/TRANSPORT-CONTRACT.md
 //! § Requests).
 
-use semiont::bus::{Bus, Operation, operation};
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::errors::{SemiontError, TransportErrorCode};
-use semiont::testing::{FaultAction, FaultyTransport};
-use semiont::transport::{ConnectionState, Frame, STREAM_BACKLOG, Transport};
+use xynoplex::bus::{Bus, Operation, operation};
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::errors::{SemiontError, TransportErrorCode};
+use xynoplex::testing::{FaultAction, FaultyTransport};
+use xynoplex::transport::{ConnectionState, Frame, STREAM_BACKLOG, Transport};
 use serde_json::{Map, Value, json};
 use std::sync::Arc;
 use std::time::Duration;

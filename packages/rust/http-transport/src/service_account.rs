@@ -2,7 +2,7 @@
 //! client-credentials grant, proved by the account's secret or by an
 //! assertion signed with its key (`client_assertion`). The token is kept
 //! until it is due for renewal by the schedule every Semiont client keeps
-//! (`semiont::session`): half its lifetime before it expires, at most
+//! (`xynoplex::session`): half its lifetime before it expires, at most
 //! `REFRESH_BEFORE_EXP`. A service reaches another as itself with this
 //! token.
 
@@ -11,10 +11,10 @@ use crate::transport::why_unanswered;
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
 use ring::signature::RsaKeyPair;
-use semiont::identity::encode_uri_component;
-use semiont::retry::RetryFacts;
-use semiont::session::{refresh_delay, renewal_delay};
-use semiont::timing::HTTP_REQUEST_TIMEOUT;
+use xynoplex::identity::encode_uri_component;
+use xynoplex::retry::RetryFacts;
+use xynoplex::session::{refresh_delay, renewal_delay};
+use xynoplex::timing::HTTP_REQUEST_TIMEOUT;
 use serde_json::Value;
 use std::fmt;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};

@@ -1,9 +1,9 @@
 # API Integration Guide
 
 How the Semiont Browser integrates with the gateway through the
-framework-agnostic `@semiont/react-ui` library, the `@semiont/sdk` client
+framework-agnostic `@xynoplex/react-ui` library, the `@xynoplex/sdk` client
 (`SemiontClient`, sessions, the namespace verb API), and the
-`@semiont/http-transport` wire adapter — including the provider model, bus
+`@xynoplex/http-transport` wire adapter — including the provider model, bus
 gateway transport, and W3C annotation model.
 
 ## Overview
@@ -65,8 +65,8 @@ All API interactions feature:
 
 ## Provider Model
 
-`@semiont/react-ui` stays framework-neutral by keeping all session and client
-logic in `@semiont/sdk` — pure RxJS classes with no React inside — and exposing
+`@xynoplex/react-ui` stays framework-neutral by keeping all session and client
+logic in `@xynoplex/sdk` — pure RxJS classes with no React inside — and exposing
 exactly **one** React bridge: `SemiontProvider`.
 
 ### How it works
@@ -79,7 +79,7 @@ lives outside React, and survives every re-render and route change. There is
 through the browser's observables:
 
 ```tsx
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 function useClient() {
   // null until a session is active for the current KB
@@ -151,7 +151,7 @@ import {
   SessionEndedModal,
   PermissionDeniedModal,
   KbIdentityConflictModal,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -170,7 +170,7 @@ Components read auth state by subscribing to the browser's observables — a
 `null` `activeSession$` means the user isn't signed into the active KB:
 
 ```tsx
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 function UserBadge() {
   const browser = useSemiont();
@@ -211,7 +211,7 @@ for interoperability with other annotation systems.
 ### Annotation Structure
 
 The wire type is `Annotation`, generated from the OpenAPI spec and exported
-by `@semiont/sdk`:
+by `@xynoplex/sdk`:
 
 ```typescript
 const linked: Annotation = {
@@ -259,14 +259,14 @@ Two complementary selector types anchor annotations to text:
 
 **TextPositionSelector** — offsets into the text, counted in Unicode code points (fast, precise):
 ```typescript
-import type { TextPositionSelector } from '@semiont/core';
+import type { TextPositionSelector } from '@xynoplex/core';
 
 const position: TextPositionSelector = { type: 'TextPositionSelector', start: 100, end: 115 };
 ```
 
 **TextQuoteSelector** — text with context (resilient to edits):
 ```typescript
-import type { TextQuoteSelector } from '@semiont/core';
+import type { TextQuoteSelector } from '@xynoplex/core';
 
 const quote: TextQuoteSelector = {
   type: 'TextQuoteSelector',
@@ -321,7 +321,7 @@ Every gateway error answers with the spec's `ErrorResponse` body, whatever
 the status and route:
 
 ```typescript
-import type { components } from '@semiont/core';
+import type { components } from '@xynoplex/core';
 
 type ErrorResponse = components['schemas']['ErrorResponse'];
 // error: what went wrong, in a sentence; code?: a machine-readable class;
@@ -333,7 +333,7 @@ type ErrorResponse = components['schemas']['ErrorResponse'];
 HTTP errors from the http-transport surface as `APIError`:
 
 ```typescript
-import { APIError } from '@semiont/http-transport';
+import { APIError } from '@xynoplex/http-transport';
 
 declare const input: CreateAnnotationInput;
 
@@ -362,14 +362,14 @@ like `browse:resources-failed`), raised from the promise returned by
 ### React UI library
 
 - [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) — provider reference
-- [`@semiont/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
+- [`@xynoplex/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
 - [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) — annotation UI components
 
 ### API client
 
-- [`@semiont/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
+- [`@xynoplex/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
 - [`docs/builder/Usage.md`](../../../docs/builder/Usage.md) — setup, bus subscription, namespace reference
-- [`@semiont/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
+- [`@xynoplex/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
 
 ### Gateway
 

@@ -9,8 +9,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { getTextPositionSelector, getTextQuoteSelector } from '@semiont/core';
-import type { Selector, TextPositionSelector } from '@semiont/core';
+import { getTextPositionSelector, getTextQuoteSelector } from '@xynoplex/core';
+import type { Selector, TextPositionSelector } from '@xynoplex/core';
 
 /** The annotation's TextPositionSelector, which the fixture states. */
 function positionSelectorOf(selectors: Selector[]): TextPositionSelector {

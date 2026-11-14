@@ -6,8 +6,8 @@
 //! The two drivers are this crate's binaries: `semiont-wire-driver` holds a
 //! transport, and `semiont-live-driver` the SDK's client over one.
 
-use semiont::errors::{JobError, SemiontError, TransportError};
-use semiont::types::InvalidIdentifier;
+use xynoplex::errors::{JobError, SemiontError, TransportError};
+use xynoplex::types::InvalidIdentifier;
 use semiont_observability::telemetry;
 use serde_json::{Map, Value, json};
 use std::collections::HashMap;

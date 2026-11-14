@@ -36,27 +36,27 @@ use futures::FutureExt;
 use futures::future::LocalBoxFuture;
 use futures::stream::Stream;
 use rand_core::{Rng, TryRng};
-use semiont::bus::{Bus, operation};
-use semiont::cache::{Cache, CachePersister};
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::claims::{ClaimOptions, JOB_CLAIM_CHANNELS};
-use semiont::client::SemiontClient;
-use semiont::discovery::{DiscoveryRead, DiscoveryState, DiscoveryTransport, subscribe_discovery};
-use semiont::errors::{BusRequestErrorCode, SemiontError};
-use semiont::session::{
+use xynoplex::bus::{Bus, operation};
+use xynoplex::cache::{Cache, CachePersister};
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::claims::{ClaimOptions, JOB_CLAIM_CHANNELS};
+use xynoplex::client::SemiontClient;
+use xynoplex::discovery::{DiscoveryRead, DiscoveryState, DiscoveryTransport, subscribe_discovery};
+use xynoplex::errors::{BusRequestErrorCode, SemiontError};
+use xynoplex::session::{
     SemiontSession, SemiontSessionConfig, StoredSession, kept_in, store_session,
 };
-use semiont::storage::InMemorySessionStorage;
-use semiont::testing::{FaultyTransport, TestClientOptions, as_id, create_test_client};
-use semiont::transport::{
+use xynoplex::storage::InMemorySessionStorage;
+use xynoplex::testing::{FaultyTransport, TestClientOptions, as_id, create_test_client};
+use xynoplex::transport::{
     BoxFuture, ConnectionState, Envelope, Frame, GatewayOperations, ResourceHold, Transport,
 };
-use semiont::types::{
+use xynoplex::types::{
     DiscoveredKB, HighlightingJobParams, HttpEndpoint, HttpEndpointProtocol, JobFilter,
     JobProgress, JobStatusResponse, KbTarget, UserResponse,
 };
-use semiont_http_transport::oauth::sign_in_with_device_grant;
-use semiont_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynoplex_http_transport::oauth::sign_in_with_device_grant;
+use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
 use serde_json::{Map, Value, json};
 use std::any::Any;
 use std::cell::Cell;
@@ -703,7 +703,7 @@ async fn refused_request(given: &Map<String, Value>) -> (Arc<HttpTransport>, Net
             .request_of(
                 events,
                 payload.as_object().cloned().expect("an object"),
-                semiont::timing::BUS_REQUEST_TIMEOUT,
+                xynoplex::timing::BUS_REQUEST_TIMEOUT,
             )
             .await;
         *telling.lock().expect("the outcome") = Some(asked);
@@ -1026,7 +1026,7 @@ impl DiscoveryTransport for LauncherDocument {
 fn discovery(_: Map<String, Value>) -> LocalBoxFuture<'static, Subject> {
     async move {
         let document = Arc::new(LauncherDocument::default());
-        let mut diffs = subscribe_discovery(document.clone(), semiont::timing::DISCOVERY_INTERVAL);
+        let mut diffs = subscribe_discovery(document.clone(), xynoplex::timing::DISCOVERY_INTERVAL);
         tokio::spawn(async move { while diffs.next().await.is_some() {} });
         Subject {
             counted: Box::new(move || document.reads.load(Ordering::SeqCst)),
@@ -1118,7 +1118,7 @@ fn save_debounce(_: Map<String, Value>) -> LocalBoxFuture<'static, Subject> {
                 Err(format!("a cache that is only written fetched {key}").into())
             },
             saves.clone(),
-            semiont::timing::SAVE_DEBOUNCE,
+            xynoplex::timing::SAVE_DEBOUNCE,
         );
         let changes = Cell::new(0);
         Subject {

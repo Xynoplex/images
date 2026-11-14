@@ -19,9 +19,9 @@
 use async_nats::jetstream::{self, AckKind, consumer::pull, kv, stream};
 use bytes::Bytes;
 use futures::StreamExt;
-use semiont::claims::will_retry_after;
-use semiont::job_filter::job_matches_filter;
-use semiont::types::{
+use xynoplex::claims::will_retry_after;
+use xynoplex::job_filter::job_matches_filter;
+use xynoplex::types::{
     FailureClass, Job, JobCancelled, JobCancelledStatus, JobComplete, JobCompleteStatus, JobFailed,
     JobFailedStatus, JobFilter, JobId, JobMetadata, JobParams, JobPending, JobPendingStatus,
     JobQueuedEvent, JobRunning, JobRunningStatus, JobStoredProgress, JobStoredResult, JobType,

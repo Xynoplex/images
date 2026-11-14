@@ -1,9 +1,9 @@
-# semiont-http-transport
+# xynoplex-http-transport
 
-[![crates.io](https://img.shields.io/crates/v/semiont-http-transport.svg)](https://crates.io/crates/semiont-http-transport)
-[![docs.rs](https://img.shields.io/docsrs/semiont-http-transport)](https://docs.rs/semiont-http-transport)
+[![crates.io](https://img.shields.io/crates/v/xynoplex-http-transport.svg)](https://crates.io/crates/xynoplex-http-transport)
+[![docs.rs](https://img.shields.io/docsrs/xynoplex-http-transport)](https://docs.rs/xynoplex-http-transport)
 [![CI](https://github.com/Xynoplex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Xynoplex/actions/workflows/ci.yml?query=branch%3Amain)
-[![License](https://img.shields.io/crates/l/semiont-http-transport.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
+[![License](https://img.shields.io/crates/l/xynoplex-http-transport.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-http-transport)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The HTTP transport of the [Semiont Rust SDK](../sdk/README.md). It
@@ -21,7 +21,7 @@ here for how to connect it.
 
 ```bash
 cargo add semiont
-cargo add semiont-http-transport --features sign-in
+cargo add xynoplex-http-transport --features sign-in
 ```
 
 | Feature | What it adds |
@@ -30,7 +30,7 @@ cargo add semiont-http-transport --features sign-in
 
 It is used inside a [Tokio](https://tokio.rs) runtime. Every type and
 function is documented on
-[docs.rs](https://docs.rs/semiont-http-transport).
+[docs.rs](https://docs.rs/xynoplex-http-transport).
 
 ### TLS
 
@@ -96,7 +96,7 @@ The [launcher](../../../apps/launcher/README.md)'s `semiont login` signs a
 person in and keeps the sign-in on disk
 ([sign-in store](../../../protocol/specs/src/sign-in-store/README.md)). A script reuses
 it. `state_home` is the directory that holds it:
-`semiont::sign_in_store::state_dir` of what the script read of its own
+`xynoplex::sign_in_store::state_dir` of what the script read of its own
 environment. The crates read none themselves. The session renews the
 sign-in, and keeps the renewal in the file, as `semiont login` does.
 
@@ -415,7 +415,7 @@ to provide is in
 ## What it implements
 
 The SDK states three contracts a client needs of the wire
-(`semiont::transport`), and this crate implements each over a gateway
+(`xynoplex::transport`), and this crate implements each over a gateway
 ([HTTP transport](../../../protocol/contract/TRANSPORT-HTTP.md),
 [transport contract](../../../protocol/contract/TRANSPORT-CONTRACT.md)):
 
@@ -466,7 +466,7 @@ its `auth` and `system` namespaces are there.
 
 Each emit and each content request runs in a span, and each frame received
 is delivered with the trace it was sent under. The spans are made by
-[`semiont-telemetry`](../telemetry/README.md) and reported to whatever
+[`xynoplex-telemetry`](../telemetry/README.md) and reported to whatever
 OpenTelemetry the application installed. Its README says how to turn that
 on. With none installed, nothing is recorded and no `traceparent` is sent.
 
@@ -495,8 +495,8 @@ credential goes by (`token`, `password`, `apiKey` and the rest of the list in
 | Crate | |
 |---|---|
 | [`semiont`](../sdk/README.md) | The client this crate carries, and the contracts it implements. |
-| [`semiont-telemetry`](../telemetry/README.md) | The spans and counts this crate reports, and how an application turns tracing on. |
-| [`semiont-codegen`](../codegen/README.md) | The build-time generator of the SDK's types. Cargo builds it for you. |
+| [`xynoplex-telemetry`](../telemetry/README.md) | The spans and counts this crate reports, and how an application turns tracing on. |
+| [`xynoplex-codegen`](../codegen/README.md) | The build-time generator of the SDK's types. Cargo builds it for you. |
 
 ## Contributing
 

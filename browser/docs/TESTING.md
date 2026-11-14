@@ -1,6 +1,6 @@
 # Browser Testing Guide
 
-Comprehensive guide to testing the Semiont Browser and how it integrates with the @semiont/react-ui component library testing.
+Comprehensive guide to testing the Semiont Browser and how it integrates with the @xynoplex/react-ui component library testing.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ Comprehensive guide to testing the Semiont Browser and how it integrates with th
 
 Testing in the Semiont Browser is split between two packages following the component library factorization:
 
-- **@semiont/react-ui**: Tests framework-agnostic components and business logic
+- **@xynoplex/react-ui**: Tests framework-agnostic components and business logic
 - **browser**: Tests app-specific integrations and route wrappers
 
 **Key Principles**:
@@ -56,7 +56,7 @@ Testing in the Semiont Browser is split between two packages following the compo
 
 ### What Gets Tested Where
 
-**In @semiont/react-ui** (framework-agnostic):
+**In @xynoplex/react-ui** (framework-agnostic):
 - Pure components with business logic
 - Custom hooks (useObservable, useResourceLoader, useResourceContent, etc.)
 - Utility functions
@@ -163,7 +163,7 @@ tests (`src/lib/__tests__/validation.test.ts`).
 
 Component tests replace `react-i18next` with a lookup table and `useSemiont()` with a
 scripted browser, through `vi.mock`. Integration tests construct a real `SemiontBrowser`
-over `WebBrowserStorage` and stub `fetch`; nothing inside `@semiont/sdk` is mocked
+over `WebBrowserStorage` and stub `fetch`; nothing inside `@xynoplex/sdk` is mocked
 (`src/contexts/__tests__/AuthShell.integration.test.tsx`).
 
 ## Writing Tests
@@ -193,8 +193,8 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 // The panel reads the SemiontBrowser through useSemiont(); the test scripts one.
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   const { BehaviorSubject } = await vi.importActual<typeof import('rxjs')>('rxjs');
   const production = {
     id: 'kb-1',
@@ -241,8 +241,8 @@ Vitest provides a Jest-compatible API with better ESM support:
 import { screen } from '@testing-library/react';
 
 // Mocking modules: keep the real exports, replace one
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return { ...actual, useKBDiscovery: () => ({ state: null, kbs: [] }) };
 });
 
@@ -265,8 +265,8 @@ import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 import { BehaviorSubject } from 'rxjs';
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   const user$ = new BehaviorSubject({ did: 'did:web:example.com:users:3f2b9c14-7d81-4e55-9a02-6b1d8e40c7aa', name: 'Alice' });
   const activeSession$ = new BehaviorSubject({ user$, client: {}, kb: { id: 'kb-1' } });
   return {
@@ -299,7 +299,7 @@ export function ResourceTitle({ id }: { id: ResourceId }): JSX.Element {
   const state = useObservable(semiont?.browse.resource(id));
   // `state` is typed CacheState<ResourceDescriptor> | undefined — the
   // compiler enforces the shape the API contract guarantees
-  const resource = state && readyValue(state); // readyValue from @semiont/sdk
+  const resource = state && readyValue(state); // readyValue from @xynoplex/sdk
   return <h1>{resource?.name}</h1>;
 }
 ```
@@ -412,11 +412,11 @@ The project uses native ES modules throughout, ensuring compatibility with moder
 
 ### Overview
 
-The codebase follows the **Humble Object Pattern** for React components, with business logic components living in @semiont/react-ui and thin wrappers in the Browser.
+The codebase follows the **Humble Object Pattern** for React components, with business logic components living in @xynoplex/react-ui and thin wrappers in the Browser.
 
-### Component Architecture with @semiont/react-ui
+### Component Architecture with @xynoplex/react-ui
 
-**Pure Component** (in `@semiont/react-ui`):
+**Pure Component** (in `@xynoplex/react-ui`):
 - Contains business logic and UI structure
 - All data passed as props or via providers
 - No framework-specific hooks (no router or app-shell dependencies)
@@ -425,14 +425,14 @@ The codebase follows the **Humble Object Pattern** for React components, with bu
 **Route Wrapper** (in `browser/src/`):
 - Implements provider interfaces for the app shell
 - Calls React Router hooks (`useParams`, `useSearchParams`, etc.)
-- Wraps components from @semiont/react-ui
+- Wraps components from @xynoplex/react-ui
 - So thin it rarely needs testing
 
 ### Example Structure
 
 The resource page is one such pair:
 
-- **Pure page** — `ResourceViewerPage` in `@semiont/react-ui`. The wrapper hands it the
+- **Pure page** — `ResourceViewerPage` in `@xynoplex/react-ui`. The wrapper hands it the
   resource and its id, the locale, `Link` + `routes`, the Browser's `ToolbarPanels`, a
   `refetchDocument` callback, the session's stream status, and the knowledge base's name.
 - **Route wrapper** — `src/app/[locale]/know/resource/[id]/page.tsx`. It reads the `:id`
@@ -442,12 +442,12 @@ The resource page is one such pair:
 
 ### Testing with Factored Components
 
-**Test in @semiont/react-ui** (business logic), modeled on
+**Test in @xynoplex/react-ui** (business logic), modeled on
 `packages/typescript/react-ui/src/components/resource/__tests__/ResourceViewer.embeddable.test.tsx`:
 
 ```tsx
 import { screen } from '@testing-library/react';
-import { createTestSemiontWrapper, renderInEnglish } from '@semiont/react-ui/test-utils';
+import { createTestSemiontWrapper, renderInEnglish } from '@xynoplex/react-ui/test-utils';
 
 it('renders content fed only a session, with no session provider mounted', () => {
   const { session } = createTestSemiontWrapper();
@@ -477,8 +477,8 @@ resource route rebuilds its loader when the `:id` or the session changes, with t
 page replaced:
 
 ```tsx
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     ResourceViewerPage: ({ rUri }: { rUri: string }) => <div data-testid="resource-rid">{rUri}</div>,
@@ -493,7 +493,7 @@ vi.mock('@semiont/react-ui', async () => {
 ```tsx
 // ✅ Good: Test pure component
 import { render, screen } from '@testing-library/react';
-import { EntityTagsPage } from '@semiont/react-ui';
+import { EntityTagsPage } from '@xynoplex/react-ui';
 
 it('renders page title', () => {
   const props = {
@@ -550,7 +550,7 @@ it('renders page', () => {
 
 **Component testing is split across packages:**
 
-**@semiont/react-ui:**
+**@xynoplex/react-ui:**
 - Core UI components: `Button`, `Toast`, `StatusDisplay`
 - Resource components: `ResourceViewer`, `AnnotateView`, `BrowseView`
 - Auth components: `AuthErrorDisplay`
@@ -565,7 +565,7 @@ it('renders page', () => {
 
 ### Reference Examples
 
-**Testing @semiont/react-ui components:**
+**Testing @xynoplex/react-ui components:**
 ```bash
 # Run react-ui tests
 cd packages/typescript/react-ui
@@ -587,7 +587,7 @@ npm test
 src/contexts/__tests__/AuthShell.integration.test.tsx
 ```
 
-**Key Testing Pattern**: Business logic lives in @semiont/react-ui and is thoroughly tested there. The Browser tests app-shell/routing/provider integration and app-specific components.
+**Key Testing Pattern**: Business logic lives in @xynoplex/react-ui and is thoroughly tested there. The Browser tests app-shell/routing/provider integration and app-specific components.
 
 ## Related Documentation
 

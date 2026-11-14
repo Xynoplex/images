@@ -29,8 +29,8 @@ vi.mock('@/i18n/routing', () => ({
 vi.mock('../../UserPanel', () => ({ UserPanel: () => null }));
 vi.mock('../../KnowledgeBasePanel', () => ({ KnowledgeBasePanel: () => null }));
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   const { BehaviorSubject } = await vi.importActual<typeof import('rxjs')>('rxjs');
   return {
     ...actual,

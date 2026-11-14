@@ -1,7 +1,7 @@
 # semiont-browser
 
 [![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-browser)](https://app.codecov.io/gh/Xynoplex/images/components)
-[![npm version](https://img.shields.io/npm/v/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
+[![npm version](https://img.shields.io/npm/v/@xynoplex/browser.svg)](https://www.npmjs.com/package/@xynoplex/browser)
 [![ghcr](https://img.shields.io/badge/ghcr-xynoplex--browser-blue)](https://github.com/Xynoplex/images/pkgs/container/xynoplex-browser)
 
 **The Browser is the human entry point to Semiont**: a single-page app (SPA) for browsing,
@@ -13,9 +13,9 @@ which serves the pre-built SPA on port 3000.
 | --- | --- |
 | Image | `ghcr.io/xynoplex/xynoplex-browser` |
 | Port | 3000 |
-| Command | `node /app/node_modules/@semiont/browser/server.js`, under `tini` |
+| Command | `node /app/node_modules/@xynoplex/browser/server.js`, under `tini` |
 | Code | TypeScript, in this directory: [src](src) |
-| Published | npm, as [@semiont/browser](https://www.npmjs.com/package/@semiont/browser), which the image installs |
+| Published | npm, as [@xynoplex/browser](https://www.npmjs.com/package/@xynoplex/browser), which the image installs |
 
 ## What it does
 
@@ -26,8 +26,8 @@ navigation, toolbar wiring).
 
 | Part | Owns |
 |---|---|
-| `@semiont/react-ui` | the annotation UI itself: components, panels, state units |
-| `@semiont/sdk` | every knowledge-base operation |
+| `@xynoplex/react-ui` | the annotation UI itself: components, panels, state units |
+| `@xynoplex/sdk` | every knowledge-base operation |
 | this app | routes, i18n, providers, page assembly |
 
 **It contains no `fetch` calls at all.** The Browser never reaches an API directly; it goes
@@ -45,7 +45,7 @@ non-file routes.
 
 ## What it talks to
 
-- **The [gateway](../gateway) of each knowledge base it connects to**, through `@semiont/sdk`.
+- **The [gateway](../gateway) of each knowledge base it connects to**, through `@xynoplex/sdk`.
 - **The issuer of each knowledge base**, its sign-in provider, to sign in and to sign out.
 - **The launcher's discovery document**, from the Browser's own `server.js`, under `/discovery/`.
 - **An OTLP endpoint**, for its OpenTelemetry traces, when the bundle is built with one.
@@ -65,7 +65,7 @@ already running on the machine. A 200 carrying the SPA would be indistinguishabl
 **It belongs to no stack.** Every `semiont start` keeps a running Browser whose image is
 current, and replaces one whose image is not. `semiont stop` stops it with the stack;
 `semiont stop --service browser` stops it alone. Its command,
-`node /app/node_modules/@semiont/browser/server.js`, runs under a `tini` entrypoint.
+`node /app/node_modules/@xynoplex/browser/server.js`, runs under a `tini` entrypoint.
 
 ## Configuration
 
@@ -81,10 +81,10 @@ Almost none, deliberately.
 
 ## What the image carries
 
-Node and the npm package `@semiont/browser`: the built `dist/` plus `server.js`, with no
+Node and the npm package `@xynoplex/browser`: the built `dist/` plus `server.js`, with no
 runtime dependencies. The image does not build the SPA; its first stage installs the
 published package from an npm registry. npm is removed from the runtime image. One build,
-three consumers: this image, the package `@semiont/browser` itself, and
+three consumers: this image, the package `@xynoplex/browser` itself, and
 [`apps/desktop`](../../apps/desktop/), a separate Electron chat client built from its own
 renderer.
 
@@ -100,12 +100,12 @@ npm run test:a11y    # accessibility suite
 
 **Translations are generated: edit `messages-source/`, never `messages/`.** `messages-source/`
 holds this app's strings; [`scripts/merge-translations.js`](scripts/merge-translations.js)
-merges them with `@semiont/react-ui`'s on the `pre*` hooks and writes `messages/` and
+merges them with `@xynoplex/react-ui`'s on the `pre*` hooks and writes `messages/` and
 `public/messages/`, both untracked.
 
 ## Building it
 
-The image does not build the app: it installs a published `@semiont/browser` from an npm
+The image does not build the app: it installs a published `@xynoplex/browser` from an npm
 registry, `NPM_REGISTRY` (npm's own by default), at the version `SEMIONT_BROWSER_VERSION`
 (`latest` by default). [`make local`](../Makefile) builds
 this directory's package, publishes it to the Verdaccio it starts, and builds the image

@@ -17,10 +17,10 @@
 //! it. So this run is also the check of the generated table, which is made
 //! from another implementation, against that one.
 
-use semiont::errors::{SemiontError, TransportErrorCode};
-use semiont::media_types::{TextSource, text_source_of};
-use semiont::testing::{InMemoryContent, TestClientOptions, as_id, create_test_client};
-use semiont::transport::Content;
+use xynoplex::errors::{SemiontError, TransportErrorCode};
+use xynoplex::media_types::{TextSource, text_source_of};
+use xynoplex::testing::{InMemoryContent, TestClientOptions, as_id, create_test_client};
+use xynoplex::transport::Content;
 use serde_json::Value;
 
 fn table(text: &str) -> Value {

@@ -6,27 +6,27 @@
 //! behaviour, against a real gateway, is the live layer of
 //! protocol/conformance/sdk.
 
-use semiont::cache::CacheState;
-use semiont::cached::Observed;
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::{CachePersistence, ClientOptions, ClientTiming, SemiontClient};
-use semiont::errors::SemiontError;
-use semiont::namespaces::ResourceFilters;
-use semiont::refresh::CacheQuery;
-use semiont::resume::CoupledBookmarks;
-use semiont::session::{cache_key, last_event_id_key};
-use semiont::storage::{
+use xynoplex::cache::CacheState;
+use xynoplex::cached::Observed;
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::{CachePersistence, ClientOptions, ClientTiming, SemiontClient};
+use xynoplex::errors::SemiontError;
+use xynoplex::namespaces::ResourceFilters;
+use xynoplex::refresh::CacheQuery;
+use xynoplex::resume::CoupledBookmarks;
+use xynoplex::session::{cache_key, last_event_id_key};
+use xynoplex::storage::{
     InMemorySessionStorage, SessionStorage, StorageChange, StorageSubscription,
 };
-use semiont::testing::as_id;
-use semiont::testing::liveness::{LivenessScenario, LivenessSpec, assert_liveness_axioms};
-use semiont::testing::{
+use xynoplex::testing::as_id;
+use xynoplex::testing::liveness::{LivenessScenario, LivenessSpec, assert_liveness_axioms};
+use xynoplex::testing::{
     ContentCall, FaultAction, FaultyTransport, InMemoryContent, SharedStorage, TestClientOptions,
     create_test_client,
 };
-use semiont::timing::SAVE_DEBOUNCE;
-use semiont::transport::{ConnectionState, Envelope, Frame, STREAM_BACKLOG};
-use semiont::types::MatchResourcesResponse;
+use xynoplex::timing::SAVE_DEBOUNCE;
+use xynoplex::transport::{ConnectionState, Envelope, Frame, STREAM_BACKLOG};
+use xynoplex::types::MatchResourcesResponse;
 use serde_json::{Map, Value, json};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, OnceLock};
@@ -629,7 +629,7 @@ async fn b13b_a_body_update_that_carries_the_annotation_writes_it_and_asks_only_
             json!({ "annotation": annotation("ann-1", "res-1", "as the event says") }),
         ),
     );
-    let said = |state: CacheState<semiont::types::Annotation>| {
+    let said = |state: CacheState<xynoplex::types::Annotation>| {
         serde_json::to_value(state.ready().expect("a value")).expect("it serializes")["body"]["value"]
             .clone()
     };
@@ -1388,7 +1388,7 @@ async fn b13_a_gap_asks_again_for_what_refers_to_the_resource_it_names_and_to_no
 
 // ── The engines ─────────────────────────────────────────
 
-fn limits_of(engines: &[semiont::namespaces::EngineWithLimits]) -> Vec<Option<f64>> {
+fn limits_of(engines: &[xynoplex::namespaces::EngineWithLimits]) -> Vec<Option<f64>> {
     engines
         .iter()
         .map(|engine| engine.limits.as_ref().map(|limits| limits.context_tokens))

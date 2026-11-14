@@ -23,7 +23,7 @@ classifiers = [
 # by semiont-service, which installs it.
 dependencies = [
     "pydantic",
-    "semiont",
+    "xynoplex",
     "semiont-graph",
     "semiont-service",
 ]
@@ -43,7 +43,7 @@ neptune = ["semiont-graph[neptune]"]
 # the tree's spec generates. Each is named, because a source another package
 # states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-semiont = { path = "../packages/python/sdk", editable = true }
+xynoplex = { path = "../packages/python/sdk", editable = true }
 semiont-graph = { path = "../shared/python/graph", editable = true }
 semiont-service = { path = "../shared/python/service", editable = true }
 

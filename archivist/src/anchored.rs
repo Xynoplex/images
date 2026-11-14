@@ -3,7 +3,7 @@
 //! stated, and the wait for the Smelter to settle content not yet in it.
 
 use crate::archivist::{Archivist, Refusal, locked, primary_representation};
-use semiont::media_types::yields_geometry_of;
+use xynoplex::media_types::yields_geometry_of;
 use semiont_archivist_record::{Object, RecordError, anchored_text};
 use serde_json::{Value, json};
 use std::collections::HashMap;

@@ -4,7 +4,7 @@
 use crate::archivist::{
     Archivist, CloneToken, Refusal, event, locked, primary_representation, text,
 };
-use semiont::channels::{
+use xynoplex::channels::{
     Channel, FrameAddEntityType, FrameAddTagSchema, FrameEntityTypeAdded, FrameTagSchemaAdded,
     JobAssign, JobAssigned, JobComplete, JobCompleted, JobFailed, JobStart, JobStarted, MarkAdded,
     MarkArchive, MarkArchived, MarkBodyUpdated, MarkCommit, MarkCreateRequest, MarkDelete,
@@ -13,8 +13,8 @@ use semiont::channels::{
     YieldClonePersist, YieldCloneResourceRequested, YieldCloneTokenRequested, YieldCloned,
     YieldCreate, YieldCreated, YieldUpdate, YieldUpdated,
 };
-use semiont::media_types::{AnchoringModel, capabilities_of};
-use semiont::roles::WORKER_ROLE;
+use xynoplex::media_types::{AnchoringModel, capabilities_of};
+use xynoplex::roles::WORKER_ROLE;
 use semiont_archivist_record::agents::{Attribution, attribution};
 use semiont_archivist_record::{Object, ids, log};
 use serde_json::{Value, json};

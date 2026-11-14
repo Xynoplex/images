@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth';
-import { resourceId as rid } from '@semiont/sdk';
-import { proposeStoragePath, folderOf, getStorageUri } from '@semiont/core';
+import { resourceId as rid } from '@xynoplex/sdk';
+import { proposeStoragePath, folderOf, getStorageUri } from '@xynoplex/core';
 import { expectGeneratedAt } from '../fixtures/generated';
 import { openConfigureStep, runGeneration } from '../fixtures/generate';
 import { signInSession } from '../fixtures/sdk-session';
@@ -17,7 +17,7 @@ import { signInSession } from '../fixtures/sdk-session';
  * a broken proposal would fail every default-path generation in the product
  * while every other spec stayed green.
  *
- * The expected value is DERIVED from @semiont/core's own proposeStoragePath/
+ * The expected value is DERIVED from @xynoplex/core's own proposeStoragePath/
  * folderOf against the source's real descriptor — restating the slug rule
  * here would be a mirror. "Stops following once edited" is pinned at the unit
  * level (ConfigureGenerationStep tests); this spec stays on the wire-reaching

@@ -8,7 +8,7 @@ This document describes the Browser UI patterns, component architecture, user wo
 
 ## Supported Annotation Types
 
-The W3C Web Annotation vocabulary defines 13 motivations (`assessing`, `bookmarking`, `classifying`, `commenting`, `describing`, `editing`, `highlighting`, `identifying`, `linking`, `moderating`, `questioning`, `replying`, `tagging`). Semiont **supports five of them**: the spec's `Motivation` schema enumerates exactly those five, and `@semiont/core` generates the type (re-exported by `@semiont/sdk` as `Motivation`).
+The W3C Web Annotation vocabulary defines 13 motivations (`assessing`, `bookmarking`, `classifying`, `commenting`, `describing`, `editing`, `highlighting`, `identifying`, `linking`, `moderating`, `questioning`, `replying`, `tagging`). Semiont **supports five of them**: the spec's `Motivation` schema enumerates exactly those five, and `@xynoplex/core` generates the type (re-exported by `@xynoplex/sdk` as `Motivation`).
 
 | W3C Motivation | Annotator Key | Description | Class | Visual Style |
 |----------------|---------------|-------------|-------|--------------|
@@ -46,7 +46,7 @@ All annotation types are centrally managed through the **Annotation Registry** s
 
 ### Component Hierarchy
 
-All of these come from `@semiont/react-ui`; the Browser's resource page renders `ResourceViewerPage`.
+All of these come from `@xynoplex/react-ui`; the Browser's resource page renders `ResourceViewerPage`.
 
 ```text
 ResourceViewerPage (page shell; composes the resource-viewer page state unit)
@@ -75,9 +75,9 @@ For complete architecture details on how annotations flow through the gateway da
 
 ### Purpose
 
-The Annotation Registry is provided by `@semiont/react-ui` and is a centralized system that provides a **single source of truth** for all annotation type metadata. This eliminates hard-coded lists scattered across the codebase.
+The Annotation Registry is provided by `@xynoplex/react-ui` and is a centralized system that provides a **single source of truth** for all annotation type metadata. This eliminates hard-coded lists scattered across the codebase.
 
-**Implementation**: [`@semiont/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts)
+**Implementation**: [`@xynoplex/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts)
 
 ### Design Philosophy
 
@@ -168,23 +168,23 @@ announceAnnotationCreated(annotation); // 'Highlight created', 'Comment created'
 
 The registry holds every per-motivation fact, but supporting another motivation takes more than a registry entry. It touches:
 
-- `protocol/specs/src/components/schemas/Motivation.json` — the `Motivation` enum must admit it (then regenerate the types in `@semiont/core`), and a type guard in `@semiont/core` recognizes it
-- [`@semiont/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) — its annotator
+- `protocol/specs/src/components/schemas/Motivation.json` — the `Motivation` enum must admit it (then regenerate the types in `@xynoplex/core`), and a type guard in `@xynoplex/core` recognizes it
+- [`@xynoplex/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) — its annotator
 - `packages/typescript/react-ui/src/types/annotation-props.ts` and `packages/typescript/react-ui/src/lib/annotation-groups.ts` — `AnnotationsCollection` and the grouping that fills it have one bucket per motivation
 - `packages/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx` — its tab, and a panel for it
 - `packages/typescript/react-ui/src/styles/motivations/` — the stylesheet for its `annotation-<type>` class
 
 ### Files Using the Registry
 
-The registry is imported and used in `@semiont/react-ui`:
+The registry is imported and used in `@xynoplex/react-ui`:
 
-- [`@semiont/react-ui/src/lib/annotation-overlay.ts`](../../../packages/typescript/react-ui/src/lib/annotation-overlay.ts) - Annotation overlay (BrowseView)
-- [`@semiont/react-ui/src/lib/codemirror-logic.ts`](../../../packages/typescript/react-ui/src/lib/codemirror-logic.ts) - CodeMirror decoration classes
-- [`@semiont/react-ui/src/components/resource/BrowseView.tsx`](../../../packages/typescript/react-ui/src/components/resource/BrowseView.tsx) - Browse mode rendering
-- [`@semiont/react-ui/src/components/resource/AnnotateView.tsx`](../../../packages/typescript/react-ui/src/components/resource/AnnotateView.tsx) - Annotate mode rendering
-- [`@semiont/react-ui/src/components/resource/ResourceViewer.tsx`](../../../packages/typescript/react-ui/src/components/resource/ResourceViewer.tsx) - Click handlers
-- [`@semiont/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx`](../../../packages/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx) - Grouping and tabs
-- [`@semiont/react-ui/src/state/shell-state-unit.ts`](../../../packages/typescript/react-ui/src/state/shell-state-unit.ts) - Motivation → panel tab
+- [`@xynoplex/react-ui/src/lib/annotation-overlay.ts`](../../../packages/typescript/react-ui/src/lib/annotation-overlay.ts) - Annotation overlay (BrowseView)
+- [`@xynoplex/react-ui/src/lib/codemirror-logic.ts`](../../../packages/typescript/react-ui/src/lib/codemirror-logic.ts) - CodeMirror decoration classes
+- [`@xynoplex/react-ui/src/components/resource/BrowseView.tsx`](../../../packages/typescript/react-ui/src/components/resource/BrowseView.tsx) - Browse mode rendering
+- [`@xynoplex/react-ui/src/components/resource/AnnotateView.tsx`](../../../packages/typescript/react-ui/src/components/resource/AnnotateView.tsx) - Annotate mode rendering
+- [`@xynoplex/react-ui/src/components/resource/ResourceViewer.tsx`](../../../packages/typescript/react-ui/src/components/resource/ResourceViewer.tsx) - Click handlers
+- [`@xynoplex/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx`](../../../packages/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx) - Grouping and tabs
+- [`@xynoplex/react-ui/src/state/shell-state-unit.ts`](../../../packages/typescript/react-ui/src/state/shell-state-unit.ts) - Motivation → panel tab
 
 ### Benefits
 
@@ -270,7 +270,7 @@ Each motivation's styles live in `packages/typescript/react-ui/src/styles/motiva
 
 ## SDK Integration
 
-The Browser never calls the HTTP API directly; every annotation operation goes through `@semiont/sdk`:
+The Browser never calls the HTTP API directly; every annotation operation goes through `@xynoplex/sdk`:
 
 ```typescript
 // Create: resolves once the gateway confirms
@@ -308,7 +308,7 @@ const entityTypes$ = session.client.browse.entityTypes();
 
 ### Schema
 
-Semiont uses the full [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/). The `Annotation` type (from `@semiont/core`, re-exported by `@semiont/sdk`) is generated from the spec:
+Semiont uses the full [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/). The `Annotation` type (from `@xynoplex/core`, re-exported by `@xynoplex/sdk`) is generated from the spec:
 
 ```typescript
 const reference: Annotation = {
@@ -360,8 +360,8 @@ The modular architecture ensures maintainability and extensibility, while the pr
 
 ### React UI Library
 - [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) - Complete annotation system documentation with Provider Pattern architecture
-- [`@semiont/react-ui/docs/ANNOTATION-CLICK.md`](../../../packages/typescript/react-ui/docs/ANNOTATION-CLICK.md) - Click and hover coordination
-- [`@semiont/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) - Source code for the Annotation Registry
+- [`@xynoplex/react-ui/docs/ANNOTATION-CLICK.md`](../../../packages/typescript/react-ui/docs/ANNOTATION-CLICK.md) - Click and hover coordination
+- [`@xynoplex/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) - Source code for the Annotation Registry
 
 ### W3C Web Annotation Implementation
 - [W3C-WEB-ANNOTATION.md](../../../protocol/contract/W3C-WEB-ANNOTATION.md) - Complete W3C implementation across all components (UI, API, Event Store, Graph)

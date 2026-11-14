@@ -3,7 +3,7 @@
 //! services read.
 //!
 //! The bundles in protocol/specs/ are gitignored build output, absent from a clean
-//! checkout, so this bundles protocol/specs/src itself (semiont-codegen): one document
+//! checkout, so this bundles protocol/specs/src itself (xynoplex-codegen): one document
 //! per API — the protocol's, and the Archivist's. From the protocol's document
 //! it writes the component schemas as JSON Schema draft 7 and compiles every
 //! one of them, so a schema that cannot be compiled fails here rather than at
@@ -13,10 +13,10 @@
 //! `SERVICE_SCHEMAS` are the schemas no client reads — the configuration
 //! documents, and what a service keeps or answers of its own — generated into
 //! `service_types.rs`. A schema they reach that is the protocol's is named
-//! from the SDK (`semiont::types`), which generates it: one home for each.
+//! from the SDK (`xynoplex::types`), which generates it: one home for each.
 
-use semiont_codegen::bundle::{Bundle, draft7_definitions, read_json, write_json};
-use semiont_codegen::types::{Generation, generate};
+use xynoplex_codegen::bundle::{Bundle, draft7_definitions, read_json, write_json};
+use xynoplex_codegen::types::{Generation, generate};
 use serde_json::{Value, json};
 use std::fs;
 use std::path::PathBuf;
@@ -72,7 +72,7 @@ fn main() {
             &definitions["definitions"],
             &Generation {
                 roots: &SERVICE_SCHEMAS,
-                elsewhere: Some("semiont::types"),
+                elsewhere: Some("xynoplex::types"),
                 identifiers: &[],
                 discriminator_accessors: &[],
             },

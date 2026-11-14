@@ -7,17 +7,17 @@
 //! here is bounded: a unit that never acts fails its test, and does not
 //! hang it.
 
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::SemiontClient;
-use semiont::state::{
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::SemiontClient;
+use xynoplex::state::{
     BeckonStateUnit, GatherStateUnit, HoverDwell, MarkStateUnit, MatchStateUnit, PendingAnnotation,
     SearchPipeline, SearchPipelineOptions, YieldStateUnit,
 };
-use semiont::testing::as_id;
-use semiont::testing::axioms::{AxiomSubject, Fresh, Surface, assert_state_unit_axioms};
-use semiont::testing::{FaultyTransport, TestClientOptions, create_test_client};
-use semiont::timing::HOVER_DELAY;
-use semiont::types::{
+use xynoplex::testing::as_id;
+use xynoplex::testing::axioms::{AxiomSubject, Fresh, Surface, assert_state_unit_axioms};
+use xynoplex::testing::{FaultyTransport, TestClientOptions, create_test_client};
+use xynoplex::timing::HOVER_DELAY;
+use xynoplex::types::{
     AnnotationSelector, GatherAnnotationOptions, GatherResourceRequestOptions, GenerationJobParams,
     MarkJobParams, Motivation,
 };

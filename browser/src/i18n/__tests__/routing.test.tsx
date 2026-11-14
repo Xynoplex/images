@@ -18,7 +18,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@/i18n/config', async () => {
-  const { LOCALE_CODES } = await vi.importActual<typeof import('@semiont/core')>('@semiont/core');
+  const { LOCALE_CODES } = await vi.importActual<typeof import('@xynoplex/core')>('@xynoplex/core');
   return { isSupportedLocale: (locale: string) => (LOCALE_CODES as readonly string[]).includes(locale) };
 });
 

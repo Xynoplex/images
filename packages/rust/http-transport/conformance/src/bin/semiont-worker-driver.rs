@@ -16,18 +16,18 @@ use chrono::{DateTime, SecondsFormat, Utc};
 use opentelemetry::context::FutureExt;
 use opentelemetry::trace::{SpanKind, TraceContextExt, Tracer};
 use opentelemetry::{Context, KeyValue, global};
-use semiont::claims::{
+use xynoplex::claims::{
     ClaimOptions, ClaimTiming, Claims, HeldJob, JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, JobFailure,
 };
-use semiont::client::{ClientOptions, SemiontClient};
-use semiont::transport::{ConnectionState, ResourceHold, Transport};
-use semiont::types::{Annotation, JobProgress, ResourceId};
+use xynoplex::client::{ClientOptions, SemiontClient};
+use xynoplex::transport::{ConnectionState, ResourceHold, Transport};
+use xynoplex::types::{Annotation, JobProgress, ResourceId};
 use semiont_conformance_drivers::{
     Arguments, Driver, Ended, Running, count, failure, identifier, locked, object, say, serve,
     text, texts,
 };
-use semiont_http_transport::content::HttpContentTransport;
-use semiont_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynoplex_http_transport::content::HttpContentTransport;
+use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
 use serde::de::DeserializeOwned;
 use serde_json::{Value, json};
 use std::future::Future;
@@ -79,7 +79,7 @@ fn optional<T: DeserializeOwned>(args: &Arguments, name: &str) -> Result<Option<
 /// the context in which it is the current span.
 fn span_of(job: &HeldJob) -> Context {
     let trace = job.trace();
-    let within = semiont_telemetry::continued(
+    let within = xynoplex_telemetry::continued(
         trace.map(|trace| trace.traceparent.as_str()),
         trace.and_then(|trace| trace.tracestate.as_deref()),
     );

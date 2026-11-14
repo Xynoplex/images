@@ -23,32 +23,32 @@ use axum::routing::{get, post};
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use bytes::Bytes;
-use semiont::cache::CacheState;
-use semiont::cached::Observed;
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::{ClientOptions, SemiontClient};
-use semiont::errors::{BusRequestError, SessionError, TransportError};
-use semiont::event_bus::EventBus;
-use semiont::identity::kb_did;
-use semiont::refresh::CacheQuery;
-use semiont::session::{
+use xynoplex::cache::CacheState;
+use xynoplex::cached::Observed;
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::{ClientOptions, SemiontClient};
+use xynoplex::errors::{BusRequestError, SessionError, TransportError};
+use xynoplex::event_bus::EventBus;
+use xynoplex::identity::kb_did;
+use xynoplex::refresh::CacheQuery;
+use xynoplex::session::{
     SemiontBrowser, SemiontBrowserConfig, SemiontSession, SemiontSessionConfig, SessionFactory,
     SessionFactoryOptions, SessionSignals, StoredSession, cache_key, clear_stored_session, kept_in,
     last_event_id_key, person_key, save_knowledge_bases, session_key, store_session,
     stored_session,
 };
-use semiont::state_unit::StateUnit;
-use semiont::storage::{SessionStorage, StorageChange, StorageSubscription};
-use semiont::testing::{FaultyTransport, InMemoryContent, SharedStorage, as_id};
-use semiont::transport::{
+use xynoplex::state_unit::StateUnit;
+use xynoplex::storage::{SessionStorage, StorageChange, StorageSubscription};
+use xynoplex::testing::{FaultyTransport, InMemoryContent, SharedStorage, as_id};
+use xynoplex::transport::{
     BoxFuture, ConnectionState, Envelope, FailureListener, Failures, Frames, PendingReply,
     ResourceHold, Transport,
 };
-use semiont::types::{
+use xynoplex::types::{
     HttpEndpoint, HttpEndpointProtocol, KbEndpoint, KnowledgeBase, LocalEndpoint,
     ResourceDescriptor, ResourceId,
 };
-use semiont_http_transport::session::HttpSessionFactory;
+use xynoplex_http_transport::session::HttpSessionFactory;
 use serde_json::{Map, Value, json};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};

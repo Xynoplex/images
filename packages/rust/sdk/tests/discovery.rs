@@ -1,12 +1,12 @@
 //! The knowledge bases a launcher manages: what its document says, and what
 //! changed between two readings of it.
 
-use semiont::discovery::{
+use xynoplex::discovery::{
     DISCOVERY_INTERVAL, DiscoveryAbsentReason, DiscoveryDiff, DiscoveryRead, DiscoveryState,
     DiscoveryTransport, parse_discovery_document, subscribe_discovery, text_discovery,
 };
-use semiont::transport::BoxFuture;
-use semiont::types::DiscoveredKB;
+use xynoplex::transport::BoxFuture;
+use xynoplex::types::DiscoveredKB;
 use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};

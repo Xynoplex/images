@@ -2,15 +2,15 @@
 //! methods that delegate one: `mark.delegate` and `yield_.delegate`. And a
 //! client's end.
 
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::SemiontClient;
-use semiont::errors::SemiontError;
-use semiont::namespaces::{Delegation, JobEvent, stall_deadline};
-use semiont::testing::as_id;
-use semiont::testing::{FaultAction, FaultyTransport, TestClientOptions, create_test_client};
-use semiont::timing::{JOB_SILENCE, JOB_STATUS_POLL};
-use semiont::transport::{ConnectionState, Envelope, FrameRefusal, FrameRefusalReason};
-use semiont::types::{
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::SemiontClient;
+use xynoplex::errors::SemiontError;
+use xynoplex::namespaces::{Delegation, JobEvent, stall_deadline};
+use xynoplex::testing::as_id;
+use xynoplex::testing::{FaultAction, FaultyTransport, TestClientOptions, create_test_client};
+use xynoplex::timing::{JOB_SILENCE, JOB_STATUS_POLL};
+use xynoplex::transport::{ConnectionState, Envelope, FrameRefusal, FrameRefusalReason};
+use xynoplex::types::{
     HighlightingJobParams, JobDeclinedReason, LinkingJobParams, MarkJobCompleteCommand,
     MarkJobDone, MarkJobResult, TaggingJobParams, YieldJobCompleteCommand, YieldJobResult,
 };
@@ -674,7 +674,7 @@ async fn a_reader_that_fell_behind_asks_at_once_for_what_it_missed() {
     settle().await;
 
     // More frames than a reader may fall behind by, before it reads any.
-    for _ in 0..(semiont::transport::STREAM_BACKLOG + 10) {
+    for _ in 0..(xynoplex::transport::STREAM_BACKLOG + 10) {
         say(&client, "job:report-progress", "job-2", progress(1.0));
     }
     let seen = ended(following).await;
@@ -685,7 +685,7 @@ async fn a_reader_that_fell_behind_asks_at_once_for_what_it_missed() {
     );
 }
 
-fn generation(max_tokens: Option<u64>) -> semiont::types::GenerationJobParams {
+fn generation(max_tokens: Option<u64>) -> xynoplex::types::GenerationJobParams {
     let mut params = object(json!({
         "title": "A summary",
         "storageUri": "file://a-summary.md",
@@ -854,7 +854,7 @@ async fn a_generation_that_ends_in_time_is_not_cancelled() {
 
 #[test]
 fn how_long_a_generation_may_be_silent_grows_with_what_was_asked_of_it() {
-    use semiont::timing::GENERATION_STALL_FLOOR;
+    use xynoplex::timing::GENERATION_STALL_FLOOR;
     // Unstated, and short: the floor decides.
     assert_eq!(stall_deadline(None), GENERATION_STALL_FLOOR);
     assert_eq!(stall_deadline(Some(100.0)), GENERATION_STALL_FLOOR);

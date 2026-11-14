@@ -1,5 +1,5 @@
 import { useRouter } from '@/i18n/routing';
-import { SearchModal } from '@semiont/react-ui';
+import { SearchModal } from '@xynoplex/react-ui';
 import { useTranslation } from 'react-i18next';
 
 interface GlobalSearchModalProps {

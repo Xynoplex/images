@@ -15,7 +15,7 @@ import { resolve } from 'node:path';
 import postcss from 'postcss';
 import tailwindcss from '@tailwindcss/postcss';
 import { render, screen } from '@testing-library/react';
-import { ThemeProvider } from '@semiont/react-ui';
+import { ThemeProvider } from '@xynoplex/react-ui';
 
 const STYLESHEET = resolve(process.cwd(), 'src/app/globals.css');
 

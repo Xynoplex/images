@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import { getPrimaryMediaType, getStorageUri } from '@semiont/core';
-import type { ResourceDescriptor } from '@semiont/core';
+import { getPrimaryMediaType, getStorageUri } from '@xynoplex/core';
+import type { ResourceDescriptor } from '@xynoplex/core';
 import { signInSession } from './sdk-session';
 
 /**

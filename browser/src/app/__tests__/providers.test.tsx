@@ -8,9 +8,9 @@ vi.mock('@/contexts/KeyboardShortcutsContext', () => ({
   KeyboardShortcutsProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-// Mock @semiont/react-ui components — only what root Providers actually renders.
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+// Mock @xynoplex/react-ui components — only what root Providers actually renders.
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,

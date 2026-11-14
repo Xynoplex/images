@@ -5,8 +5,8 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
-import { annotationId, resourceId } from '@semiont/core';
-import type { useEventSubscriptions } from '@semiont/react-ui';
+import { annotationId, resourceId } from '@xynoplex/core';
+import type { useEventSubscriptions } from '@xynoplex/react-ui';
 
 type Subscriptions = Parameters<typeof useEventSubscriptions>[0];
 
@@ -23,8 +23,8 @@ vi.mock('@/i18n/routing', async () => {
   };
 });
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     useEventSubscriptions: (subs: Subscriptions) => {

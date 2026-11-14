@@ -4,8 +4,8 @@
 
 use crate::anchored::SmeltProgress;
 use crate::content::Content;
-use semiont::channels::{Channel, MarkAdded, MarkBodyUpdated};
-use semiont::types::CommandErrorCode;
+use xynoplex::channels::{Channel, MarkAdded, MarkBodyUpdated};
+use xynoplex::types::CommandErrorCode;
 use semiont_archivist_record::kb::Committed;
 use semiont_archivist_record::record::Record;
 use semiont_archivist_record::{Object, SYSTEM};

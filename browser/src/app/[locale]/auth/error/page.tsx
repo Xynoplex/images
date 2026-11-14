@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { PageLayout, AuthErrorDisplay } from '@semiont/react-ui';
+import { PageLayout, AuthErrorDisplay } from '@xynoplex/react-ui';
 import { Link, routes } from '@/lib/routing';
 
 export default function AuthError() {

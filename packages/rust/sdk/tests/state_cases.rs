@@ -15,20 +15,20 @@
 //! method a case invokes and each member it reads has an adapter here, and a
 //! census holds the adapters to the table both ways.
 
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::SemiontClient;
-use semiont::errors::SemiontError;
-use semiont::session::{KbIdentityConflict, SessionEndReason, SessionSignals};
-use semiont::state::{
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::SemiontClient;
+use xynoplex::errors::SemiontError;
+use xynoplex::session::{KbIdentityConflict, SessionEndReason, SessionSignals};
+use xynoplex::state::{
     BeckonStateUnit, GatherStateUnit, HoverDwell, MarkStateUnit, MatchStateUnit, SearchPipeline,
     SearchPipelineOptions, YieldStateUnit,
 };
-use semiont::state_unit::StateUnit;
-use semiont::testing::{
+use xynoplex::state_unit::StateUnit;
+use xynoplex::testing::{
     FaultAction, FaultyTransport, RequestLogEntry, TestClientOptions, create_test_client,
 };
-use semiont::transport::{Envelope, Frame, FrameRefusal, Lagged};
-use semiont::types::{
+use xynoplex::transport::{Envelope, Frame, FrameRefusal, Lagged};
+use xynoplex::types::{
     GatherAnnotationOptions, GatherResourceRequestOptions, GenerationJobParams, MarkJobParams,
 };
 use serde::Serialize;

@@ -1117,7 +1117,7 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont"
+name = "xynoplex"
 source = { editable = "../sdk" }
 dependencies = [
     { name = "cryptography" },
@@ -1160,7 +1160,7 @@ dependencies = [
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.dev-dependencies]
@@ -1179,7 +1179,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../sdk" },
+    { name = "xynoplex", editable = "../sdk" },
 ]
 
 [package.metadata.requires-dev]

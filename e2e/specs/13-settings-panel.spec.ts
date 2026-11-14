@@ -164,7 +164,7 @@ test.describe('settings panel — signed out', () => {
  *     `settings:theme-changed` / `settings:line-numbers-toggled` itself.
  *   - The resource route does NOT — `know/resource/[id]/page.tsx`
  *     delegates *all* events to `ResourceViewerPage`, which lives in the
- *     **built** `@semiont/react-ui` package. Only Language is handled by
+ *     **built** `@xynoplex/react-ui` package. Only Language is handled by
  *     the app-source `ToolbarPanels`.
  *
  * So on this route Theme/Line Numbers ride entirely on react-ui's dist

@@ -18,7 +18,7 @@
 //! worker commits (`annotations`);
 //! how a knowledge base names its principals and the realm's roles; and the
 //! bus log. It does no HTTP and links no telemetry:
-//! `semiont-http-transport` carries it over a gateway.
+//! `xynoplex-http-transport` carries it over a gateway.
 
 // No unsafe code, but on Windows the one call that gives the sign-in store's
 // directory its access list (`sign_in_store`), which the system offers only

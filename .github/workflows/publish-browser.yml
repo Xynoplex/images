@@ -1,12 +1,12 @@
 name: Publish Browser Container Image
 
-run-name: "Browser Image: @semiont/browser@${{ inputs.version }}"
+run-name: "Browser Image: @xynoplex/browser@${{ inputs.version }}"
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: '@semiont/browser version (e.g. 0.4.15, 0.4.15-build.42, latest)'
+        description: '@xynoplex/browser version (e.g. 0.4.15, 0.4.15-build.42, latest)'
         required: true
         type: string
       dry_run:
@@ -47,12 +47,12 @@ jobs:
         # `dist.tarball`. Those are different artifacts served by different
         # infrastructure, and they do not become available at the same instant:
         # the packument can report every published package present while an
-        # install dies on `404 .../@semiont/<pkg>/-/<pkg>-<ver>.tgz`. A gate in
+        # install dies on `404 .../@xynoplex/<pkg>/-/<pkg>-<ver>.tgz`. A gate in
         # front of a build has to perform the operation the build performs, not
         # a cheaper one that correlates with it.
         #
-        # Waiting only for @semiont/browser is not enough either: the install
-        # resolves its whole @semiont/* closure at the same version, and those
+        # Waiting only for @xynoplex/browser is not enough either: the install
+        # resolves its whole @xynoplex/* closure at the same version, and those
         # propagate independently. version.json owns which packages publish, so
         # wait for all of them rather than restating a dependency list that
         # would drift.
@@ -158,11 +158,11 @@ jobs:
 
       # License-policy gate, matching publish-service-images.yml.
       #
-      # Scope note, so this is not read as more than it is: @semiont/browser
+      # Scope note, so this is not read as more than it is: @xynoplex/browser
       # ships a PRE-BUILT SPA, so its third-party dependencies are bundled into
       # the output before the package is published and never appear as npm
       # packages in the image. This inspects the npm packages the SBOM lists:
-      # @semiont/browser itself and the installer-stage scaffold.
+      # @xynoplex/browser itself and the installer-stage scaffold.
       # It is here for symmetry and to catch drift if this image ever gains a
       # real runtime dependency tree -- NOT as assurance about the bundle.
       - name: License policy gate
@@ -238,7 +238,7 @@ jobs:
         run: |
           echo "## Browser Container Image" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**@semiont/browser version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**@xynoplex/browser version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ steps.tags.outputs.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "**Dry run:** ${{ inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

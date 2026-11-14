@@ -3,17 +3,17 @@
 ## CSS Architecture Overview
 
 The Semiont Browser uses a hybrid CSS architecture that combines:
-1. **Semantic CSS from @semiont/react-ui** - Framework-agnostic component styles with modular organization
+1. **Semantic CSS from @xynoplex/react-ui** - Framework-agnostic component styles with modular organization
 2. **Tailwind CSS** - For app-specific styling and utilities
 
 ### Technical Implementation
 
-#### @semiont/react-ui Styles
-All React UI components from `@semiont/react-ui` come with semantic CSS classes following BEM methodology. These styles are imported in `globals.css`, ahead of Tailwind:
+#### @xynoplex/react-ui Styles
+All React UI components from `@xynoplex/react-ui` come with semantic CSS classes following BEM methodology. These styles are imported in `globals.css`, ahead of Tailwind:
 
 ```css
 /* browser/src/app/globals.css */
-@import '@semiont/react-ui/styles';
+@import '@xynoplex/react-ui/styles';
 @import "tailwindcss";
 ```
 
@@ -43,12 +43,12 @@ The Browser app uses Tailwind for its own components and layout. `globals.css` l
 @source "../../../../packages/typescript/react-ui/src";
 ```
 
-### Using @semiont/react-ui Components
+### Using @xynoplex/react-ui Components
 
-When using components from @semiont/react-ui, they already have all necessary styling:
+When using components from @xynoplex/react-ui, they already have all necessary styling:
 
 ```tsx
-import { Button, Toolbar } from '@semiont/react-ui';
+import { Button, Toolbar } from '@xynoplex/react-ui';
 
 // Components come pre-styled with semantic classes
 <Button variant="primary">Click me</Button>
@@ -56,13 +56,13 @@ import { Button, Toolbar } from '@semiont/react-ui';
 
 ### Dark Mode Support
 
-`ThemeProvider` from @semiont/react-ui resolves the theme (`light`, `dark`, or `system`) and sets `data-theme` on the `<html>` element. The react-ui styles and the Browser's `globals.css` key their dark rules off `[data-theme="dark"]`.
+`ThemeProvider` from @xynoplex/react-ui resolves the theme (`light`, `dark`, or `system`) and sets `data-theme` on the `<html>` element. The react-ui styles and the Browser's `globals.css` key their dark rules off `[data-theme="dark"]`.
 
 The Browser's `tailwind.config.js` sets `darkMode: ['selector', '[data-theme="dark"]']`, so Tailwind's `dark:` variants respond to the same attribute: a `dark:` class applies exactly when react-ui's dark rules do.
 
 ### Custom Styling Approach
 
-#### For @semiont/react-ui Components
+#### For @xynoplex/react-ui Components
 If you need to customize a react-ui component, add additional classes without overriding the semantic ones:
 
 ```tsx
@@ -86,7 +86,7 @@ Use Tailwind utilities freely for components defined in the Browser app:
 ## Color System
 
 ### Design Tokens
-The design system uses CSS custom properties from @semiont/react-ui:
+The design system uses CSS custom properties from @xynoplex/react-ui:
 - `--semiont-color-primary-*`: Blue color scale
 - `--semiont-color-gray-*`: Neutral color scale
 - `--semiont-color-red-*`, `--semiont-color-green-*`, etc.: Semantic colors
@@ -133,7 +133,7 @@ Yellow is reserved exclusively for text highlights in documents. This creates a 
 #### Gradients
 The cyan-to-blue gradient (`--semiont-gradient-primary`) marks primary action buttons (`semiont-button--primary`). Reference annotations carry a lighter cyan-to-blue gradient (`--semiont-motivation-reference-bg`).
 
-## Core UI Elements from @semiont/react-ui
+## Core UI Elements from @xynoplex/react-ui
 
 The react-ui package provides fundamental UI elements in the `core/` directory:
 
@@ -194,13 +194,13 @@ Which class an annotation gets is decided by the `ANNOTATORS` registry — see [
 
 ## Component Styling Guidelines
 
-### Using @semiont/react-ui Components
+### Using @xynoplex/react-ui Components
 
-Components from @semiont/react-ui come with built-in semantic CSS classes. Here's how to use them:
+Components from @xynoplex/react-ui come with built-in semantic CSS classes. Here's how to use them:
 
 #### Buttons
 ```tsx
-import { Button } from '@semiont/react-ui';
+import { Button } from '@xynoplex/react-ui';
 
 // Primary button - renders class="semiont-button" data-variant="primary"
 const primary = <Button variant="primary">Primary Action</Button>;
@@ -236,7 +236,7 @@ const spaced = <Button variant="primary" className="mt-4">Submit</Button>;
 
 ### Button Class Strings
 
-For a plain `<button>`, `@semiont/react-ui` exports `buttonStyles`: ready-made `semiont-button` class strings. The Browser's home page renders its Begin button with `buttonStyles.primary.base`.
+For a plain `<button>`, `@xynoplex/react-ui` exports `buttonStyles`: ready-made `semiont-button` class strings. The Browser's home page renders its Begin button with `buttonStyles.primary.base`.
 
 #### Primary Buttons
 **When to use:** Main call-to-action buttons that represent the primary action on a page or in a modal.
@@ -250,7 +250,7 @@ For a plain `<button>`, `@semiont/react-ui` exports `buttonStyles`: ready-made `
 - "Save" (when it's the main action)
 
 ```tsx
-import { buttonStyles } from '@semiont/react-ui';
+import { buttonStyles } from '@xynoplex/react-ui';
 
 <>
   <button className={buttonStyles.primary.base}>Primary Action</button>
@@ -333,7 +333,7 @@ Each motivation's class name lives in the `ANNOTATORS` registry (`packages/types
 
 ### Usage
 ```tsx
-import { ANNOTATORS } from '@semiont/react-ui';
+import { ANNOTATORS } from '@xynoplex/react-ui';
 
 // The annotator whose motivation matches supplies the class
 const annotator = Object.values(ANNOTATORS).find((a) => a.matchesAnnotation(annotation));
@@ -470,7 +470,7 @@ The component uses the Orbitron font for "SEMIONT" and includes:
 ## Best Practices
 
 ### CSS Architecture
-1. **Component Organization:** @semiont/react-ui styles are organized into:
+1. **Component Organization:** @xynoplex/react-ui styles are organized into:
    - `core/` - Fundamental UI elements (buttons, toggles, sliders, inputs)
    - `patterns/` - Shared panel and card structures
    - `panels/` - Styles for individual panels
@@ -478,8 +478,8 @@ The component uses the Orbitron font for "SEMIONT" and includes:
    - CSS beside each composed component under `src/components/`
 2. **Use Design Tokens:** Leverage panel design tokens and CSS variables for consistency
 3. **App Styles:** Use Tailwind for app-specific components and layouts
-4. **Don't Mix:** Avoid overriding semantic classes from @semiont/react-ui with Tailwind utilities
-5. **Custom Properties:** Use CSS variables from @semiont/react-ui (colors, spacing, typography)
+4. **Don't Mix:** Avoid overriding semantic classes from @xynoplex/react-ui with Tailwind utilities
+5. **Custom Properties:** Use CSS variables from @xynoplex/react-ui (colors, spacing, typography)
 
 ### Style Guidelines
 1. **Consistency:** Always use the predefined styles rather than creating custom classes
@@ -492,10 +492,10 @@ The component uses the Orbitron font for "SEMIONT" and includes:
 ## Importing Styles
 
 ### For App Components
-Import button styles from `@semiont/react-ui` at the top of your component:
+Import button styles from `@xynoplex/react-ui` at the top of your component:
 
 ```typescript
-import { buttonStyles } from '@semiont/react-ui';
+import { buttonStyles } from '@xynoplex/react-ui';
 ```
 
 ### For Combining Classes
@@ -509,11 +509,11 @@ react-ui's `Button` merges its `className` prop after `semiont-button`, so `<But
 ## File Organization
 
 ### Browser App Files
-- `src/app/globals.css` - Global styles, the @semiont/react-ui import, and the Tailwind setup
+- `src/app/globals.css` - Global styles, the @xynoplex/react-ui import, and the Tailwind setup
 - `tailwind.config.js` - Tailwind configuration (`darkMode`, theme extensions)
 
-### @semiont/react-ui Style Organization
-- `@semiont/react-ui/styles/` - Main styles directory
+### @xynoplex/react-ui Style Organization
+- `@xynoplex/react-ui/styles/` - Main styles directory
   - `index.css` - Entry point that imports all styles, including component-level CSS
   - `variables.css` - Design tokens and CSS custom properties
   - `base/` - Reset and semantic utility classes

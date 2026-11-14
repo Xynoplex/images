@@ -34,7 +34,7 @@ The `messages/` and `public/messages/` directories are **generated** — never e
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
-import { LOCALE_CODES } from '@semiont/core';
+import { LOCALE_CODES } from '@xynoplex/core';
 
 i18n
   .use(HttpBackend)
@@ -97,7 +97,7 @@ Translation file (`messages-source/en.json`):
 
 The languages Semiont supports are the rows of `protocol/specs/src/locales/registry.json`. The interface is offered in each, and a resource can be written in each.
 
-1. Add the language's row to `protocol/specs/src/locales/registry.json`: its code, what it calls itself, and its name in English. `@semiont/core` generates `LOCALES` and `LOCALE_CODES` from the registry, and the Browser and react-ui read those.
+1. Add the language's row to `protocol/specs/src/locales/registry.json`: its code, what it calls itself, and its name in English. `@xynoplex/core` generates `LOCALES` and `LOCALE_CODES` from the registry, and the Browser and react-ui read those.
 
 2. Add translation file for the Browser:
    ```bash
@@ -175,4 +175,4 @@ The test mock reads `messages/en.json` which is generated. Run `npm test` (which
 
 - [i18next Documentation](https://www.i18next.com/)
 - [react-i18next Documentation](https://react.i18next.com/)
-- [@semiont/react-ui documentation](../../../packages/typescript/react-ui/README.md)
+- [@xynoplex/react-ui documentation](../../../packages/typescript/react-ui/README.md)

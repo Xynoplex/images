@@ -1228,7 +1228,7 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont"
+name = "xynoplex"
 source = { editable = "../packages/python/sdk" }
 dependencies = [
     { name = "cryptography" },
@@ -1271,7 +1271,7 @@ dependencies = [
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.metadata]
@@ -1281,7 +1281,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]
@@ -1300,7 +1300,7 @@ dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pypdfium2" },
-    { name = "semiont" },
+    { name = "xynoplex" },
     { name = "semiont-service" },
     { name = "semiont-vectors" },
 ]
@@ -1320,7 +1320,7 @@ requires-dist = [
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pypdfium2", specifier = ">=5.14,<6" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
     { name = "semiont-service", editable = "../shared/python/service" },
     { name = "semiont-vectors", editable = "../shared/python/vectors" },
 ]
@@ -1341,14 +1341,14 @@ source = { editable = "../shared/python/vectors" }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "httpx" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]

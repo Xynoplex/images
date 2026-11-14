@@ -6,8 +6,8 @@ import {
   formatTime,
   useSemiont,
   useObservable,
-} from '@semiont/react-ui';
-import type { SemiontSession } from '@semiont/sdk';
+} from '@xynoplex/react-ui';
+import type { SemiontSession } from '@xynoplex/sdk';
 import { useRouter } from '@/i18n/routing';
 
 // Fallback avatar when image fails to load or is invalid

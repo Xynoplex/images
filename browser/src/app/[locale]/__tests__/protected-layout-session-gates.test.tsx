@@ -10,7 +10,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
-import type { LinkComponentProps } from '@semiont/react-ui';
+import type { LinkComponentProps } from '@xynoplex/react-ui';
 import type { ReactNode } from 'react';
 
 vi.mock('react-i18next', () => ({
@@ -60,8 +60,8 @@ const harness = vi.hoisted(() => {
   return { makeSession, activeSession$, browser: { activeSession$ } };
 });
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     useSemiont: () => harness.browser,

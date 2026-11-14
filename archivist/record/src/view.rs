@@ -3,7 +3,7 @@
 use crate::agents::attribution;
 use crate::shard::shard_path;
 use crate::{Object, RecordError, ids, indented, read_object, write_whole};
-use semiont::channels::{
+use xynoplex::channels::{
     Channel, MarkAdded, MarkArchived, MarkBodyUpdated, MarkEntityTagAdded, MarkEntityTagRemoved,
     MarkRemoved, MarkUnarchived, YieldCloned, YieldCreated, YieldMoved, YieldRepresentationAdded,
     YieldRepresentationRemoved, YieldUpdated,

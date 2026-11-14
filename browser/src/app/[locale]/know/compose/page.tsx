@@ -16,9 +16,9 @@ import {
   Toolbar,
   ComposeLoadingState,
   ResourceComposePage,
-} from '@semiont/react-ui';
-import type { SaveResourceParams as UISaveResourceParams } from '@semiont/react-ui';
-import { createComposePageStateUnit } from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
+import type { SaveResourceParams as UISaveResourceParams } from '@xynoplex/react-ui';
+import { createComposePageStateUnit } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 
 function ComposeResourceContent() {

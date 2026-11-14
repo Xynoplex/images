@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Copy favicon assets from @semiont/react-ui to public directory
+ * Copy favicon assets from @xynoplex/react-ui to public directory
  * This ensures we don't duplicate assets in version control
  */
 

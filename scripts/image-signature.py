@@ -19,7 +19,7 @@ def signature(
     pending = []
     for line in text.splitlines():
         if re.search(r"\bnpm install\b", line) and not line.lstrip().startswith("#"):
-            pending += re.findall(r"@semiont/[a-z-]+", line)
+            pending += re.findall(r"@xynoplex/[a-z-]+", line)
         if not re.match(r"^\s*COPY\s", line, re.IGNORECASE):
             continue
         words = shlex.split(line, comments=True)
@@ -63,7 +63,7 @@ def signature(
             pending += [
                 dep
                 for dep in latest.get("dependencies", {})
-                if dep.startswith("@semiont/") and dep not in integrity
+                if dep.startswith("@xynoplex/") and dep not in integrity
             ]
     except (OSError, ValueError, KeyError):
         # An unknown dependency identity never permits a cached image to be skipped.

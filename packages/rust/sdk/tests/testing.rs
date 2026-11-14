@@ -1,4 +1,4 @@
-//! What a consumer's tests are built on (`semiont::testing`): a real client
+//! What a consumer's tests are built on (`xynoplex::testing`): a real client
 //! and a real session over doubles, and a factory of scripted sessions for a
 //! registry. A double answers what a test told it to and refuses the rest by
 //! name. It never answers with a value of its own making.
@@ -6,23 +6,23 @@
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use futures_core::Stream;
-use semiont::bus::{Bus, operation};
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::{ClientOptions, ClientTiming};
-use semiont::errors::{SemiontError, SessionError, SessionErrorCode, TransportError};
-use semiont::session::{
+use xynoplex::bus::{Bus, operation};
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::{ClientOptions, ClientTiming};
+use xynoplex::errors::{SemiontError, SessionError, SessionErrorCode, TransportError};
+use xynoplex::session::{
     SessionFactory, SessionFactoryOptions, SessionSignals, StoredSession, store_session,
 };
-use semiont::state_unit::StateUnit;
-use semiont::storage::InMemorySessionStorage;
-use semiont::testing::as_id;
-use semiont::testing::{
+use xynoplex::state_unit::StateUnit;
+use xynoplex::storage::InMemorySessionStorage;
+use xynoplex::testing::as_id;
+use xynoplex::testing::{
     FaultyTransport, InMemoryContent, ScriptedSessions, StubGateway, TestClientOptions,
     TestSessionOptions, create_test_client, create_test_session,
 };
-use semiont::timing::ERRORS_KEPT_FOR_FIRST_READER_COUNT;
-use semiont::transport::{ConnectionState, Content, Events, Failures, Transport};
-use semiont::types::{
+use xynoplex::timing::ERRORS_KEPT_FOR_FIRST_READER_COUNT;
+use xynoplex::transport::{ConnectionState, Content, Events, Failures, Transport};
+use xynoplex::types::{
     AnchoredTextAnswer, GatherResourceRequestOptions, HttpEndpoint, HttpEndpointProtocol,
     KbEndpoint, KbTarget, KnowledgeBase, ResourceId, UserResponse,
 };
@@ -127,7 +127,7 @@ async fn a_test_client_is_built_over_what_the_test_gives_it() {
     // on after three seconds, not the client's thirty.
     let silent = FaultyTransport::answering(
         BRIDGED_CHANNELS,
-        vec![semiont::testing::FaultAction::DropReply],
+        vec![xynoplex::testing::FaultAction::DropReply],
         |_, _| Ok(None),
     );
     let impatient = create_test_client(TestClientOptions {

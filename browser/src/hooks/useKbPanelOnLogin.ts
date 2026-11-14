@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import type { SemiontBrowser } from '@semiont/sdk';
+import type { SemiontBrowser } from '@xynoplex/sdk';
 
 /**
  * A newly live session opens the Knowledge Base panel.

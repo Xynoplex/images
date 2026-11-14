@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import type { Page } from '@playwright/test';
-import { resourceId as ridBrand } from '@semiont/sdk';
+import { resourceId as ridBrand } from '@xynoplex/sdk';
 
 import { openResourceByName } from '../fixtures/discover';
 import { signInSession } from '../fixtures/sdk-session';

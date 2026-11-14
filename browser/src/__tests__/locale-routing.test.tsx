@@ -14,7 +14,7 @@ import { Component, type ReactNode } from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { LOCALE_CODES } from '@semiont/core';
+import { LOCALE_CODES } from '@xynoplex/core';
 
 vi.unmock('react-router');
 vi.unmock('react-i18next');

@@ -42,7 +42,7 @@ The Semiont Browser is a Vite + React Router SPA. The architecture emphasizes:
 
 #### Hybrid CSS Architecture
 The Browser uses a hybrid CSS approach that combines:
-- **@semiont/react-ui** - Semantic CSS with BEM methodology for all UI components, organized into:
+- **@xynoplex/react-ui** - Semantic CSS with BEM methodology for all UI components, organized into:
   - `core/` - Fundamental UI elements (buttons, toggles, sliders, badges, tags, indicators)
   - `patterns/` - Shared patterns (cards, panel base and helpers)
   - `panels/` - Panel-specific styles (history, user)
@@ -51,7 +51,7 @@ The Browser uses a hybrid CSS approach that combines:
 - **Tailwind CSS** - Utility-first CSS for app-specific layouts and custom components
 
 This architecture ensures:
-- Framework-agnostic component library (@semiont/react-ui uses semantic CSS)
+- Framework-agnostic component library (@xynoplex/react-ui uses semantic CSS)
 - Modular organization with clear separation (core elements vs. components vs. panels)
 - Centralized design tokens for consistency (panel tokens, color palettes)
 - W3C Web Annotation compliance with dedicated motivation styles
@@ -64,7 +64,7 @@ This architecture ensures:
 
 ### Component Library Architecture
 
-The Browser leverages **@semiont/react-ui**, a comprehensive framework-agnostic component library that provides:
+The Browser leverages **@xynoplex/react-ui**, a comprehensive framework-agnostic component library that provides:
 
 #### Core Components
 - **UI Components**: Button, Toolbar, Toast, StatusDisplay
@@ -81,7 +81,7 @@ The Browser leverages **@semiont/react-ui**, a comprehensive framework-agnostic 
 - **Resource Hooks**: useResourceContent, useMediaToken
 
 #### Provider Pattern
-@semiont/react-ui uses a two-layer provider model — global (every page) and protected (only routes that require auth):
+@xynoplex/react-ui uses a two-layer provider model — global (every page) and protected (only routes that require auth):
 
 ```tsx
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
@@ -112,13 +112,13 @@ This architecture enables:
 - **Framework Independence**: Components work with any React framework
 - **Consistent Design**: Shared components across all Semiont applications
 - **Type Safety**: Shared TypeScript types and interfaces
-- **Tested in the library**: the components' tests live with them in `@semiont/react-ui`
+- **Tested in the library**: the components' tests live with them in `@xynoplex/react-ui`
 - **Clear Boundaries**: Separation between framework code and UI components
 
 See [Component Library Integration Guide](COMPONENT-LIBRARY.md) for detailed usage.
 
 ### API Communication
-- **`@semiont/sdk`** over `@semiont/http-transport` - every call to a knowledge base. The app itself contains no `fetch` call
+- **`@xynoplex/sdk`** over `@xynoplex/http-transport` - every call to a knowledge base. The app itself contains no `fetch` call
 - **Server-Sent Events (SSE)** - the bus stream: one `POST /bus/subscribe` connection for the active knowledge base
 
 ### Two origins
@@ -173,7 +173,7 @@ SemiontProvider (app root) → SemiontBrowser singleton (library-side, outside R
 ### Authentication Hooks
 
 ```typescript
-import { useSemiont, useObservable } from '@semiont/react-ui';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
 
 // The browser singleton and its observable session state
 const browser = useSemiont();
@@ -195,7 +195,7 @@ await browser.signOut(activeKbId!);
 
 High-churn entity data and browser-persistent application state are managed as observable stores — `BehaviorSubject`-backed classes with no React dependency. Components subscribe via `useObservable(store.observable$)`.
 
-**Verb namespace Observables** (live in `@semiont/sdk`, owned by `SemiontClient`):
+**Verb namespace Observables** (live in `@xynoplex/sdk`, owned by `SemiontClient`):
 
 | Namespace | Access | What it caches |
 |---|---|---|
@@ -203,16 +203,16 @@ High-churn entity data and browser-persistent application state are managed as o
 | Browse | `semiont.browse.annotations(id)` | Annotation lists per resource, updated in-place by enriched SSE events |
 | Browse | `semiont.browse.entityTypes()` | Entity types, updated via `frame:entity-type-added` bus channel |
 
-These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(semiont.browse.annotations(resourceId))`. See [`@semiont/sdk` Usage.md](../../../docs/builder/Usage.md) for the full verb namespace API.
+These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(semiont.browse.annotations(resourceId))`. See [`@xynoplex/sdk` Usage.md](../../../docs/builder/Usage.md) for the full verb namespace API.
 
-**Application state** lives on the `SemiontBrowser` singleton (`@semiont/sdk`) and in `@semiont/react-ui` hooks:
+**Application state** lives on the `SemiontBrowser` singleton (`@xynoplex/sdk`) and in `@xynoplex/react-ui` hooks:
 
 | Where | What it holds |
 |---|---|
 | `browser.openResources$` | Open document tabs, per KB; persisted through the `SessionStorage` adapter, which on the web is `WebBrowserStorage` (`localStorage`, synced across browser tabs by the `storage` event) |
 | `useSessionExpiry()` | Time left on the active session's access token (`session.expiresAt`); drives the "expiring soon" warning |
 
-The browser APIs (`localStorage`, `window`) stay in `WebBrowserStorage` (`@semiont/react-ui`); the SDK sees only the `SessionStorage` interface.
+The browser APIs (`localStorage`, `window`) stay in `WebBrowserStorage` (`@xynoplex/react-ui`); the SDK sees only the `SessionStorage` interface.
 
 **React integration**: `SemiontProvider` exposes the `SemiontBrowser` singleton via `useSemiont()`. Each per-KB `SemiontSession` owns its `SemiontClient` and feeds it the in-memory bearer token as `token$`; the client reads the observable's current value on every request, so token refreshes propagate automatically without any React-specific wiring.
 
@@ -232,20 +232,20 @@ ResourceViewerPage
       → browser/PDF.js fetches directly, streams
 ```
 
-`ResourceViewerPage` loads what the view for the media type's render mode reads (`capabilitiesOf(mediaType)?.render`, from `@semiont/core`):
+`ResourceViewerPage` loads what the view for the media type's render mode reads (`capabilitiesOf(mediaType)?.render`, from `@xynoplex/core`):
 - `'image'` or `'pdf'` → `useMediaToken` → URL passed to the image/PDF viewer
 - `'text'` → `useResourceContent` (fetch + decode to string) → text viewer
 - `'none'`, or a type the registry does not know → nothing. The no-preview fallback reads no content, and its download link mints its own token
 
-Callers of `ResourceViewerPage` do not manage media tokens; the component handles it internally. The `useMediaToken` hook is available from `@semiont/react-ui` for any component that needs a token-authenticated URL independently.
+Callers of `ResourceViewerPage` do not manage media tokens; the component handles it internally. The `useMediaToken` hook is available from `@xynoplex/react-ui` for any component that needs a token-authenticated URL independently.
 
-See [`@semiont/http-transport/docs/MEDIA-TOKENS.md`](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
+See [`@xynoplex/http-transport/docs/MEDIA-TOKENS.md`](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
 
 ### UI State (React Context)
 
 UI-only state and framework-agnostic providers:
 
-**Framework-Agnostic Providers** (from `@semiont/react-ui`):
+**Framework-Agnostic Providers** (from `@xynoplex/react-ui`):
 - `SemiontProvider` - Puts the `SemiontBrowser` singleton (KB list, active KB, per-KB `SemiontSession` + its `SemiontClient`, open resources) into context; read via `useSemiont()`
 - `TranslationProvider` - Injects `TranslationManager` for i18n
 - `ToastProvider` - Toast notification queue
@@ -285,13 +285,13 @@ semiont.yield.delegate({ title: 'Summary', storageUri: 'file://summary.md', cont
 semiont.frame.addEntityType('Person');       // Promise<void>
 ```
 
-`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@semiont/sdk` Usage.md](../../../docs/builder/Usage.md) for the full namespace API.
+`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@xynoplex/sdk` Usage.md](../../../docs/builder/Usage.md) for the full namespace API.
 
 ### Caching and Invalidation
 
 There are no query keys to manage. Each live `browse.*` query is backed by an internal `Cache` primitive keyed by its resource id. Caches refresh themselves in response to gateway **domain events** delivered over the bus gateway — call sites never invalidate anything by hand. `mark:added`, for example, refetches the resource's annotation list and history, and `frame:entity-type-added` refetches the entity types.
 
-The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@semiont/core` at build); [CACHE-SEMANTICS.md](../../../protocol/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
+The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynoplex/core` at build); [CACHE-SEMANTICS.md](../../../protocol/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
 
 ### Error Handling
 
@@ -385,13 +385,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const translationManager = useMergedTranslationManager();
 
   return (
-    <TranslationProvider translationManager={translationManager}>  {/* @semiont/react-ui — i18n */}
-      <SemiontProvider>            {/* @semiont/react-ui — the SemiontBrowser singleton (sessions, KBs, the per-KB SemiontClient + app-scoped event bus) */}
-        <ToastProvider>            {/* @semiont/react-ui — toast notifications */}
-          <LiveRegionProvider>     {/* @semiont/react-ui — screen reader announcements */}
+    <TranslationProvider translationManager={translationManager}>  {/* @xynoplex/react-ui — i18n */}
+      <SemiontProvider>            {/* @xynoplex/react-ui — the SemiontBrowser singleton (sessions, KBs, the per-KB SemiontClient + app-scoped event bus) */}
+        <ToastProvider>            {/* @xynoplex/react-ui — toast notifications */}
+          <LiveRegionProvider>     {/* @xynoplex/react-ui — screen reader announcements */}
             <KeyboardShortcutsProvider>  {/* app-specific */}
-              <ThemeProvider>      {/* @semiont/react-ui — theme */}
-                <LineNumbersProvider>  {/* @semiont/react-ui — line-numbers display */}
+              <ThemeProvider>      {/* @xynoplex/react-ui — theme */}
+                <LineNumbersProvider>  {/* @xynoplex/react-ui — line-numbers display */}
                   <NavigationHandler />
                   {children}       {/* the landing page, /auth/connect, /auth/callback, /auth/error, or the AuthShell-wrapped routes below */}
                 </LineNumbersProvider>
@@ -459,7 +459,7 @@ browser/src/
 │   ├── config.ts          # i18next initialisation
 │   └── routing.tsx        # Link, useRouter, usePathname, redirect
 ├── lib/                   # App-specific utility libraries
-│   ├── routing.tsx        # Link and routes for @semiont/react-ui
+│   ├── routing.tsx        # Link and routes for @xynoplex/react-ui
 │   ├── tracing.ts         # OpenTelemetry tracer
 │   └── browser-stubs/     # Browser API stubs
 └── types/                 # TypeScript type definitions
@@ -507,7 +507,7 @@ packages/typescript/react-ui/src/      # Reusable React components library
 
 **Note**: `AuthErrorDisplay` is framework-agnostic and lives in `packages/typescript/react-ui/src/features/auth/`. Signing in is not a component: the Browser sends the user to the knowledge base's issuer and completes the exchange on its callback route. The Browser provides React Router-specific wrappers that handle routing, translations, and auth state.
 
-See [`@semiont/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for documentation on the reusable component library.
+See [`@xynoplex/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for documentation on the reusable component library.
 
 ## Key Design Patterns
 
@@ -515,10 +515,10 @@ See [`@semiont/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for
 
 **Philosophy:** Avoid framework lock-in by inverting dependencies.
 
-The `@semiont/react-ui` library uses the **Provider Pattern** to remain framework-agnostic:
+The `@xynoplex/react-ui` library uses the **Provider Pattern** to remain framework-agnostic:
 
 ```tsx
-// @semiont/react-ui defines the INTERFACE (TranslationManager); the Browser
+// @xynoplex/react-ui defines the INTERFACE (TranslationManager); the Browser
 // provides an IMPLEMENTATION backed by i18next
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
 
@@ -537,7 +537,7 @@ function I18nRoot({ children }: { children: React.ReactNode }) {
 **Benefits:**
 - ✅ The UI library imports no i18n library; the host brings its own (the Browser's is i18next)
 - ✅ Routing works the same way: components take the host's `Link` and `routes` as props
-- ✅ Easy to test with mock implementations (`createMockTranslationManager` in `@semiont/react-ui/test-utils`)
+- ✅ Easy to test with mock implementations (`createMockTranslationManager` in `@xynoplex/react-ui/test-utils`)
 - ✅ Clear separation of concerns
 
 See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for complete documentation.
@@ -588,7 +588,7 @@ function ResourceView({ resourceId }: { resourceId: ResourceId }) {
   const resource = useObservable(semiont?.browse.resource(resourceId));     // CacheState<ResourceDescriptor>
   const annotations = useObservable(semiont?.browse.annotations(resourceId)); // CacheState<Annotation[]>
   // Each emits CacheState (pending → ready | failed) and re-emits on every
-  // cache update; unwrap the value with readyValue(...) from @semiont/sdk
+  // cache update; unwrap the value with readyValue(...) from @xynoplex/sdk
   // ...
 }
 ```
@@ -677,7 +677,7 @@ Panels keep their entries' DOM nodes through React ref callbacks, not through an
 ### React UI Library
 - [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) - Provider Pattern architecture
 - [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) - Annotation system documentation
-- [`@semiont/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
+- [`@xynoplex/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
 
 ### Browser Documentation
 - [AUTHENTICATION.md](AUTHENTICATION.md) - Authentication and authorization

@@ -191,7 +191,7 @@ nor `gemma3:1b` answered them correctly within their timeouts.
   (see [How CI runs the suite](#how-ci-runs-the-suite)); otherwise run it
   against a stack you brought up.
 - **Seeded.** Playwright's global setup ([`scripts/seed.ts`](scripts/seed.ts))
-  authenticates through `@semiont/sdk` and uploads the fixtures the specs
+  authenticates through `@xynoplex/sdk` and uploads the fixtures the specs
   assume: text resources for the annotation specs, PDFs for the PDF specs.
   Each seed has a stable
   storage URI, so a re-run against a seeded knowledge base skips it.

@@ -18,8 +18,8 @@ crate you want is [`semiont`](../sdk/README.md).
 It is separate from the SDK so that a client links none of this: no
 validators, no configuration reader, no broker.
 
-A protocol type it reaches is the SDK's (`semiont::types`): one home for
+A protocol type it reaches is the SDK's (`xynoplex::types`): one home for
 each. What a service writes about itself is
 [`semiont-observability`](../observability/README.md)'s, and how it
 reaches the bus is the SDK's client over
-[`semiont-http-transport`](../http-transport/README.md).
+[`xynoplex-http-transport`](../http-transport/README.md).

@@ -25,10 +25,10 @@ use axum::response::Response;
 use bytes::Bytes;
 use opentelemetry::KeyValue;
 use opentelemetry::trace::SpanKind;
-use semiont::bus_log::bus_log;
-use semiont::channels::TRACE_FIELD;
-use semiont::transport::TraceCarrier;
-use semiont::types::{BusSubscribeRequest, LimitRefusalCode};
+use xynoplex::bus_log::bus_log;
+use xynoplex::channels::TRACE_FIELD;
+use xynoplex::transport::TraceCarrier;
+use xynoplex::types::{BusSubscribeRequest, LimitRefusalCode};
 use semiont_core::spec::spec;
 use semiont_http_service::ConnectionAbort;
 use semiont_observability::logging;
@@ -367,7 +367,7 @@ impl Connection {
         };
         let parent = match &trace {
             Some((traceparent, tracestate)) => {
-                semiont_telemetry::continued(Some(traceparent), tracestate.as_deref())
+                xynoplex_telemetry::continued(Some(traceparent), tracestate.as_deref())
             }
             None => opentelemetry::Context::current(),
         };
@@ -379,7 +379,7 @@ impl Connection {
                     traceparent,
                     tracestate,
                 }),
-            ) = (&mut payload, semiont_telemetry::active_trace())
+            ) = (&mut payload, xynoplex_telemetry::active_trace())
             {
                 let mut carrier = Map::new();
                 carrier.insert("traceparent".to_owned(), json!(traceparent));
@@ -415,7 +415,7 @@ impl Connection {
                 if let Some(scope) = &scope {
                     attributes.push(KeyValue::new("bus.scope", scope.clone()));
                 }
-                semiont_telemetry::in_span_now(
+                xynoplex_telemetry::in_span_now(
                     format!("sse.deliver:{channel}"),
                     SpanKind::Producer,
                     attributes,

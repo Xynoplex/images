@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { resourceId as ridBrand } from '@semiont/sdk';
+import { resourceId as ridBrand } from '@xynoplex/sdk';
 import { signInSession } from '../fixtures/sdk-session';
 import { buildLargeDocument } from '../fixtures/large-document';
 

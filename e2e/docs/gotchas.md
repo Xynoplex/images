@@ -10,7 +10,7 @@ only in secure contexts, so on container/LAN IPs (e.g.
 `http://192.168.64.60:3000`) it is `undefined`.
 
 Every id made in the browser — correlationIds and KB ids — comes from
-`@semiont/core`'s `uuidV4()`, built on `crypto.getRandomValues()`,
+`@xynoplex/core`'s `uuidV4()`, built on `crypto.getRandomValues()`,
 which is available in every context. So the suite needs no polyfill and
 none exists.
 

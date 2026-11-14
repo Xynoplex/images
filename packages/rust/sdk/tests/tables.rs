@@ -3,13 +3,13 @@
 //! principals. And what a registry keeps in its storage, held to
 //! protocol/specs/src/session/stored.json.
 
-use semiont::identity;
-use semiont::refresh::CacheQuery;
-use semiont::session::{
+use xynoplex::identity;
+use xynoplex::refresh::CacheQuery;
+use xynoplex::session::{
     ACTIVE_KEY, KNOWLEDGE_BASES_KEY, LAST_VIEWED_RESOURCE_BY_KB_KEY, OPEN_RESOURCES_BY_KB_KEY,
     OpenResource, StoredSession, cache_key, last_event_id_key, person_key, session_key,
 };
-use semiont::testing::as_id;
+use xynoplex::testing::as_id;
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
 

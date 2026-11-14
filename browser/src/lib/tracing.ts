@@ -3,7 +3,7 @@
  * import, so the web SDK stays out of the bundle unless a collector is
  * configured — and calls `initObservabilityWeb` once.
  *
- * It lives here, not in `@semiont/observability`, because the Browser is its
+ * It lives here, not in `@xynoplex/observability`, because the Browser is its
  * one user: in that package it made every server that traces carry a browser
  * tracing SDK it never loads.
  *

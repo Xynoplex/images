@@ -5,7 +5,7 @@
 
 mod support;
 
-use semiont::types::Job;
+use xynoplex::types::Job;
 use serde_json::{Value, json};
 
 /// The job `job-1`, in `status`, with what that status states of it.

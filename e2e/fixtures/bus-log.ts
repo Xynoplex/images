@@ -4,7 +4,7 @@ import { expect } from '@playwright/test';
 /**
  * Bus-log capture for e2e tests.
  *
- * Enables the cross-wire logging (`busLog()` in `@semiont/core`) by
+ * Enables the cross-wire logging (`busLog()` in `@xynoplex/core`) by
  * flipping `globalThis.__SEMIONT_BUS_LOG__` at page init, then listens
  * for `console.debug` lines matching the `[bus OP]` format and
  * collects them into structured entries.

@@ -1,17 +1,17 @@
 //! The bus typed by channel: what the typed methods put on the wire and read
 //! off it, and the shapes the annotation model's types decode.
 
-use semiont::bus::{Bus, StreamError};
-use semiont::channels::{
+use xynoplex::bus::{Bus, StreamError};
+use xynoplex::channels::{
     BRIDGED_CHANNELS, BeckonFocus, BrowseEntityTypesRequested, BrowseEntityTypesResult, Channel,
     JobCreate, MarkAdded, MarkArchived, MarkEntityTagAdded, MarkEntityTagRemoved, Recorded,
     Request, YieldCreate,
 };
-use semiont::errors::{SemiontError, TransportErrorCode};
-use semiont::testing::as_id;
-use semiont::testing::{FaultAction, FaultyTransport};
-use semiont::transport::{Envelope, Frame, FrameRefusal, FrameRefusalReason, Transport};
-use semiont::types::{
+use xynoplex::errors::{SemiontError, TransportErrorCode};
+use xynoplex::testing::as_id;
+use xynoplex::testing::{FaultAction, FaultyTransport};
+use xynoplex::transport::{Envelope, Frame, FrameRefusal, FrameRefusalReason, Transport};
+use xynoplex::types::{
     Annotation, AnnotationBodies, AnnotationTargetValue, BeckonFocusEvent,
     BrowseEntityTypesRequest, GetAnnotationsResponse, ResourceId,
 };

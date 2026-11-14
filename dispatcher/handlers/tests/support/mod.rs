@@ -2,7 +2,7 @@
 //! it was asked and holds at most one job, a knowledge base with no
 //! vocabulary, and a frame handled over them.
 
-use semiont::types::{
+use xynoplex::types::{
     BusFrame, FailureClass, Job, JobFilter, JobId, JobPending, JobStoredProgress, JobStoredResult,
     TagSchema,
 };

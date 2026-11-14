@@ -7,15 +7,15 @@
 //! that must see a state reads the observer before it causes the next.
 
 use futures_core::Stream;
-use semiont::cache::{Cache, CachePersister, CacheState, StoragePersister};
-use semiont::errors::{BusRequestError, BusRequestErrorCode, SemiontError};
-use semiont::state_unit::StateUnit;
-use semiont::storage::{InMemorySessionStorage, SessionStorage};
-use semiont::testing::axioms::{
+use xynoplex::cache::{Cache, CachePersister, CacheState, StoragePersister};
+use xynoplex::errors::{BusRequestError, BusRequestErrorCode, SemiontError};
+use xynoplex::state_unit::StateUnit;
+use xynoplex::storage::{InMemorySessionStorage, SessionStorage};
+use xynoplex::testing::axioms::{
     AxiomSubject, Fresh, StreamSurface, Surface, assert_state_unit_axioms,
 };
-use semiont::timing::{MAX_STORED_BYTES_COUNT, SAVE_DEBOUNCE};
-use semiont::transport::BoxFuture;
+use xynoplex::timing::{MAX_STORED_BYTES_COUNT, SAVE_DEBOUNCE};
+use xynoplex::transport::BoxFuture;
 use serde_json::{Value, json};
 use std::collections::{HashMap, VecDeque};
 use std::pin::Pin;

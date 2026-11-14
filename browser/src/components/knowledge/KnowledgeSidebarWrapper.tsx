@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { LeftSidebar, useSemiont, useObservable } from '@semiont/react-ui';
+import { LeftSidebar, useSemiont, useObservable } from '@xynoplex/react-ui';
 import { KnowledgeNavigation } from './KnowledgeNavigation';
 import { Link, routes } from '@/lib/routing';
 

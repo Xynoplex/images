@@ -16,20 +16,20 @@
 //! own, so a wrong payload for a channel does not compile:
 //!
 //! ```
-//! # use semiont::bus::Bus;
-//! # use semiont::channels::BeckonFocus;
-//! # use semiont::transport::Envelope;
-//! # use semiont::types::BeckonFocusEvent;
+//! # use xynoplex::bus::Bus;
+//! # use xynoplex::channels::BeckonFocus;
+//! # use xynoplex::transport::Envelope;
+//! # use xynoplex::types::BeckonFocusEvent;
 //! # async fn focus(bus: &Bus, event: BeckonFocusEvent) {
 //! let _ = bus.emit::<BeckonFocus>(&event, Envelope::default()).await;
 //! # }
 //! ```
 //!
 //! ```compile_fail
-//! # use semiont::bus::Bus;
-//! # use semiont::channels::JobCreate;
-//! # use semiont::transport::Envelope;
-//! # use semiont::types::BeckonFocusEvent;
+//! # use xynoplex::bus::Bus;
+//! # use xynoplex::channels::JobCreate;
+//! # use xynoplex::transport::Envelope;
+//! # use xynoplex::types::BeckonFocusEvent;
 //! # async fn focus(bus: &Bus, event: BeckonFocusEvent) {
 //! let _ = bus.emit::<JobCreate>(&event, Envelope::default()).await;
 //! # }
@@ -478,8 +478,8 @@ impl Bus {
     /// here, where nothing would ever be delivered to it:
     ///
     /// ```compile_fail,E0277
-    /// use semiont::bus::Bus;
-    /// use semiont::channels::MarkAdded;
+    /// use xynoplex::bus::Bus;
+    /// use xynoplex::channels::MarkAdded;
     ///
     /// fn read(bus: &Bus) {
     ///     let _ = bus.frames::<MarkAdded>();
@@ -497,9 +497,9 @@ impl Bus {
     /// and no other's.
     ///
     /// ```
-    /// use semiont::bus::Bus;
-    /// use semiont::channels::MarkAdded;
-    /// use semiont::types::ResourceId;
+    /// use xynoplex::bus::Bus;
+    /// use xynoplex::channels::MarkAdded;
+    /// use xynoplex::types::ResourceId;
     ///
     /// async fn follow(bus: &Bus, resource: &ResourceId) {
     ///     let Ok(mut added) = bus.frames_of::<MarkAdded>(resource) else {

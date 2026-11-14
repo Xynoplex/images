@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import type { EventMap } from '@semiont/core';
+import type { EventMap } from '@xynoplex/core';
 import { usePathname, useRouter } from '@/i18n/routing';
-import { useEventSubscriptions } from '@semiont/react-ui';
+import { useEventSubscriptions } from '@xynoplex/react-ui';
 import { routes } from '@/lib/routing';
 
 /**
  * NavigationHandler - Connects NavigationEventBus to Next.js router
  *
- * This component subscribes to navigation events from @semiont/react-ui
+ * This component subscribes to navigation events from @xynoplex/react-ui
  * components and handles them using Next.js client-side routing.
  *
  * Benefits:

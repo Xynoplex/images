@@ -1,28 +1,28 @@
 //! The README's examples, compiled and run over the testing doubles. Each
 //! fenced Rust block of README.md is one of the regions marked here, word
-//! for word (`semiont::testing::examples`).
+//! for word (`xynoplex::testing::examples`).
 
 use bytes::Bytes;
-use semiont::annotations::{QuotedText, annotation_of_span, reconcile};
-use semiont::bus::{operation, reply_names};
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::claims::{ClaimOptions, Held, HeldJob, JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, Mark};
-use semiont::client::SemiontClient;
-use semiont::errors::SemiontError;
-use semiont::session::{
+use xynoplex::annotations::{QuotedText, annotation_of_span, reconcile};
+use xynoplex::bus::{operation, reply_names};
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::claims::{ClaimOptions, Held, HeldJob, JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, Mark};
+use xynoplex::client::SemiontClient;
+use xynoplex::errors::SemiontError;
+use xynoplex::session::{
     SemiontBrowser, SemiontBrowserConfig, SemiontSession, SessionFactory, SessionFactoryOptions,
     StoredSession, save_knowledge_bases,
 };
-use semiont::state::{MarkStateUnit, PendingAnnotation};
-use semiont::storage::SessionStorage;
-use semiont::testing::as_id;
-use semiont::testing::examples::assert_readme_shows;
-use semiont::testing::{
+use xynoplex::state::{MarkStateUnit, PendingAnnotation};
+use xynoplex::storage::SessionStorage;
+use xynoplex::testing::as_id;
+use xynoplex::testing::examples::assert_readme_shows;
+use xynoplex::testing::{
     ContentCall, FaultAction, FaultyTransport, RequestLogEntry, ScriptedSessions, SharedStorage,
     TestClientOptions, create_test_client,
 };
-use semiont::transport::{BoxFuture, Envelope, Frame, PutBinaryRequest};
-use semiont::types::{
+use xynoplex::transport::{BoxFuture, Envelope, Frame, PutBinaryRequest};
+use xynoplex::types::{
     Agent, GatherResourceRequestOptions, GenerationJobParams, HighlightingJobParams, HttpEndpoint,
     HttpEndpointProtocol, InvalidIdentifier, JobCompleteCommand, KbEndpoint, KnowledgeBase,
     LinkingJobParams, MarkJobCompleteCommand, MarkJobDone, Motivation, ResourceId, YieldJobResult,
@@ -614,7 +614,7 @@ impl SessionFactory for Keeping {
     fn session(
         &self,
         options: SessionFactoryOptions,
-    ) -> Result<SemiontSession, semiont::errors::SessionError> {
+    ) -> Result<SemiontSession, xynoplex::errors::SessionError> {
         let session = self.sessions.session(options)?;
         self.clients
             .lock()

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
-import { LOCALES } from '@semiont/core';
-import { MainContent } from '@semiont/react-ui';
+import { LOCALES } from '@xynoplex/core';
+import { MainContent } from '@xynoplex/react-ui';
 
 /**
  * Shown when the URL names no locale the Browser serves. It assumes no

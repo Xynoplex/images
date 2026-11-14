@@ -9,13 +9,13 @@ What a Semiont service writes about itself, and what exports it.
 [dispatcher](../../../dispatcher/README.md) and the
 [Archivist](../../../archivist/README.md). An application built on the
 SDK installs an OpenTelemetry of its own instead:
-[`semiont-telemetry`](../telemetry/README.md) says how.
+[`xynoplex-telemetry`](../telemetry/README.md) says how.
 
 | Module | What it holds |
 |---|---|
-| `telemetry` | Spans and metrics over OTLP/HTTP, configured from the environment the process reads itself, under a resource naming the service, its version and the knowledge base it serves (`semiont.kb`, its DID), and registered as the process's OpenTelemetry: what `semiont-telemetry`'s spans, the transport's among them, report to. With it, the count of the emits a gateway accepted (`semiont.bus.emit`); the meter a service makes its own instruments on; the readings a process takes of itself (start time, restarts under a supervisor, runtime lag, memory) and of a fatal panic. It gives the bus log its trace (`semiont::bus_log`). |
+| `telemetry` | Spans and metrics over OTLP/HTTP, configured from the environment the process reads itself, under a resource naming the service, its version and the knowledge base it serves (`semiont.kb`, its DID), and registered as the process's OpenTelemetry: what `xynoplex-telemetry`'s spans, the transport's among them, report to. With it, the count of the emits a gateway accepted (`semiont.bus.emit`); the meter a service makes its own instruments on; the readings a process takes of itself (start time, restarts under a supervisor, runtime lag, memory) and of a fatal panic. It gives the bus log its trace (`xynoplex::bus_log`). |
 | `logging` | Log lines on stdout, at the level and in the format a configuration document names. |
 | `alloc` | The allocator's own count of memory in use. |
 
-It is separate from `semiont-telemetry` so that a client links no exporter
+It is separate from `xynoplex-telemetry` so that a client links no exporter
 and no OpenTelemetry SDK, which CI holds of the transport.

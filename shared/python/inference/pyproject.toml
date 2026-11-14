@@ -28,7 +28,7 @@ dependencies = [
     "httpx",
     "opentelemetry-api",
     "pydantic",
-    "semiont",
+    "xynoplex",
 ]
 
 # A provider's own library is not required: it comes with the extra named for
@@ -60,7 +60,7 @@ Issues = "https://github.com/Xynoplex/images/issues"
 # The SDK is the one in this repository: this package is checked and tested
 # against the types the tree's spec generates.
 [tool.uv.sources]
-semiont = { path = "../../../packages/python/sdk", editable = true }
+xynoplex = { path = "../../../packages/python/sdk", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to

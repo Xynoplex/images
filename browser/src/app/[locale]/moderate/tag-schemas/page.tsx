@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { isReady } from '@semiont/sdk';
+import { isReady } from '@xynoplex/sdk';
 import { useTranslation } from 'react-i18next';
-import { Toolbar } from '@semiont/react-ui';
+import { Toolbar } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
-import { useTheme, useShellStateUnit, useObservable, useSemiont } from '@semiont/react-ui';
-import { TagSchemasPage } from '@semiont/react-ui';
+import { useTheme, useShellStateUnit, useObservable, useSemiont } from '@xynoplex/react-ui';
+import { TagSchemasPage } from '@xynoplex/react-ui';
 
 export default function TagSchemasPageWrapper() {
   const { t } = useTranslation(undefined, { keyPrefix: 'ModerateTagSchemas' });

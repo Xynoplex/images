@@ -10,8 +10,8 @@ use axum::extract::{DefaultBodyLimit, FromRequest, Multipart, Path, Query, Reque
 use axum::http::{HeaderMap, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post, put};
-use semiont::media_types::{base_media_type, capabilities_of};
-use semiont::roles::{SERVICE_ROLE, has_role};
+use xynoplex::media_types::{base_media_type, capabilities_of};
+use xynoplex::roles::{SERVICE_ROLE, has_role};
 use semiont_archivist_record::{Object, ids};
 use semiont_http_service::{IssuerVerifier, bearer_token};
 use semiont_observability::logging;

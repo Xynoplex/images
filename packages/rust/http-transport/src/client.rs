@@ -4,7 +4,7 @@
 
 use crate::content::HttpContentTransport;
 use crate::transport::{HttpTransport, HttpTransportConfig};
-use semiont::client::{ClientOptions, SemiontClient};
+use xynoplex::client::{ClientOptions, SemiontClient};
 use std::sync::Arc;
 
 /// A client over the gateway `config` names. The transport opens its stream

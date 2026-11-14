@@ -9,9 +9,9 @@ import {
   useEventSubscriptions,
   CollapsibleResourceNavigation,
   type NavigationItem,
-} from '@semiont/react-ui';
-import type { EventMap } from '@semiont/core';
-import type { OpenResource } from '@semiont/sdk';
+} from '@xynoplex/react-ui';
+import type { EventMap } from '@xynoplex/core';
+import type { OpenResource } from '@xynoplex/sdk';
 // Custom telescope icon component
 const TelescopeIcon = ({ className }: { className?: string }) => (
   <span className={className} style={{ fontSize: '1.25rem', lineHeight: '1' }}>🔭</span>

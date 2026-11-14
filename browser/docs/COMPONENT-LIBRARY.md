@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Semiont Browser leverages **`@semiont/react-ui`**, a framework-
+The Semiont Browser leverages **`@xynoplex/react-ui`**, a framework-
 agnostic React component library, reusable across different
 applications and frameworks. This document
 explains the package boundary, what lives where, and how the Browser
@@ -36,7 +36,7 @@ composes the library.
 └─────────────────────────────────────┘
 ```
 
-### What Lives in `@semiont/react-ui`
+### What Lives in `@xynoplex/react-ui`
 
 #### Components
 - **Core UI** — Toolbar, StatusDisplay, Toast
@@ -58,7 +58,7 @@ composes the library.
 - `AnnotationProvider`, `ResourceAnnotationsProvider` — annotation + workspace state
 - `ThemeProvider`, `LineNumbersProvider`, `ToastProvider`, `LiveRegionProvider` — theming, line-number display, toasts, a11y live region
 
-#### Flow state units (from `@semiont/sdk`, re-exported)
+#### Flow state units (from `@xynoplex/sdk`, re-exported)
 - `createMarkStateUnit`, `createGatherStateUnit`, `createMatchStateUnit`, `createYieldStateUnit`, `createBeckonStateUnit`
 
 #### Page state units (react-ui's own)
@@ -152,7 +152,7 @@ decision about where to mount them. For the provider/session API reference
 ### Basic usage
 
 ```tsx
-import { Toolbar, ResourceViewer, useSemiont } from '@semiont/react-ui';
+import { Toolbar, ResourceViewer, useSemiont } from '@xynoplex/react-ui';
 ```
 
 Provider-reading components (`Toolbar`, `SearchModal`, `SessionEndedModal`,
@@ -168,8 +168,8 @@ Flow VMs and namespace methods return RxJS Observables. The
 `useObservable` hook bridges them into React state:
 
 ```tsx
-import { useSemiont, useObservable } from '@semiont/react-ui';
-import { readyValue } from '@semiont/sdk';
+import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { readyValue } from '@xynoplex/sdk';
 
 function ResourceTitle({ resourceId }: { resourceId: ResourceId }) {
   // The client lives on the active session (null until one is active)
@@ -205,10 +205,10 @@ override component-internal styling.
 
 ## Benefits
 
-1. **Framework independence** — `@semiont/react-ui` works with any React framework (Vite, Next.js, etc.). Nothing in the library imports framework-specific modules.
+1. **Framework independence** — `@xynoplex/react-ui` works with any React framework (Vite, Next.js, etc.). Nothing in the library imports framework-specific modules.
 2. **Consistent design system** — shared components and tokens across apps.
 3. **Testing split** — components + flow VMs tested in isolation in react-ui; app tests focus on composition.
-4. **Clear dependency direction** — `browser` depends on `@semiont/react-ui`, never the reverse.
+4. **Clear dependency direction** — `browser` depends on `@xynoplex/react-ui`, never the reverse.
 5. **Observable-first** — dynamic state is modeled as RxJS Observables end-to-end, so consumers can compose and transform without framework coupling.
 
 ## Development Workflow
@@ -219,7 +219,7 @@ When developing features that span both packages:
 
 ```bash
 # Rebuild react-ui after changing it (the Browser consumes its dist/)
-npm run build --workspace=@semiont/react-ui
+npm run build --workspace=@xynoplex/react-ui
 
 # Run the Browser
 cd browser && npm run dev
@@ -229,7 +229,7 @@ cd browser && npm run dev
 
 Decide where the component lives:
 
-- **Framework-agnostic UI, reusable outside the Browser** → `@semiont/react-ui`.
+- **Framework-agnostic UI, reusable outside the Browser** → `@xynoplex/react-ui`.
 - **App-specific (routing, auth wiring, feature composition)** → `browser`.
 
 For library components:
@@ -257,7 +257,7 @@ importing `react-router` or an icon library (condensed from
 `src/components/knowledge/KnowledgeNavigation.tsx`):
 
 ```tsx
-import { CollapsibleResourceNavigation } from '@semiont/react-ui';
+import { CollapsibleResourceNavigation } from '@xynoplex/react-ui';
 import { PlusIcon, ChevronLeftIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import { Link, routes } from '@/lib/routing';
 
@@ -282,7 +282,7 @@ dependency.
 **Styles not loading**: import the package CSS once in your app entry:
 
 ```css
-@import '@semiont/react-ui/styles';
+@import '@xynoplex/react-ui/styles';
 ```
 
 **Provider errors (`useX must be used within XProvider`)**: check
@@ -293,13 +293,13 @@ inside `AuthShell`.
 packages so the generated OpenAPI types propagate:
 
 ```bash
-npm run generate:openapi --workspace=@semiont/core
-npm run build:packages -- @semiont/http-transport
+npm run generate:openapi --workspace=@xynoplex/core
+npm run build:packages -- @xynoplex/http-transport
 ```
 
 ## Best Practices
 
-1. **Don't duplicate** — if a component exists in `@semiont/react-ui`, use it.
+1. **Don't duplicate** — if a component exists in `@xynoplex/react-ui`, use it.
 2. **Extend, don't override** — add layout classes, not styling overrides.
 3. **Mount providers once** — at the layout level, not in components.
 4. **Prefer Observables for shared state** — the library uses RxJS for anything dynamic; stay on that rail.
@@ -307,8 +307,8 @@ npm run build:packages -- @semiont/http-transport
 
 ## Related Documentation
 
-- [`@semiont/react-ui` README](../../../packages/typescript/react-ui/README.md)
-- [`@semiont/react-ui` providers](../../../docs/builder/react-ui/SESSION.md)
-- [`@semiont/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
+- [`@xynoplex/react-ui` README](../../../packages/typescript/react-ui/README.md)
+- [`@xynoplex/react-ui` providers](../../../docs/builder/react-ui/SESSION.md)
+- [`@xynoplex/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
 - [API Integration](API-INTEGRATION.md)
 - [Browser Architecture](ARCHITECTURE.md)

@@ -7,7 +7,7 @@
  * "absent" from a KB list. ETag + no-cache make polling a revalidation
  * round-trip. The traversal probe and the inverse guard (SPA fallback still
  * works everywhere else) pin the carve-out's edges. Fetching
- * `DISCOVERY_URL_PATH` from @semiont/core couples the served prefix +
+ * `DISCOVERY_URL_PATH` from @xynoplex/core couples the served prefix +
  * filename to the constant every consumer will use.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -15,7 +15,7 @@ import http from 'node:http';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { DISCOVERY_URL_PATH } from '@semiont/core';
+import { DISCOVERY_URL_PATH } from '@xynoplex/core';
 import { createHandler } from '../../server.js';
 
 interface Response {

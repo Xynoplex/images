@@ -30,12 +30,12 @@ percent-encoding.workspace = true
 reqwest = { workspace = true, features = ["rustls-no-provider", "stream", "json"] }
 ring.workspace = true
 rustls = { workspace = true, features = ["ring", "std"] }
-semiont.workspace = true
+xynoplex.workspace = true
 semiont-core = { workspace = true, features = ["nats"] }
 semiont-http-service.workspace = true
-semiont-http-transport.workspace = true
+xynoplex-http-transport.workspace = true
 semiont-observability.workspace = true
-semiont-telemetry.workspace = true
+xynoplex-telemetry.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, features = ["preserve_order"] }
 socket2.workspace = true

@@ -6,7 +6,7 @@
  */
 
 import { Link as LocaleLink } from '@/i18n/routing';
-import type { RouteBuilder, LinkComponentProps } from '@semiont/react-ui';
+import type { RouteBuilder, LinkComponentProps } from '@xynoplex/react-ui';
 
 /**
  * react-ui components pass `href`; React Router's link takes `to`.

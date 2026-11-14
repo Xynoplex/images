@@ -3,8 +3,8 @@
 
 use crate::archivist::{Archivist, Refusal, primary_representation, text};
 use crate::naming;
-use semiont::channels::{Channel, MarkAdded, MarkBodyUpdated, MarkRemoved};
-use semiont::types::{
+use xynoplex::channels::{Channel, MarkAdded, MarkBodyUpdated, MarkRemoved};
+use xynoplex::types::{
     CommandErrorCode, JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter,
 };
 use semiont_archivist_record::agents::did_to_agent;

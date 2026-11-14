@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/routing';
 import { useTranslation } from 'react-i18next';
-import { MainContent } from '@semiont/react-ui';
+import { MainContent } from '@xynoplex/react-ui';
 import { useLocale } from '@/i18n/routing';
 
 export default function NotFound() {

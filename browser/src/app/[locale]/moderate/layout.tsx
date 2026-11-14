@@ -5,7 +5,7 @@ import {
   MainContent,
   useSemiont,
   useObservable,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 import { ModerationNavigation } from '@/components/moderation/ModerationNavigation';
 import { Link, routes } from '@/lib/routing';
 import { useRouter } from '@/i18n/routing';

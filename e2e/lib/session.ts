@@ -32,7 +32,7 @@ import {
   beginAuthorization,
   completeAuthorization,
   httpKb,
-} from '@semiont/sdk';
+} from '@xynoplex/sdk';
 
 /** Registered for every Browser origin at the issuer; nothing needs to answer here. */
 const CALLBACK = 'http://localhost:3000/en/auth/callback';

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { SemiontClient, resourceId as ridBrand } from '@semiont/sdk';
-import type { ResourceDescriptor } from '@semiont/core';
+import { SemiontClient, resourceId as ridBrand } from '@xynoplex/sdk';
+import type { ResourceDescriptor } from '@xynoplex/core';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**

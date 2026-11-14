@@ -26,7 +26,7 @@
 use opentelemetry::context::FutureExt;
 use opentelemetry::trace::{SpanKind, TraceContextExt, Tracer};
 use opentelemetry::{Context, KeyValue, global};
-use semiont::transport::TraceCarrier;
+use xynoplex::transport::TraceCarrier;
 use std::collections::HashMap;
 use std::future::Future;
 
@@ -202,7 +202,7 @@ pub fn active_trace() -> Option<TraceCarrier> {
 }
 
 /// The active span's trace id, when a span is active: what the bus log's
-/// `trace=` field reads (`semiont::bus_log::set_trace_id_provider`).
+/// `trace=` field reads (`xynoplex::bus_log::set_trace_id_provider`).
 pub fn active_trace_id() -> Option<String> {
     let context = Context::current();
     let span = context.span();

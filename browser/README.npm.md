@@ -1,8 +1,8 @@
-# @semiont/browser
+# @xynoplex/browser
 
-[![npm version](https://img.shields.io/npm/v/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
-[![npm downloads](https://img.shields.io/npm/dm/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
-[![License](https://img.shields.io/npm/l/@semiont/browser.svg)](https://github.com/Xynoplex/images/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/@xynoplex/browser.svg)](https://www.npmjs.com/package/@xynoplex/browser)
+[![npm downloads](https://img.shields.io/npm/dm/@xynoplex/browser.svg)](https://www.npmjs.com/package/@xynoplex/browser)
+[![License](https://img.shields.io/npm/l/@xynoplex/browser.svg)](https://github.com/Xynoplex/images/blob/main/LICENSE)
 
 Pre-built Semiont Browser as a Vite SPA with a zero-dependency Node.js static file server. This package contains the compiled Browser application ready to run with Node.js.
 
@@ -28,8 +28,8 @@ docker run --publish 3000:3000 -it ghcr.io/xynoplex/xynoplex-browser:latest
 ## Direct usage
 
 ```bash
-npm install @semiont/browser
-PORT=3000 node node_modules/@semiont/browser/server.js
+npm install @xynoplex/browser
+PORT=3000 node node_modules/@xynoplex/browser/server.js
 ```
 
 The SPA is gateway-agnostic: it connects to knowledge bases chosen in the browser at runtime, so the

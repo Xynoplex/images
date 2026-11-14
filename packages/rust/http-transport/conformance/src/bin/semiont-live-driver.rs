@@ -4,25 +4,25 @@
 //! protocol/conformance/sdk/README.md is the protocol.
 //!
 //! It reaches the SDK only as an application does, through what `semiont` and
-//! `semiont-http-transport` export.
+//! `xynoplex-http-transport` export.
 
-use semiont::cache::CacheState;
-use semiont::cached::Observed;
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::{CachePersistence, ClientOptions, ClientTiming, SemiontClient};
-use semiont::namespaces::{Delegation, ResourceFilters};
-use semiont::refresh::CacheQuery;
-use semiont::resume::CoupledBookmarks;
-use semiont::session::{last_event_id_key, person_key};
-use semiont::storage::InMemorySessionStorage;
-use semiont::transport::ConnectionState;
-use semiont::types::{AnnotationId, GenerationJobParams, MarkJobParams, ResourceId};
+use xynoplex::cache::CacheState;
+use xynoplex::cached::Observed;
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::{CachePersistence, ClientOptions, ClientTiming, SemiontClient};
+use xynoplex::namespaces::{Delegation, ResourceFilters};
+use xynoplex::refresh::CacheQuery;
+use xynoplex::resume::CoupledBookmarks;
+use xynoplex::session::{last_event_id_key, person_key};
+use xynoplex::storage::InMemorySessionStorage;
+use xynoplex::transport::ConnectionState;
+use xynoplex::types::{AnnotationId, GenerationJobParams, MarkJobParams, ResourceId};
 use semiont_conformance_drivers::{
     Arguments, Driver, Ended, Running, count, failed, failure, identifier, locked, object, say,
     serve, text,
 };
-use semiont_http_transport::client::client;
-use semiont_http_transport::transport::{HttpTransportConfig, Timing};
+use xynoplex_http_transport::client::client;
+use xynoplex_http_transport::transport::{HttpTransportConfig, Timing};
 use serde::Serialize;
 use serde_json::{Value, json};
 use std::collections::HashMap;

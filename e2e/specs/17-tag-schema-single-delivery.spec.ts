@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures/auth';
-import type { TagSchema } from '@semiont/sdk';
+import type { TagSchema } from '@xynoplex/sdk';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**

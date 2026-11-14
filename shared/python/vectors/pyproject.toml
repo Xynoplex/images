@@ -29,7 +29,7 @@ classifiers = [
 dependencies = [
     "httpx",
     "pydantic",
-    "semiont",
+    "xynoplex",
 ]
 
 [project.urls]
@@ -40,7 +40,7 @@ Issues = "https://github.com/Xynoplex/images/issues"
 # The SDK is the one in this repository: this package is checked and tested
 # against the types the tree's spec generates.
 [tool.uv.sources]
-semiont = { path = "../../../packages/python/sdk", editable = true }
+xynoplex = { path = "../../../packages/python/sdk", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to

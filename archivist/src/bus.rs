@@ -7,8 +7,8 @@
 
 use crate::archivist::{Archivist, Refusal};
 use crate::{browse, commands};
-use semiont::bus::{Bus, operation};
-use semiont::channels::{
+use xynoplex::bus::{Bus, operation};
+use xynoplex::channels::{
     BindUpdateBody, BrowseAnnotationHistoryRequested, BrowseAnnotationRequested,
     BrowseDirectoryRequested, BrowseEnginesRequested, BrowseEntityTypesRequested,
     BrowseEventsRequested, BrowseKbRequested, BrowseProfilesRequested, BrowseResourceRequested,
@@ -18,9 +18,9 @@ use semiont::channels::{
     MarkUpdateEntityTypes, PrincipalProfile, SmeltSettled, YieldCloneCreate, YieldClonePersist,
     YieldCloneResourceRequested, YieldCloneTokenRequested, YieldCreate, YieldUpdate,
 };
-use semiont::errors::TransportError;
-use semiont::transport::{Envelope, Frame, Frames};
-use semiont::types::CommandError;
+use xynoplex::errors::TransportError;
+use xynoplex::transport::{Envelope, Frame, Frames};
+use xynoplex::types::CommandError;
 use semiont_archivist_record::{Object, ids};
 use semiont_observability::logging;
 use serde_json::{Value, json};
@@ -232,7 +232,7 @@ async fn send(bus: &Bus, reply: Reply, envelope: Envelope) -> Result<(), Transpo
 
 async fn answer(archivist: &Archivist, bus: &Bus, frame: Frame) {
     let trace = frame.trace.clone();
-    semiont_telemetry::continuing(trace.as_ref(), async {
+    xynoplex_telemetry::continuing(trace.as_ref(), async {
         let Some(reply) = handle(archivist, &frame.channel, &frame.payload).await else {
             return;
         };

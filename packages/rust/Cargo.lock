@@ -2163,31 +2163,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "semiont"
-version = "0.7.3"
-dependencies = [
- "base64 0.23.1",
- "bytes",
- "encoding_rs",
- "futures-core",
- "getrandom 0.4.3",
- "log",
- "opentelemetry",
- "percent-encoding",
- "proptest",
- "rand_core 0.10.1",
- "ring",
- "semiont",
- "semiont-codegen",
- "serde",
- "serde_json",
- "tokio",
- "tokio-stream",
- "uuid",
- "windows-sys 0.61.2",
-]
-
-[[package]]
 name = "semiont-archivist"
 version = "0.0.0"
 dependencies = [
@@ -2199,18 +2174,18 @@ dependencies = [
  "reqwest",
  "ring",
  "rustls",
- "semiont",
  "semiont-archivist-record",
  "semiont-archivist-staging",
  "semiont-core",
  "semiont-http-service",
- "semiont-http-transport",
  "semiont-observability",
- "semiont-telemetry",
  "serde_json",
  "tikv-jemallocator",
  "tokio",
  "uuid",
+ "xynoplex",
+ "xynoplex-http-transport",
+ "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -2220,12 +2195,12 @@ dependencies = [
  "chrono",
  "jsonschema",
  "ring",
- "semiont",
  "serde",
  "serde-saphyr",
  "serde_json",
  "unicode-normalization",
  "uuid",
+ "xynoplex",
 ]
 
 [[package]]
@@ -2239,13 +2214,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "semiont-codegen"
-version = "0.7.3"
-dependencies = [
- "serde_json",
-]
-
-[[package]]
 name = "semiont-conformance-drivers"
 version = "0.0.0"
 dependencies = [
@@ -2256,13 +2224,13 @@ dependencies = [
  "opentelemetry",
  "reqwest",
  "rustls",
- "semiont",
- "semiont-http-transport",
  "semiont-observability",
- "semiont-telemetry",
  "serde",
  "serde_json",
  "tokio",
+ "xynoplex",
+ "xynoplex-http-transport",
+ "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -2273,12 +2241,12 @@ dependencies = [
  "bytes",
  "futures",
  "jsonschema",
- "semiont",
- "semiont-codegen",
  "semiont-observability",
  "serde",
  "serde_json",
  "tokio",
+ "xynoplex",
+ "xynoplex-codegen",
 ]
 
 [[package]]
@@ -2290,17 +2258,17 @@ dependencies = [
  "opentelemetry",
  "reqwest",
  "rustls",
- "semiont",
  "semiont-core",
  "semiont-dispatcher-handlers",
  "semiont-dispatcher-jetstream",
- "semiont-http-transport",
  "semiont-observability",
- "semiont-telemetry",
  "serde",
  "serde_json",
  "tikv-jemallocator",
  "tokio",
+ "xynoplex",
+ "xynoplex-http-transport",
+ "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -2308,12 +2276,12 @@ name = "semiont-dispatcher-handlers"
 version = "0.0.0"
 dependencies = [
  "chrono",
- "semiont",
  "semiont-observability",
  "serde",
  "serde_json",
  "tokio",
  "uuid",
+ "xynoplex",
 ]
 
 [[package]]
@@ -2324,12 +2292,12 @@ dependencies = [
  "bytes",
  "chrono",
  "futures",
- "semiont",
  "semiont-core",
  "semiont-dispatcher-handlers",
  "semiont-observability",
  "serde_json",
  "tokio",
+ "xynoplex",
 ]
 
 [[package]]
@@ -2351,12 +2319,9 @@ dependencies = [
  "reqwest",
  "ring",
  "rustls",
- "semiont",
  "semiont-core",
  "semiont-http-service",
- "semiont-http-transport",
  "semiont-observability",
- "semiont-telemetry",
  "serde",
  "serde_json",
  "socket2",
@@ -2364,6 +2329,9 @@ dependencies = [
  "tokio",
  "tower",
  "uuid",
+ "xynoplex",
+ "xynoplex-http-transport",
+ "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -2382,32 +2350,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "semiont-http-transport"
-version = "0.7.3"
-dependencies = [
- "axum",
- "base64 0.23.1",
- "bytes",
- "futures",
- "http-body-util",
- "opentelemetry",
- "opentelemetry_sdk",
- "proptest",
- "rand_core 0.10.1",
- "reqwest",
- "ring",
- "rustls",
- "semiont",
- "semiont-http-transport",
- "semiont-telemetry",
- "serde",
- "serde_json",
- "tokio",
- "tokio-stream",
- "uuid",
-]
-
-[[package]]
 name = "semiont-observability"
 version = "0.0.0"
 dependencies = [
@@ -2416,22 +2358,11 @@ dependencies = [
  "opentelemetry-otlp",
  "opentelemetry-stdout",
  "opentelemetry_sdk",
- "semiont",
- "semiont-telemetry",
  "serde_json",
  "tikv-jemalloc-ctl",
  "tokio",
-]
-
-[[package]]
-name = "semiont-telemetry"
-version = "0.7.3"
-dependencies = [
- "opentelemetry",
- "opentelemetry_sdk",
- "semiont",
- "serde_json",
- "tokio",
+ "xynoplex",
+ "xynoplex-telemetry",
 ]
 
 [[package]]
@@ -3381,6 +3312,75 @@ name = "writeable"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
+
+[[package]]
+name = "xynoplex"
+version = "0.7.3"
+dependencies = [
+ "base64 0.23.1",
+ "bytes",
+ "encoding_rs",
+ "futures-core",
+ "getrandom 0.4.3",
+ "log",
+ "opentelemetry",
+ "percent-encoding",
+ "proptest",
+ "rand_core 0.10.1",
+ "ring",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "uuid",
+ "windows-sys 0.61.2",
+ "xynoplex",
+ "xynoplex-codegen",
+]
+
+[[package]]
+name = "xynoplex-codegen"
+version = "0.7.3"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "xynoplex-http-transport"
+version = "0.7.3"
+dependencies = [
+ "axum",
+ "base64 0.23.1",
+ "bytes",
+ "futures",
+ "http-body-util",
+ "opentelemetry",
+ "opentelemetry_sdk",
+ "proptest",
+ "rand_core 0.10.1",
+ "reqwest",
+ "ring",
+ "rustls",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "uuid",
+ "xynoplex",
+ "xynoplex-http-transport",
+ "xynoplex-telemetry",
+]
+
+[[package]]
+name = "xynoplex-telemetry"
+version = "0.7.3"
+dependencies = [
+ "opentelemetry",
+ "opentelemetry_sdk",
+ "serde_json",
+ "tokio",
+ "xynoplex",
+]
 
 [[package]]
 name = "yoke"

@@ -1355,7 +1355,7 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont"
+name = "xynoplex"
 source = { editable = "../sdk" }
 dependencies = [
     { name = "cryptography" },
@@ -1396,7 +1396,7 @@ dependencies = [
     { name = "httpx" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.optional-dependencies]
@@ -1440,7 +1440,7 @@ requires-dist = [
     { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../sdk" },
+    { name = "xynoplex", editable = "../sdk" },
     { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
 ]
 provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]

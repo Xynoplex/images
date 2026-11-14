@@ -11,22 +11,22 @@
 use opentelemetry::Context;
 use opentelemetry::context::FutureExt;
 use opentelemetry::trace::{SpanContext, SpanId, TraceContextExt, TraceFlags, TraceId, TraceState};
-use semiont::bus::reply_channels_for;
-use semiont::claims::{
+use xynoplex::bus::reply_channels_for;
+use xynoplex::claims::{
     ClaimOptions, ClaimRefusal, ClaimTiming, Claims, HeldJob, HeldJobStall, JOB_CLAIM_CHANNELS,
     JOB_COMMIT_CHANNELS, JobFailure,
 };
-use semiont::client::SemiontClient;
-use semiont::errors::{BusRequestError, BusRequestErrorCode, SemiontError};
-use semiont::testing::{FaultAction, FaultyTransport, TestClientOptions, create_test_client};
-use semiont::timing::ERRORS_KEPT_FOR_FIRST_READER_COUNT;
-use semiont::transport::{
+use xynoplex::client::SemiontClient;
+use xynoplex::errors::{BusRequestError, BusRequestErrorCode, SemiontError};
+use xynoplex::testing::{FaultAction, FaultyTransport, TestClientOptions, create_test_client};
+use xynoplex::timing::ERRORS_KEPT_FOR_FIRST_READER_COUNT;
+use xynoplex::transport::{
     ConnectionState, Events, Frame, FrameRefusal, FrameRefusalReason, TraceCarrier,
 };
-use semiont::types::DurabilityEvidence::{
+use xynoplex::types::DurabilityEvidence::{
     Acknowledged, ProbeConfirmed, ProbeRefused, ProbeUnreachable,
 };
-use semiont::types::{
+use xynoplex::types::{
     Annotation, DurabilityEvidence, FailureClass, JobFilter, JobProgress, JobType, MarkJobDone,
     ResourceId, YieldJobResult,
 };
@@ -400,7 +400,7 @@ async fn held(claims: &Claims) -> HeldJob {
     }
 }
 
-fn found(found: u64, persisted: u64) -> semiont::types::MarkJobResult {
+fn found(found: u64, persisted: u64) -> xynoplex::types::MarkJobResult {
     MarkJobDone::new(found, persisted).into()
 }
 

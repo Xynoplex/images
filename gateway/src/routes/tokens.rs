@@ -6,7 +6,7 @@ use axum::body::Body;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::Response;
-use semiont::types::{MediaTokenRequest, MediaTokenResponse};
+use xynoplex::types::{MediaTokenRequest, MediaTokenResponse};
 use std::sync::Arc;
 
 /// `POST /api/tokens/media`: a token naming one resource for five minutes,

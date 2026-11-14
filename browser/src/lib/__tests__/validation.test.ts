@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { validateData, JWTTokenSchema } from '@semiont/core';
+import { validateData, JWTTokenSchema } from '@xynoplex/core';
 import {
   ImageURLSchema,
   sanitizeImageURL,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 
 const APP_ORIGIN = 'http://localhost:3000';
 

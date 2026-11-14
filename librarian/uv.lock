@@ -2111,7 +2111,7 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont"
+name = "xynoplex"
 source = { editable = "../packages/python/sdk" }
 dependencies = [
     { name = "cryptography" },
@@ -2150,7 +2150,7 @@ name = "semiont-graph"
 source = { editable = "../shared/python/graph" }
 dependencies = [
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.optional-dependencies]
@@ -2170,7 +2170,7 @@ requires-dist = [
     { name = "gremlinpython", marker = "extra == 'neptune'", specifier = ">=3.8,<4" },
     { name = "neo4j", marker = "extra == 'neo4j'", specifier = ">=6.4,<7" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 
@@ -2191,7 +2191,7 @@ dependencies = [
     { name = "httpx" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.optional-dependencies]
@@ -2224,7 +2224,7 @@ requires-dist = [
     { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
     { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
 ]
 provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
@@ -2246,7 +2246,7 @@ source = { editable = "." }
 dependencies = [
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
     { name = "semiont-graph" },
     { name = "semiont-inference" },
     { name = "semiont-service" },
@@ -2297,7 +2297,7 @@ dev = [
 requires-dist = [
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
     { name = "semiont-graph", editable = "../shared/python/graph" },
     { name = "semiont-graph", extras = ["janusgraph"], marker = "extra == 'janusgraph'", editable = "../shared/python/graph" },
     { name = "semiont-graph", extras = ["neo4j"], marker = "extra == 'neo4j'", editable = "../shared/python/graph" },
@@ -2334,7 +2334,7 @@ dependencies = [
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.metadata]
@@ -2344,7 +2344,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]
@@ -2362,14 +2362,14 @@ source = { editable = "../shared/python/vectors" }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
-    { name = "semiont" },
+    { name = "xynoplex" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "httpx" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "xynoplex", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]

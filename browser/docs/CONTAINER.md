@@ -54,15 +54,15 @@ One runtime variable:
 | `PORT` | run time | The port the static server listens on. Default `3000` |
 | `/discovery` | run time | A read-only mount the launcher uses to tell the app which knowledge bases are running on the machine. Optional |
 
-There are no `SEMIONT_*` variables. The bundle is built when the `@semiont/browser` npm package
+There are no `SEMIONT_*` variables. The bundle is built when the `@xynoplex/browser` npm package
 is published, and the server does no templating.
 
 ## What is in it
 
 - **Base image:** Node 26 on Alpine, as the [Dockerfile](../Dockerfile)'s `FROM` names it.
-- **Contents:** the published `@semiont/browser` npm package, installed at the image's version.
+- **Contents:** the published `@xynoplex/browser` npm package, installed at the image's version.
   The image does not build from source.
-- **Entrypoint:** `tini`, then `node node_modules/@semiont/browser/server.js`.
+- **Entrypoint:** `tini`, then `node node_modules/@xynoplex/browser/server.js`.
 - **Health check:** built in. It requests `/` every 30 seconds.
 - **Logs:** one line when the server starts listening, and any server error. It does not log
   requests.
@@ -72,7 +72,7 @@ file, and serves `/discovery/*` from its mount: a file or a 404, never the app.
 
 ## Tags
 
-- **The version**: the `@semiont/browser` package version in the image.
+- **The version**: the `@xynoplex/browser` package version in the image.
 - **`sha-<commit>`**: the commit the image was published from.
 - **`latest`**: moved to a release when it is promoted. It is what the launcher names in the
   Browser's document when it writes one; the document's `spec.image` decides what runs.
@@ -95,7 +95,7 @@ docker build \
 
 | Build argument | Default | |
 |---|---|---|
-| `SEMIONT_BROWSER_VERSION` | `latest` | The `@semiont/browser` version to install |
+| `SEMIONT_BROWSER_VERSION` | `latest` | The `@xynoplex/browser` version to install |
 | `NPM_REGISTRY` | `https://registry.npmjs.org` | The registry to install it from |
 
 To run a change that is not published, build every image from your working tree with

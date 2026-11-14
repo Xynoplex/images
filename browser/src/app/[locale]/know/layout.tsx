@@ -11,7 +11,7 @@ import {
   useObservable,
   useTheme,
   useKBDiscovery,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 import { useKbPanelOnLogin } from '@/hooks/useKbPanelOnLogin';
 

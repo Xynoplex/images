@@ -3,7 +3,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont"
+name = "xynoplex"
 dynamic = ["version"]
 description = "The Python SDK for Semiont, an open platform for building trusted AI knowledge bases"
 readme = "README.md"

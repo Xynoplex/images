@@ -4,12 +4,12 @@ ARG NPM_REGISTRY=https://registry.npmjs.org
 ARG SEMIONT_BROWSER_VERSION=latest
 WORKDIR /app
 # Cache mount: persists across --no-cache builds, never enters the image, and
-# republished @semiont/* still fetch fresh. No `npm cache clean` — the cache
+# republished @xynoplex/* still fetch fresh. No `npm cache clean` — the cache
 # never reaches a layer.
 RUN --mount=type=cache,target=/root/.npm \
     npm config set registry $NPM_REGISTRY && \
     npm init -y && \
-    npm install @semiont/browser@${SEMIONT_BROWSER_VERSION}
+    npm install @xynoplex/browser@${SEMIONT_BROWSER_VERSION}
 
 # Stage 2: minimal runtime — node only, no npm. The runtime entrypoint is
 # `node server.js`, so npm is build-only baggage. Removing it also drops
@@ -50,4 +50,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
 ENV SUPERVISE_NAME=browser \
     SUPERVISE_PROBE=http://localhost:3000/
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/boot.sh"]
-CMD ["node", "/app/node_modules/@semiont/browser/server.js"]
+CMD ["node", "/app/node_modules/@xynoplex/browser/server.js"]

@@ -13,7 +13,7 @@
  * If any link in this chain breaks, the user sees an empty page instead of
  * the modal. This is the integration the unit tests miss.
  *
- * Nothing inside `@semiont/sdk` is mocked: the gateway and the issuer are a
+ * Nothing inside `@xynoplex/sdk` is mocked: the gateway and the issuer are a
  * `fetch` stub. Asking who a token is is one request to `/api/users/me`
  * (`whoIs`). Refresh is the refresh grant at the issuer the stored session
  * names, keyed on that endpoint — every other fetch (the transport's event
@@ -25,10 +25,10 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
-import { SemiontProvider, TranslationProvider, WebBrowserStorage } from '@semiont/react-ui';
-import { englishTranslationManager } from '@semiont/react-ui/test-utils';
-import { SemiontBrowser, createHttpSessionFactory } from '@semiont/sdk';
-import en from '@semiont/react-ui/translations/en';
+import { SemiontProvider, TranslationProvider, WebBrowserStorage } from '@xynoplex/react-ui';
+import { englishTranslationManager } from '@xynoplex/react-ui/test-utils';
+import { SemiontBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
+import en from '@xynoplex/react-ui/translations/en';
 
 // The shell is mounted under react-ui's own English, and the copy is read
 // from there, never retyped.

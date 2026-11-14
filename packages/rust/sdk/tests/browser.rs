@@ -12,10 +12,10 @@
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use futures_core::Stream;
-use semiont::channels::BRIDGED_CHANNELS;
-use semiont::client::{CachePersistence, ClientOptions};
-use semiont::errors::{SessionError, SessionErrorCode, TransportError, TransportErrorCode};
-use semiont::session::{
+use xynoplex::channels::BRIDGED_CHANNELS;
+use xynoplex::client::{CachePersistence, ClientOptions};
+use xynoplex::errors::{SessionError, SessionErrorCode, TransportError, TransportErrorCode};
+use xynoplex::session::{
     ACTIVE_KEY, Expected, KNOWLEDGE_BASES_KEY, KbIdentityConflict, KbReadVerdict, KbSessionStatus,
     LAST_VIEWED_RESOURCE_BY_KB_KEY, MemorySignIn, OPEN_RESOURCES_BY_KB_KEY, OpenResource,
     PermissionDenied, SemiontBrowser, SemiontBrowserConfig, SemiontSession, SemiontSessionConfig,
@@ -23,14 +23,14 @@ use semiont::session::{
     load_knowledge_bases, person_key, save_knowledge_bases, session_key, store_session,
     stored_session,
 };
-use semiont::storage::{SessionStorage, StorageChange, StorageSubscription};
-use semiont::testing::as_id;
-use semiont::testing::{
+use xynoplex::storage::{SessionStorage, StorageChange, StorageSubscription};
+use xynoplex::testing::as_id;
+use xynoplex::testing::{
     FaultyTransport, ScriptedSessions, SharedStorage, TestClientOptions, create_test_client,
 };
-use semiont::timing::SAVE_DEBOUNCE;
-use semiont::transport::{BoxFuture, ConnectionState, Events, Transport};
-use semiont::types::{
+use xynoplex::timing::SAVE_DEBOUNCE;
+use xynoplex::transport::{BoxFuture, ConnectionState, Events, Transport};
+use xynoplex::types::{
     HttpEndpoint, HttpEndpointProtocol, KbEndpoint, KbRead, KnowledgeBase, NewKnowledgeBase,
     UserResponse,
 };

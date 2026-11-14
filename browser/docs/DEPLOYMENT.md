@@ -9,7 +9,7 @@ How the Semiont Browser is shipped and run.
 
 `ghcr.io/xynoplex/xynoplex-browser`, built by CI from
 [browser/Dockerfile](../Dockerfile) and tagged per release plus `latest`. The container serves
-on **port 3000** and its entrypoint is a plain `node node_modules/@semiont/browser/server.js` — no
+on **port 3000** and its entrypoint is a plain `node node_modules/@xynoplex/browser/server.js` — no
 CLI involved.
 
 Image build and publication: [administration/IMAGES.md](../../../docs/operator/administration/IMAGES.md).

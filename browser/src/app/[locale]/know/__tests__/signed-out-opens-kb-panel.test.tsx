@@ -19,10 +19,10 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
-import type { LinkComponentProps } from '@semiont/react-ui';
+import type { LinkComponentProps } from '@xynoplex/react-ui';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { SemiontProvider, ThemeProvider, WebBrowserStorage, createShellStateUnit } from '@semiont/react-ui';
-import { SemiontBrowser, createHttpSessionFactory } from '@semiont/sdk';
+import { SemiontProvider, ThemeProvider, WebBrowserStorage, createShellStateUnit } from '@xynoplex/react-ui';
+import { SemiontBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
@@ -48,8 +48,8 @@ vi.mock('react-router', async () => {
   return { ...actual, Outlet: () => null };
 });
 
-vi.mock('@semiont/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@semiont/react-ui')>('@semiont/react-ui');
+vi.mock('@xynoplex/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
   return {
     ...actual,
     Toolbar: () => null,

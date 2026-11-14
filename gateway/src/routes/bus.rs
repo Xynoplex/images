@@ -14,10 +14,10 @@ use axum::extract::State;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
 use opentelemetry::trace::SpanKind;
-use semiont::bus_log::bus_log;
-use semiont::channels::{Channel, PrincipalProfile};
-use semiont::transport::TraceCarrier;
-use semiont::types::{BusEmitAccepted, BusEmitRequest, CommandErrorCode, LimitRefusalCode};
+use xynoplex::bus_log::bus_log;
+use xynoplex::channels::{Channel, PrincipalProfile};
+use xynoplex::transport::TraceCarrier;
+use xynoplex::types::{BusEmitAccepted, BusEmitRequest, CommandErrorCode, LimitRefusalCode};
 use semiont_core::spec::spec;
 use semiont_observability::logging;
 use semiont_observability::telemetry;
@@ -39,7 +39,7 @@ pub fn envelope(correlation_id: Option<&str>) -> Option<Meta> {
     if let Some(TraceCarrier {
         traceparent,
         tracestate,
-    }) = semiont_telemetry::active_trace()
+    }) = xynoplex_telemetry::active_trace()
     {
         meta.insert("traceparent".to_owned(), traceparent);
         if let Some(state) = tracestate {
@@ -91,7 +91,7 @@ pub async fn emit(
     let key = idempotency_key(&headers, &limits::limits().emit_key_length)?;
     let request = json_body(body, OPERATION).await?;
     let get = |name: &str| headers.get(name).and_then(|v| v.to_str().ok());
-    let parent = semiont_telemetry::continued(get("traceparent"), get("tracestate"));
+    let parent = xynoplex_telemetry::continued(get("traceparent"), get("tracestate"));
     // The emit runs as a task of its own once its key is in hand: it owns what it reads.
     let (owner, emitter) = (app.clone(), principal.clone());
     Ok(app
@@ -194,8 +194,8 @@ async fn carry_out(
         }
     }
 
-    let attributes = semiont_telemetry::on_the_bus(&channel, scope.as_deref());
-    let dispatched = semiont_telemetry::in_span(format!("bus.dispatch:{channel}"), SpanKind::Server, attributes, parent, async {
+    let attributes = xynoplex_telemetry::on_the_bus(&channel, scope.as_deref());
+    let dispatched = xynoplex_telemetry::in_span(format!("bus.dispatch:{channel}"), SpanKind::Server, attributes, parent, async {
         let payload = Value::Object(payload);
         let echo = payload.clone();
         bus_log("EMIT", &channel, &payload, scope.as_deref(), correlation_id.as_deref());
@@ -298,8 +298,8 @@ mod tests {
     use crate::signal::{ClientSubscription, IngestReceipt, SharedTable, Subscription};
     use futures::FutureExt;
     use futures::future::BoxFuture;
-    use semiont::identity::person_did;
-    use semiont::types::UserId;
+    use xynoplex::identity::person_did;
+    use xynoplex::types::UserId;
     use std::sync::Mutex;
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::time::Duration;

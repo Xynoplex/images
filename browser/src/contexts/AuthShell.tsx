@@ -20,7 +20,7 @@ import {
   SessionEndedModal,
   PermissionDeniedModal,
   KbIdentityConflictModal,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();

@@ -32,17 +32,17 @@ repository = "https://github.com/Xynoplex/images"
 # Every crate a member uses, by version, once: a member names the ones it uses
 # with `.workspace = true` and adds the features it needs.
 [workspace.dependencies]
-semiont = { path = "sdk", version = "0.7.3" }
-semiont-codegen = { path = "codegen", version = "0.7.3" }
+xynoplex = { path = "sdk", version = "0.7.3" }
+xynoplex-codegen = { path = "codegen", version = "0.7.3" }
 semiont-archivist-record = { path = "../../archivist/record" }
 semiont-archivist-staging = { path = "../../archivist/staging" }
 semiont-dispatcher-handlers = { path = "../../dispatcher/handlers" }
 semiont-dispatcher-jetstream = { path = "../../dispatcher/jetstream" }
 semiont-core = { path = "core" }
 semiont-http-service = { path = "http-service" }
-semiont-http-transport = { path = "http-transport" }
+xynoplex-http-transport = { path = "http-transport" }
 semiont-observability = { path = "observability" }
-semiont-telemetry = { path = "telemetry", version = "0.7.3" }
+xynoplex-telemetry = { path = "telemetry", version = "0.7.3" }
 async-nats = { version = "0.50.0", default-features = false }
 axum = { version = "0.8.9", default-features = false }
 base64 = "0.23.1"

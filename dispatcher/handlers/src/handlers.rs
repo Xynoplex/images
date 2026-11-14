@@ -7,12 +7,12 @@
 
 use crate::admission::{Refusal, Vocabulary, admit};
 use crate::queue::{Checkpoint, Claim, FailOutcome, JobQueue, QueueError};
-use semiont::channels::{
+use xynoplex::channels::{
     Channel, JobAssign, JobCancel, JobCancelRequested, JobCheckpoint, JobClaim, JobComplete,
     JobCreate, JobFail, JobReportProgress, JobStatusRequested, Request,
 };
-use semiont::roles::WORKER_ROLE;
-use semiont::types::{
+use xynoplex::roles::WORKER_ROLE;
+use xynoplex::types::{
     BusFrame, CommandError, CommandErrorCode, Job, JobAssignCommand, JobCancelCommand,
     JobCancelRequest, JobCheckpointCommand, JobClaimCommand, JobClaimedResult, JobCompleteCommand,
     JobCreatedResult, JobCreatedResultResponse, JobFailCommand, JobId, JobProgress,

@@ -10,14 +10,14 @@ import {
   useHoverDelay,
   useTheme,
   useLineNumbers,
-} from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
 import { UserPanel } from '../UserPanel';
 import { KnowledgeBasePanel } from '../KnowledgeBasePanel';
 import { useKeyboardShortcutsContext } from '@/contexts/KeyboardShortcutsContext';
 import { useLocale } from '@/i18n/routing';
 import { usePathname, useRouter } from '@/i18n/routing';
-import { COMMON_PANELS } from '@semiont/react-ui';
-import type { ToolbarPanelType } from '@semiont/react-ui';
+import { COMMON_PANELS } from '@xynoplex/react-ui';
+import type { ToolbarPanelType } from '@xynoplex/react-ui';
 
 interface ToolbarPanelsProps {
   activePanel: ToolbarPanelType | null;

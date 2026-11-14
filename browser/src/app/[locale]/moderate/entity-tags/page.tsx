@@ -7,8 +7,8 @@ import {
   useSemiont,
   useSessionStateUnit,
   EntityTagsPage,
-} from '@semiont/react-ui';
-import { createEntityTagsStateUnit } from '@semiont/react-ui';
+} from '@xynoplex/react-ui';
+import { createEntityTagsStateUnit } from '@xynoplex/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 
 export default function EntityTagsPageWrapper() {

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import { Providers } from '../providers';
-import { SkipLinks } from '@semiont/react-ui';
+import { SkipLinks } from '@xynoplex/react-ui';
 
 /**
  * Locale Layout — root layout for all /:locale/* routes.
