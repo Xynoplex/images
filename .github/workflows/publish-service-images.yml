@@ -131,6 +131,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
 
       # The license gate runs node; an arm64 runner's image need not carry it.
       - name: Set up Node
@@ -401,6 +403,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
 
       - name: Determine tags
         id: tags

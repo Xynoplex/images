@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
 
       - name: Verify packages are installable from npm
         # A just-published version is not installable for minutes afterwards,
