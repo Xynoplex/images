@@ -14,8 +14,8 @@ holds the rule.
 import asyncio
 from typing import Final
 
-from semiont.retry import RetryFacts, RetryRule
-from semiont.types import FailureClass
+from xynoplex.retry import RetryFacts, RetryRule
+from xynoplex.types import FailureClass
 from semiont_inference.interface import ProviderWithheldError, StructuredReadError, StructuredUnsupportedError
 
 from semiont_worker.inference_call import InferenceTimeoutError

@@ -19,9 +19,9 @@ from dataclasses import dataclass
 from typing import Final, final, override
 
 from pydantic import JsonValue
-from semiont.errors import BusRequestError
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import (
+from xynoplex.errors import BusRequestError
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import (
     AnchoredTextAbsent,
     AnchoredTextAnswer,
     Annotation,

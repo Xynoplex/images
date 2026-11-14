@@ -12,8 +12,8 @@ from typing import Annotated, Final, Literal
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from semiont.types import UnitCursor
-from semiont.watched import Variable
+from xynoplex.types import UnitCursor
+from xynoplex.watched import Variable
 from semiont_inference.interface import InferenceLimits, StructuredReadError, TokenUsage
 from spec import SPEC
 

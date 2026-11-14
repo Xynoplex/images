@@ -19,8 +19,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Final, Literal, final
 
-from semiont.resources import resource_entity_types
-from semiont.types import ResourceDescriptor
+from xynoplex.resources import resource_entity_types
+from xynoplex.types import ResourceDescriptor
 from semiont_service.white_space import trimmed
 
 from semiont_librarian.views import GraphViews

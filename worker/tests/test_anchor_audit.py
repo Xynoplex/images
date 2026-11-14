@@ -11,7 +11,7 @@ from typing import get_args
 import pytest
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
-from semiont.annotations import AnchorMethod
+from xynoplex.annotations import AnchorMethod
 from telemetry_rows import worker_metrics
 
 from semiont_worker.detection.anchor_audit import note_anchor

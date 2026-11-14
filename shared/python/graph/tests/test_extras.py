@@ -16,7 +16,7 @@ NEO4J = 'Neo4jGraphConfig(type="neo4j", uri="bolt://127.0.0.1:1", username="neo4
 ASKING_FOR_NEITHER = f"""
 import sys
 import semiont_graph
-from semiont.types import MemoryGraphConfig
+from xynoplex.types import MemoryGraphConfig
 from semiont_graph.codec import intended_graph_annotation
 from semiont_graph.factory import create_graph_database
 from semiont_graph.interface import GraphDatabase
@@ -27,7 +27,7 @@ print(type(store).__name__, {LOADED}, "semiont_graph.neo4j" in sys.modules, "sem
 
 ASKING_FOR_NEO4J = f"""
 import sys
-from semiont.types import Neo4jGraphConfig
+from xynoplex.types import Neo4jGraphConfig
 from semiont_graph.factory import create_graph_database
 
 store = create_graph_database({NEO4J}, password="p")
@@ -38,7 +38,7 @@ WITHOUT_THE_CLIENT = f"""
 import sys
 
 sys.modules["neo4j"] = None  # as an interpreter has it where the client is not installed
-from semiont.types import MemoryGraphConfig, Neo4jGraphConfig
+from xynoplex.types import MemoryGraphConfig, Neo4jGraphConfig
 from semiont_graph.factory import create_graph_database
 
 for ask in ("the factory", "the module"):
@@ -53,7 +53,7 @@ print(type(create_graph_database(MemoryGraphConfig(type="memory"), password=None
 """
 
 WITHOUT_A_PASSWORD = f"""
-from semiont.types import Neo4jGraphConfig
+from xynoplex.types import Neo4jGraphConfig
 from semiont_graph.factory import create_graph_database
 
 for password in (None, ""):
@@ -65,7 +65,7 @@ for password in (None, ""):
 
 ASKING_FOR_A_READER_IN_MEMORY = f"""
 import sys
-from semiont.types import MemoryGraphConfig
+from xynoplex.types import MemoryGraphConfig
 from semiont_graph.factory import create_graph_reader
 
 reader = create_graph_reader(MemoryGraphConfig(type="memory"), password=None)
@@ -73,7 +73,7 @@ print(type(reader).__name__, {LOADED}, "semiont_graph.neo4j" in sys.modules)
 """
 
 ASKING_FOR_EACH_READER = f"""
-from semiont.types import JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
+from xynoplex.types import JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
 from semiont_graph.factory import create_graph_reader
 
 # No server listens at any of these addresses: a reader that dialled when it was made would fail here.

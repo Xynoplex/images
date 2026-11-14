@@ -28,7 +28,7 @@ from dataclasses import dataclass, replace
 from typing import Final, final, override
 
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 
 from semiont_vectors.merge import merge_by_resource
 from semiont_vectors.payload import (

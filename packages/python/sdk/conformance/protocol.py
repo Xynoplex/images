@@ -17,7 +17,7 @@ from typing import Final, final
 
 from pydantic import JsonValue, TypeAdapter, ValidationError
 
-from semiont.errors import JobError, SemiontError
+from xynoplex.errors import JobError, SemiontError
 
 __all__ = [
     "Arguments",

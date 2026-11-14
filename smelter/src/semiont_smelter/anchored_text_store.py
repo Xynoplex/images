@@ -47,10 +47,10 @@ from typing import Final, Protocol, Self, final, override
 
 import httpx
 from pydantic import JsonValue, TypeAdapter, ValidationError
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     AnchoredTextDeclinedEntry,
     AnchoredTextEntries,
     AnchoredTextEntry,

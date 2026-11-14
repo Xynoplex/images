@@ -22,9 +22,9 @@ from pydantic import JsonValue, TypeAdapter
 from spec import SPEC, JsonObject, read, strings, text
 from tokens import expired, token
 
-from semiont.cache import Ready
-from semiont.errors import IdentityUnverifiableError, SignInError
-from semiont.http.oauth import (
+from xynoplex.cache import Ready
+from xynoplex.errors import IdentityUnverifiableError, SignInError
+from xynoplex.http.oauth import (
     BeginAuthorizationOptions,
     IssuedTokens,
     PendingAuthorization,
@@ -32,15 +32,15 @@ from semiont.http.oauth import (
     code_challenge,
     complete_authorization,
 )
-from semiont.http.session import HttpSessionFactory, begin_sign_in, complete_sign_in, describe_connection
-from semiont.identifiers import ResourceId
-from semiont.registry import SemiontBrowser, SemiontBrowserConfig, save_knowledge_bases, store_session, stored_session
-from semiont.session import SemiontSession
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import PENDING_AUTHORIZATION_KEY, StoredSession, last_event_id_key, person_key
-from semiont.transport import Transport
-from semiont.types import HttpEndpoint, KnowledgeBase, LocalEndpoint
-from semiont.watched import reached
+from xynoplex.http.session import HttpSessionFactory, begin_sign_in, complete_sign_in, describe_connection
+from xynoplex.identifiers import ResourceId
+from xynoplex.registry import SemiontBrowser, SemiontBrowserConfig, save_knowledge_bases, store_session, stored_session
+from xynoplex.session import SemiontSession
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import PENDING_AUTHORIZATION_KEY, StoredSession, last_event_id_key, person_key
+from xynoplex.transport import Transport
+from xynoplex.types import HttpEndpoint, KnowledgeBase, LocalEndpoint
+from xynoplex.watched import reached
 
 _JSON = TypeAdapter[JsonValue](JsonValue)
 

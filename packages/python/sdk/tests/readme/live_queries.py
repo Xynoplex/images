@@ -1,10 +1,10 @@
 from typing import assert_never
 
-from semiont.cache import Failed, Pending, Ready
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.transport import Transport
+from xynoplex.cache import Failed, Pending, Ready
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.transport import Transport
 
 
 async def watch(client: SemiontClient[Transport], resource: ResourceId) -> None:

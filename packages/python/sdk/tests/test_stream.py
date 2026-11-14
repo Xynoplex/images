@@ -21,11 +21,11 @@ import httpx
 import pytest
 from aio import run, soon
 
-from semiont._kept_for_first_reader import KeptForFirstReader
-from semiont.errors import SemiontError
-from semiont.http.stream import Stream, Timing
-from semiont.transport import FrameHub, ReplyRouter
-from semiont.watched import Variable
+from xynoplex._kept_for_first_reader import KeptForFirstReader
+from xynoplex.errors import SemiontError
+from xynoplex.http.stream import Stream, Timing
+from xynoplex.transport import FrameHub, ReplyRouter
+from xynoplex.watched import Variable
 
 QUICK: Final = Timing(reconnect_ms=10)
 

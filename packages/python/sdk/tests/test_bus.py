@@ -10,16 +10,16 @@ from aio import run, soon, turns
 from kb import recorded, refusing, silent
 from pydantic import JsonValue, ValidationError
 
-from semiont.bus import Bus, Delivered, decoded, reply_channels_for
-from semiont.channel import Empty
-from semiont.channels import BECKON_FOCUS, BECKON_HOVER, JOB_CREATE, JOB_QUEUED, MARK_ARCHIVED, MARK_DELETE, PANEL_CLOSE
-from semiont.errors import BusRequestError, TransportError
-from semiont.identifiers import AnnotationId, JobId, ResourceId
-from semiont.model import stated, written
-from semiont.operations import BROWSE_KB_REQUESTED, FRAME_ADD_ENTITY_TYPE, JOB_STATUS_REQUESTED, MARK_CREATE_REQUEST
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame, FrameRefusal
-from semiont.types import (
+from xynoplex.bus import Bus, Delivered, decoded, reply_channels_for
+from xynoplex.channel import Empty
+from xynoplex.channels import BECKON_FOCUS, BECKON_HOVER, JOB_CREATE, JOB_QUEUED, MARK_ARCHIVED, MARK_DELETE, PANEL_CLOSE
+from xynoplex.errors import BusRequestError, TransportError
+from xynoplex.identifiers import AnnotationId, JobId, ResourceId
+from xynoplex.model import stated, written
+from xynoplex.operations import BROWSE_KB_REQUESTED, FRAME_ADD_ENTITY_TYPE, JOB_STATUS_REQUESTED, MARK_CREATE_REQUEST
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame, FrameRefusal
+from xynoplex.types import (
     BeckonFocusEvent,
     BeckonHoverEvent,
     BrowseKbRequest,

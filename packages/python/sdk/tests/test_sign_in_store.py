@@ -28,11 +28,11 @@ from pydantic import JsonValue
 from spec import SPEC, JsonObject, objects, read, strings, text
 from tokens import jwt, token
 
-from semiont.errors import SignInError
-from semiont.http.oauth import renew_kept
-from semiont.session import HeldSignIn, MemorySignIn, SignInKept
-from semiont.sign_in import SignIn
-from semiont.sign_in_store import FILE_NAME, SignInStore
+from xynoplex.errors import SignInError
+from xynoplex.http.oauth import renew_kept
+from xynoplex.session import HeldSignIn, MemorySignIn, SignInKept
+from xynoplex.sign_in import SignIn
+from xynoplex.sign_in_store import FILE_NAME, SignInStore
 
 SCHEMA = read(SPEC / "sign-in-store/SignIn.json")
 RENEWALS = objects(read(SPEC / "sign-in-store/cases.json")["renewals"], "renewals")
@@ -515,7 +515,7 @@ def test_the_event_loop_turns_while_a_change_waits_for_the_lock(tmp_path: Path) 
 # A program that adds its own members to the store's document, one change at a time.
 WRITER = """
 import sys
-from semiont.sign_in_store import SignInStore
+from xynoplex.sign_in_store import SignInStore
 store = SignInStore(sys.argv[1])
 def put(key, value):
     def change(document):

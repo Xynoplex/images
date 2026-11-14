@@ -19,16 +19,16 @@ import pytest
 from aio import pass_time, run, soon
 from provider import HOLD, Anthropic, Ollama, saying, window
 from pydantic import JsonValue
-from semiont import telemetry
-from semiont.bus import Bus
-from semiont.channel import Operation
-from semiont.errors import TransportError
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.operations import LIMITS_OPERATIONS
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame, TraceContext
-from semiont.types import CommandError, InferenceLimitsRequest, InferenceLimitsResult
+from xynoplex import telemetry
+from xynoplex.bus import Bus
+from xynoplex.channel import Operation
+from xynoplex.errors import TransportError
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.operations import LIMITS_OPERATIONS
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame, TraceContext
+from xynoplex.types import CommandError, InferenceLimitsRequest, InferenceLimitsResult
 from spec import SPEC, JsonObject, read, thing
 
 from semiont_inference.anthropic import AnthropicInferenceClient

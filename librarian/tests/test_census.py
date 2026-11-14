@@ -30,7 +30,7 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from semiont.bus import reply_channels_for
+from xynoplex.bus import reply_channels_for
 from semiont_vectors.store import VectorReader, VectorStore
 from spec import PROJECT, ROOT, SDK
 

@@ -8,7 +8,7 @@ say (`semiont.media_types.text_source_of`).
 
 from typing import Final
 
-from semiont.media_types_table import MEDIA_TYPES
+from xynoplex.media_types_table import MEDIA_TYPES
 
 GENERATABLE_MEDIA_TYPES: Final[tuple[str, ...]] = tuple(row.media_type for row in MEDIA_TYPES if row.generatable)
 """The media types the registry marks `generatable`, in its order: what a `yield` job can write."""

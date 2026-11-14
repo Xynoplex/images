@@ -10,10 +10,10 @@ from collections.abc import Mapping
 
 import pytest
 from pydantic import JsonValue, ValidationError
-from semiont.annotations import body_source, entity_types
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import Annotation, ResourceDescriptor
+from xynoplex.annotations import body_source, entity_types
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, ResourceDescriptor
 from spec import SPEC, JsonObject, objects, read, strings, text, thing
 
 from semiont_graph.codec import (

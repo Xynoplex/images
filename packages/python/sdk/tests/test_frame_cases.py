@@ -18,17 +18,17 @@ from gateway_server import GatewayServer
 from pydantic import BaseModel, Field
 from spec import SPEC, JsonObject
 
-from semiont.bus import Bus, Delivered, Heard, Typed
-from semiont.channels import BECKON_FOCUS, GATHER_FAILED
-from semiont.errors import SemiontError
-from semiont.http import HttpTransport, Timing
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.operations import BROWSE_RESOURCE_REQUESTED
-from semiont.retry import RetryPolicy
-from semiont.transport import Frame, FrameRefusal
-from semiont.types import BeckonFocusEvent, BrowseResourceResult, CommandError, GatherFailed
-from semiont.watched import Variable, reached
+from xynoplex.bus import Bus, Delivered, Heard, Typed
+from xynoplex.channels import BECKON_FOCUS, GATHER_FAILED
+from xynoplex.errors import SemiontError
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED
+from xynoplex.retry import RetryPolicy
+from xynoplex.transport import Frame, FrameRefusal
+from xynoplex.types import BeckonFocusEvent, BrowseResourceResult, CommandError, GatherFailed
+from xynoplex.watched import Variable, reached
 
 type Told = Literal["readers", "failure-report"]
 type Reason = Literal["lacks", "malformed"]

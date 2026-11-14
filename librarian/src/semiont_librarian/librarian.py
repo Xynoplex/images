@@ -47,13 +47,13 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue, ValidationError
-from semiont import telemetry
-from semiont.bus import Bus, decoded
-from semiont.channel import Channel, Response
-from semiont.channels import SMELT_SETTLED, WEAVE_APPLIED
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import WireModel
-from semiont.operations import (
+from xynoplex import telemetry
+from xynoplex.bus import Bus, decoded
+from xynoplex.channel import Channel, Response
+from xynoplex.channels import SMELT_SETTLED, WEAVE_APPLIED
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import WireModel
+from xynoplex.operations import (
     GATHER_LIMITS_REQUESTED,
     GATHER_REFERENCED_BY_REQUESTED,
     GATHER_REQUESTED,
@@ -63,8 +63,8 @@ from semiont.operations import (
     MATCH_RESOURCES_REQUESTED,
     MATCH_SEARCH_REQUESTED,
 )
-from semiont.transport import Frame, FrameRefusal, FrameSink, Transport
-from semiont.types import (
+from xynoplex.transport import Frame, FrameRefusal, FrameSink, Transport
+from xynoplex.types import (
     CommandError,
     ContextualSummaryResponse,
     GatherAnnotationComplete,

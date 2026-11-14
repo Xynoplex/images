@@ -42,12 +42,12 @@ from spec import JsonObject, text
 from storages import Refusing
 from tokens import expired, token
 
-from semiont.bus import reply_channels_for
-from semiont.cache import Pending, Ready
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.errors import SemiontError, SessionError, SignInError, TransportError
-from semiont.http import AgentToken, DeviceCode, HttpTransport, ServiceToken, session_from_kept, sign_in_device, sign_out
-from semiont.http.oauth import (
+from xynoplex.bus import reply_channels_for
+from xynoplex.cache import Pending, Ready
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.errors import SemiontError, SessionError, SignInError, TransportError
+from xynoplex.http import AgentToken, DeviceCode, HttpTransport, ServiceToken, session_from_kept, sign_in_device, sign_out
+from xynoplex.http.oauth import (
     IssuedTokens,
     discover_issuer,
     issuer_client,
@@ -56,18 +56,18 @@ from semiont.http.oauth import (
     revoke_at_issuer,
     sign_in_with_device_grant,
 )
-from semiont.identifiers import ResourceId, UserId
-from semiont.identity import agent_did
-from semiont.operations import BROWSE_RESOURCE_REQUESTED, MARK_DELETE
-from semiont.registry import kept_in
-from semiont.session import HeldSignIn, MemorySignIn, SemiontSession, SessionEndReason, SignInKept
-from semiont.sign_in_store import FILE_NAME, SignInStore
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import KEPT_QUERIES, cache_key, last_event_id_key, person_key
-from semiont.testing import create_test_client
-from semiont.timing import DEVICE_POLL_MS, DEVICE_SLOW_DOWN_MS, MAX_RECONNECT_MS, MIN_REFRESH_DELAY_MS
-from semiont.types import HttpEndpoint, KbTarget, LocalEndpoint, UserResponse
-from semiont.watched import Variable, Watched, reached
+from xynoplex.identifiers import ResourceId, UserId
+from xynoplex.identity import agent_did
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED, MARK_DELETE
+from xynoplex.registry import kept_in
+from xynoplex.session import HeldSignIn, MemorySignIn, SemiontSession, SessionEndReason, SignInKept
+from xynoplex.sign_in_store import FILE_NAME, SignInStore
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import KEPT_QUERIES, cache_key, last_event_id_key, person_key
+from xynoplex.testing import create_test_client
+from xynoplex.timing import DEVICE_POLL_MS, DEVICE_SLOW_DOWN_MS, MAX_RECONNECT_MS, MIN_REFRESH_DELAY_MS
+from xynoplex.types import HttpEndpoint, KbTarget, LocalEndpoint, UserResponse
+from xynoplex.watched import Variable, Watched, reached
 
 _JSON = TypeAdapter[JsonValue](JsonValue)
 

@@ -20,10 +20,10 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue, TypeAdapter
-from semiont.identifiers import ResourceId
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame
-from semiont.types import ExtractionOutcome, GetAnnotationsResponse, StoredEventResponse
+from xynoplex.identifiers import ResourceId
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame
+from xynoplex.types import ExtractionOutcome, GetAnnotationsResponse, StoredEventResponse
 from semiont_service.archivist import AnnotationReads, AnnotationsUnread
 from semiont_service.content import Content, ContentReads, ContentUnread
 from semiont_service.follower import Cursors, Record

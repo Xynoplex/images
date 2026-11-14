@@ -27,9 +27,9 @@ from typing import Final, final, override
 import pytest
 from aio import run
 from rig import FakeEmbedding, FakeInference, FakeProfiles, FakeVectors
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import Annotation, MatchSearchRequest, MatchSearchResult, Motivation, ResourceDescriptor
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, MatchSearchRequest, MatchSearchResult, Motivation, ResourceDescriptor
 from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
 from semiont_vectors.store import SearchFilter, SearchOptions, VectorSearchResult
 from spec import ROOT, JsonObject, number, objects, only, read, strings, text, thing, why

@@ -39,11 +39,11 @@ from pathlib import Path
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.bus import Bus, reply_channels_for
-from semiont.channels import PERSISTED_EVENT_TYPES, SMELT_REBUILD_ANCHORS
-from semiont.http import AgentToken, Credential, HttpTransport, ServiceToken
-from semiont.identity import kb_did
-from semiont.types import SmelterConfig
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.channels import PERSISTED_EVENT_TYPES, SMELT_REBUILD_ANCHORS
+from xynoplex.http import AgentToken, Credential, HttpTransport, ServiceToken
+from xynoplex.identity import kb_did
+from xynoplex.types import SmelterConfig
 from semiont_service.archivist import Archivist
 from semiont_service.config import Refused, config_path_of, service_account_of
 from semiont_service.connect import connected

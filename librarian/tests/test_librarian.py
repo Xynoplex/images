@@ -37,10 +37,10 @@ from rig import (
     reference,
     view,
 )
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame
-from semiont.types import Annotation, EngineProvider, ResourceView
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame
+from xynoplex.types import Annotation, EngineProvider, ResourceView
 from semiont_graph.interface import ResourceListing
 from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from semiont_service.content import Content

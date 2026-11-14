@@ -15,7 +15,7 @@ import pytest
 from opentelemetry import trace
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic import JsonValue, TypeAdapter
-from semiont.types import LogFormat, LogLevel
+from xynoplex.types import LogFormat, LogLevel
 
 from semiont_service.log import configure
 

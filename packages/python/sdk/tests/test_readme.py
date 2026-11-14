@@ -2,7 +2,7 @@
 
 Both type checkers check those files with the rest of the package. What needs
 a gateway runs against this package's scripted one, on this machine; what
-takes a client runs over `semiont.testing`'s doubles.
+takes a client runs over `xynoplex.testing`'s doubles.
 """
 
 import asyncio
@@ -37,22 +37,22 @@ from readme import (
 from spec import PACKAGE, ROOT, SPEC, JsonObject, objects, read, strings
 from tokens import token
 
-from semiont.annotations import QuotedText, target_selector
-from semiont.bus import reply_channels_for
-from semiont.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS
-from semiont.http import HttpTransport
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.identity import agent_did
-from semiont.operations import JOB_CLAIM
-from semiont.registry import save_knowledge_bases, store_session
-from semiont.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
-from semiont.state import BeckonStateUnit
-from semiont.storage import MemoryStorage
-from semiont.stored import StoredSession
-from semiont.testing import InMemoryContent, PutBinary, ScriptedSessions, create_test_client
-from semiont.transport import Content, Frame
-from semiont.types import AgentSoftware, AnchoredText, FragmentSelector, HttpEndpoint, KnowledgeBase, PdfTextItem, UserResponse
-from semiont.watched import Variable
+from xynoplex.annotations import QuotedText, target_selector
+from xynoplex.bus import reply_channels_for
+from xynoplex.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS
+from xynoplex.http import HttpTransport
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.identity import agent_did
+from xynoplex.operations import JOB_CLAIM
+from xynoplex.registry import save_knowledge_bases, store_session
+from xynoplex.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
+from xynoplex.state import BeckonStateUnit
+from xynoplex.storage import MemoryStorage
+from xynoplex.stored import StoredSession
+from xynoplex.testing import InMemoryContent, PutBinary, ScriptedSessions, create_test_client
+from xynoplex.transport import Content, Frame
+from xynoplex.types import AgentSoftware, AnchoredText, FragmentSelector, HttpEndpoint, KnowledgeBase, PdfTextItem, UserResponse
+from xynoplex.watched import Variable
 
 README = (PACKAGE / "README.md").read_text(encoding="utf-8")
 SKILL = (ROOT / "docs/builder/skills/semiont-worker/SKILL.md").read_text(encoding="utf-8")

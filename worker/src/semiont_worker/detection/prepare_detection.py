@@ -18,10 +18,10 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Literal, assert_never, final
 
-from semiont.annotations import TextSpan, annotation_of_span
-from semiont.identifiers import ResourceId
-from semiont.media_types import text_source_of
-from semiont.types import (
+from xynoplex.annotations import TextSpan, annotation_of_span
+from xynoplex.identifiers import ResourceId
+from xynoplex.media_types import text_source_of
+from xynoplex.types import (
     Agent,
     AnchoredText,
     AnchoredTextAbsent,

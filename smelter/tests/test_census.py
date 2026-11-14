@@ -23,7 +23,7 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from semiont.channels import PERSISTED_EVENT_TYPES
+from xynoplex.channels import PERSISTED_EVENT_TYPES
 from spec import PACKAGE, ROOT, SDK
 
 from semiont_smelter.config import SERVICE

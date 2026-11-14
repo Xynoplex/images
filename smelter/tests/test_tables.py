@@ -10,7 +10,7 @@ taken for a grid, is held on the pieces a reader gives.
 from collections.abc import Sequence
 
 import pytest
-from semiont.types import PdfTextItem
+from xynoplex.types import PdfTextItem
 
 from semiont_smelter.anchoring import anchor_runs
 from semiont_smelter.pdf_reader import Run

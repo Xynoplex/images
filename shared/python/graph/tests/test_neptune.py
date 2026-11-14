@@ -31,9 +31,9 @@ from gremlin_stores import (
     without_the_library,
 )
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId
-from semiont.model import written
-from semiont.types import Annotation
+from xynoplex.identifiers import AnnotationId
+from xynoplex.model import written
+from xynoplex.types import Annotation
 
 from semiont_graph.codec import decode_annotation, encode_annotation, encode_resource, intended_graph_annotation
 from semiont_graph.neptune import NeptuneGraphDatabase

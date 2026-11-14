@@ -11,7 +11,7 @@ Before, on a copy of the spec:
 
 - **A kind of id is this SDK's own type.** Wherever the spec refers to one of
   the kinds `protocol/specs/src/identifiers/kinds.json` names, the generator is handed
-  the type `semiont.identifiers` holds for it, so a field that carries an id is
+  the type `xynoplex.identifiers` holds for it, so a field that carries an id is
   of its kind and of no other.
 - **A schema that extends another and restates one of its properties is written
   out whole.** As a subclass it would narrow a field its base declares, which a
@@ -58,7 +58,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 ROOT = PACKAGE.parents[2]
 SPEC = ROOT / "protocol/specs/openapi.json"
 KINDS = ROOT / "protocol/specs/src/identifiers/kinds.json"
-OUT = PACKAGE / "src/semiont/types.py"
+OUT = PACKAGE / "src/xynoplex/types.py"
 FLOOR = ROOT / "shared/python/python-floor.sh"
 
 SCHEMA_REF = "#/components/schemas/"

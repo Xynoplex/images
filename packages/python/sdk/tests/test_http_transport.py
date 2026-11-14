@@ -5,7 +5,7 @@ The corpus holds it to the protocol against a real gateway
 on: the arithmetic of its backoff, the window of ids it remembers, what a
 closed transport leaves behind, what it does with a stream that carries
 something other than a frame, and each event delivered once wherever a handoff
-lands among the writes (L3, `semiont.testing.liveness`).
+lands among the writes (L3, `xynoplex.testing.liveness`).
 """
 
 import asyncio
@@ -18,18 +18,18 @@ import pytest
 from aio import run, soon
 from gateway_server import Answer, GatewayServer, Recording
 
-from semiont.bus import request
-from semiont.channels import BRIDGED_CHANNELS, RESOURCE_SCOPED_CHANNELS
-from semiont.errors import BusRequestError, SemiontError, TransportError
-from semiont.http import HttpTransport, Timing
-from semiont.http.stream import SeenIds, backoff_cap_ms
-from semiont.identifiers import ResourceId
-from semiont.operations import BROWSE_RESOURCE_REQUESTED
-from semiont.retry import RetryPolicy
-from semiont.testing.liveness import DeliverySubject, assert_exactly_once_delivery
-from semiont.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT, MAX_RECONNECT_MS, RECONNECT_MS
-from semiont.transport import ConnectionState, Frame, FrameRefusal, ResourceHold
-from semiont.watched import Variable, reached
+from xynoplex.bus import request
+from xynoplex.channels import BRIDGED_CHANNELS, RESOURCE_SCOPED_CHANNELS
+from xynoplex.errors import BusRequestError, SemiontError, TransportError
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.http.stream import SeenIds, backoff_cap_ms
+from xynoplex.identifiers import ResourceId
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED
+from xynoplex.retry import RetryPolicy
+from xynoplex.testing.liveness import DeliverySubject, assert_exactly_once_delivery
+from xynoplex.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT, MAX_RECONNECT_MS, RECONNECT_MS
+from xynoplex.transport import ConnectionState, Frame, FrameRefusal, ResourceHold
+from xynoplex.watched import Variable, reached
 
 QUICK = Timing(reconnect_ms=10, lazy_remove_ms=10, linger_ms=10, emit_retry=RetryPolicy(attempts=2, initial_delay_ms=1, max_delay_ms=1))
 CHANNELS = ("beckon:focus", "browse:resource-result", "browse:resource-failed")

@@ -21,8 +21,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Final, final
 
-from semiont.model import written
-from semiont.types import (
+from xynoplex.model import written
+from xynoplex.types import (
     MatchResourcesRequest,
     MatchResourcesResponse,
     MatchResourcesResponseMatchKind,

@@ -25,10 +25,10 @@ import pytest
 from aio import hurried, run
 from pydantic import JsonValue
 from rig import DIMENSIONS, AnnotationPoint, Held, Rig, checksum_of, drawn, scanned
-from semiont.errors import BusRequestError, TransportError
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.transport import ConnectionState, Frame
-from semiont.types import ExtractedText, ExtractionDeclined, SmeltSettledReason
+from xynoplex.errors import BusRequestError, TransportError
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.transport import ConnectionState, Frame
+from xynoplex.types import ExtractedText, ExtractionDeclined, SmeltSettledReason
 from semiont_service.content import Content
 from semiont_vectors.mock import deterministic_vector
 from semiont_vectors.store import AnnotationPayload, AnnotationStamp, Declined, EmbeddingChunk, ResourceStamp, SearchFilter, SearchOptions

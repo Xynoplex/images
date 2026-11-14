@@ -9,9 +9,9 @@ from typing import Annotated, Final, Literal
 
 import pytest
 from pydantic import BaseModel, Field
-from semiont.errors import TransportError
-from semiont.retry import RetryFacts
-from semiont.types import FailureClass
+from xynoplex.errors import TransportError
+from xynoplex.retry import RetryFacts
+from xynoplex.types import FailureClass
 from semiont_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError, StructuredUnsupportedError
 from spec import SPEC
 

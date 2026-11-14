@@ -35,11 +35,11 @@ from dataclasses import dataclass
 from typing import final
 
 from pydantic import JsonValue
-from semiont.annotations import annotation_exact_text, entity_types
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.media_types import text_source_of, yields_geometry_of
-from semiont.resources import primary_representation, resource_entity_types
-from semiont.types import Annotation, ResourceDescriptor, SmeltSettledReason
+from xynoplex.annotations import annotation_exact_text, entity_types
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.media_types import text_source_of, yields_geometry_of
+from xynoplex.resources import primary_representation, resource_entity_types
+from xynoplex.types import Annotation, ResourceDescriptor, SmeltSettledReason
 from semiont_service.white_space import trimmed
 from semiont_vectors.store import Declined, ResourceStamp
 

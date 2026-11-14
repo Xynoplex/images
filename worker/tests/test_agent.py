@@ -17,12 +17,12 @@ import pytest
 from aio import pass_time, run, turns
 from gateways import KnowledgeBaseStoodIn, stand_in
 from holding import DOMAIN, EVERY_JOB, SOURCE, Parties, answering, job
-from semiont.errors import SemiontError, SignInError, TransportError
-from semiont.http import SecretCredential, ServiceToken
-from semiont.identifiers import UserId
-from semiont.model import written
-from semiont.operations import OPERATIONS
-from semiont.types import WorkerEngineConfig, WorkerKnowledgeBaseConfig
+from xynoplex.errors import SemiontError, SignInError, TransportError
+from xynoplex.http import SecretCredential, ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.model import written
+from xynoplex.operations import OPERATIONS
+from xynoplex.types import WorkerEngineConfig, WorkerKnowledgeBaseConfig
 from semiont_service.knowledge_base import CONFIRMING_CHANNELS
 from standing_in import GENERATOR
 

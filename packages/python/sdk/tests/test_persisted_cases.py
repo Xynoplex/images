@@ -34,11 +34,11 @@ from pydantic import JsonValue, TypeAdapter
 from spec import SPEC, JsonObject, objects, read, strings, text
 from tokens import expired, token
 
-from semiont.cache import CacheState, Pending, Ready
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.http.session import HttpSessionFactory, session_from_kept
-from semiont.identifiers import ResourceId
-from semiont.registry import (
+from xynoplex.cache import CacheState, Pending, Ready
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.http.session import HttpSessionFactory, session_from_kept
+from xynoplex.identifiers import ResourceId
+from xynoplex.registry import (
     SemiontBrowser,
     SemiontBrowserConfig,
     SessionFactory,
@@ -48,13 +48,13 @@ from semiont.registry import (
     store_session,
     stored_session,
 )
-from semiont.session import HeldSignIn, MemorySignIn, SemiontSession
-from semiont.session_signals import SessionSignals
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import ACTIVE_KEY, KEPT_QUERIES, StoredSession, cache_key, last_event_id_key, person_key, session_key
-from semiont.testing import FaultyTransport, ScriptedSessions, SharedStorage
-from semiont.types import HttpEndpoint, KnowledgeBase, ResourceDescriptor, UserResponse
-from semiont.watched import reached
+from xynoplex.session import HeldSignIn, MemorySignIn, SemiontSession
+from xynoplex.session_signals import SessionSignals
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import ACTIVE_KEY, KEPT_QUERIES, StoredSession, cache_key, last_event_id_key, person_key, session_key
+from xynoplex.testing import FaultyTransport, ScriptedSessions, SharedStorage
+from xynoplex.types import HttpEndpoint, KnowledgeBase, ResourceDescriptor, UserResponse
+from xynoplex.watched import reached
 
 _JSON: Final = TypeAdapter[JsonValue](JsonValue)
 

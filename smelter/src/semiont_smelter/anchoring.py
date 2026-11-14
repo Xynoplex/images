@@ -11,7 +11,7 @@ Offsets count Unicode code points, as every offset into a text does.
 
 from collections.abc import Sequence
 
-from semiont.types import AnchoredText, PdfTextItem
+from xynoplex.types import AnchoredText, PdfTextItem
 
 from semiont_smelter.pdf_reader import Matrix, Run
 

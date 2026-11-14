@@ -14,9 +14,9 @@ handed on twice: whoever makes the annotations removes repeats.
 from collections.abc import Awaitable, Callable, Sequence
 
 from pydantic import JsonValue
-from semiont.annotations import TextSpan
-from semiont.types import TagSchema, UnitCursor
-from semiont.watched import Watched
+from xynoplex.annotations import TextSpan
+from xynoplex.types import TagSchema, UnitCursor
+from xynoplex.watched import Watched
 from semiont_inference.interface import ElementSchema, InferenceClient
 
 from semiont_worker.chunking import estimate_tokens

@@ -16,8 +16,8 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from pydantic import JsonValue
-from semiont.http import SecretCredential
-from semiont.types import WeaverConfig, WorkerConfig
+from xynoplex.http import SecretCredential
+from xynoplex.types import WeaverConfig, WorkerConfig
 
 from semiont_service.config import Refused, config_path_of, key_account_of, read_config, service_account_of, set_in
 

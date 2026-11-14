@@ -20,13 +20,13 @@ import pytest
 from aio import run, turns
 from holding import EVERY_JOB, SOURCE, TEXT, Parties, answering, claimed, job, worked
 from pydantic import JsonValue
-from semiont.errors import TransportError
-from semiont.identifiers import ResourceId
-from semiont.testing import ContentCall, GetAnchoredText, GetBinary, PutBinary
-from semiont.timing import GENERATED_TEXT_ASKS_COUNT
-from semiont.transport import Frame
-from semiont.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, GenerationJobParams, JobProgress
-from semiont.watched import Watched
+from xynoplex.errors import TransportError
+from xynoplex.identifiers import ResourceId
+from xynoplex.testing import ContentCall, GetAnchoredText, GetBinary, PutBinary
+from xynoplex.timing import GENERATED_TEXT_ASKS_COUNT
+from xynoplex.transport import Frame
+from xynoplex.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, GenerationJobParams, JobProgress
+from xynoplex.watched import Watched
 from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from standing_in import GENERATOR
 

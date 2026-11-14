@@ -4,7 +4,7 @@ import logging
 
 import pytest
 from aio import run
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 from semiont_vectors.memory import MemoryVectorStore
 from semiont_vectors.store import AnnotationPayload, EmbeddingChunk
 

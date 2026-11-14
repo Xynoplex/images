@@ -9,10 +9,10 @@ the Archivist has subscribed asks a channel nobody answers yet.
 import asyncio
 from typing import Final
 
-from semiont.bus import Bus
-from semiont.operations import BROWSE_RESOURCES_REQUESTED
-from semiont.retry import retry_with_backoff
-from semiont.types import BrowseResourcesRequest, BrowseResourcesResult, ResourceDescriptor
+from xynoplex.bus import Bus
+from xynoplex.operations import BROWSE_RESOURCES_REQUESTED
+from xynoplex.retry import retry_with_backoff
+from xynoplex.types import BrowseResourcesRequest, BrowseResourcesResult, ResourceDescriptor
 
 from semiont_service.until_answered import UNTIL_THE_ARCHIVIST_ANSWERS, nobody_answers
 

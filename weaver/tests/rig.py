@@ -17,11 +17,11 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame
-from semiont.types import GetAnnotationsResponse, StoredEventResponse
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame
+from xynoplex.types import GetAnnotationsResponse, StoredEventResponse
 from semiont_graph.interface import ResourceQuery
 from semiont_graph.memory import MemoryGraphDatabase
 from semiont_service.archivist import AnnotationReads

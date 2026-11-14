@@ -19,7 +19,7 @@ from collections.abc import Mapping
 from typing import Final
 
 from pydantic import JsonValue
-from semiont.types import Profile
+from xynoplex.types import Profile
 
 from semiont_librarian.log import LOG
 from semiont_librarian.reads import Profiles, ProfilesUnread

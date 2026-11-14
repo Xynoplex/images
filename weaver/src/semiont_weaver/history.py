@@ -11,10 +11,10 @@ record.
 import asyncio
 from typing import Final, final
 
-from semiont.bus import Bus
-from semiont.identifiers import ResourceId
-from semiont.operations import BROWSE_RESOURCES_REQUESTED
-from semiont.types import Annotation, ResourceDescriptor
+from xynoplex.bus import Bus
+from xynoplex.identifiers import ResourceId
+from xynoplex.operations import BROWSE_RESOURCES_REQUESTED
+from xynoplex.types import Annotation, ResourceDescriptor
 from semiont_service import catalog
 from semiont_service.archivist import AnnotationReads
 

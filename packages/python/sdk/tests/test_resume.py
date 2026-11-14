@@ -11,17 +11,17 @@ from kb import OTHER, RESOURCE, answer, asked_for, descriptor, knowing, knowing_
 from pydantic import JsonValue
 from spec import JsonObject
 
-from semiont.cache import Ready
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import CachePersistence, SemiontClient
-from semiont.http import HttpTransport, Timing
-from semiont.identifiers import ResourceId
-from semiont.resume import CoupledBookmarks
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import cache_key, last_event_id_key, person_key
-from semiont.testing import DropReply, FaultyTransport, StubGateway
-from semiont.timing import SAVE_DEBOUNCE_MS
-from semiont.watched import Variable, reached
+from xynoplex.cache import Ready
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import CachePersistence, SemiontClient
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.identifiers import ResourceId
+from xynoplex.resume import CoupledBookmarks
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import cache_key, last_event_id_key, person_key
+from xynoplex.testing import DropReply, FaultyTransport, StubGateway
+from xynoplex.timing import SAVE_DEBOUNCE_MS
+from xynoplex.watched import Variable, reached
 
 PERSON = person_key("did:web:example.org:users:alice")
 KEY = last_event_id_key("kb-a", PERSON)

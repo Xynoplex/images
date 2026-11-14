@@ -10,10 +10,10 @@ hold. Its reply names no person, so no one is named in it.
 
 import asyncio
 
-from semiont.annotations import exact_text, target_selector, target_source
-from semiont.identifiers import ResourceId
-from semiont.model import stated
-from semiont.types import (
+from xynoplex.annotations import exact_text, target_selector, target_source
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import stated
+from xynoplex.types import (
     GatherReferencedByRequest,
     GatherReferencedByResult,
     GetReferencedByResponse,

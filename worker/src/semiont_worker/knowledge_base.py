@@ -22,9 +22,9 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Final, Literal, final
 
-from semiont.http import KeyCredential, ServiceToken
-from semiont.timing import MAX_RECONNECT_MS, RECONNECT_MS
-from semiont.types import WorkerHealth, WorkerKnowledgeBaseConfig, WorkerKnowledgeBaseHealth, WorkerKnowledgeBaseHealthState
+from xynoplex.http import KeyCredential, ServiceToken
+from xynoplex.timing import MAX_RECONNECT_MS, RECONNECT_MS
+from xynoplex.types import WorkerHealth, WorkerKnowledgeBaseConfig, WorkerKnowledgeBaseHealth, WorkerKnowledgeBaseHealthState
 from semiont_inference.interface import InferenceClient
 from semiont_service.config import Refused
 

@@ -12,9 +12,9 @@ from collections.abc import Awaitable, Callable
 import pytest
 from aio import run
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import Annotation, ResourceDescriptor
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, ResourceDescriptor
 
 from semiont_graph.codec import intended_graph_annotation
 from semiont_graph.interface import GraphDatabase, ResourceChange, ResourceQuery

@@ -18,7 +18,7 @@ resource is rebuilt.
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.channels import (
+from xynoplex.channels import (
     MARK_ADDED,
     MARK_BODY_UPDATED,
     MARK_ENTITY_TAG_ADDED,
@@ -26,9 +26,9 @@ from semiont.channels import (
     MARK_REMOVED,
     YIELD_CREATED,
 )
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     AnnotationBody,
     BodyOperationAdd,
     BodyOperationRemove,

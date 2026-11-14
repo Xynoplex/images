@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.http import DeviceCode, session_from_kept, sign_in_device
-from semiont.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
-from semiont.types import KbTarget
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.http import DeviceCode, session_from_kept, sign_in_device
+from xynoplex.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
+from xynoplex.types import KbTarget
 
 
 def show(code: DeviceCode) -> None:

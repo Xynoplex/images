@@ -12,8 +12,8 @@ summary that cannot be answered, and its words are what the failure channel
 carries. A model that fails raises what it failed with.
 """
 
-from semiont.annotations import entity_types, target_source
-from semiont.types import (
+from xynoplex.annotations import entity_types, target_source
+from xynoplex.types import (
     ContextualSummaryResponse,
     ContextualSummaryResponseContext,
     ContextualSummaryResponseRelevantFields,

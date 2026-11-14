@@ -22,8 +22,8 @@ from dataclasses import dataclass
 from typing import Protocol, final
 
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import Annotation, Motivation, ResourceDescriptor
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import Annotation, Motivation, ResourceDescriptor
 
 __all__ = [
     "EntityTypeCount",

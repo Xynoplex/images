@@ -3,8 +3,8 @@
 from collections.abc import Awaitable, Callable
 from typing import assert_never
 
-from semiont.identifiers import UserId
-from semiont.types import (
+from xynoplex.identifiers import UserId
+from xynoplex.types import (
     EmbeddingConfig,
     MemoryVectorsConfig,
     OllamaEmbeddingConfig,

@@ -17,12 +17,12 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from semiont.channels import PERSISTED_EVENT_TYPES
-from semiont.http import SecretCredential, ServiceToken
-from semiont.identifiers import UserId
-from semiont.testing import FaultyTransport
-from semiont.types import SmelterConfig, VectorsConfig
-from semiont.watched import Variable, Watched
+from xynoplex.channels import PERSISTED_EVENT_TYPES
+from xynoplex.http import SecretCredential, ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.testing import FaultyTransport
+from xynoplex.types import SmelterConfig, VectorsConfig
+from xynoplex.watched import Variable, Watched
 from semiont_service.config import Refused
 from semiont_vectors.ollama import OllamaEmbeddingProvider
 from semiont_vectors.qdrant import QdrantVectorStore

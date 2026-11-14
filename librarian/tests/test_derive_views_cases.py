@@ -16,7 +16,7 @@ from typing import Final, final
 
 import pytest
 from pydantic import JsonValue
-from semiont.types import KnowledgeGraph
+from xynoplex.types import KnowledgeGraph
 from spec import SPEC, JsonObject, objects, read, text, thing
 
 from semiont_librarian.views import GraphViews, derive_views

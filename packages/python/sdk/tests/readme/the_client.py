@@ -1,11 +1,11 @@
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import SemiontClient
-from semiont.http import HttpTransport
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.namespaces.follow import JobAttemptFailed, JobCompleted, JobCreated, JobProgressed, JobRefused
-from semiont.transport import Transport
-from semiont.types import HighlightingJobParams
-from semiont.watched import Variable
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import SemiontClient
+from xynoplex.http import HttpTransport
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.namespaces.follow import JobAttemptFailed, JobCompleted, JobCreated, JobProgressed, JobRefused
+from xynoplex.transport import Transport
+from xynoplex.types import HighlightingJobParams
+from xynoplex.watched import Variable
 
 
 async def annotate(client: SemiontClient[Transport], resource: ResourceId, annotation: AnnotationId) -> None:

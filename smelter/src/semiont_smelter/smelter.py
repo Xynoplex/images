@@ -60,10 +60,10 @@ from types import TracebackType
 from typing import Final, Literal, Self, assert_never, final, override
 
 from pydantic import JsonValue, ValidationError
-from semiont.annotations import annotation_exact_text, entity_types
-from semiont.bus import Bus, decoded
-from semiont.channel import Empty
-from semiont.channels import (
+from xynoplex.annotations import annotation_exact_text, entity_types
+from xynoplex.bus import Bus, decoded
+from xynoplex.channel import Empty
+from xynoplex.channels import (
     MARK_ADDED,
     MARK_BODY_UPDATED,
     MARK_REMOVED,
@@ -72,12 +72,12 @@ from semiont.channels import (
     SMELT_REBUILD_ANCHORS_OK,
     SMELT_SETTLED,
 )
-from semiont.errors import SemiontError
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.media_types import text_source_of, yields_geometry_of
-from semiont.resources import decode_representation, primary_representation, resource_entity_types
-from semiont.transport import Frame, FrameRefusal, FrameSink, Transport
-from semiont.types import (
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.media_types import text_source_of, yields_geometry_of
+from xynoplex.resources import decode_representation, primary_representation, resource_entity_types
+from xynoplex.transport import Frame, FrameRefusal, FrameSink, Transport
+from xynoplex.types import (
     Annotation,
     CommandError,
     ExtractionDeclined,

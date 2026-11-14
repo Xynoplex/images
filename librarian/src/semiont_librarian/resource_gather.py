@@ -26,11 +26,11 @@ gather that cannot be answered, and its words are what the failure channel
 carries.
 """
 
-from semiont.identifiers import ResourceId
-from semiont.media_types import text_source_of
-from semiont.model import stated
-from semiont.resources import primary_representation, resource_entity_types
-from semiont.types import (
+from xynoplex.identifiers import ResourceId
+from xynoplex.media_types import text_source_of
+from xynoplex.model import stated
+from xynoplex.resources import primary_representation, resource_entity_types
+from xynoplex.types import (
     GatheredContext,
     GatheredContextFocusResource,
     GatheredContextFocusResourceContent,

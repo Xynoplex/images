@@ -15,7 +15,7 @@ and the relationship prompt is made from all three.
 from dataclasses import dataclass
 from typing import final
 
-from semiont.types import GraphAnnotationNode, KnowledgeGraph, KnowledgeGraphNodesItem
+from xynoplex.types import GraphAnnotationNode, KnowledgeGraph, KnowledgeGraphNodesItem
 
 __all__ = ["Citer", "Connection", "GraphViews", "derive_views"]
 

@@ -16,7 +16,7 @@ After the table's cases comes what no case of it rests on.
 
 import pytest
 from pydantic import JsonValue
-from semiont.types import Annotation
+from xynoplex.types import Annotation
 from spec import ROOT, JsonObject, objects, only, read, text, thing, whole, why
 
 from semiont_librarian.window import (

@@ -14,7 +14,7 @@ are doubtful.
 
 from typing import Final
 
-from semiont.annotations import AnchorMethod
+from xynoplex.annotations import AnchorMethod
 
 from semiont_worker.log import LOG
 from semiont_worker.telemetry import DetectionLabel, record_anchor

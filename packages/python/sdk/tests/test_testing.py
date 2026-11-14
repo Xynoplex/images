@@ -1,4 +1,4 @@
-"""`semiont.testing`: the doubles a consumer's tests are built on, and a client and a session over them, each held to its word.
+"""`xynoplex.testing`: the doubles a consumer's tests are built on, and a client and a session over them, each held to its word.
 
 A double answers what a test told it to and refuses the rest by name. It
 never answers with a value of its own making.
@@ -14,17 +14,17 @@ from pydantic import JsonValue
 from spec import JsonObject
 from tokens import token
 
-from semiont.bus import Delivered, request
-from semiont.cache import Pending, Ready
-from semiont.channels import BECKON_FOCUS, BRIDGED_CHANNELS
-from semiont.client import CachePersistence, ClientTiming, SemiontClient
-from semiont.errors import BusRequestError, SemiontError, TransportError
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.operations import BROWSE_RESOURCE_REQUESTED, GATHER_REQUESTED, GATHER_RESOURCE_REQUESTED, MARK_DELETE, MATCH_SEARCH_REQUESTED
-from semiont.session import HeldSignIn, MemorySignIn, SemiontSession
-from semiont.storage import MemoryStorage
-from semiont.stored import cache_key, person_key
-from semiont.testing import (
+from xynoplex.bus import Delivered, request
+from xynoplex.cache import Pending, Ready
+from xynoplex.channels import BECKON_FOCUS, BRIDGED_CHANNELS
+from xynoplex.client import CachePersistence, ClientTiming, SemiontClient
+from xynoplex.errors import BusRequestError, SemiontError, TransportError
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED, GATHER_REQUESTED, GATHER_RESOURCE_REQUESTED, MARK_DELETE, MATCH_SEARCH_REQUESTED
+from xynoplex.session import HeldSignIn, MemorySignIn, SemiontSession
+from xynoplex.storage import MemoryStorage
+from xynoplex.stored import cache_key, person_key
+from xynoplex.testing import (
     Delay,
     Deliver,
     DropReply,
@@ -46,9 +46,9 @@ from semiont.testing import (
     create_test_session,
     retry_key_of,
 )
-from semiont.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT
-from semiont.transport import Content, ContentTransport, Frame, FrameRefusal, FrameSink, GatewayOperations, PutBinaryRequest, Transport
-from semiont.types import (
+from xynoplex.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT
+from xynoplex.transport import Content, ContentTransport, Frame, FrameRefusal, FrameSink, GatewayOperations, PutBinaryRequest, Transport
+from xynoplex.types import (
     AnchoredTextAbsent,
     GatheredContext,
     GetAnnotationsResponse,

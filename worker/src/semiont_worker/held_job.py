@@ -22,18 +22,18 @@ from dataclasses import dataclass, field
 from typing import Final, Literal, assert_never, final
 
 from pydantic import ValidationError
-from semiont.annotations import TextSpan, annotation_of_resource, annotation_of_span
-from semiont.claims import HeldJob, HeldMarkJob, HeldYieldJob
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.job_filter import job_matches_filter
-from semiont.media_types import capabilities_of
-from semiont.model import written
-from semiont.resources import primary_media_type
-from semiont.timing import GENERATED_TEXT_ASKS_COUNT
-from semiont.transport import PutBinaryRequest, Transport
-from semiont.types import (
+from xynoplex.annotations import TextSpan, annotation_of_resource, annotation_of_span
+from xynoplex.claims import HeldJob, HeldMarkJob, HeldYieldJob
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.job_filter import job_matches_filter
+from xynoplex.media_types import capabilities_of
+from xynoplex.model import written
+from xynoplex.resources import primary_media_type
+from xynoplex.timing import GENERATED_TEXT_ASKS_COUNT
+from xynoplex.transport import PutBinaryRequest, Transport
+from xynoplex.types import (
     Agent,
     AnchoredText,
     AnchoredTextAbsent,

@@ -9,7 +9,7 @@ import pytest
 from aio import run
 from provider import Anthropic, Ollama
 from refusals.a_provider_the_vocabulary_lacks import an_unknown_provider
-from semiont.types import EngineProvider
+from xynoplex.types import EngineProvider
 
 from semiont_inference.anthropic import AnthropicInferenceClient
 from semiont_inference.catalogue import read_catalogue

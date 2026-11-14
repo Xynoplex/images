@@ -24,11 +24,11 @@ from collections.abc import Iterable, Mapping
 from typing import Final, NotRequired, TypedDict
 
 from pydantic import JsonValue
-from semiont.annotations import body_source, entity_types, exact_text, target_selector, target_source
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.resources import primary_representation
-from semiont.types import (
+from xynoplex.annotations import body_source, entity_types, exact_text, target_selector, target_source
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.resources import primary_representation
+from xynoplex.types import (
     Agent,
     AgentPerson,
     Annotation,

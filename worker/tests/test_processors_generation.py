@@ -15,9 +15,9 @@ from typing import Annotated, Final
 import pytest
 from aio import run
 from pydantic import BaseModel, Field, JsonValue
-from semiont.identifiers import ResourceId
-from semiont.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from semiont.types import GenerationJobParams
+from xynoplex.identifiers import ResourceId
+from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynoplex.types import GenerationJobParams
 from spec import SPEC
 from standing_in import AskedToGenerate, Handed, compiler_stood_in, generation_stood_in, landing_stood_in, report
 

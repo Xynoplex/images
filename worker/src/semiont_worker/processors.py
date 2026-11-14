@@ -30,10 +30,10 @@ from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Final, Literal, final
 
-from semiont.annotations import TextSpan, reconcile
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import stated
-from semiont.types import (
+from xynoplex.annotations import TextSpan, reconcile
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import stated
+from xynoplex.types import (
     Annotation,
     AnnotationBodies,
     AssessingJobParams,
@@ -65,7 +65,7 @@ from semiont.types import (
     TextualBody,
     UnitCursor,
 )
-from semiont.watched import Watched
+from xynoplex.watched import Watched
 from semiont_inference.interface import InferenceClient
 from semiont_service.white_space import trimmed
 

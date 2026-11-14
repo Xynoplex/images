@@ -45,7 +45,7 @@ from typing import Final, Literal, final
 from openai import APIStatusError, Omit, Timeout, omit
 from openai.types.shared_params import ResponseFormatJSONSchema
 from pydantic import JsonValue, TypeAdapter, ValidationError
-from semiont.types import EngineProvider
+from xynoplex.types import EngineProvider
 
 from semiont_inference._log import LOG
 from semiont_inference._once import refused_discovery

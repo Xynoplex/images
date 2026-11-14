@@ -18,7 +18,7 @@ from typing import Annotated, Final, Literal, final
 import pytest
 from aio import run
 from pydantic import BaseModel, Field, JsonValue
-from semiont.types import StoredEventResponse
+from xynoplex.types import StoredEventResponse
 from spec import SPEC, objects, read, text
 
 from semiont_service.follower import SYSTEM, Cursors, Followed, Follower, FromTheFirst, OwnStart, Unfinished, WithNoCursor, log_of

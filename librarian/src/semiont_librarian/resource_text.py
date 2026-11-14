@@ -14,9 +14,9 @@ A cut counts Unicode code points.
 
 from typing import Final
 
-from semiont.media_types import derives_text_of, text_source_of
-from semiont.resources import decode_representation, primary_representation
-from semiont.types import ExtractedText, ResourceDescriptor
+from xynoplex.media_types import derives_text_of, text_source_of
+from xynoplex.resources import decode_representation, primary_representation
+from xynoplex.types import ExtractedText, ResourceDescriptor
 from semiont_service.content import ContentReads
 
 from semiont_librarian.reads import AnchoredText

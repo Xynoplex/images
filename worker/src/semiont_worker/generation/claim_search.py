@@ -26,7 +26,7 @@ own index does.
 import re
 from typing import Final
 
-from semiont.types import AnchoredText, PdfTextItem
+from xynoplex.types import AnchoredText, PdfTextItem
 from semiont_service.white_space import WHITE_SPACE
 
 from semiont_worker.generation.typst import Landed

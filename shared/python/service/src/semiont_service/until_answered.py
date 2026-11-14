@@ -8,8 +8,8 @@ any other failure is not.
 
 from typing import Final
 
-from semiont.errors import BusRequestError, SemiontError
-from semiont.retry import RetryPolicy
+from xynoplex.errors import BusRequestError, SemiontError
+from xynoplex.retry import RetryPolicy
 
 __all__ = ["UNTIL_THE_ARCHIVIST_ANSWERS", "nobody_answers"]
 

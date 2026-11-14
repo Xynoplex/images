@@ -16,13 +16,13 @@ from collections.abc import Mapping, Sequence
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.claims import ClaimRefusal, Claims, HeldJob
-from semiont.client import SemiontClient
-from semiont.identifiers import ResourceId, UserId
-from semiont.identity import kb_did
-from semiont.testing import FaultyTransport, create_test_client, refuse_unscripted_operation
-from semiont.transport import Content, Frame
-from semiont.types import JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter
+from xynoplex.claims import ClaimRefusal, Claims, HeldJob
+from xynoplex.client import SemiontClient
+from xynoplex.identifiers import ResourceId, UserId
+from xynoplex.identity import kb_did
+from xynoplex.testing import FaultyTransport, create_test_client, refuse_unscripted_operation
+from xynoplex.transport import Content, Frame
+from xynoplex.types import JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter
 from semiont_inference.interface import InferenceClient, InferenceLimits
 from semiont_inference.mock import MockInferenceClient
 from standing_in import GENERATOR

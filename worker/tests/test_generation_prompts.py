@@ -18,8 +18,8 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from semiont.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from semiont.types import GenerationJobParams, SupportedMediaType
+from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynoplex.types import GenerationJobParams, SupportedMediaType
 from spec import ROOT
 
 from semiont_worker.generation.resource_generation import (

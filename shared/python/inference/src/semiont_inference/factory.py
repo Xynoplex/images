@@ -4,7 +4,7 @@ from functools import cache
 from pathlib import Path
 from typing import Never, NoReturn, final
 
-from semiont.types import EngineProvider
+from xynoplex.types import EngineProvider
 
 from semiont_inference.catalogue import Catalogue, CatalogueFacts, CatalogueProvider, catalogue_facts, read_catalogue
 from semiont_inference.interface import InferenceClient

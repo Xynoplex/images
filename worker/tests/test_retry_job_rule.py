@@ -8,7 +8,7 @@ from typing import Final
 
 import pytest
 from pydantic import BaseModel
-from semiont.retry import RETRY_RULES, RetryFacts
+from xynoplex.retry import RETRY_RULES, RetryFacts
 from spec import SPEC
 
 from semiont_worker.failure_class import JOB

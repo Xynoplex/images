@@ -1,4 +1,4 @@
-# semiont
+# xynoplex Python SDK
 
 [![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-sdk)](https://app.codecov.io/gh/Xynoplex/images/components)
 
@@ -21,7 +21,7 @@ out of. Its code is TypeScript, and the ideas are this package's too.
 ## Install
 
 ```bash
-pip install semiont
+pip install xynoplex
 ```
 
 It requires Python 3.12 or later, and runs on asyncio. It is checked by
@@ -50,10 +50,10 @@ The gateway names it by its account; that DID, which the gateway answers at
 signed in. The engine it runs is no part of it: each write names that.
 
 ```python
-from semiont.bus import reply_channels_for
-from semiont.http import AgentToken, HttpTransport, SecretCredential, ServiceToken
-from semiont.operations import JOB_CLAIM
-from semiont.watched import reached
+from xynoplex.bus import reply_channels_for
+from xynoplex.http import AgentToken, HttpTransport, SecretCredential, ServiceToken
+from xynoplex.operations import JOB_CLAIM
+from xynoplex.watched import reached
 
 
 async def work(gateway: str, issuer: str, secret: str) -> None:
@@ -79,7 +79,7 @@ sign-in is kept. [`semiont login`][launcher] keeps one for each stack, and a
 session here is built over it; a script on a machine with no launcher makes
 its own by the device grant, which shows a code to approve in any browser. No
 password passes through this process. Both are given the knowledge base's
-target (`semiont.types.KbTarget`: its id, its label and its endpoint), as the
+target (`xynoplex.types.KbTarget`: its id, its label and its endpoint), as the
 other SDKs' are, and reach the gateway its HTTP endpoint names. An
 application a person uses signs them in by a page redirect instead
 ([Several knowledge bases](#several-knowledge-bases)).
@@ -87,10 +87,10 @@ application a person uses signs them in by a page redirect instead
 ```python
 from pathlib import Path
 
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.http import DeviceCode, session_from_kept, sign_in_device
-from semiont.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
-from semiont.types import KbTarget
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.http import DeviceCode, session_from_kept, sign_in_device
+from xynoplex.sign_in_store import FILE_NAME, SignInStore, state_dir, this_system
+from xynoplex.types import KbTarget
 
 
 def show(code: DeviceCode) -> None:
@@ -193,10 +193,10 @@ from code, and the two that come next. [Signing in](#signing-in) is how a
 client comes to be signed in.
 
 ```python
-from semiont.client import SemiontClient
-from semiont.identifiers import ResourceId
-from semiont.transport import PutBinaryRequest, Transport
-from semiont.types import GenerationJobParams, JobDeclined, LinkingJobParams
+from xynoplex.client import SemiontClient
+from xynoplex.identifiers import ResourceId
+from xynoplex.transport import PutBinaryRequest, Transport
+from xynoplex.types import GenerationJobParams, JobDeclined, LinkingJobParams
 
 
 async def summarize(client: SemiontClient[Transport], paper: bytes) -> ResourceId | None:
@@ -254,14 +254,14 @@ is held to. `HttpTransport` is the transport this package ships: it reaches a
 knowledge base's gateway, and sends the token it is given.
 
 ```python
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import SemiontClient
-from semiont.http import HttpTransport
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.namespaces.follow import JobAttemptFailed, JobCompleted, JobCreated, JobProgressed, JobRefused
-from semiont.transport import Transport
-from semiont.types import HighlightingJobParams
-from semiont.watched import Variable
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import SemiontClient
+from xynoplex.http import HttpTransport
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.namespaces.follow import JobAttemptFailed, JobCompleted, JobCreated, JobProgressed, JobRefused
+from xynoplex.transport import Transport
+from xynoplex.types import HighlightingJobParams
+from xynoplex.watched import Variable
 
 
 async def annotate(client: SemiontClient[Transport], resource: ResourceId, annotation: AnnotationId) -> None:
@@ -354,11 +354,11 @@ the client closes.
 ```python
 from typing import assert_never
 
-from semiont.cache import Failed, Pending, Ready
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.transport import Transport
+from xynoplex.cache import Failed, Pending, Ready
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.transport import Transport
 
 
 async def watch(client: SemiontClient[Transport], resource: ResourceId) -> None:
@@ -401,7 +401,7 @@ async def watch(client: SemiontClient[Transport], resource: ResourceId) -> None:
   nothing and a read is refused as `bus.closed`.
 - **A client can keep what its small queries hold**
   (`SemiontClient(..., persistence=CachePersistence(storage=..., kb_id=...,
-  person_key=person_key(did)))`), in a `semiont.storage.SessionStorage` the
+  person_key=person_key(did)))`), in a `xynoplex.storage.SessionStorage` the
   application supplies, for one person, one key per query: a resource's
   description, its annotations, one annotation, the entity types, the tag
   schemas. The next client of the same knowledge base and person shows them
@@ -410,7 +410,7 @@ async def watch(client: SemiontClient[Transport], resource: ResourceId) -> None:
   start when its kept sign-in names its person, asked or not (`validate`),
   and otherwise once the gateway names them and the sign-in records them; a
   session that does not ask keeps for nobody then. It keeps the
-  stream's place in each resource's scope with it (`semiont.resume`), so the
+  stream's place in each resource's scope with it (`xynoplex.resume`), so the
   next session is sent what was recorded since. Forgetting a registry's
   stored sign-in, however it is forgotten, signing in again included, deletes
   what was kept for its person. A session the SDK builds writes only while
@@ -447,7 +447,7 @@ session it was built from. `dispose()` ends a unit, and so does leaving
 This shows what is hovered as it changes:
 
 ```python
-from semiont.state import BeckonStateUnit
+from xynoplex.state import BeckonStateUnit
 
 
 async def show_hover(beckon: BeckonStateUnit) -> None:
@@ -473,13 +473,13 @@ motivation, or the `yield` jobs. What it returns hands out the jobs the worker
 comes to hold, one at a time, and a held job says its own lifecycle.
 
 ```python
-from semiont.annotations import QuotedText, annotation_of_span, reconcile
-from semiont.channels import PRINCIPAL_PROFILE
-from semiont.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, HeldMarkJob, HeldYieldJob
-from semiont.client import SemiontClient
-from semiont.http import AgentToken, HttpTransport, KeyCredential, ServiceToken, private_key_from_pem
-from semiont.identifiers import AnnotationId
-from semiont.types import (
+from xynoplex.annotations import QuotedText, annotation_of_span, reconcile
+from xynoplex.channels import PRINCIPAL_PROFILE
+from xynoplex.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, HeldMarkJob, HeldYieldJob
+from xynoplex.client import SemiontClient
+from xynoplex.http import AgentToken, HttpTransport, KeyCredential, ServiceToken, private_key_from_pem
+from xynoplex.identifiers import AnnotationId
+from xynoplex.types import (
     Agent,
     AgentSoftware,
     Annotation,
@@ -609,7 +609,7 @@ async def work(gateway: str, issuer: str, client_id: str, key: str) -> None:
   `TraceContext` (`traceparent`, and `tracestate` when there is one) or
   `None` for a reply that arrived in none: for what is done for the job
   where its block does not reach, such as another task, which enters it with
-  `with semiont.telemetry.continuing(job.trace):`.
+  `with xynoplex.telemetry.continuing(job.trace):`.
 - **`claims.vitals()`** is what the worker can say of itself: when it last
   heard an announcement, claimed, was active and settled, the job it holds,
   and how many it has completed. **`claims.stalled()`** tells of each held
@@ -623,7 +623,7 @@ and [its conformance suite][worker-conformance] holds this package to it.
 
 ## Building annotations
 
-What a worker commits is annotations, and `semiont.annotations` builds them.
+What a worker commits is annotations, and `xynoplex.annotations` builds them.
 It has three builders, the same three in every Semiont SDK, so that a
 highlight recorded by a worker in Python is the annotation a worker in
 TypeScript or in Rust records, with the same id.
@@ -635,7 +635,7 @@ TypeScript or in Rust records, with the same id.
 | `annotation_of_resource(resource_id, motivation=…, generator=…, body=…)` | Builds an annotation of a resource as a whole, which has no selector. The link from a resource to one generated from it is one |
 
 ```python
-from semiont.annotations import (
+from xynoplex.annotations import (
     QuotedText,
     annotation_exact_text,
     annotation_of_resource,
@@ -645,8 +645,8 @@ from semiont.annotations import (
     reconcile,
     target_source,
 )
-from semiont.identifiers import ResourceId
-from semiont.types import Agent, AnchoredText, Annotation, SpecificResource
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import Agent, AnchoredText, Annotation, SpecificResource
 
 
 def highlight(text: str, quoted: QuotedText, resource: ResourceId, generator: Agent) -> Annotation | None:
@@ -706,7 +706,7 @@ def describe(annotation: Annotation) -> str:
   `client.browse.resource_representation` gives the bytes. A media type
   whose text is not its bytes raises it too: a PDF's text is its anchored
   text, and an image has none.
-  `semiont.resources.decode_representation(data, media_type)` is the same
+  `xynoplex.resources.decode_representation(data, media_type)` is the same
   reading, of bytes a program already holds.
 - **A span is checked before anything is built.** One that is not the
   text's raises `SpanRefusedError`, and its `code` says which of seven
@@ -734,7 +734,7 @@ and [`id-cases.json`][id-cases].
 
 ## Several knowledge bases
 
-`semiont.registry` is what an application a person uses holds beside its
+`xynoplex.registry` is what an application a person uses holds beside its
 knowledge bases: the list it has registered, which one is active and that
 one's session, and what the person has open in each. It keeps all of it in a
 `SessionStorage`, under the keys every SDK's registry uses
@@ -742,10 +742,10 @@ one's session, and what the person has open in each. It keeps all of it in a
 picks up where the last one was.
 
 ```python
-from semiont.identifiers import ResourceId
-from semiont.registry import SemiontBrowser, SemiontBrowserConfig, SessionFactory
-from semiont.storage import SessionStorage
-from semiont.watched import reached
+from xynoplex.identifiers import ResourceId
+from xynoplex.registry import SemiontBrowser, SemiontBrowserConfig, SessionFactory
+from xynoplex.storage import SessionStorage
+from xynoplex.watched import reached
 
 
 async def pick_up_where_i_was(storage: SessionStorage, sessions: SessionFactory) -> None:
@@ -763,17 +763,17 @@ async def pick_up_where_i_was(storage: SessionStorage, sessions: SessionFactory)
   session and brings up the next: its readers see no session, then the new
   one. `session_activating` says a session is on its way. A session is built
   by the `SessionFactory` the registry is given;
-  `semiont.http.session.HttpSessionFactory` builds one over a knowledge base's
+  `xynoplex.http.session.HttpSessionFactory` builds one over a knowledge base's
   gateway, renewing its token at the issuer its stored sign-in names, and
   keeping its caches in the registry's storage.
 - **A sign-in lands on the knowledge base that answered.**
-  `semiont.http.session.begin_sign_in` remembers a pending sign-in and gives
+  `xynoplex.http.session.begin_sign_in` remembers a pending sign-in and gives
   the address to send the person to; `complete_sign_in`, given the address the
   issuer sent them back to, exchanges the code, asks the knowledge base who it
   is, and registers it under what it says. Its did is what an entry is matched
   by, never the address a person typed or the row they clicked; what they
   believed is said back (`SignInOutcome.expected`) for the application to set
-  against it. The grant itself is `semiont.http.oauth`'s:
+  against it. The grant itself is `xynoplex.http.oauth`'s:
   `begin_authorization` and `complete_authorization`, the authorization-code
   grant with PKCE, and `describe_connection`, the question a completed sign-in
   asks.
@@ -797,25 +797,25 @@ async def pick_up_where_i_was(storage: SessionStorage, sessions: SessionFactory)
   a storage that hears what another window or process writes
   (`SessionStorage.subscribe`) has the registry show it.
 
-`semiont.discovery` reads the document a launcher publishes of the knowledge
+`xynoplex.discovery` reads the document a launcher publishes of the knowledge
 bases it manages: whole or not at all, a launcher that is not there told from
 one that manages nothing, and what changed since it was last read
 (`subscribe_discovery`). `text_discovery` reads it from wherever the text
-comes from, and `semiont.http.discovery.http_discovery` from a URL. It is a
+comes from, and `xynoplex.http.discovery.http_discovery` from a URL. It is a
 registry's list of what can be signed in to.
 
 ## Testing what is built on it
 
-`semiont.testing` gives a real client over doubles. Its namespaces, its cache
+`xynoplex.testing` gives a real client over doubles. Its namespaces, its cache
 and its deadlines are the client's own; only what it speaks through is
 scripted. A test says what the knowledge base answers, runs the code under
 test, and reads what that code asked.
 
 ```python
-from semiont.client import SemiontClient
-from semiont.identifiers import ResourceId
-from semiont.testing import create_test_client
-from semiont.transport import Transport
+from xynoplex.client import SemiontClient
+from xynoplex.identifiers import ResourceId
+from xynoplex.testing import create_test_client
+from xynoplex.transport import Transport
 
 
 async def title_of(client: SemiontClient[Transport], resource: ResourceId) -> str:
@@ -869,16 +869,16 @@ async def a_title_is_its_resources_name_in_title_case() -> None:
   `BRIDGED_CHANNELS`; and the client's own timing and persistence.
 - **`create_test_session`** gives a real `SemiontSession` over a test client,
   ready as soon as it is held, holding a token only if its sign-in was kept.
-- **`semiont.testing.axioms`** holds a state unit, a program's own too, to the
-  rules every unit keeps. **`semiont.testing.liveness`** holds a composition
+- **`xynoplex.testing.axioms`** holds a state unit, a program's own too, to the
+  rules every unit keeps. **`xynoplex.testing.liveness`** holds a composition
   over the bus to the liveness rules: under generated fault schedules every
   output says something and every awaited path settles, within a bound
   (`assert_liveness_axioms`), and anything shaped like a connection delivers
   each event exactly once, wherever a transition lands among the writes
   (`assert_exactly_once_delivery`). This package's own transport and client
   are held to them. Both draw their cases with Hypothesis, which the extra
-  `semiont[axioms]` installs.
-- **`ScriptedSessions`** is a `semiont.registry.SessionFactory` of real
+  `xynoplex[axioms]` installs.
+- **`ScriptedSessions`** is a `xynoplex.registry.SessionFactory` of real
   sessions over scripted transports, one a knowledge base, for a test of a
   registry: a test says what each knowledge base answers, who a token is and
   what a renewal gives. **`SharedStorage`** is a storage several contexts
@@ -891,15 +891,15 @@ transport is held with `async with`. Its stream opens inside, once there is
 a token, and everything it started has ended on the way out.
 
 ```python
-from semiont.bus import Bus, Delivered
-from semiont.channels import BRIDGED_CHANNELS, MARK_ADDED
-from semiont.errors import BusRequestError
-from semiont.http import HttpTransport
-from semiont.identifiers import ResourceId
-from semiont.operations import BROWSE_RESOURCE_REQUESTED
-from semiont.transport import FrameRefusal
-from semiont.types import BrowseResourceRequest
-from semiont.watched import Variable
+from xynoplex.bus import Bus, Delivered
+from xynoplex.channels import BRIDGED_CHANNELS, MARK_ADDED
+from xynoplex.errors import BusRequestError
+from xynoplex.http import HttpTransport
+from xynoplex.identifiers import ResourceId
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED
+from xynoplex.transport import FrameRefusal
+from xynoplex.types import BrowseResourceRequest
+from xynoplex.watched import Variable
 
 
 async def read(origin: str, token: str, resource: ResourceId) -> None:
@@ -925,13 +925,13 @@ async def read(origin: str, token: str, resource: ResourceId) -> None:
 - **The bus is typed by channel.** A channel is a constant that carries its
   payload's type: a request is refused another operation's payload, its reply
   is that operation's result, and a frame's payload is its channel's. By
-  name, with JSON objects, it is `semiont.bus.request` and the transport's
+  name, with JSON objects, it is `xynoplex.bus.request` and the transport's
   own `emit` and `frames`.
 - **A request** waits for the stream to be open before it is sent, is answered
   once, and is abandoned by cancelling the task that awaits it.
 - **Frames** are a sequence: each reader is given every one, in order, however
   far behind it falls. Each is a `Heard`: a `Delivered`, its payload its
-  channel's, or a `FrameRefusal` (`semiont.transport`) in place of a frame
+  channel's, or a `FrameRefusal` (`xynoplex.transport`) in place of a frame
   the transport refused or whose payload is not its channel's. It names the
   channel and the frame's first fault, as every SDK names it: `member`, the
   way to the member it is at from the frame (`payload` for the payload
@@ -983,9 +983,9 @@ back, and the transport itself asks the gateway what a gateway answers for
 itself.
 
 ```python
-from semiont.http import HttpTransport
-from semiont.identifiers import ResourceId
-from semiont.transport import PutBinaryRequest
+from xynoplex.http import HttpTransport
+from xynoplex.identifiers import ResourceId
+from xynoplex.transport import PutBinaryRequest
 
 
 async def store(transport: HttpTransport, page: bytes) -> ResourceId:
@@ -1031,8 +1031,8 @@ from text that is one, and a type checker refuses one kind where a shape
 names another.
 
 ```python
-from semiont.identifiers import AnnotationId, InvalidIdentifier, ResourceId
-from semiont.types import MarkDeleteCommand
+from xynoplex.identifiers import AnnotationId, InvalidIdentifier, ResourceId
+from xynoplex.types import MarkDeleteCommand
 
 resource = ResourceId("5bcd259ab1464cf68a556bbad21f513f")
 assert ResourceId.parse("not an id") is None  # where text that is not an id is an ordinary answer
@@ -1057,7 +1057,7 @@ SDK does: a span for each frame sent and each received, a span for each upload
 and each read, and a count of the emits sent. A request carries the trace it
 is made in, and a frame continues the trace it was sent under (`frame.trace`).
 A job a worker holds states the trace it is run in (`job.trace`), and runs
-the block that holds it in that trace. `semiont.telemetry.continuing(trace)`
+the block that holds it in that trace. `xynoplex.telemetry.continuing(trace)`
 holds either for as long as its `with` block lasts.
 
 With `SEMIONT_BUS_LOG` set to any value that is not empty, a transport over
@@ -1082,30 +1082,30 @@ resource is cloned by, `password`, `apiKey` and the rest of the
 
 | Module | What it holds |
 |---|---|
-| `semiont.client` | `SemiontClient`, and the timing it keeps to |
-| `semiont.namespaces` | The methods of each namespace; and in `semiont.namespaces.follow`, `Delegation[C]`, what a delegated job returns, with the events of a job |
-| `semiont.running`, `semiont.cached` | `Running[T]` and `Cached[T]`: what long-running operations and queries return |
-| `semiont.annotations` | The readers of an annotation: the resource it is on and the one it links to, the text it quotes, its entity types, its tag, and what kind it is, whatever shape its target, its selector and its body take. And the builders of one: `reconcile`, `annotation_of_span` and `annotation_of_resource`, with `QuotedText`, `TextSpan`, `ReconciledSpan` and `SpanRefusedError` |
-| `semiont.claims`, `semiont.job_filter` | `Claims`, what `job.claim` returns, with the jobs a worker holds, the channels its stream names and the retry rule; and whether a job matches a filter |
-| `semiont.cache`, `semiont.refresh`, `semiont.resume` | The cache queries answer from and its three states, which queries each event asks again, and where a stream resumes after a restart |
-| `semiont.storage` | Where a client keeps what must outlive it: `SessionStorage`, and `MemoryStorage` |
-| `semiont.session` | `SemiontSession`, and `MemorySignIn` |
-| `semiont.http` | `HttpTransport`, and signing in: `ServiceToken`, `AgentToken`, `sign_in_device`, `session_from_kept`, `sign_out`; a gateway's origin from its endpoint, `gateway_url`. And in `semiont.http.oauth`, the redirect sign-in (`begin_authorization`, `complete_authorization`); in `semiont.http.session`, a registry's sessions and sign-in over HTTP (`HttpSessionFactory`, `begin_sign_in`, `complete_sign_in`, `describe_connection`); in `semiont.http.discovery`, a launcher's document over HTTP |
-| `semiont.registry`, `semiont.stored` | A registry of knowledge bases, `SemiontBrowser`: the ones registered, the active one's session, what is open in each; and what it keeps in its storage, under which keys |
-| `semiont.discovery` | The knowledge bases a launcher manages, as it publishes them, and what changed since they were last read |
-| `semiont.sign_in_store` | The sign-ins `semiont login` keeps, and where each system keeps them |
-| `semiont.identifiers`, `semiont.types` | The kinds of id, and every request, response and event |
-| `semiont.channels`, `semiont.operations` | The bus's channels and its operations, each a constant that carries its payload's type |
-| `semiont.bus`, `semiont.event_bus` | The typed client of the bus over a transport, and a client's own in-process bus |
-| `semiont.transport` | The contract a transport implements: `Transport`, `ContentTransport`, `GatewayOperations` |
-| `semiont.errors`, `semiont.timing`, `semiont.retry` | The failure codes, the deadlines and the retry rules every Semiont SDK shares |
-| `semiont.watched`, `semiont.events` | A value that changes and a sequence of events: what a state and a channel's frames are read as |
-| `semiont.state`, `semiont.state_unit`, `semiont.session_signals` | The state units, what every unit commits to, and the session's signals: that it ended, that a request was refused for lack of permission, that another knowledge base answers at a registered address |
-| `semiont.media_types` | The media types a knowledge base admits, with where the text of each comes from and whether it can be authored or generated, and the rules read from them: the format a clone takes and the name content is stored under; and, of any media type, where its text comes from (`text_source_of`), whether that text comes with where each run of it is on a page (`yields_geometry_of`), and whether it is derived from the bytes and not decoded from them (`derives_text_of`) |
-| `semiont.resources` | The readers of a resource, whether its representations are one or a list: `primary_representation`, `primary_media_type` and `resource_entity_types`. And `decode_representation`, which makes a text of the bytes of a resource whose bytes are its text, and refuses any other |
-| `semiont.identity` | How a knowledge base is named, and the principals who act in it |
-| `semiont.telemetry` | What the transports tell OpenTelemetry, and `continuing`, which holds the trace a frame or a held job brought |
-| `semiont.testing` | The doubles: `FaultyTransport`, `InMemoryContent`, `StubGateway`, `create_test_client`, `create_test_session`; a registry's, `ScriptedSessions` and `SharedStorage`; and, in `axioms` and `liveness`, the harnesses that hold a state unit and a composition to their axioms |
+| `xynoplex.client` | `SemiontClient`, and the timing it keeps to |
+| `xynoplex.namespaces` | The methods of each namespace; and in `xynoplex.namespaces.follow`, `Delegation[C]`, what a delegated job returns, with the events of a job |
+| `xynoplex.running`, `xynoplex.cached` | `Running[T]` and `Cached[T]`: what long-running operations and queries return |
+| `xynoplex.annotations` | The readers of an annotation: the resource it is on and the one it links to, the text it quotes, its entity types, its tag, and what kind it is, whatever shape its target, its selector and its body take. And the builders of one: `reconcile`, `annotation_of_span` and `annotation_of_resource`, with `QuotedText`, `TextSpan`, `ReconciledSpan` and `SpanRefusedError` |
+| `xynoplex.claims`, `xynoplex.job_filter` | `Claims`, what `job.claim` returns, with the jobs a worker holds, the channels its stream names and the retry rule; and whether a job matches a filter |
+| `xynoplex.cache`, `xynoplex.refresh`, `xynoplex.resume` | The cache queries answer from and its three states, which queries each event asks again, and where a stream resumes after a restart |
+| `xynoplex.storage` | Where a client keeps what must outlive it: `SessionStorage`, and `MemoryStorage` |
+| `xynoplex.session` | `SemiontSession`, and `MemorySignIn` |
+| `xynoplex.http` | `HttpTransport`, and signing in: `ServiceToken`, `AgentToken`, `sign_in_device`, `session_from_kept`, `sign_out`; a gateway's origin from its endpoint, `gateway_url`. And in `xynoplex.http.oauth`, the redirect sign-in (`begin_authorization`, `complete_authorization`); in `xynoplex.http.session`, a registry's sessions and sign-in over HTTP (`HttpSessionFactory`, `begin_sign_in`, `complete_sign_in`, `describe_connection`); in `xynoplex.http.discovery`, a launcher's document over HTTP |
+| `xynoplex.registry`, `xynoplex.stored` | A registry of knowledge bases, `SemiontBrowser`: the ones registered, the active one's session, what is open in each; and what it keeps in its storage, under which keys |
+| `xynoplex.discovery` | The knowledge bases a launcher manages, as it publishes them, and what changed since they were last read |
+| `xynoplex.sign_in_store` | The sign-ins `semiont login` keeps, and where each system keeps them |
+| `xynoplex.identifiers`, `xynoplex.types` | The kinds of id, and every request, response and event |
+| `xynoplex.channels`, `xynoplex.operations` | The bus's channels and its operations, each a constant that carries its payload's type |
+| `xynoplex.bus`, `xynoplex.event_bus` | The typed client of the bus over a transport, and a client's own in-process bus |
+| `xynoplex.transport` | The contract a transport implements: `Transport`, `ContentTransport`, `GatewayOperations` |
+| `xynoplex.errors`, `xynoplex.timing`, `xynoplex.retry` | The failure codes, the deadlines and the retry rules every Semiont SDK shares |
+| `xynoplex.watched`, `xynoplex.events` | A value that changes and a sequence of events: what a state and a channel's frames are read as |
+| `xynoplex.state`, `xynoplex.state_unit`, `xynoplex.session_signals` | The state units, what every unit commits to, and the session's signals: that it ended, that a request was refused for lack of permission, that another knowledge base answers at a registered address |
+| `xynoplex.media_types` | The media types a knowledge base admits, with where the text of each comes from and whether it can be authored or generated, and the rules read from them: the format a clone takes and the name content is stored under; and, of any media type, where its text comes from (`text_source_of`), whether that text comes with where each run of it is on a page (`yields_geometry_of`), and whether it is derived from the bytes and not decoded from them (`derives_text_of`) |
+| `xynoplex.resources` | The readers of a resource, whether its representations are one or a list: `primary_representation`, `primary_media_type` and `resource_entity_types`. And `decode_representation`, which makes a text of the bytes of a resource whose bytes are its text, and refuses any other |
+| `xynoplex.identity` | How a knowledge base is named, and the principals who act in it |
+| `xynoplex.telemetry` | What the transports tell OpenTelemetry, and `continuing`, which holds the trace a frame or a held job brought |
+| `xynoplex.testing` | The doubles: `FaultyTransport`, `InMemoryContent`, `StubGateway`, `create_test_client`, `create_test_session`; a registry's, `ScriptedSessions` and `SharedStorage`; and, in `axioms` and `liveness`, the harnesses that hold a state unit and a composition to their axioms |
 
 Nothing here restates the protocol by hand. `identifiers`, `types`,
 `channels`, `operations`, `error_codes`, `timing`, `refresh`,

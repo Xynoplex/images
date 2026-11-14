@@ -1,7 +1,7 @@
-from semiont.identifiers import ResourceId
-from semiont.registry import SemiontBrowser, SemiontBrowserConfig, SessionFactory
-from semiont.storage import SessionStorage
-from semiont.watched import reached
+from xynoplex.identifiers import ResourceId
+from xynoplex.registry import SemiontBrowser, SemiontBrowserConfig, SessionFactory
+from xynoplex.storage import SessionStorage
+from xynoplex.watched import reached
 
 
 async def pick_up_where_i_was(storage: SessionStorage, sessions: SessionFactory) -> None:

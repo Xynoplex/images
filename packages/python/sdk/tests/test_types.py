@@ -7,11 +7,11 @@ import pytest
 from pydantic import ValidationError
 from spec import SPEC, JsonObject, objects, read, strings, text
 
-import semiont.identifiers
-import semiont.types
-from semiont.identifiers import AnnotationId, JobId, ResourceId, UserId
-from semiont.model import WireModel
-from semiont.types import Annotation, MarkDeleteCommand, ResourceDescriptor
+import xynoplex.identifiers
+import xynoplex.types
+from xynoplex.identifiers import AnnotationId, JobId, ResourceId, UserId
+from xynoplex.model import WireModel
+from xynoplex.types import Annotation, MarkDeleteCommand, ResourceDescriptor
 
 KINDS: dict[str, type[str]] = {"ResourceId": ResourceId, "AnnotationId": AnnotationId, "JobId": JobId, "UserId": UserId}
 

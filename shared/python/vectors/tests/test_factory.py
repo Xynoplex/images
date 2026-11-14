@@ -15,8 +15,8 @@ from aio import run
 from provider import KEY, Ollama, Voyage
 from pydantic import JsonValue, TypeAdapter
 from qdrant_stand_in import TOKEN, PlayedQdrant
-from semiont.identity import kb_did
-from semiont.types import EmbeddingConfig, VectorsConfig
+from xynoplex.identity import kb_did
+from xynoplex.types import EmbeddingConfig, VectorsConfig
 
 from semiont_vectors.factory import create_embedding_provider, create_vector_reader, create_vector_store
 from semiont_vectors.memory import MemoryVectorStore

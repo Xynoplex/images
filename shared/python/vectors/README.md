@@ -38,7 +38,7 @@ text is for: `embed_documents` for the texts that are put in an index, and
 `embed_query` for a text an index is searched by.
 
 ```python
-from semiont.identifiers import ResourceId
+from xynoplex.identifiers import ResourceId
 from semiont_vectors.embedding import EmbeddingProvider
 from semiont_vectors.store import EmbeddingChunk, SearchOptions, VectorSearchResult, VectorStore
 
@@ -78,7 +78,7 @@ read its knowledge base's three collections.
 ```python
 import os
 
-from semiont.identity import kb_did
+from xynoplex.identity import kb_did
 
 from semiont_vectors.ollama import OllamaEmbeddingProvider
 from semiont_vectors.qdrant import QdrantVectorStore
@@ -102,7 +102,7 @@ collection is not there.
 ```python
 import os
 
-from semiont.identity import kb_did
+from xynoplex.identity import kb_did
 
 from semiont_vectors.qdrant import QdrantVectorReader
 from semiont_vectors.store import SearchOptions, VectorReader, VectorSearchResult

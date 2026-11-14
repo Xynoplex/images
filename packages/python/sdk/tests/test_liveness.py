@@ -16,11 +16,11 @@ import pytest
 from hypothesis import strategies as st
 from spec import JsonObject
 
-from semiont.bus import request
-from semiont.errors import SemiontError
-from semiont.operations import BROWSE_RESOURCE_REQUESTED
-from semiont.testing import Deliver, DropReply, FaultAction, FaultyTransport, RejectEmit
-from semiont.testing.liveness import (
+from xynoplex.bus import request
+from xynoplex.errors import SemiontError
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED
+from xynoplex.testing import Deliver, DropReply, FaultAction, FaultyTransport, RejectEmit
+from xynoplex.testing.liveness import (
     DeliveryOp,
     DeliverySubject,
     LivenessScenario,

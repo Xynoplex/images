@@ -51,7 +51,7 @@ environment variable that holds it, and whoever reads the environment hands
 the password over.
 
 ```python
-from semiont.types import GraphConfig, ResourceDescriptor
+from xynoplex.types import GraphConfig, ResourceDescriptor
 from semiont_graph.factory import create_graph_database
 from semiont_graph.interface import GraphDatabase
 
@@ -69,8 +69,8 @@ its database: connecting one to a Neo4j makes no constraint and no index. A
 read of a database nobody has written to yet answers nothing.
 
 ```python
-from semiont.identifiers import ResourceId
-from semiont.types import GraphConfig, ResourceDescriptor
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import GraphConfig, ResourceDescriptor
 from semiont_graph.factory import create_graph_reader
 
 

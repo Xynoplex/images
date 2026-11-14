@@ -61,7 +61,7 @@ import httpx
 import pytest
 from aio import run
 from pydantic import JsonValue, TypeAdapter
-from semiont.identifiers import AnnotationId, ResourceId, UserId
+from xynoplex.identifiers import AnnotationId, ResourceId, UserId
 from spec import SPEC, JsonObject, objects, read, text, thing
 from store_contract import StoreContract, decline_resource, only, part, put_annotation, put_resource, width_of
 

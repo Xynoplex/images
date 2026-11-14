@@ -27,23 +27,23 @@ from pydantic import JsonValue, TypeAdapter
 from spec import SPEC, JsonObject, objects, read, strings, text
 from tokens import token
 
-from semiont import retry, timing
-from semiont.bus import request
-from semiont.cache import Cache, CachePersister
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.claims import JOB_CLAIM_CHANNELS, ClaimRefusal
-from semiont.client import SemiontClient
-from semiont.discovery import DiscoveryRead, DiscoveryTransport, Managed, Unchanged, subscribe_discovery
-from semiont.errors import BusRequestError, TransportError
-from semiont.http.oauth import sign_in_with_device_grant
-from semiont.http.transport import HttpTransport
-from semiont.identifiers import JobId
-from semiont.operations import BROWSE_EVENTS_REQUESTED
-from semiont.session import HeldSignIn, MemorySignIn, SemiontSession
-from semiont.testing import FaultyTransport, InMemoryContent, StubGateway, create_test_client, refuse_unscripted_operation
-from semiont.transport import Frame
-from semiont.types import DiscoveredKB, HighlightingJobParams, HttpEndpoint, JobFilter, JobProgress, KbTarget, UserResponse
-from semiont.watched import Variable
+from xynoplex import retry, timing
+from xynoplex.bus import request
+from xynoplex.cache import Cache, CachePersister
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.claims import JOB_CLAIM_CHANNELS, ClaimRefusal
+from xynoplex.client import SemiontClient
+from xynoplex.discovery import DiscoveryRead, DiscoveryTransport, Managed, Unchanged, subscribe_discovery
+from xynoplex.errors import BusRequestError, TransportError
+from xynoplex.http.oauth import sign_in_with_device_grant
+from xynoplex.http.transport import HttpTransport
+from xynoplex.identifiers import JobId
+from xynoplex.operations import BROWSE_EVENTS_REQUESTED
+from xynoplex.session import HeldSignIn, MemorySignIn, SemiontSession
+from xynoplex.testing import FaultyTransport, InMemoryContent, StubGateway, create_test_client, refuse_unscripted_operation
+from xynoplex.transport import Frame
+from xynoplex.types import DiscoveredKB, HighlightingJobParams, HttpEndpoint, JobFilter, JobProgress, KbTarget, UserResponse
+from xynoplex.watched import Variable
 
 TABLE: Final = read(SPEC / "client/clock-cases.json")
 CASES: Final = objects(TABLE["cases"], "cases")

@@ -16,7 +16,7 @@ from collections.abc import Mapping, Sequence
 from typing import Final
 
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 
 from semiont_vectors.store import AnnotationPayload, AnnotationStamp, EmbeddingChunk, ResourceStamp, VectorSearchResult
 

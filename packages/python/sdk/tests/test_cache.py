@@ -13,10 +13,10 @@ from typing import final, override
 import pytest
 from aio import pass_time, run, soon, turns
 
-from semiont.cache import Cache, CachePersister, CacheState, Failed, Pending, Ready, Runs
-from semiont.errors import BusRequestError, SemiontError
-from semiont.testing.axioms import AxiomSubject, Fresh, assert_state_unit_axioms
-from semiont.timing import SAVE_DEBOUNCE_MS
+from xynoplex.cache import Cache, CachePersister, CacheState, Failed, Pending, Ready, Runs
+from xynoplex.errors import BusRequestError, SemiontError
+from xynoplex.testing.axioms import AxiomSubject, Fresh, assert_state_unit_axioms
+from xynoplex.timing import SAVE_DEBOUNCE_MS
 
 KEY = "k"
 

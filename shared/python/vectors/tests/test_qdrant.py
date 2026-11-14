@@ -20,8 +20,8 @@ import httpx
 import pytest
 from aio import run
 from qdrant_stand_in import TOKEN, PlayedQdrant
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.identity import kb_did
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.identity import kb_did
 
 from semiont_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
 from semiont_vectors.store import AnnotationPayload, Declined, SearchOptions, VectorReader, VectorStore

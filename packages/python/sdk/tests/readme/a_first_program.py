@@ -1,7 +1,7 @@
-from semiont.client import SemiontClient
-from semiont.identifiers import ResourceId
-from semiont.transport import PutBinaryRequest, Transport
-from semiont.types import GenerationJobParams, JobDeclined, LinkingJobParams
+from xynoplex.client import SemiontClient
+from xynoplex.identifiers import ResourceId
+from xynoplex.transport import PutBinaryRequest, Transport
+from xynoplex.types import GenerationJobParams, JobDeclined, LinkingJobParams
 
 
 async def summarize(client: SemiontClient[Transport], paper: bytes) -> ResourceId | None:

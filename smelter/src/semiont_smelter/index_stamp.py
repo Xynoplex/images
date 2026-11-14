@@ -15,7 +15,7 @@ changes no vector.
 """
 
 from pydantic import JsonValue
-from semiont.types import SmelterConfig
+from xynoplex.types import SmelterConfig
 from semiont_vectors.store import IndexStamp, VectorStore
 
 from semiont_smelter.log import LOG

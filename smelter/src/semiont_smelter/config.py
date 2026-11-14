@@ -11,7 +11,7 @@ for each here. `protocol/contract/SMELTER.md` § Settings states each refusal.
 from collections.abc import Mapping
 from typing import Final
 
-from semiont.types import MemoryVectorsConfig, QdrantVectorsConfig, SmelterConfig, VoyageEmbeddingConfig
+from xynoplex.types import MemoryVectorsConfig, QdrantVectorsConfig, SmelterConfig, VoyageEmbeddingConfig
 from semiont_service.config import Refused, read_config, set_in
 
 __all__ = ["SERVICE", "embedding_key_of", "read_smelter_config", "vectors_token_of"]

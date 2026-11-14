@@ -10,7 +10,7 @@ here. `protocol/contract/WORKER-SERVICE.md` § Configuration states each refusal
 from collections.abc import Mapping
 from typing import Final
 
-from semiont.types import WorkerConfig
+from xynoplex.types import WorkerConfig
 from semiont_service.config import Refused, set_in
 
 SERVICE: Final = "worker"

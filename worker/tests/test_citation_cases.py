@@ -11,8 +11,8 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import GatheredContext, SupportedMediaType
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import GatheredContext, SupportedMediaType
 from spec import SPEC
 
 from semiont_worker.generation.citations import (

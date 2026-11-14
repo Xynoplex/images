@@ -11,7 +11,7 @@ from gateway_server import Answer, GatewayServer
 from pydantic import JsonValue, TypeAdapter
 from spec import JsonObject
 
-from semiont.discovery import (
+from xynoplex.discovery import (
     DISCOVERY_INTERVAL,
     Absent,
     DiscoveryAbsentReason,
@@ -25,9 +25,9 @@ from semiont.discovery import (
     subscribe_discovery,
     text_discovery,
 )
-from semiont.http.discovery import http_discovery
-from semiont.timing import HTTP_REQUEST_TIMEOUT_MS
-from semiont.types import DiscoveredKB
+from xynoplex.http.discovery import http_discovery
+from xynoplex.timing import HTTP_REQUEST_TIMEOUT_MS
+from xynoplex.types import DiscoveredKB
 
 _JSON: Final = TypeAdapter[JsonValue](JsonValue)
 

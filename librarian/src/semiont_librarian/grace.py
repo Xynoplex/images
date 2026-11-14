@@ -21,8 +21,8 @@ the graph, since a description from the record has no edges
 from dataclasses import dataclass
 from typing import final
 
-from semiont.identifiers import ResourceId
-from semiont.types import ResourceDescriptor
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import ResourceDescriptor
 
 from semiont_librarian.log import LOG
 from semiont_librarian.reads import Described, GraphReads, Record

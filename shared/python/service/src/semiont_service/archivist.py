@@ -31,9 +31,9 @@ from typing import Final, Protocol, Self, final, override
 
 import httpx
 from pydantic import ValidationError
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.types import (
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import (
     ArchivistEventsResponse,
     ArchivistStreamsResponse,
     GetAnnotationsResponse,

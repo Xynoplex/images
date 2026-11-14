@@ -14,11 +14,11 @@ import pytest
 from aio import hurried, run
 from pydantic import JsonValue
 from rig import ADA_ID, LOVELACE, RECORDED, described, reference
-from semiont.bus import Bus, reply_channels_for
-from semiont.errors import BusRequestError
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.testing import DropReply, FaultAction, FaultyTransport, Refuse
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.errors import BusRequestError
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.testing import DropReply, FaultAction, FaultyTransport, Refuse
 
 from semiont_librarian.reads import Described, ProfilesUnread
 from semiont_librarian.record import READ, BusProfiles, BusRecord

@@ -21,7 +21,7 @@ one in the prompt.
 from collections.abc import Sequence
 from typing import Final
 
-from semiont.types import TagCategory, TagSchema
+from xynoplex.types import TagCategory, TagSchema
 
 from semiont_worker.locales import language_name
 from semiont_worker.numbers import as_javascript_writes

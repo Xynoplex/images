@@ -5,9 +5,9 @@ from typing import Final, final
 import pytest
 from aio import run
 from rig import FakeAnchoredText, FakeContent, FakeInference, FakeRecord, described, reference, sent, tag, view
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import Annotation, ContextualSummaryResponse, ContextualSummaryResponseContext, GatherSummaryRequest, ResourceView
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, ContextualSummaryResponse, ContextualSummaryResponseContext, GatherSummaryRequest, ResourceView
 from semiont_service.content import Content
 from spec import JsonObject
 

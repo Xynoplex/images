@@ -43,19 +43,19 @@ from types import TracebackType
 from typing import Final, Self, final, overload
 
 from pydantic import JsonValue
-from semiont.bus import Bus, reply_channels_for
-from semiont.channels import PRINCIPAL_PROFILE
-from semiont.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, Claims
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.http import AgentToken, HttpTransport, ServiceToken
-from semiont.identifiers import UserId
-from semiont.identity import kb_did
-from semiont.model import written
-from semiont.operations import BROWSE_RESOURCE_REQUESTED, JOB_LIMITS_REQUESTED
-from semiont.retry import REFRESH, RetryFacts
-from semiont.transport import Transport
-from semiont.types import (
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.channels import PRINCIPAL_PROFILE
+from xynoplex.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, Claims
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.http import AgentToken, HttpTransport, ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.identity import kb_did
+from xynoplex.model import written
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED, JOB_LIMITS_REQUESTED
+from xynoplex.retry import REFRESH, RetryFacts
+from xynoplex.transport import Transport
+from xynoplex.types import (
     Agent,
     AgentSoftware,
     JobFilter,

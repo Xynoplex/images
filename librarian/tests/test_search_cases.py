@@ -30,9 +30,9 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, FakeContent, FakeEmbedding, FakeGraph, FakeProfiles, FakeRecord, FakeVectors, described, view
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     Annotation,
     MatchResourcesRequest,
     MatchResourcesResult,

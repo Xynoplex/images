@@ -21,10 +21,10 @@ nothing for is absent, and is not `null`.
 from collections.abc import Sequence
 from typing import Final, final
 
-from semiont.annotations import body_source, entity_types, target_source
-from semiont.model import stated
-from semiont.resources import primary_representation, resource_entity_types
-from semiont.types import (
+from xynoplex.annotations import body_source, entity_types, target_source
+from xynoplex.model import stated
+from xynoplex.resources import primary_representation, resource_entity_types
+from xynoplex.types import (
     GatherAnnotationRequest,
     GatheredContext,
     GatheredContextFocusAnnotation,

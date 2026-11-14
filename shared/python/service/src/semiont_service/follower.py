@@ -41,10 +41,10 @@ from pathlib import Path
 from typing import Final, Literal, Protocol, final
 
 from pydantic import JsonValue, TypeAdapter, ValidationError
-from semiont.channels import CHANNELS, PERSISTED_EVENT_TYPES
-from semiont.transport import ConnectionState, Frame
-from semiont.types import StoredEventResponse
-from semiont.watched import Watched
+from xynoplex.channels import CHANNELS, PERSISTED_EVENT_TYPES
+from xynoplex.transport import ConnectionState, Frame
+from xynoplex.types import StoredEventResponse
+from xynoplex.watched import Watched
 
 from semiont_service.lanes import Lanes
 

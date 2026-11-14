@@ -28,8 +28,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Final, final, override
 
-from semiont.identifiers import ResourceId
-from semiont.types import SmeltSettledOutcome
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import SmeltSettledOutcome
 
 from semiont_librarian.reads import Settled, SmeltWaits, SmeltWaitTimedOut, WeaveWaits, WeaveWaitTimedOut
 

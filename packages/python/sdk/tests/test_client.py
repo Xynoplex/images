@@ -17,17 +17,17 @@ from kb import refusing, silent
 from pydantic import JsonValue
 from spec import JsonObject
 
-from semiont.bus import Bus, Delivered
-from semiont.channels import BRIDGED_CHANNELS, JOB_QUEUED
-from semiont.client import ClientTiming, SemiontClient
-from semiont.errors import BusRequestError, SemiontError, TransportError
-from semiont.event_bus import EventBus
-from semiont.events import Events
-from semiont.identifiers import AnnotationId, JobId, ResourceId
-from semiont.namespaces.browse import EngineWithLimits
-from semiont.running import Running
-from semiont.testing import FaultyTransport, GetAnchoredText, InMemoryContent, StubGateway, create_test_client
-from semiont.transport import (
+from xynoplex.bus import Bus, Delivered
+from xynoplex.channels import BRIDGED_CHANNELS, JOB_QUEUED
+from xynoplex.client import ClientTiming, SemiontClient
+from xynoplex.errors import BusRequestError, SemiontError, TransportError
+from xynoplex.event_bus import EventBus
+from xynoplex.events import Events
+from xynoplex.identifiers import AnnotationId, JobId, ResourceId
+from xynoplex.namespaces.browse import EngineWithLimits
+from xynoplex.running import Running
+from xynoplex.testing import FaultyTransport, GetAnchoredText, InMemoryContent, StubGateway, create_test_client
+from xynoplex.transport import (
     ConnectionState,
     Content,
     Frame,
@@ -37,8 +37,8 @@ from semiont.transport import (
     ResourceHold,
     Transport,
 )
-from semiont.types import AnchoredTextAbsent, GatheredContext, JobStatusResponse, MatchSearchResult
-from semiont.watched import Watched
+from xynoplex.types import AnchoredTextAbsent, GatheredContext, JobStatusResponse, MatchSearchResult
+from xynoplex.watched import Watched
 
 RESOURCE = ResourceId("res-1")
 CONTEXT: JsonObject = {

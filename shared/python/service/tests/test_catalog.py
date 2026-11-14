@@ -7,10 +7,10 @@ from typing import Final, final
 import pytest
 from aio import pass_time, run, under_way
 from pydantic import JsonValue
-from semiont.bus import Bus, reply_channels_for
-from semiont.errors import BusRequestError
-from semiont.operations import BROWSE_RESOURCES_REQUESTED
-from semiont.testing import FaultyTransport
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.errors import BusRequestError
+from xynoplex.operations import BROWSE_RESOURCES_REQUESTED
+from xynoplex.testing import FaultyTransport
 
 from semiont_service import catalog
 

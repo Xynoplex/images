@@ -27,11 +27,11 @@ import asyncio
 from collections.abc import Sequence
 from typing import Final, final
 
-from semiont.annotations import entity_types, target_source
-from semiont.identifiers import ResourceId
-from semiont.model import stated
-from semiont.resources import resource_entity_types
-from semiont.types import (
+from xynoplex.annotations import entity_types, target_source
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import stated
+from xynoplex.resources import resource_entity_types
+from xynoplex.types import (
     Annotation,
     GraphAnnotationNode,
     GraphResourceNode,

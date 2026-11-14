@@ -22,8 +22,8 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Literal, Protocol, final
 
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import (
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import (
     AnchoredTextAnswer,
     Annotation,
     Motivation,

@@ -13,7 +13,7 @@ from aio import run, turns
 from holding import EVERY_JOB, KB, Parties, answering, job
 from opentelemetry.sdk.metrics.export import Histogram, HistogramDataPoint, InMemoryMetricReader, NumberDataPoint, Sum
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
-from semiont.identity import kb_did
+from xynoplex.identity import kb_did
 from standing_in import GENERATOR
 from telemetry_rows import TABLE, MetricRow, SpanRow, worker_metrics
 

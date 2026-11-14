@@ -18,14 +18,14 @@ from aio import Heard, pass_time, run, soon, turns
 from spec import SPEC, JsonObject, objects, read, strings, text
 from tokens import expired, jwt, token
 
-from semiont.errors import BusRequestError, SemiontError, SessionError, SignInError, TransportError
-from semiont.events import Broadcast, Events
-from semiont.session import HeldSignIn, MemorySignIn, Refresh, SemiontSession, SessionEndReason, Validate
-from semiont.testing import FaultyTransport, create_test_client
-from semiont.testing.axioms import AxiomSubject, Fresh, assert_state_unit_axioms
-from semiont.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT, MAX_RECONNECT_MS, RECONNECT_MS
-from semiont.types import HttpEndpoint, KbTarget, UserResponse
-from semiont.watched import Variable
+from xynoplex.errors import BusRequestError, SemiontError, SessionError, SignInError, TransportError
+from xynoplex.events import Broadcast, Events
+from xynoplex.session import HeldSignIn, MemorySignIn, Refresh, SemiontSession, SessionEndReason, Validate
+from xynoplex.testing import FaultyTransport, create_test_client
+from xynoplex.testing.axioms import AxiomSubject, Fresh, assert_state_unit_axioms
+from xynoplex.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT, MAX_RECONNECT_MS, RECONNECT_MS
+from xynoplex.types import HttpEndpoint, KbTarget, UserResponse
+from xynoplex.watched import Variable
 
 TABLE = read(SPEC / "session/cases.json")
 

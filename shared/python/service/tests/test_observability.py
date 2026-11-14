@@ -27,8 +27,8 @@ from opentelemetry.metrics import CallbackOptions
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import Gauge, InMemoryMetricReader, Metric, NumberDataPoint
 from opentelemetry.util.types import AttributeValue
-from semiont.identifiers import UserId
-from semiont.identity import kb_did
+from xynoplex.identifiers import UserId
+from xynoplex.identity import kb_did
 from spec import ROOT
 from telemetry_rows import MetricRow, as_the_table_writes, metrics_named, resource_keys
 

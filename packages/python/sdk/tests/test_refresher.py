@@ -30,13 +30,13 @@ from kb import (
 )
 from pydantic import JsonValue
 
-from semiont.cache import CacheState, Failed, Pending, Ready
-from semiont.cached import Cached
-from semiont.channels import BRIDGED_CHANNELS, CHANNELS, RESOURCE_SCOPED_CHANNELS
-from semiont.client import ClientTiming, SemiontClient
-from semiont.errors import BusRequestError
-from semiont.identifiers import AnnotationId
-from semiont.refresh import (
+from xynoplex.cache import CacheState, Failed, Pending, Ready
+from xynoplex.cached import Cached
+from xynoplex.channels import BRIDGED_CHANNELS, CHANNELS, RESOURCE_SCOPED_CHANNELS
+from xynoplex.client import ClientTiming, SemiontClient
+from xynoplex.errors import BusRequestError
+from xynoplex.identifiers import AnnotationId
+from xynoplex.refresh import (
     CACHE_QUERIES,
     CACHE_REFRESH,
     CACHE_REFRESH_CHANNELS,
@@ -46,9 +46,9 @@ from semiont.refresh import (
     CacheRefreshTrigger,
     CacheRefreshWhen,
 )
-from semiont.testing import ContentCall, FaultyTransport, GetAnnotations, InMemoryContent, StubGateway
-from semiont.transport import Frame, FrameRefusal
-from semiont.types import Annotation
+from xynoplex.testing import ContentCall, FaultyTransport, GetAnnotations, InMemoryContent, StubGateway
+from xynoplex.transport import Frame, FrameRefusal
+from xynoplex.types import Annotation
 
 type Client = SemiontClient[FaultyTransport]
 

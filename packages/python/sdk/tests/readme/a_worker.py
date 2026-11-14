@@ -1,10 +1,10 @@
-from semiont.annotations import QuotedText, annotation_of_span, reconcile
-from semiont.channels import PRINCIPAL_PROFILE
-from semiont.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, HeldMarkJob, HeldYieldJob
-from semiont.client import SemiontClient
-from semiont.http import AgentToken, HttpTransport, KeyCredential, ServiceToken, private_key_from_pem
-from semiont.identifiers import AnnotationId
-from semiont.types import (
+from xynoplex.annotations import QuotedText, annotation_of_span, reconcile
+from xynoplex.channels import PRINCIPAL_PROFILE
+from xynoplex.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, HeldMarkJob, HeldYieldJob
+from xynoplex.client import SemiontClient
+from xynoplex.http import AgentToken, HttpTransport, KeyCredential, ServiceToken, private_key_from_pem
+from xynoplex.identifiers import AnnotationId
+from xynoplex.types import (
     Agent,
     AgentSoftware,
     Annotation,

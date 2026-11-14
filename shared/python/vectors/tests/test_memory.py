@@ -14,7 +14,7 @@ from typing import final, override
 import pytest
 from aio import run
 from pydantic import JsonValue
-from semiont.identifiers import ResourceId
+from xynoplex.identifiers import ResourceId
 from store_contract import StoreContract
 
 from semiont_vectors.memory import MemoryVectorStore

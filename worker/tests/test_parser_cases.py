@@ -14,9 +14,9 @@ from typing import Annotated, Final, Literal, assert_never, final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from semiont.annotations import QuotedText, TextSpan
-from semiont.types import TagCategory, TagSchema
-from semiont.watched import Variable
+from xynoplex.annotations import QuotedText, TextSpan
+from xynoplex.types import TagCategory, TagSchema
+from xynoplex.watched import Variable
 from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredReadError, StructuredResponse
 from semiont_inference.mock import MockInferenceClient
 from spec import SPEC

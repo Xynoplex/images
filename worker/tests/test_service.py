@@ -31,12 +31,12 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from gateways import KnowledgeBaseStoodIn, stand_in
 from holding import LIMITS, Parties, answering, job
 from pydantic import JsonValue
-from semiont.errors import SignInError
-from semiont.http import KeyCredential
-from semiont.model import written
-from semiont.timing import MAX_RECONNECT_MS, RECONNECT_MS
-from semiont.transport import Frame
-from semiont.types import WorkerHealth, WorkerKnowledgeBaseConfig
+from xynoplex.errors import SignInError
+from xynoplex.http import KeyCredential
+from xynoplex.model import written
+from xynoplex.timing import MAX_RECONNECT_MS, RECONNECT_MS
+from xynoplex.transport import Frame
+from xynoplex.types import WorkerHealth, WorkerKnowledgeBaseConfig
 from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from semiont_service.config import Refused
 from semiont_service.knowledge_base import CONFIRMING_CHANNELS

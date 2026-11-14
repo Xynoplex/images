@@ -13,7 +13,7 @@ from typing import Final
 import pytest
 from aio import run
 from rig import FakeGraph, FakeRecord, described, view
-from semiont.identifiers import ResourceId
+from xynoplex.identifiers import ResourceId
 
 from semiont_librarian.grace import Graced, described_if_readable, resource_with_view_grace
 from semiont_librarian.reads import Described

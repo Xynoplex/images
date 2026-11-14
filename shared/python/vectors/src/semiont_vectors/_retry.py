@@ -9,7 +9,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import Final
 
-from semiont.retry import RetryPolicy, equal_jitter
+from xynoplex.retry import RetryPolicy, equal_jitter
 
 from semiont_vectors.embedding import EmbeddingProviderError
 

@@ -19,9 +19,9 @@ from typing import Final, Literal
 
 from opentelemetry import metrics, trace
 from opentelemetry.trace import SpanKind
-from semiont.annotations import AnchorMethod
-from semiont.identifiers import UserId
-from semiont.types import JobType, Motivation
+from xynoplex.annotations import AnchorMethod
+from xynoplex.identifiers import UserId
+from xynoplex.types import JobType, Motivation
 from semiont_inference.interface import TokenUsage
 
 _SCOPE: Final = "semiont"

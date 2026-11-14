@@ -44,9 +44,9 @@ import pytest
 from aio import SteppedLoop, hurried, pass_time, run
 from pydantic import JsonValue
 from rig import FakeDegraded, FakeGraph, FakeRecord, FakeWeave, described, view
-from semiont.identifiers import ResourceId
-from semiont.model import WireModel
-from semiont.types import Annotation, GraphResourceNode, KnowledgeGraph, Motivation, ResourceDescriptor, ResourceView
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import WireModel
+from xynoplex.types import Annotation, GraphResourceNode, KnowledgeGraph, Motivation, ResourceDescriptor, ResourceView
 from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
 from spec import SPEC, JsonObject, objects, read, text, thing, whole
 

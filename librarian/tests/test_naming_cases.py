@@ -20,7 +20,7 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, RECORDED, FakeProfiles
-from semiont.types import Profile, ProfilesProjection
+from xynoplex.types import Profile, ProfilesProjection
 from spec import ROOT, JsonObject, objects, only, read, why
 
 from semiont_librarian.naming import name, named

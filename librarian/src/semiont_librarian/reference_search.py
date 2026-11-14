@@ -26,9 +26,9 @@ from collections.abc import Callable, Sequence
 from datetime import datetime
 from typing import Final, final
 
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     Annotation,
     GatheredContext,
     GatheredContextFocusAnnotation,

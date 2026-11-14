@@ -18,10 +18,10 @@ from pathlib import Path
 import pytest
 from aio import run
 from rig import Rig, added, archived, body_updated, created, event, link, removed, tag, tagged
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.transport import Frame
-from semiont.types import ResourceDescriptor
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.transport import Frame
+from xynoplex.types import ResourceDescriptor
 from semiont_graph.interface import ResourceChange
 
 from semiont_weaver.weaver import Reconciled

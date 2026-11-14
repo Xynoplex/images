@@ -12,9 +12,9 @@ from typing import Final, final
 
 import pytest
 from aio import run
-from semiont.annotations import SpanRefusedError, TextSpan, target_selector
-from semiont.identifiers import ResourceId
-from semiont.types import (
+from xynoplex.annotations import SpanRefusedError, TextSpan, target_selector
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import (
     Agent,
     AgentSoftware,
     AnchoredTextAbsent,

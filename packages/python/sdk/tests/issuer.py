@@ -4,8 +4,8 @@ from gateway_server import Answer, GatewayServer
 from pydantic import JsonValue, TypeAdapter
 from spec import JsonObject
 
-from semiont.http import SecretCredential
-from semiont.identity import agent_did
+from xynoplex.http import SecretCredential
+from xynoplex.identity import agent_did
 
 _JSON = TypeAdapter[JsonValue](JsonValue)
 

@@ -12,11 +12,11 @@ position (`semiont_service.follower`).
 import asyncio
 from typing import Final, final
 
-from semiont.bus import Bus
-from semiont.identifiers import ResourceId
-from semiont.operations import BROWSE_RESOURCE_REQUESTED, BROWSE_RESOURCES_REQUESTED
-from semiont.resources import resource_entity_types
-from semiont.types import Annotation, BrowseResourceRequest, ResourceDescriptor
+from xynoplex.bus import Bus
+from xynoplex.identifiers import ResourceId
+from xynoplex.operations import BROWSE_RESOURCE_REQUESTED, BROWSE_RESOURCES_REQUESTED
+from xynoplex.resources import resource_entity_types
+from xynoplex.types import Annotation, BrowseResourceRequest, ResourceDescriptor
 from semiont_service import catalog
 from semiont_service.archivist import AnnotationReads
 

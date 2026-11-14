@@ -25,7 +25,7 @@ from datetime import UTC, datetime
 from typing import Final, assert_never, final, override
 
 from opentelemetry import trace
-from semiont.types import LogFormat, LogLevel
+from xynoplex.types import LogFormat, LogLevel
 
 __all__ = ["configure"]
 

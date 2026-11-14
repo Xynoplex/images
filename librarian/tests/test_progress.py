@@ -17,8 +17,8 @@ from typing import Final, final
 
 import pytest
 from aio import hurried, run, soon
-from semiont.identifiers import ResourceId
-from semiont.types import SmeltSettledOutcome
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import SmeltSettledOutcome
 
 from semiont_librarian.progress import SmeltProgress, WeaveProgress
 from semiont_librarian.reads import SmeltWaitTimedOut, WeaveWaitTimedOut

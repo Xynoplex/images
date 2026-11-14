@@ -10,8 +10,8 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from semiont.timing import HELD_JOB_STALL_MS
-from semiont.types import KbIdentity, LibrarianConfig
+from xynoplex.timing import HELD_JOB_STALL_MS
+from xynoplex.types import KbIdentity, LibrarianConfig
 from semiont_service.config import Refused
 
 from semiont_librarian.config import SERVICE, api_key_of, embedding_key_of, graph_password_of, read_librarian_config, vectors_token_of

@@ -10,7 +10,7 @@ read for it here. `protocol/contract/WEAVER.md` § Settings states each refusal.
 from collections.abc import Mapping
 from typing import Final
 
-from semiont.types import MemoryGraphConfig, Neo4jGraphConfig, WeaverConfig
+from xynoplex.types import MemoryGraphConfig, Neo4jGraphConfig, WeaverConfig
 from semiont_service.config import Refused, read_config, set_in
 
 __all__ = ["SERVICE", "graph_password_of", "read_weaver_config"]

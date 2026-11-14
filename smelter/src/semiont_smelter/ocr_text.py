@@ -18,7 +18,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import final
 
-from semiont.types import PdfTextItem
+from xynoplex.types import PdfTextItem
 
 from semiont_smelter.anchoring import apply
 from semiont_smelter.ocr_engine import Box, OcrRead

@@ -13,8 +13,8 @@ from typing import Final, final
 import pytest
 from aio import pass_time, run, turns
 from pydantic import JsonValue
-from semiont.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from semiont.types import GenerationJobParams, SupportedMediaType
+from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynoplex.types import GenerationJobParams, SupportedMediaType
 from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, ProviderStatusError, StructuredResponse
 from semiont_inference.mock import MockInferenceClient
 

@@ -12,9 +12,9 @@ import pytest
 from aio import run
 from pydantic import ValidationError
 from rig import FakeGraph, FakeRecord, described, link, reference, view
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import GatherReferencedByRequest, GatherReferencedByResult, ResourceView
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import GatherReferencedByRequest, GatherReferencedByResult, ResourceView
 from spec import JsonObject
 
 from semiont_librarian.annotation_gather import Ungathered

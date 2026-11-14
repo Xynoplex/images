@@ -33,7 +33,7 @@ from typing import TYPE_CHECKING, Final, final
 
 from opentelemetry import metrics, trace
 from opentelemetry.metrics import CallbackOptions, Meter, Observation
-from semiont.identifiers import UserId
+from xynoplex.identifiers import UserId
 
 from semiont_service.config import set_in
 

@@ -10,11 +10,11 @@ from typing import get_args
 from pydantic import BaseModel, JsonValue
 from spec import SPEC, objects, read, text
 
-from semiont import error_codes, refresh, stored, timing
-from semiont import types as wire
-from semiont.channels import CHANNELS
-from semiont.namespaces import live
-from semiont.retry import RetryPolicy
+from xynoplex import error_codes, refresh, stored, timing
+from xynoplex import types as wire
+from xynoplex.channels import CHANNELS
+from xynoplex.namespaces import live
+from xynoplex.retry import RetryPolicy
 
 CODES = read(SPEC / "errors/codes.json")
 
@@ -144,7 +144,7 @@ def test_the_kept_queries_are_one_list_and_it_is_those_the_refresh_table_marks_p
 
 
 def held_type(reference: str) -> object:
-    """The type a query's `value` names in `semiont.types`: a component's model, or a member of one (`#/properties/…`) by its wire name."""
+    """The type a query's `value` names in `xynoplex.types`: a component's model, or a member of one (`#/properties/…`) by its wire name."""
     component, _, pointer = reference.partition("#")
     named: object = getattr(wire, PurePosixPath(component).stem)
     steps = pointer.split("/")[1:]

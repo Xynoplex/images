@@ -13,7 +13,7 @@ import pytest
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from semiont.annotations import TextSpan
+from xynoplex.annotations import TextSpan
 
 from semiont_worker.detection.parsers import (
     Anchored,

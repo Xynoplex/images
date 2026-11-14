@@ -36,11 +36,11 @@ from pathlib import Path
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.bus import Bus, reply_channels_for
-from semiont.channels import PERSISTED_EVENT_TYPES, WEAVE_REBUILD
-from semiont.http import AgentToken, Credential, HttpTransport, ServiceToken
-from semiont.identity import kb_did
-from semiont.types import WeaverConfig
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.channels import PERSISTED_EVENT_TYPES, WEAVE_REBUILD
+from xynoplex.http import AgentToken, Credential, HttpTransport, ServiceToken
+from xynoplex.identity import kb_did
+from xynoplex.types import WeaverConfig
 from semiont_graph.factory import create_graph_database
 from semiont_graph.interface import GraphDatabase
 from semiont_service.archivist import Archivist

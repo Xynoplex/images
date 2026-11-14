@@ -10,8 +10,8 @@ held by the cases of `protocol/specs/src/librarian/search-cases.json`, which
 import pytest
 from aio import run
 from rig import FakeAnchoredText, FakeContent, described
-from semiont.identifiers import ResourceId
-from semiont.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, ResourceDescriptor
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, ResourceDescriptor
 from semiont_service.content import Content, ContentUnread
 from spec import JsonObject
 

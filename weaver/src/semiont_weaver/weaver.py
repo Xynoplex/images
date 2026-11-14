@@ -20,14 +20,14 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue, ValidationError
-from semiont.bus import Bus, decoded
-from semiont.channel import Empty
-from semiont.channels import WEAVE_APPLIED, WEAVE_REBUILD, WEAVE_REBUILD_FAILED, WEAVE_REBUILD_OK
-from semiont.errors import SemiontError
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.transport import Frame, FrameRefusal, FrameSink, Transport
-from semiont.types import CommandError, ResourceDescriptor, StoredEventResponse, WeaveApplied
+from xynoplex.bus import Bus, decoded
+from xynoplex.channel import Empty
+from xynoplex.channels import WEAVE_APPLIED, WEAVE_REBUILD, WEAVE_REBUILD_FAILED, WEAVE_REBUILD_OK
+from xynoplex.errors import SemiontError
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.transport import Frame, FrameRefusal, FrameSink, Transport
+from xynoplex.types import CommandError, ResourceDescriptor, StoredEventResponse, WeaveApplied
 from semiont_graph.codec import intended_graph_annotation
 from semiont_graph.interface import GraphDatabase
 from semiont_service.archivist import AnnotationReads

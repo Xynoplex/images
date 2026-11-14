@@ -14,7 +14,7 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from semiont.types import WorkerConfig
+from xynoplex.types import WorkerConfig
 from semiont_service.config import Refused
 
 from semiont_worker.config import api_key_of, served_once

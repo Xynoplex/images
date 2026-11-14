@@ -8,7 +8,7 @@ anchored by them, and one that is a character out selects other text.
 
 from collections.abc import Sequence
 
-from semiont.types import PdfTextItem
+from xynoplex.types import PdfTextItem
 
 from semiont_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
 from semiont_smelter.ocr_text import ImageText, ReadWord, assemble, place

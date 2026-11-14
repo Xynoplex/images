@@ -18,9 +18,9 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, FakeEmbedding, FakeGraph, FakeInference, FakeProfiles, FakeRecord, FakeVectors, described, tag, view
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import MatchSearchRequest, MatchSearchResult, ResourceDescriptor
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import MatchSearchRequest, MatchSearchResult, ResourceDescriptor
 from semiont_graph.interface import ResourceListing, ResourceQuery
 from semiont_vectors.store import CollectionAbsent, VectorSearchResult
 from spec import JsonObject, objects

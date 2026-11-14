@@ -34,8 +34,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import final
 
-from semiont.model import written
-from semiont.types import WorkerConfig, WorkerEngineConfig
+from xynoplex.model import written
+from xynoplex.types import WorkerConfig, WorkerEngineConfig
 from semiont_inference.factory import CatalogueRequired, KeyRequired, create_inference_client
 from semiont_inference.interface import InferenceClient
 from semiont_service.config import Refused, config_path_of, key_account_of, read_config

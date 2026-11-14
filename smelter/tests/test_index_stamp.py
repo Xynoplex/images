@@ -4,8 +4,8 @@ import logging
 
 import pytest
 from aio import run
-from semiont.identifiers import ResourceId
-from semiont.types import SmelterConfig
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import SmelterConfig
 from semiont_vectors.memory import MemoryVectorStore
 from semiont_vectors.store import EmbeddingChunk, IndexStamp
 

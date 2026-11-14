@@ -23,8 +23,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Final, final
 
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import GatheredContext, GatheredContextFocusAnnotation, GraphResourceNode, SupportedMediaType
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import GatheredContext, GatheredContextFocusAnnotation, GraphResourceNode, SupportedMediaType
 from semiont_service.white_space import WHITE_SPACE, trimmed
 
 from semiont_worker.log import LOG

@@ -188,7 +188,7 @@ from typing import Final, final, override
 
 import httpx
 from pydantic import BaseModel, JsonValue, TypeAdapter
-from semiont.identifiers import AnnotationId, ResourceId, UserId
+from xynoplex.identifiers import AnnotationId, ResourceId, UserId
 
 from semiont_vectors._dimensions import resolve_dimensions
 from semiont_vectors.merge import merge_by_resource

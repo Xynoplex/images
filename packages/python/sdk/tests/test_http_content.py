@@ -15,13 +15,13 @@ from aio import run, soon
 from gateway_server import NOT_FOUND, Answer, GatewayServer, Recording
 from pydantic import JsonValue, TypeAdapter
 
-from semiont.errors import SemiontError, TransportError
-from semiont.http import HttpTransport, Timing
-from semiont.http.content import form_of
-from semiont.identifiers import AnnotationId, JobId, ResourceId
-from semiont.transport import PutBinaryRequest, UploadProgress
-from semiont.types import AgentSoftware, ResourceUpload
-from semiont.watched import Variable
+from xynoplex.errors import SemiontError, TransportError
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.http.content import form_of
+from xynoplex.identifiers import AnnotationId, JobId, ResourceId
+from xynoplex.transport import PutBinaryRequest, UploadProgress
+from xynoplex.types import AgentSoftware, ResourceUpload
+from xynoplex.watched import Variable
 
 EVERY_BYTE = bytes(range(256)) * 600
 QUICK = Timing(reconnect_ms=10, http_request_ms=150)

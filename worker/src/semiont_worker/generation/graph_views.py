@@ -12,8 +12,8 @@ is kept, and named by its id.
 from dataclasses import dataclass
 from typing import final
 
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import GraphAnnotationNode, KnowledgeGraph, KnowledgeGraphNodesItem
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import GraphAnnotationNode, KnowledgeGraph, KnowledgeGraphNodesItem
 
 
 @final

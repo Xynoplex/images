@@ -1,7 +1,7 @@
 """A client's live queries: what watching one holds, what a read gives its watchers, and what a client keeps of them.
 
 Under any behaviour of the wire, a watcher is told something (L1, L2:
-`semiont.testing.liveness`).
+`xynoplex.testing.liveness`).
 
 What each query asks is `test_surface.py`'s, the cache's own rules are
 `test_cache.py`'s, and what an event does to a query is `test_refresher.py`'s.
@@ -33,19 +33,19 @@ from kb import (
 from pydantic import JsonValue, TypeAdapter
 from spec import JsonObject
 
-from semiont.cache import CacheState, Failed, Pending, Ready
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import CachePersistence, ClientTiming, SemiontClient
-from semiont.errors import BusRequestError
-from semiont.identifiers import ResourceId
-from semiont.namespaces.browse import EngineWithLimits
-from semiont.refresh import CACHE_QUERIES, CacheQuery
-from semiont.resume import CoupledBookmarks
-from semiont.storage import MemoryStorage
-from semiont.stored import KEPT_QUERIES, KeptQuery, cache_key, last_event_id_key, person_key
-from semiont.testing import DropReply, FaultyTransport, SharedStorage, StubGateway, create_test_client, refuse_unscripted_operation
-from semiont.testing.liveness import LivenessScenario, LivenessSpec, assert_liveness_axioms
-from semiont.timing import INVALIDATION_WINDOW_MS, SAVE_DEBOUNCE_MS
+from xynoplex.cache import CacheState, Failed, Pending, Ready
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import CachePersistence, ClientTiming, SemiontClient
+from xynoplex.errors import BusRequestError
+from xynoplex.identifiers import ResourceId
+from xynoplex.namespaces.browse import EngineWithLimits
+from xynoplex.refresh import CACHE_QUERIES, CacheQuery
+from xynoplex.resume import CoupledBookmarks
+from xynoplex.storage import MemoryStorage
+from xynoplex.stored import KEPT_QUERIES, KeptQuery, cache_key, last_event_id_key, person_key
+from xynoplex.testing import DropReply, FaultyTransport, SharedStorage, StubGateway, create_test_client, refuse_unscripted_operation
+from xynoplex.testing.liveness import LivenessScenario, LivenessSpec, assert_liveness_axioms
+from xynoplex.timing import INVALIDATION_WINDOW_MS, SAVE_DEBOUNCE_MS
 
 type Client = SemiontClient[FaultyTransport]
 

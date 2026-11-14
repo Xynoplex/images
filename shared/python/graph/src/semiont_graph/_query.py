@@ -8,8 +8,8 @@ contract tests hold both to one behaviour.
 from collections.abc import Iterable
 from datetime import datetime
 
-from semiont.resources import primary_representation
-from semiont.types import ResourceDescriptor
+from xynoplex.resources import primary_representation
+from xynoplex.types import ResourceDescriptor
 
 from semiont_graph.interface import ResourceListing, ResourceQuery
 

@@ -16,7 +16,7 @@ from typing import Final, final, override
 
 import pytest
 from aio import run
-from semiont.types import ExtractedText, ExtractedTextOcrConfidence, ExtractionDeclined, ExtractionOutcome, PdfTextItem
+from xynoplex.types import ExtractedText, ExtractedTextOcrConfidence, ExtractionDeclined, ExtractionOutcome, PdfTextItem
 
 from semiont_smelter.anchoring import anchor_runs
 from semiont_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor

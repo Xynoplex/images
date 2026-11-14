@@ -84,12 +84,12 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/semiont_inference"]
+packages = ["src/xynoplex_inference"]
 
 # What the wheel is built from, and no more. The tests read the repository
 # around this package, which a source distribution does not hold.
 [tool.hatch.build.targets.sdist]
-only-include = ["src/semiont_inference", "README.md"]
+only-include = ["src/xynoplex_inference", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

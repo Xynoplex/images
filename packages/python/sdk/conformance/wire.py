@@ -19,16 +19,16 @@ from typing import final
 from protocol import Arguments, Misuse, Operation, count, exporting, failure, object_of, optional_text, say, serve, text, texts
 from pydantic import JsonValue
 
-from semiont.bus import request
-from semiont.errors import SemiontError
-from semiont.events import Events
-from semiont.http import HttpTransport, Timing, TokenRefresher
-from semiont.identifiers import AnnotationId, InvalidIdentifier, JobId, ResourceId
-from semiont.model import WireModel
-from semiont.operations import OPERATIONS
-from semiont.retry import RetryPolicy
-from semiont.transport import ConnectionState, Frame, FrameRefusal, PutBinaryRequest, ResourceHold
-from semiont.watched import Variable
+from xynoplex.bus import request
+from xynoplex.errors import SemiontError
+from xynoplex.events import Events
+from xynoplex.http import HttpTransport, Timing, TokenRefresher
+from xynoplex.identifiers import AnnotationId, InvalidIdentifier, JobId, ResourceId
+from xynoplex.model import WireModel
+from xynoplex.operations import OPERATIONS
+from xynoplex.retry import RetryPolicy
+from xynoplex.transport import ConnectionState, Frame, FrameRefusal, PutBinaryRequest, ResourceHold
+from xynoplex.watched import Variable
 
 
 def _resource(args: Arguments, name: str) -> ResourceId:

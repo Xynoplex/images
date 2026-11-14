@@ -15,8 +15,8 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import KnowledgeGraph
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import KnowledgeGraph
 from spec import SPEC
 
 from semiont_worker.generation.graph_views import Citer, Connection, GraphViews, derive_views

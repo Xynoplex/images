@@ -19,7 +19,7 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from semiont.identity import kb_did
+from xynoplex.identity import kb_did
 from spec import PACKAGE, SDK
 
 from semiont_vectors.embedding import EmbeddingProvider

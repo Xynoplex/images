@@ -24,9 +24,9 @@ from urllib.parse import parse_qs, urlsplit
 import pytest
 from aio import run
 from pydantic import JsonValue, TypeAdapter, ValidationError
-from semiont.errors import SemiontError, SignInError
-from semiont.identifiers import ResourceId
-from semiont.types import (
+from xynoplex.errors import SemiontError, SignInError
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import (
     AnchoredTextEntry,
     ExtractedText,
     ExtractedTextOcrConfidence,

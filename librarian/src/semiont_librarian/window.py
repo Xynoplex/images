@@ -17,8 +17,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Final, final
 
-from semiont.annotations import QuotedText, reconcile, target_selector
-from semiont.types import Annotation, Selector, TextPositionSelector, TextQuoteSelector
+from xynoplex.annotations import QuotedText, reconcile, target_selector
+from xynoplex.types import Annotation, Selector, TextPositionSelector, TextQuoteSelector
 
 __all__ = [
     "LARGEST_WINDOW",

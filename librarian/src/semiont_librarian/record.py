@@ -13,11 +13,11 @@ resource's bytes are another read, and no part of this
 from collections.abc import Mapping, Sequence
 from typing import Final, final, override
 
-from semiont.bus import Bus
-from semiont.errors import BusRequestError, TransportError
-from semiont.identifiers import AnnotationId, ResourceId, UserId
-from semiont.operations import BROWSE_ANNOTATION_REQUESTED, BROWSE_PROFILES_REQUESTED, BROWSE_RESOURCE_REQUESTED
-from semiont.types import Annotation, BrowseAnnotationRequest, BrowseProfilesRequest, BrowseResourceRequest, Profile
+from xynoplex.bus import Bus
+from xynoplex.errors import BusRequestError, TransportError
+from xynoplex.identifiers import AnnotationId, ResourceId, UserId
+from xynoplex.operations import BROWSE_ANNOTATION_REQUESTED, BROWSE_PROFILES_REQUESTED, BROWSE_RESOURCE_REQUESTED
+from xynoplex.types import Annotation, BrowseAnnotationRequest, BrowseProfilesRequest, BrowseResourceRequest, Profile
 
 from semiont_librarian.reads import Described, Profiles, ProfilesUnread, Record
 

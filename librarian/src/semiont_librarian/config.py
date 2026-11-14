@@ -13,8 +13,8 @@ states each refusal.
 from collections.abc import Mapping
 from typing import Final, Literal
 
-from semiont.timing import HELD_JOB_STALL_MS
-from semiont.types import (
+from xynoplex.timing import HELD_JOB_STALL_MS
+from xynoplex.types import (
     LibrarianConfig,
     LibrarianEngineConfig,
     MemoryGraphConfig,

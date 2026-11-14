@@ -20,9 +20,9 @@ from aio import run, turns
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from semiont.annotations import QuotedText, SpanRefusedError, TextSpan, target_selector, target_source, text_quote_selector
-from semiont.model import written
-from semiont.types import (
+from xynoplex.annotations import QuotedText, SpanRefusedError, TextSpan, target_selector, target_source, text_quote_selector
+from xynoplex.model import written
+from xynoplex.types import (
     AnchoredText,
     Annotation,
     AssessingJobParams,

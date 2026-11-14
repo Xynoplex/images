@@ -24,7 +24,7 @@ from typing import Final
 import pytest
 from aio import run
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 from spec import SPEC, JsonObject, objects, read, strings, text, thing
 
 from semiont_vectors.store import (

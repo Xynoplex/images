@@ -14,17 +14,17 @@ from pydantic import JsonValue, TypeAdapter, ValidationError
 from shown import CARRIED, parts_of, printed
 from spec import JsonObject
 
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import ClientTiming, SemiontClient
-from semiont.errors import BusRequestError, JobError, SemiontError, TransportError
-from semiont.identifiers import ResourceId
-from semiont.namespaces.follow import Delegation, JobAttemptFailed, JobCompleted, JobCreated, JobEvent, JobProgressed, JobRefused
-from semiont.namespaces.yield_ import generation_stall_deadline_ms
-from semiont.running import Running
-from semiont.testing import FaultyTransport, InMemoryContent, StubGateway
-from semiont.timing import GENERATION_STALL_FLOOR_MS, JOB_SILENCE_MS, JOB_STATUS_POLL_MS
-from semiont.transport import Frame, FrameRefusal
-from semiont.types import (
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import ClientTiming, SemiontClient
+from xynoplex.errors import BusRequestError, JobError, SemiontError, TransportError
+from xynoplex.identifiers import ResourceId
+from xynoplex.namespaces.follow import Delegation, JobAttemptFailed, JobCompleted, JobCreated, JobEvent, JobProgressed, JobRefused
+from xynoplex.namespaces.yield_ import generation_stall_deadline_ms
+from xynoplex.running import Running
+from xynoplex.testing import FaultyTransport, InMemoryContent, StubGateway
+from xynoplex.timing import GENERATION_STALL_FLOOR_MS, JOB_SILENCE_MS, JOB_STATUS_POLL_MS
+from xynoplex.transport import Frame, FrameRefusal
+from xynoplex.types import (
     CommentingJobParams,
     GatheredContext,
     GenerationJobParams,

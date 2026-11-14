@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Protocol, final
 
 from pydantic import JsonValue
-from semiont.types import EngineProvider
+from xynoplex.types import EngineProvider
 
 __all__ = [
     "ElementSchema",

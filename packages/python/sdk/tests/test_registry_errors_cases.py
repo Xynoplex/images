@@ -28,12 +28,12 @@ from spec import SPEC, JsonObject, read, text
 from storages import Refusing
 from tokens import token
 
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.error_codes import SemiontSessionErrorCode, TransportErrorCode
-from semiont.errors import SessionError, TransportError
-from semiont.events import Broadcast, Events
-from semiont.http.session import HttpSessionFactory
-from semiont.registry import (
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.error_codes import SemiontSessionErrorCode, TransportErrorCode
+from xynoplex.errors import SessionError, TransportError
+from xynoplex.events import Broadcast, Events
+from xynoplex.http.session import HttpSessionFactory
+from xynoplex.registry import (
     SemiontBrowser,
     SemiontBrowserConfig,
     SessionFactory,
@@ -42,15 +42,15 @@ from semiont.registry import (
     save_knowledge_bases,
     store_session,
 )
-from semiont.session import SemiontSession
-from semiont.session_signals import PermissionDenied
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import StoredSession, cache_key, person_key
-from semiont.testing import FaultyTransport, create_test_client
-from semiont.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT
-from semiont.transport import Transport
-from semiont.types import HttpEndpoint, KbTarget, KnowledgeBase
-from semiont.watched import Variable, reached
+from xynoplex.session import SemiontSession
+from xynoplex.session_signals import PermissionDenied
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import StoredSession, cache_key, person_key
+from xynoplex.testing import FaultyTransport, create_test_client
+from xynoplex.timing import ERRORS_KEPT_FOR_FIRST_READER_COUNT
+from xynoplex.transport import Transport
+from xynoplex.types import HttpEndpoint, KbTarget, KnowledgeBase
+from xynoplex.watched import Variable, reached
 
 
 class Own(BaseModel, frozen=True, extra="forbid"):

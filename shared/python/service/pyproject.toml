@@ -57,7 +57,7 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/semiont_service"]
+packages = ["src/xynoplex_service"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -17,9 +17,9 @@ from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Final, final
 
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from semiont.types import (
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynoplex.types import (
     GatheredContext,
     GatheredContextFocusAnnotation,
     GatheredContextFocusResource,

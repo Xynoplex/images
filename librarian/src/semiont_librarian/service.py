@@ -37,12 +37,12 @@ from pathlib import Path
 from typing import Final, final, override
 
 from pydantic import JsonValue
-from semiont.bus import Bus, reply_channels_for
-from semiont.channels import SMELT_SETTLED, WEAVE_APPLIED
-from semiont.http import AgentToken, Credential, HttpTransport, ServiceToken
-from semiont.identifiers import ResourceId
-from semiont.identity import kb_did
-from semiont.operations import (
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.channels import SMELT_SETTLED, WEAVE_APPLIED
+from xynoplex.http import AgentToken, Credential, HttpTransport, ServiceToken
+from xynoplex.identifiers import ResourceId
+from xynoplex.identity import kb_did
+from xynoplex.operations import (
     GATHER_LIMITS_REQUESTED,
     GATHER_REFERENCED_BY_REQUESTED,
     GATHER_REQUESTED,
@@ -52,8 +52,8 @@ from semiont.operations import (
     MATCH_RESOURCES_REQUESTED,
     MATCH_SEARCH_REQUESTED,
 )
-from semiont.transport import ContentTransport
-from semiont.types import AnchoredTextAnswer, LibrarianConfig, LibrarianEngineConfig
+from xynoplex.transport import ContentTransport
+from xynoplex.types import AnchoredTextAnswer, LibrarianConfig, LibrarianEngineConfig
 from semiont_graph.factory import create_graph_reader
 from semiont_graph.interface import GraphReader
 from semiont_inference.factory import CatalogueRequired, KeyRequired, create_inference_client

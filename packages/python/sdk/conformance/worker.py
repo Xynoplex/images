@@ -31,18 +31,18 @@ from opentelemetry.trace import Span, SpanKind
 from protocol import Arguments, Misuse, Operation, count, exporting, failure, object_of, say, serve, text, texts
 from pydantic import JsonValue, TypeAdapter, ValidationError
 
-from semiont import telemetry
-from semiont.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, Claims, HeldJob, HeldJobStall
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.events import Events
-from semiont.http import HttpTransport, Timing
-from semiont.identifiers import InvalidIdentifier, ResourceId
-from semiont.model import written
-from semiont.timing import HELD_JOB_STALL_CHECK_MS, HELD_JOB_STALL_MS, JOB_CLAIM_TIMEOUT_MS, MARK_COMMIT_TIMEOUT_MS
-from semiont.transport import ConnectionState, ResourceHold
-from semiont.types import Annotation, FailureClass, JobFilter, JobProgress, MarkJobResult, UnitCursor, YieldJobResult
-from semiont.watched import Variable
+from xynoplex import telemetry
+from xynoplex.claims import JOB_CLAIM_CHANNELS, JOB_COMMIT_CHANNELS, ClaimRefusal, Claims, HeldJob, HeldJobStall
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.events import Events
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.identifiers import InvalidIdentifier, ResourceId
+from xynoplex.model import written
+from xynoplex.timing import HELD_JOB_STALL_CHECK_MS, HELD_JOB_STALL_MS, JOB_CLAIM_TIMEOUT_MS, MARK_COMMIT_TIMEOUT_MS
+from xynoplex.transport import ConnectionState, ResourceHold
+from xynoplex.types import Annotation, FailureClass, JobFilter, JobProgress, MarkJobResult, UnitCursor, YieldJobResult
+from xynoplex.watched import Variable
 
 _FILTERS: Final = TypeAdapter[list[JobFilter]](list[JobFilter])
 _CURSORS: Final = TypeAdapter[dict[str, UnitCursor]](dict[str, UnitCursor])

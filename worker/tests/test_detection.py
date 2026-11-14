@@ -22,9 +22,9 @@ from aio import pass_time, run, under_way
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from semiont.annotations import QuotedText, TextSpan, reconcile
-from semiont.types import TagCategory, TagSchema, UnitCursor
-from semiont.watched import Variable
+from xynoplex.annotations import QuotedText, TextSpan, reconcile
+from xynoplex.types import TagCategory, TagSchema, UnitCursor
+from xynoplex.watched import Variable
 from semiont_inference.interface import (
     ElementSchema,
     InferenceClient,

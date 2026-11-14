@@ -13,7 +13,7 @@ The fold cuts to no limit: each caller cuts to its own.
 
 from collections.abc import Sequence
 
-from semiont.identifiers import ResourceId
+from xynoplex.identifiers import ResourceId
 
 from semiont_vectors.store import VectorSearchResult
 

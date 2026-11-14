@@ -2,7 +2,7 @@
 
 from typing import assert_never
 
-from semiont.types import GraphConfig, JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
+from xynoplex.types import GraphConfig, JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
 
 from semiont_graph.interface import GraphDatabase, GraphReader
 

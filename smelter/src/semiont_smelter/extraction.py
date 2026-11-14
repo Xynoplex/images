@@ -36,7 +36,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from typing import Final, final
 
-from semiont.types import (
+from xynoplex.types import (
     ExtractedText,
     ExtractedTextOcrConfidence,
     ExtractedTextPdfClass,

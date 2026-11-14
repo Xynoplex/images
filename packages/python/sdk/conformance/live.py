@@ -13,23 +13,23 @@ from typing import Final, assert_never, final
 from protocol import Arguments, Misuse, Operation, count, failure, object_of, say, serve, text
 from pydantic import JsonValue, TypeAdapter, ValidationError
 
-from semiont.cache import CacheState, Failed, Pending, Ready
-from semiont.cached import Cached
-from semiont.channels import BRIDGED_CHANNELS
-from semiont.client import CachePersistence, ClientTiming, SemiontClient
-from semiont.errors import SemiontError
-from semiont.events import Events
-from semiont.http import HttpTransport, Timing
-from semiont.identifiers import AnnotationId, InvalidIdentifier, ResourceId
-from semiont.model import WireModel
-from semiont.namespaces.browse import EngineWithLimits
-from semiont.namespaces.follow import Delegation, JobRefused
-from semiont.refresh import CACHE_QUERIES, CacheQuery
-from semiont.storage import MemoryStorage
-from semiont.stored import person_key
-from semiont.transport import ConnectionState
-from semiont.types import GenerationJobParams, JobCompleteCommand, MarkJobParams
-from semiont.watched import Variable
+from xynoplex.cache import CacheState, Failed, Pending, Ready
+from xynoplex.cached import Cached
+from xynoplex.channels import BRIDGED_CHANNELS
+from xynoplex.client import CachePersistence, ClientTiming, SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.events import Events
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.identifiers import AnnotationId, InvalidIdentifier, ResourceId
+from xynoplex.model import WireModel
+from xynoplex.namespaces.browse import EngineWithLimits
+from xynoplex.namespaces.follow import Delegation, JobRefused
+from xynoplex.refresh import CACHE_QUERIES, CacheQuery
+from xynoplex.storage import MemoryStorage
+from xynoplex.stored import person_key
+from xynoplex.transport import ConnectionState
+from xynoplex.types import GenerationJobParams, JobCompleteCommand, MarkJobParams
+from xynoplex.watched import Variable
 
 type _Shown = WireModel | EngineWithLimits | str | Sequence[_Shown]
 """What a live query's value is made of."""

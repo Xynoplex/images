@@ -16,10 +16,10 @@ from typing import Final, Protocol, final
 
 import pytest
 from pydantic import JsonValue
-from semiont.annotations import TextSpan, annotation_of_span
-from semiont.identifiers import JobId, ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.annotations import TextSpan, annotation_of_span
+from xynoplex.identifiers import JobId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     Agent,
     AgentSoftware,
     AnchoredText,
@@ -35,7 +35,7 @@ from semiont.types import (
     TagSchema,
     UnitCursor,
 )
-from semiont.watched import Variable, Watched
+from xynoplex.watched import Variable, Watched
 from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 
 from semiont_worker import processors

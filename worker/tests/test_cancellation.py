@@ -20,8 +20,8 @@ from typing import Final, final
 import pytest
 from aio import run, turns, under_way
 from pydantic import JsonValue
-from semiont.annotations import QuotedText, TextSpan
-from semiont.types import (
+from xynoplex.annotations import QuotedText, TextSpan
+from xynoplex.types import (
     Annotation,
     AssessingJobParams,
     CommentingJobParams,
@@ -35,7 +35,7 @@ from semiont.types import (
     TagSchema,
     UnitCursor,
 )
-from semiont.watched import Variable, Watched
+from xynoplex.watched import Variable, Watched
 from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from standing_in import (
     AskedToGenerate,

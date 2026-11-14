@@ -20,13 +20,13 @@ import asyncio
 from collections.abc import Sequence
 from typing import Final
 
-from semiont import telemetry
-from semiont.bus import Bus, Delivered
-from semiont.channel import Operation
-from semiont.errors import SemiontError
-from semiont.model import stated
-from semiont.transport import FrameRefusal
-from semiont.types import (
+from xynoplex import telemetry
+from xynoplex.bus import Bus, Delivered
+from xynoplex.channel import Operation
+from xynoplex.errors import SemiontError
+from xynoplex.model import stated
+from xynoplex.transport import FrameRefusal
+from xynoplex.types import (
     CommandError,
     Engine,
     EngineLimits,

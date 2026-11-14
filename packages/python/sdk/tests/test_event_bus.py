@@ -5,14 +5,14 @@ import logging
 import pytest
 from aio import run, soon
 
-from semiont.bus import Delivered
-from semiont.channels import BECKON_HOVER, PANEL_CLOSE
-from semiont.event_bus import EventBus
-from semiont.events import Events
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame, FrameHub, FrameRefusal
-from semiont.types import BeckonHoverEvent
+from xynoplex.bus import Delivered
+from xynoplex.channels import BECKON_HOVER, PANEL_CLOSE
+from xynoplex.event_bus import EventBus
+from xynoplex.events import Events
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame, FrameHub, FrameRefusal
+from xynoplex.types import BeckonHoverEvent
 
 ONE, OTHER = ResourceId("res-1"), ResourceId("res-2")
 

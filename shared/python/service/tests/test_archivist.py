@@ -24,9 +24,9 @@ from typing import Final, Self, final, override
 import pytest
 from aio import run
 from pydantic import JsonValue
-from semiont.errors import SemiontError, SignInError
-from semiont.identifiers import ResourceId
-from semiont.types import GetAnnotationsResponse, StoredEventResponse
+from xynoplex.errors import SemiontError, SignInError
+from xynoplex.identifiers import ResourceId
+from xynoplex.types import GetAnnotationsResponse, StoredEventResponse
 
 from semiont_service.archivist import AnnotationsUnread, Archivist, Authorizes
 from semiont_service.content import Content, ContentUnread

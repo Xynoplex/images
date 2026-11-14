@@ -20,8 +20,8 @@ from dataclasses import dataclass
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.types import UnitCursor
-from semiont.watched import Watched
+from xynoplex.types import UnitCursor
+from xynoplex.watched import Watched
 from semiont_inference.interface import InferenceLimits, StructuredReadError, TokenUsage
 
 from semiont_worker.chunking import Chunking, chunk_text, cut_chunk, estimate_tokens

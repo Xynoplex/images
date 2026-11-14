@@ -13,8 +13,8 @@ from dataclasses import dataclass
 from typing import Final, final
 
 from pydantic import TypeAdapter, ValidationError
-from semiont.model import written
-from semiont.types import (
+from xynoplex.model import written
+from xynoplex.types import (
     AssessingJobParams,
     CommentingJobParams,
     GenerationJobParams,

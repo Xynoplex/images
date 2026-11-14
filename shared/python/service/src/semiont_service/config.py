@@ -21,8 +21,8 @@ from pathlib import Path
 from typing import Final
 
 from pydantic import ValidationError
-from semiont.http import KeyCredential, NotAnRsaKey, SecretCredential, UnreadableKey, private_key_from_pem
-from semiont.model import WireModel
+from xynoplex.http import KeyCredential, NotAnRsaKey, SecretCredential, UnreadableKey, private_key_from_pem
+from xynoplex.model import WireModel
 
 __all__ = ["Refused", "config_path_of", "key_account_of", "read_config", "service_account_of", "set_in"]
 

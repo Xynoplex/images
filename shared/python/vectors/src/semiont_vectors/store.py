@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from typing import Protocol, final
 
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 
 __all__ = [
     "AnnotationPayload",

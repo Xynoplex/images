@@ -7,12 +7,12 @@ import pytest
 from pydantic import Field, JsonValue, ValidationError
 from spec import SPEC, objects, read, strings, text
 
-import semiont.types
-from semiont import channels, operations
-from semiont.channel import Channel, Empty, Operation, RecordedChannel, ScopedChannel
-from semiont.identifiers import AnnotationId, JobId, ResourceId, UserId
-from semiont.model import WireModel
-from semiont.types import (
+import xynoplex.types
+from xynoplex import channels, operations
+from xynoplex.channel import Channel, Empty, Operation, RecordedChannel, ScopedChannel
+from xynoplex.identifiers import AnnotationId, JobId, ResourceId, UserId
+from xynoplex.model import WireModel
+from xynoplex.types import (
     AnnotationRemovedPayload,
     EnrichedResourceEvent,
     EntityTagChangedPayload,

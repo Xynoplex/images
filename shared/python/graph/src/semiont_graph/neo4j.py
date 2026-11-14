@@ -35,10 +35,10 @@ from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Final, LiteralString, final, override
 
 from pydantic import JsonValue, TypeAdapter
-from semiont.annotations import body_source, entity_types
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import Annotation, Motivation, ResourceDescriptor
+from xynoplex.annotations import body_source, entity_types
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, Motivation, ResourceDescriptor
 
 from semiont_graph._query import search_terms
 from semiont_graph.codec import (

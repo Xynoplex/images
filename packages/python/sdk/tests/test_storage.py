@@ -4,11 +4,11 @@ import pytest
 from kb import RESOURCE, descriptor
 from pydantic import JsonValue, TypeAdapter
 
-from semiont.identifiers import ResourceId
-from semiont.storage import MemoryStorage, StoragePersister
-from semiont.testing import SharedStorage
-from semiont.timing import MAX_STORED_BYTES_COUNT
-from semiont.types import ResourceDescriptor
+from xynoplex.identifiers import ResourceId
+from xynoplex.storage import MemoryStorage, StoragePersister
+from xynoplex.testing import SharedStorage
+from xynoplex.timing import MAX_STORED_BYTES_COUNT
+from xynoplex.types import ResourceDescriptor
 
 KEY = "semiont.cache.kb.resource"
 _JSON = TypeAdapter[JsonValue](JsonValue)

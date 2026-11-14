@@ -19,16 +19,16 @@ from pydantic import JsonValue, TypeAdapter
 from shown import CARRIED, parts_of
 from spec import PACKAGE, SPEC, JsonObject, objects, read, strings, text
 
-from semiont import model, telemetry
-from semiont._bus_log import bus_log, bus_note, enabled
-from semiont.channels import CHANNELS
-from semiont.errors import SemiontError
-from semiont.http import HttpTransport, Timing
-from semiont.identifiers import ResourceId
-from semiont.model import WireModel
-from semiont.retry import RetryPolicy
-from semiont.transport import PutBinaryRequest, TraceContext
-from semiont.watched import Variable, reached
+from xynoplex import model, telemetry
+from xynoplex._bus_log import bus_log, bus_note, enabled
+from xynoplex.channels import CHANNELS
+from xynoplex.errors import SemiontError
+from xynoplex.http import HttpTransport, Timing
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import WireModel
+from xynoplex.retry import RetryPolicy
+from xynoplex.transport import PutBinaryRequest, TraceContext
+from xynoplex.watched import Variable, reached
 
 QUICK: Final = Timing(
     reconnect_ms=10, lazy_remove_ms=10, linger_ms=10, emit_retry=RetryPolicy(attempts=2, initial_delay_ms=1, max_delay_ms=1)

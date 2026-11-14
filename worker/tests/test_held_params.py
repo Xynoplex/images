@@ -11,7 +11,7 @@ from typing import Final, get_args
 
 import pytest
 from pydantic import JsonValue, ValidationError
-from semiont.types import (
+from xynoplex.types import (
     AssessingJobParams,
     CommentingJobParams,
     GenerationJobParams,

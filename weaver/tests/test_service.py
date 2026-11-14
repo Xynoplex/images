@@ -17,12 +17,12 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from semiont.channels import PERSISTED_EVENT_TYPES
-from semiont.http import SecretCredential, ServiceToken
-from semiont.identifiers import UserId
-from semiont.testing import FaultyTransport
-from semiont.types import GraphConfig
-from semiont.watched import Variable, Watched
+from xynoplex.channels import PERSISTED_EVENT_TYPES
+from xynoplex.http import SecretCredential, ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.testing import FaultyTransport
+from xynoplex.types import GraphConfig
+from xynoplex.watched import Variable, Watched
 from semiont_graph.memory import MemoryGraphDatabase
 from semiont_service.config import Refused
 

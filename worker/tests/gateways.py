@@ -21,12 +21,12 @@ from typing import Final, Self, final
 import pytest
 from holding import Parties
 from pydantic import JsonValue
-from semiont.client import SemiontClient
-from semiont.errors import SemiontError
-from semiont.http import ServiceToken
-from semiont.identifiers import UserId
-from semiont.testing import FaultyTransport, InMemoryContent
-from semiont.watched import Variable, Watched
+from xynoplex.client import SemiontClient
+from xynoplex.errors import SemiontError
+from xynoplex.http import ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.testing import FaultyTransport, InMemoryContent
+from xynoplex.watched import Variable, Watched
 from semiont_service.knowledge_base import CONFIRMING_CHANNELS
 
 from semiont_worker import agent

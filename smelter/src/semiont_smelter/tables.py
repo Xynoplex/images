@@ -22,7 +22,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Final, final
 
-from semiont.types import PdfTextItem
+from xynoplex.types import PdfTextItem
 
 __all__ = ["TableCell", "detect_table", "render_table"]
 

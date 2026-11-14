@@ -20,12 +20,12 @@ that knowledge base again later.
 import asyncio
 from typing import Final, final
 
-from semiont.bus import Bus, reply_channels_for
-from semiont.errors import BusRequestError, SemiontError
-from semiont.identity import kb_did
-from semiont.operations import BROWSE_KB_REQUESTED
-from semiont.retry import retry_with_backoff
-from semiont.types import BrowseKbRequest, BrowseKbResult
+from xynoplex.bus import Bus, reply_channels_for
+from xynoplex.errors import BusRequestError, SemiontError
+from xynoplex.identity import kb_did
+from xynoplex.operations import BROWSE_KB_REQUESTED
+from xynoplex.retry import retry_with_backoff
+from xynoplex.types import BrowseKbRequest, BrowseKbResult
 
 from semiont_service.config import Refused
 from semiont_service.until_answered import UNTIL_THE_ARCHIVIST_ANSWERS, nobody_answers

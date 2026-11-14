@@ -4,7 +4,7 @@ The words are stated here as a reader hands them over: one run for each
 word, the last word of a line saying that it ends one.
 """
 
-from semiont.types import AnchoredText, PdfTextItem
+from xynoplex.types import AnchoredText, PdfTextItem
 
 from semiont_smelter.anchoring import anchor_runs, apply
 from semiont_smelter.pdf_reader import Run

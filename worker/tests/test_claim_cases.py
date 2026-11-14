@@ -11,7 +11,7 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from semiont.types import AnchoredText, PdfTextItem
+from xynoplex.types import AnchoredText, PdfTextItem
 from spec import SPEC
 
 from semiont_worker.generation.claim_search import find_claim_spans, find_landed_claim

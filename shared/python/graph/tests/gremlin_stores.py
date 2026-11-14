@@ -22,7 +22,7 @@ from typing import Final, final
 import pytest
 from contract import annotation, link, resource
 from pydantic import JsonValue
-from semiont.identifiers import AnnotationId, ResourceId
+from xynoplex.identifiers import AnnotationId, ResourceId
 
 type Answers = Callable[[str, Mapping[str, object]], list[object]]
 """What a script, with what it binds, is answered."""

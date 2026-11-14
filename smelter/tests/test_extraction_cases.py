@@ -23,7 +23,7 @@ from collections.abc import Iterable
 import pytest
 from aio import run, soon
 from pydantic import JsonValue
-from semiont.types import ExtractedText, ExtractionDeclined, ExtractionOutcome
+from xynoplex.types import ExtractedText, ExtractionDeclined, ExtractionOutcome
 from spec import ROOT, JsonObject, objects, read, strings, text, thing
 
 from semiont_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor

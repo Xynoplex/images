@@ -12,7 +12,7 @@ what it does with the bytes knows no address.
 from dataclasses import dataclass
 from typing import Protocol, final
 
-from semiont.identifiers import ResourceId
+from xynoplex.identifiers import ResourceId
 
 __all__ = ["Content", "ContentReads", "ContentUnread"]
 

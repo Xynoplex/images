@@ -19,7 +19,7 @@ import pytest
 from aio import run, turns
 from opentelemetry.sdk.metrics.export import Histogram, HistogramDataPoint, InMemoryMetricReader, Metric, NumberDataPoint, Sum
 from pydantic import JsonValue
-from semiont.types import UnitCursor
+from xynoplex.types import UnitCursor
 from semiont_inference.interface import StructuredReadError, TokenUsage
 from telemetry_rows import as_the_table_writes, worker_metrics
 

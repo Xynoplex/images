@@ -28,9 +28,9 @@ from rig import (
     tag,
     view,
 )
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.model import written
-from semiont.types import Annotation, GatherAnnotationOptions, GatherAnnotationRequest, GatheredContext, ResourceDescriptor, ResourceView
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.model import written
+from xynoplex.types import Annotation, GatherAnnotationOptions, GatherAnnotationRequest, GatheredContext, ResourceDescriptor, ResourceView
 from semiont_graph.interface import EntityTypeCount, GraphConnection
 from semiont_service.content import Content
 from semiont_vectors.store import CollectionAbsent, SearchFilter, SearchOptions, VectorSearchResult

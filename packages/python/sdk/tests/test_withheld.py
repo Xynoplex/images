@@ -30,11 +30,11 @@ from pydantic import JsonValue
 from shown import CARRIED, parts_of, printed
 from tokens import token
 
-from semiont._required import Fault, fault_of
-from semiont._required_table import SCHEMAS
-from semiont.bus import Bus
-from semiont.channel import Channel
-from semiont.channels import (
+from xynoplex._required import Fault, fault_of
+from xynoplex._required_table import SCHEMAS
+from xynoplex.bus import Bus
+from xynoplex.channel import Channel
+from xynoplex.channels import (
     BECKON_HOVER,
     BRIDGED_CHANNELS,
     CHANNELS,
@@ -44,19 +44,19 @@ from semiont.channels import (
     YIELD_CLONE_RESOURCE_REQUESTED,
     YIELD_CLONE_TOKEN_GENERATED,
 )
-from semiont.errors import SemiontError
-from semiont.event_bus import EventBus
-from semiont.http import AgentToken, HttpTransport, ServiceToken, Timing
-from semiont.http._withheld import why_unanswered
-from semiont.http.oauth import discover_issuer, issuer_client, refresh_at_issuer
-from semiont.identifiers import ResourceId
-from semiont.model import WireModel
-from semiont.operations import YIELD_CLONE_TOKEN_REQUESTED
-from semiont.retry import RetryPolicy
-from semiont.testing import FaultyTransport
-from semiont.transport import Frame, FrameRefusal
-from semiont.types import YieldCloneTokenRequest
-from semiont.watched import Variable, reached
+from xynoplex.errors import SemiontError
+from xynoplex.event_bus import EventBus
+from xynoplex.http import AgentToken, HttpTransport, ServiceToken, Timing
+from xynoplex.http._withheld import why_unanswered
+from xynoplex.http.oauth import discover_issuer, issuer_client, refresh_at_issuer
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import WireModel
+from xynoplex.operations import YIELD_CLONE_TOKEN_REQUESTED
+from xynoplex.retry import RetryPolicy
+from xynoplex.testing import FaultyTransport
+from xynoplex.transport import Frame, FrameRefusal
+from xynoplex.types import YieldCloneTokenRequest
+from xynoplex.watched import Variable, reached
 
 MEDIA: Final = "/api/tokens/media"
 RESOURCE: Final = ResourceId("res-1")

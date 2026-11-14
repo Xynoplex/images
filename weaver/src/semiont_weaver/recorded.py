@@ -11,8 +11,8 @@ reads each one there.
 
 from typing import Final
 
-from semiont.channel import RecordedChannel, ScopedChannel
-from semiont.channels import (
+from xynoplex.channel import RecordedChannel, ScopedChannel
+from xynoplex.channels import (
     MARK_ADDED,
     MARK_ARCHIVED,
     MARK_BODY_UPDATED,
@@ -22,8 +22,8 @@ from semiont.channels import (
     MARK_UNARCHIVED,
     YIELD_CREATED,
 )
-from semiont.model import WireModel
-from semiont.types import EnrichedResourceEvent, StoredEventResponse
+from xynoplex.model import WireModel
+from xynoplex.types import EnrichedResourceEvent, StoredEventResponse
 
 __all__ = ["ENRICHED", "FOLDED", "PLAIN"]
 

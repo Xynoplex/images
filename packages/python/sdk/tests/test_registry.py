@@ -1,11 +1,11 @@
-"""The registry of knowledge bases an application holds (`semiont.registry`).
+"""The registry of knowledge bases an application holds (`xynoplex.registry`).
 
 The list, the active one and its session, a sign-in landing on the entry for
 the knowledge base that answered, what is open in each, what a session's
 arrival checks, what its transport fails at, and how a registry ends; and
 what it keeps in its storage.
 
-Sessions are built by `semiont.testing.ScriptedSessions`, each over a
+Sessions are built by `xynoplex.testing.ScriptedSessions`, each over a
 scripted transport: a test says what each knowledge base answers when asked
 who it is and what of each resource, and reads what was asked. The storage is
 a `SharedStorage`, so a second context can write it as another window would.
@@ -24,9 +24,9 @@ from pydantic import JsonValue
 from spec import SPEC, JsonObject, objects, read, strings, text
 from tokens import expired, token
 
-from semiont.errors import TransportError
-from semiont.identifiers import ResourceId
-from semiont.registry import (
+from xynoplex.errors import TransportError
+from xynoplex.identifiers import ResourceId
+from xynoplex.registry import (
     Expected,
     KbReadVerdict,
     SemiontBrowser,
@@ -43,10 +43,10 @@ from semiont.registry import (
     store_session,
     stored_session,
 )
-from semiont.session import HeldSignIn, MemorySignIn, SemiontSession, SignInKept
-from semiont.session_signals import KbIdentityConflict, PermissionDenied, SessionEnded, SessionSignals
-from semiont.storage import MemoryStorage, SessionStorage
-from semiont.stored import (
+from xynoplex.session import HeldSignIn, MemorySignIn, SemiontSession, SignInKept
+from xynoplex.session_signals import KbIdentityConflict, PermissionDenied, SessionEnded, SessionSignals
+from xynoplex.storage import MemoryStorage, SessionStorage
+from xynoplex.stored import (
     ACTIVE_KEY,
     KEPT_QUERIES,
     KNOWLEDGE_BASES_KEY,
@@ -60,10 +60,10 @@ from semiont.stored import (
     person_key,
     session_key,
 )
-from semiont.testing import FaultyTransport, ScriptedSessions, SharedStorage
-from semiont.transport import Transport
-from semiont.types import HttpEndpoint, KbDescription, KbRead, KnowledgeBase, NewKnowledgeBase, UserResponse
-from semiont.watched import Watched, reached
+from xynoplex.testing import FaultyTransport, ScriptedSessions, SharedStorage
+from xynoplex.transport import Transport
+from xynoplex.types import HttpEndpoint, KbDescription, KbRead, KnowledgeBase, NewKnowledgeBase, UserResponse
+from xynoplex.watched import Watched, reached
 
 KB_A: Final = "kb-a"
 KB_B: Final = "kb-b"

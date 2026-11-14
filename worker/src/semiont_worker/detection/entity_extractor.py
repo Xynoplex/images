@@ -20,9 +20,9 @@ from dataclasses import dataclass
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.annotations import QuotedText
-from semiont.types import UnitCursor
-from semiont.watched import Watched
+from xynoplex.annotations import QuotedText
+from xynoplex.types import UnitCursor
+from xynoplex.watched import Watched
 from semiont_inference.interface import ElementSchema, InferenceClient, StructuredResponse
 
 from semiont_worker.chunking import estimate_tokens

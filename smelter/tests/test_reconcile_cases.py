@@ -28,8 +28,8 @@ from typing import Annotated, Final, assert_never
 
 import pytest
 from pydantic import BaseModel, Field
-from semiont.identifiers import AnnotationId, ResourceId
-from semiont.types import Annotation, ResourceDescriptor
+from xynoplex.identifiers import AnnotationId, ResourceId
+from xynoplex.types import Annotation, ResourceDescriptor
 from semiont_vectors.store import Declined, ResourceStamp
 from spec import ROOT, SPEC
 

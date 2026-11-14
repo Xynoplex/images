@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from typing import Final, final
 
 from pydantic import JsonValue
-from semiont.annotations import QuotedText, ReconciledSpan, TextSpan, reconcile
+from xynoplex.annotations import QuotedText, ReconciledSpan, TextSpan, reconcile
 from semiont_inference.interface import ElementSchema
 from semiont_service.white_space import trimmed
 

@@ -19,11 +19,11 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from semiont.http import SecretCredential, ServiceToken
-from semiont.identifiers import UserId
-from semiont.testing import FaultyTransport
-from semiont.types import GraphConfig, VectorsConfig
-from semiont.watched import Variable, Watched
+from xynoplex.http import SecretCredential, ServiceToken
+from xynoplex.identifiers import UserId
+from xynoplex.testing import FaultyTransport
+from xynoplex.types import GraphConfig, VectorsConfig
+from xynoplex.watched import Variable, Watched
 from semiont_graph.neo4j import Neo4jGraphReader
 from semiont_inference.ollama import OllamaInferenceClient
 from semiont_service.config import Refused

@@ -28,9 +28,9 @@ from rig import (
     sent,
     view,
 )
-from semiont.identifiers import ResourceId
-from semiont.model import written
-from semiont.types import (
+from xynoplex.identifiers import ResourceId
+from xynoplex.model import written
+from xynoplex.types import (
     Annotation,
     GatheredContext,
     GatherResourceRequest,
