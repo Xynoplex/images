@@ -20,15 +20,15 @@ set -euo pipefail
 #
 # Exit code: 0 if clean, 1 if violations found.
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-SHARED="images/shared/supervise.sh"
-BOOT="images/shared/boot.sh"
+SHARED="shared/supervise.sh"
+BOOT="shared/boot.sh"
 # No exemption list, deliberately, and none for the browser: that a static
 # server has nothing in flight to lose is an argument about the death record,
 # not one against the restart. Every service in
-# images/ is supervised; an exemption list is where the next one would hide.
+#  is supervised; an exemption list is where the next one would hide.
 
 FAIL=0
 [ -f "$SHARED" ] || { echo "❌ supervision: $SHARED is missing"; FAIL=1; }
@@ -37,14 +37,14 @@ FAIL=0
 for stem in supervise boot; do
   copies=$(find apps packages -name "${stem}*.sh" -not -path '*/node_modules/*' | wc -l | tr -d ' ')
   if [ "$copies" -ne 0 ]; then
-    echo "❌ supervision: $copies copy/copies of ${stem}.sh outside images/scripts — two supervisors is two policies"
+    echo "❌ supervision: $copies copy/copies of ${stem}.sh outside scripts — two supervisors is two policies"
     find apps packages -name "${stem}*.sh" -not -path '*/node_modules/*' | sed 's/^/     /'
     FAIL=1
   fi
 done
 
 checked=0
-for df in images/*/Dockerfile; do
+for df in */Dockerfile; do
   checked=$((checked + 1))
 
   grep -q "$SHARED" "$df" || { echo "❌ supervision: $df does not COPY $SHARED"; FAIL=1; }

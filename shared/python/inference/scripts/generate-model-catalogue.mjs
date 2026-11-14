@@ -3,8 +3,8 @@
 // Python inference driver reads, from the npm package @opencode-ai/models at
 // the one version the repository's package.json pins.
 //
-//   node packages/python/inference/scripts/generate-model-catalogue.mjs --out <directory>
-//   node packages/python/inference/scripts/generate-model-catalogue.mjs --check <directory>
+//   node shared/python/inference/scripts/generate-model-catalogue.mjs --out <directory>
+//   node shared/python/inference/scripts/generate-model-catalogue.mjs --check <directory>
 //
 // `--out` writes two files in <directory>, and `--check` compares them
 // without writing:
@@ -21,10 +21,10 @@
 // them from a catalogue file, which `semiont_inference.catalogue` reads at
 // the path it is pointed to. The Python package carries no copy of the
 // catalogue and downloads nothing: an image that runs such a driver carries
-// the repository's generated copy (images/worker/Dockerfile,
-// images/librarian/Dockerfile).
+// the repository's generated copy (worker/Dockerfile,
+// librarian/Dockerfile).
 //
-// The repository keeps one generated copy: packages/python/inference/tests/catalogue.
+// The repository keeps one generated copy: shared/python/inference/tests/catalogue.
 // It is the fixture of the Python package's tests and the file the images
 // carry. It is real
 // data at the pin, so those tests read real entries, and CI's drift job

@@ -47,9 +47,9 @@ vllm = ["semiont-inference[vllm]"]
 # the types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-semiont = { path = "../../packages/python/sdk", editable = true }
-semiont-inference = { path = "../../packages/python/inference", editable = true }
-semiont-service = { path = "../../packages/python/service", editable = true }
+semiont = { path = "../packages/python/sdk", editable = true }
+semiont-inference = { path = "../shared/python/inference", editable = true }
+semiont-service = { path = "../shared/python/service", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -67,7 +67,7 @@ dev = [
 
 # The version is the repository's, stated once, in version.json.
 [tool.hatch.version]
-path = "../../version.json"
+path = "../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]

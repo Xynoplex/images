@@ -198,7 +198,7 @@ High-level guides in [protocol/contract/](../contract/):
 - **[W3C-SELECTORS.md](../contract/W3C-SELECTORS.md)** - Selector specifications
 
 For implementation details:
-- [Gateway Documentation](../../images/gateway/README.md) - Gateway architecture
+- [Gateway Documentation](../../gateway/README.md) - Gateway architecture
 - [API Client Documentation](../../packages/typescript/http-transport/README.md) - TypeScript SDK
 
 ## Decomposition Notes
@@ -231,7 +231,7 @@ Bundling takes no configuration: a schema is kept in the bundle because `compone
 
 - [Root README](../../README.md) - Project overview
 - [Architecture](../../docs/architecture/README.md) - System architecture index
-- [Gateway README](../../images/gateway/README.md) - Gateway implementation
+- [Gateway README](../../gateway/README.md) - Gateway implementation
 - [@semiont/http-transport](../../packages/typescript/http-transport/README.md) - HTTP + SSE wire adapters
 - [@semiont/sdk](../../packages/typescript/sdk/README.md) - The TypeScript client built over them
 

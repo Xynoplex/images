@@ -19,7 +19,7 @@ Comprehensive guide to testing the Semiont Browser and how it integrates with th
 Testing in the Semiont Browser is split between two packages following the component library factorization:
 
 - **@semiont/react-ui**: Tests framework-agnostic components and business logic
-- **images/browser**: Tests app-specific integrations and route wrappers
+- **browser**: Tests app-specific integrations and route wrappers
 
 **Key Principles**:
 1. **Type Safety First** - TypeScript provides compile-time validation
@@ -32,7 +32,7 @@ Testing in the Semiont Browser is split between two packages following the compo
 
 ```
 ┌─────────────────────────────────────┐
-│         images/browser               │
+│         browser               │
 │         Test Coverage:              │
 │                                     │
 │  • App shell, routing, providers    │
@@ -63,14 +63,14 @@ Testing in the Semiont Browser is split between two packages following the compo
 - Provider logic
 - UI components (Button, Toolbar, ResourceViewer, etc.)
 
-**In images/browser** (Vite SPA specific):
+**In browser** (Vite SPA specific):
 - App shell, routing, and provider composition (`providers.tsx`, `AuthShell`)
 - Integration flows across components (e.g. a stored session the gateway refuses, surfacing the session-ended modal)
 - App-specific components (Home, KnowledgeBasePanel, UserPanel, etc.)
 
 ## Running Tests
 
-Run these from `images/browser/`:
+Run these from `browser/`:
 
 ```bash
 npm test                    # Everything
@@ -89,7 +89,7 @@ npm run build               # Typechecks as a prebuild step
 
 The Browser tests read no environment config, so there is nothing to export and no
 environment to select. To run one of these from the repo root instead, use
-`npm run test:unit --workspace=images/browser`.
+`npm run test:unit --workspace=browser`.
 
 There is no `semiont test` command: the `semiont` launcher runs knowledge bases,
 not this monorepo's test suite.
@@ -422,7 +422,7 @@ The codebase follows the **Humble Object Pattern** for React components, with bu
 - No framework-specific hooks (no router or app-shell dependencies)
 - Thoroughly tested in the react-ui package
 
-**Route Wrapper** (in `images/browser/src/`):
+**Route Wrapper** (in `browser/src/`):
 - Implements provider interfaces for the app shell
 - Calls React Router hooks (`useParams`, `useSearchParams`, etc.)
 - Wraps components from @semiont/react-ui
@@ -558,7 +558,7 @@ it('renders page', () => {
 - Hooks: `useObservable`, `useResourceContent`, `useMediaToken`, `useToast`, etc.
 - Utilities: Validation, annotation registry
 
-**images/browser:**
+**browser:**
 - App shell & routing: providers, AuthShell, route guards
 - Integration tests: Multi-step user flows
 - App-specific components: Home, KnowledgeBasePanel, UserPanel
@@ -580,7 +580,7 @@ packages/typescript/react-ui/src/features/auth/__tests__/AuthErrorDisplay.test.t
 **Testing Browser integration:**
 ```bash
 # Run the Browser tests
-cd images/browser
+cd browser
 npm test
 
 # Example test locations
@@ -596,8 +596,8 @@ src/contexts/__tests__/AuthShell.integration.test.tsx
 - [Gateway Testing](../../gateway/docs/TESTING.md) - Gateway API tests
 
 ### Development Guides
-- [Development Guide](./DEVELOPMENT.md) - Local development workflows
-- [Browser Architecture](./ARCHITECTURE.md) - High-level system design
+- [Development Guide](DEVELOPMENT.md) - Local development workflows
+- [Browser Architecture](ARCHITECTURE.md) - High-level system design
 - [Contributing Guide](../../../CONTRIBUTING.md) - Contribution guidelines
 
 ### External Resources

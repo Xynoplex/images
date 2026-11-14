@@ -4,7 +4,7 @@
  * the staging interface in front of it, and nothing else.
  *
  * The Archivist stages changes where a person can commit them. Its `Staging`
- * trait (images/archivist/staging/src/lib.rs) names that job; `git.rs` beside it
+ * trait (archivist/staging/src/lib.rs) names that job; `git.rs` beside it
  * is the one technology behind it. Code that ran git beside it, or linked a
  * git library, would tie the rest to git, and nothing would say so. So:
  *
@@ -27,7 +27,7 @@ import { withoutComments } from '../../../.github/scripts/checks/source-text.mjs
 
 const ROOT = fileURLToPath(new URL('../../..', import.meta.url));
 
-const DRIVER = 'images/archivist/staging/src/git.rs';
+const DRIVER = 'archivist/staging/src/git.rs';
 
 const productionSource = (file) =>
   /^(?:packages\/[^/]+\/[^/]+|apps\/[^/]+|images\/[^/]+)\/src\//.test(file) &&
@@ -96,7 +96,7 @@ for (const rule of RULES) {
 if (problems.length > 0) {
   console.error('✗ lint:staging-boundary — git is reached around its interface:');
   for (const p of problems) console.error(`    ${p}`);
-  console.error('  Stage, move and remove through Staging (images/archivist/staging/src/lib.rs).');
+  console.error('  Stage, move and remove through Staging (archivist/staging/src/lib.rs).');
   process.exit(1);
 }
 console.log('✓ lint:staging-boundary — git is run, and spoken to in its own arguments, only in the git staging driver, and no schema carries a noGit switch');

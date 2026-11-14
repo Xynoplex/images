@@ -106,10 +106,10 @@ jobs:
         id: tags
         run: |
           COMMIT_SHA=$(git rev-parse --short HEAD)
-          TAGS="ghcr.io/the-ai-alliance/semiont-browser:${{ inputs.version }}"
-          TAGS="$TAGS,ghcr.io/the-ai-alliance/semiont-browser:sha-$COMMIT_SHA"
+          TAGS="ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }}"
+          TAGS="$TAGS,ghcr.io/xynoplex/xynoplex-browser:sha-$COMMIT_SHA"
           if [ "${{ inputs.tag_latest }}" = "true" ]; then
-            TAGS="$TAGS,ghcr.io/the-ai-alliance/semiont-browser:latest"
+            TAGS="$TAGS,ghcr.io/xynoplex/xynoplex-browser:latest"
           fi
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
           echo "sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
@@ -122,10 +122,10 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./images/browser/Dockerfile
+          file: ./browser/Dockerfile
           platforms: linux/amd64
           load: true
-          tags: semiont-browser:scan
+          tags: xynoplex-browser:scan
           build-args: |
             SEMIONT_BROWSER_VERSION=${{ inputs.version }}
           cache-from: type=gha
@@ -134,7 +134,7 @@ jobs:
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: semiont-browser:scan
+          image-ref: xynoplex-browser:scan
           severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true
@@ -150,7 +150,7 @@ jobs:
       - name: Generate SBOM with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: semiont-browser:scan
+          image-ref: xynoplex-browser:scan
           format: spdx-json
           output: sbom.spdx.json
 
@@ -177,7 +177,7 @@ jobs:
       - name: Boot smoke (module load)
         run: |
           set +e
-          out=$(timeout 10 docker run --rm semiont-browser:scan 2>&1)
+          out=$(timeout 10 docker run --rm xynoplex-browser:scan 2>&1)
           rc=$?
           set -e
           echo "$out"
@@ -198,7 +198,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./images/browser/Dockerfile
+          file: ./browser/Dockerfile
           platforms: linux/amd64,linux/arm64
           # `dry_run` is a boolean input. Comparing it to the STRING 'true' coerces
           # both sides to numbers (true → 1, 'true' → NaN), so `!= 'true'` is true
@@ -219,7 +219,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/attest-build-provenance@v4.2.2
         with:
-          subject-name: ghcr.io/the-ai-alliance/semiont-browser
+          subject-name: ghcr.io/xynoplex/xynoplex-browser
           subject-digest: ${{ steps.build-push.outputs.digest }}
           push-to-registry: true
 
@@ -227,7 +227,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/attest-sbom@v4
         with:
-          subject-name: ghcr.io/the-ai-alliance/semiont-browser
+          subject-name: ghcr.io/xynoplex/xynoplex-browser
           subject-digest: ${{ steps.build-push.outputs.digest }}
           sbom-path: sbom.spdx.json
           push-to-registry: true
@@ -242,12 +242,12 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Pull with:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ghcr.io/the-ai-alliance/semiont-browser:${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Verify supply-chain attestations:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "gh attestation verify oci://ghcr.io/the-ai-alliance/semiont-browser:${{ inputs.version }} \\" >> $GITHUB_STEP_SUMMARY
+          echo "gh attestation verify oci://ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }} \\" >> $GITHUB_STEP_SUMMARY
           echo "  --repo $GITHUB_REPOSITORY \\" >> $GITHUB_STEP_SUMMARY
           echo "  --cert-identity https://github.com/${GITHUB_WORKFLOW_REF%@*}@refs/tags/v${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -3,6 +3,6 @@
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
-ROOT = PROJECT.parents[1]
+ROOT = PROJECT
 SPEC = ROOT / "protocol/specs/src"
 SDK = ROOT / "packages/python/sdk"

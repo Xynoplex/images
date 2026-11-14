@@ -4,8 +4,8 @@
  * implements an interface in front of it, and nothing else.
  *
  * The gateway reaches the broker through its signal plane (`SignalPlane` and
- * `SharedTable`, images/gateway/src/signal/mod.rs); the dispatcher's handlers
- * through `JobQueue` (images/dispatcher/handlers/src/queue.rs). A module that
+ * `SharedTable`, gateway/src/signal/mod.rs); the dispatcher's handlers
+ * through `JobQueue` (dispatcher/handlers/src/queue.rs). A module that
  * used the NATS client beside them would tie the rest to the broker, and
  * nothing would say so. So:
  *
@@ -40,13 +40,13 @@ const RULES = [
     what: 'the async_nats crate',
     uses: /\basync_nats\b/,
     scope: rustSource,
-    allowed: ['images/gateway/src/signal/nats.rs', 'images/dispatcher/jetstream/src/lib.rs', 'packages/rust/core/src/nats.rs'],
+    allowed: ['gateway/src/signal/nats.rs', 'dispatcher/jetstream/src/lib.rs', 'packages/rust/core/src/nats.rs'],
   },
   {
     what: "the gateway's NATS plane",
     uses: /\bsignal::nats\b|\bNatsPlane\b/,
     scope: rustSource,
-    allowed: ['images/gateway/src/app.rs', 'images/gateway/src/signal/nats.rs'],
+    allowed: ['gateway/src/app.rs', 'gateway/src/signal/nats.rs'],
   },
   {
     what: 'the nats npm client',

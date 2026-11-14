@@ -1,0 +1,14 @@
+# Container and language build outputs
+**/node_modules/
+**/target/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/coverage/
+**/dist/
+**/dist-types/
+*.py[cod]
+.DS_Store
+.env

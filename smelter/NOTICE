@@ -1,12 +1,11 @@
-Semiont
-Copyright 2025-2026 The AI Alliance
+Xynoplex
+Copyright 2025-2026 Xynoplex
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by The AI Alliance
-(https://thealliance.ai/).
+This product includes software developed by Xynoplex.
 
-This container image (semiont-smelter) includes the following third-party
+This container image (xynoplex-smelter) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -18,7 +17,7 @@ components:
     Installed as Alpine Linux packages it. Alpine installs with it the
     packages it depends on, each as Alpine built it. The image's own record
     names every one of them (`apk info`), and the license Alpine states for
-    each (`apk info --license <name>`). Semiont links none of them: the
+    each (`apk info --license <name>`). Xynoplex links none of them: the
     Smelter runs `tesseract` as a program of its own. The source of each,
     and of Tesseract as packaged, is Alpine's
     (https://gitlab.alpinelinux.org/alpine/aports), at the release of Alpine
@@ -27,13 +26,13 @@ components:
     Installed as Alpine Linux packages it.
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (The AI Alliance)
-    semiont-service - Apache-2.0 License (The AI Alliance)
-    semiont-smelter - Apache-2.0 License (The AI Alliance)
-    semiont-vectors - Apache-2.0 License (The AI Alliance)
+    semiont - Apache-2.0 License (Xynoplex)
+    semiont-service - Apache-2.0 License (Xynoplex)
+    semiont-smelter - Apache-2.0 License (Xynoplex)
+    semiont-vectors - Apache-2.0 License (Xynoplex)
 
   Python packages installed at build time from https://pypi.org, each at the
-  version images/smelter/uv.lock pins: what those four require. Among them:
+  version smelter/uv.lock pins: what those four require. Among them:
     pypdfium2 - BSD-3-Clause OR Apache-2.0 License
       The binding the Smelter reads a PDF through. Its wheel carries PDFium
       itself, Chromium's PDF library (BSD-3-Clause OR Apache-2.0), and the

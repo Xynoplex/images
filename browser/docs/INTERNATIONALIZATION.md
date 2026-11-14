@@ -15,13 +15,13 @@ The Browser uses **i18next** + **react-i18next** for internationalization.
 ```text
 packages/typescript/react-ui/translations/{locale}.json   ← component-level strings
        +
-images/browser/messages-source/{locale}.json   ← app-level strings
+browser/messages-source/{locale}.json   ← app-level strings
        │
        │  scripts/merge-translations.js
        │  deepMerge(reactUI, browser)  — browser wins on collision
        ▼
-images/browser/messages/{locale}.json           ← read by vitest mock at test time
-images/browser/public/messages/{locale}.json    ← served at /messages/{locale}.json at runtime
+browser/messages/{locale}.json           ← read by vitest mock at test time
+browser/public/messages/{locale}.json    ← served at /messages/{locale}.json at runtime
 ```
 
 The `messages/` and `public/messages/` directories are **generated** — never edit them directly. Edit the source files instead.
@@ -86,12 +86,12 @@ Translation file (`messages-source/en.json`):
 ## Translation File Organization
 
 **Source files (edit these):**
-- `images/browser/messages-source/{locale}.json` — app-specific keys (Navigation, KnowledgeBasePanel, UserPanel, etc.)
+- `browser/messages-source/{locale}.json` — app-specific keys (Navigation, KnowledgeBasePanel, UserPanel, etc.)
 - `packages/typescript/react-ui/translations/{locale}.json` — react-ui component keys (BrowseView, ResourceViewer, etc.)
 
 **Generated files (do not edit):**
-- `images/browser/messages/{locale}.json`
-- `images/browser/public/messages/{locale}.json`
+- `browser/messages/{locale}.json`
+- `browser/public/messages/{locale}.json`
 
 ## Adding a New Language
 
@@ -101,7 +101,7 @@ The languages Semiont supports are the rows of `protocol/specs/src/locales/regis
 
 2. Add translation file for the Browser:
    ```bash
-   cp images/browser/messages-source/en.json images/browser/messages-source/{locale}.json
+   cp browser/messages-source/en.json browser/messages-source/{locale}.json
    # Translate all values in {locale}.json
    ```
 
@@ -115,7 +115,7 @@ The languages Semiont supports are the rows of `protocol/specs/src/locales/regis
 
 4. Run the merge:
    ```bash
-   node images/browser/scripts/merge-translations.js
+   node browser/scripts/merge-translations.js
    ```
 
 ## Parameter Interpolation

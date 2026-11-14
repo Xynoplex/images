@@ -25,5 +25,5 @@
 **/.pytest_cache
 **/.ruff_cache
 
-images/e2e/test-results
-images/e2e/playwright-report
+e2e/test-results
+e2e/playwright-report

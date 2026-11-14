@@ -3,7 +3,7 @@
   "runBy": {
     "conformance": ["protocol/conformance/smelter/index.test.ts", "protocol/conformance/smelter/kb-index.test.ts", "protocol/conformance/smelter/pdf.test.ts"],
     "launcher": ["packages/go/launcher/cleanvectors_test.go"],
-    "vectors-python": ["packages/python/vectors/tests/qdrant_live.py", "packages/python/vectors/tests/store_contract.py", "packages/python/vectors/tests/test_payload_cases.py", "packages/python/vectors/tests/test_qdrant.py"]
+    "vectors-python": ["shared/python/vectors/tests/qdrant_live.py", "shared/python/vectors/tests/store_contract.py", "shared/python/vectors/tests/test_payload_cases.py", "shared/python/vectors/tests/test_qdrant.py"]
   },
   "collections": {
     "resources": {

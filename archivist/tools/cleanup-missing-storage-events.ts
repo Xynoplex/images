@@ -18,8 +18,8 @@
  * crash the Smelter, and keeping them preserves history.
  *
  * Usage:
- *   npx tsx images/archivist/tools/cleanup-missing-storage-events.ts /path/to/kb
- *   npx tsx images/archivist/tools/cleanup-missing-storage-events.ts /path/to/kb --confirm
+ *   npx tsx archivist/tools/cleanup-missing-storage-events.ts /path/to/kb
+ *   npx tsx archivist/tools/cleanup-missing-storage-events.ts /path/to/kb --confirm
  */
 
 import { promises as fs } from 'fs';
@@ -102,7 +102,7 @@ async function main() {
   const confirm = process.argv.includes('--confirm');
 
   if (!kbRoot) {
-    console.error('Usage: npx tsx images/archivist/tools/cleanup-missing-storage-events.ts /path/to/kb [--confirm]');
+    console.error('Usage: npx tsx archivist/tools/cleanup-missing-storage-events.ts /path/to/kb [--confirm]');
     process.exit(1);
   }
 

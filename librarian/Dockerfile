@@ -1,6 +1,6 @@
-# The librarian image: the Librarian service (images/librarian, Python) and the
+# The librarian image: the Librarian service (librarian, Python) and the
 # five packages of this repository it runs on, built here from the
-# repository, in an environment of exactly what images/librarian/uv.lock pins.
+# repository, in an environment of exactly what librarian/uv.lock pins.
 # Nothing is built, installed or fetched when the container starts: the
 # entrypoint runs the service.
 #
@@ -8,7 +8,7 @@
 # packages support, which packages/python/sdk/pyproject.toml states
 # (requires-python), the one place it is written:
 #
-#   --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -28,16 +28,16 @@ COPY version.json ./
 # manifest, the README its manifest names, where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
 COPY packages/python/sdk/src packages/python/sdk/src
-COPY packages/python/graph/pyproject.toml packages/python/graph/README.md packages/python/graph/
-COPY packages/python/graph/src packages/python/graph/src
-COPY packages/python/vectors/pyproject.toml packages/python/vectors/README.md packages/python/vectors/
-COPY packages/python/vectors/src packages/python/vectors/src
-COPY packages/python/inference/pyproject.toml packages/python/inference/README.md packages/python/inference/
-COPY packages/python/inference/src packages/python/inference/src
-COPY packages/python/service/pyproject.toml packages/python/service/
-COPY packages/python/service/src packages/python/service/src
-COPY images/librarian/pyproject.toml images/librarian/uv.lock images/librarian/
-COPY images/librarian/src images/librarian/src
+COPY shared/python/graph/pyproject.toml shared/python/graph/README.md shared/python/graph/
+COPY shared/python/graph/src shared/python/graph/src
+COPY shared/python/vectors/pyproject.toml shared/python/vectors/README.md shared/python/vectors/
+COPY shared/python/vectors/src shared/python/vectors/src
+COPY shared/python/inference/pyproject.toml shared/python/inference/README.md shared/python/inference/
+COPY shared/python/inference/src shared/python/inference/src
+COPY shared/python/service/pyproject.toml shared/python/service/
+COPY shared/python/service/src shared/python/service/src
+COPY librarian/pyproject.toml librarian/uv.lock librarian/
+COPY librarian/src librarian/src
 # The environment is made on this stage's Python and no other, with its
 # bytecode written here: the image's user cannot write it. uv keeps no cache,
 # and the stage mounts none: from a cache that outlives a build, uv installs
@@ -61,7 +61,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # the database's alone: Ollama is asked with what every install has. The
 # vector index and the embedding providers are asked over HTTP, with what
 # every install has too.
-RUN uv sync --project images/librarian --locked --no-dev --no-editable --all-extras
+RUN uv sync --project librarian --locked --no-dev --no-editable --all-extras
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
@@ -79,19 +79,19 @@ RUN addgroup --system --gid 1001 semiont && \
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY LICENSE images/librarian/NOTICE /home/semiont/
+COPY LICENSE librarian/NOTICE /home/semiont/
 
 # The model catalogue: what models.dev says each model of Google, OpenAI and
 # Together can take, which those providers' own APIs do not say. A model of one
 # of them is asked with these facts, and the service's document names this
 # path (modelCatalogue). It is the repository's one generated copy, made by
-# packages/python/inference/scripts/generate-model-catalogue.mjs from the npm package
+# shared/python/inference/scripts/generate-model-catalogue.mjs from the npm package
 # package.json pins, and held to that pin by CI's drift job. Nothing is fetched
 # to build it here. Its licence notice goes with it.
-COPY packages/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
-COPY packages/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY shared/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
+COPY shared/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 WORKDIR /kb
 RUN chown semiont:semiont /kb

@@ -2,9 +2,9 @@
 
 [![crates.io](https://img.shields.io/crates/v/semiont.svg)](https://crates.io/crates/semiont)
 [![docs.rs](https://img.shields.io/docsrs/semiont)](https://docs.rs/semiont)
-[![CI](https://github.com/The-AI-Alliance/semiont/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/The-AI-Alliance/semiont/actions/workflows/ci.yml?query=branch%3Amain)
-[![License](https://img.shields.io/crates/l/semiont.svg)](https://github.com/The-AI-Alliance/semiont/blob/main/LICENSE)
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=rust-sdk)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![CI](https://github.com/Xynoplex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Xynoplex/actions/workflows/ci.yml?query=branch%3Amain)
+[![License](https://img.shields.io/crates/l/semiont.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-sdk)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The Rust SDK for [Semiont](../../../README.md), an open platform for building
 trusted AI knowledge bases: a shared workspace where humans and AI agents

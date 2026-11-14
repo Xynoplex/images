@@ -80,7 +80,7 @@ flowchart TD
    dismissing it clears the signal (`acknowledgePermissionDenied`).
 
 A 401 does not take this path. `session.refresh()` renews the token in silence, or the session
-ends and `SessionEndedModal` says why ([Authentication](./AUTHENTICATION.md)).
+ends and `SessionEndedModal` says why ([Authentication](AUTHENTICATION.md)).
 
 A call that is refused still rejects where it was made:
 
@@ -129,6 +129,6 @@ describe('Authorization', () => {
 
 ## Related
 
-- [Authentication](./AUTHENTICATION.md): sessions, 401s and the session-ended path
+- [Authentication](AUTHENTICATION.md): sessions, 401s and the session-ended path
 - [RBAC](../../../protocol/contract/RBAC.md): the one decision a gateway makes, and the two service roles
 - [`APIError`](../../../packages/typescript/http-transport/docs/API-Reference.md#apierror): the transport's error

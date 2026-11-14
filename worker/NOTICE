@@ -1,12 +1,11 @@
-Semiont
-Copyright 2025-2026 The AI Alliance
+Xynoplex
+Copyright 2025-2026 Xynoplex
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by The AI Alliance
-(https://thealliance.ai/).
+This product includes software developed by Xynoplex.
 
-This container image (semiont-worker) includes the following third-party
+This container image (xynoplex-worker) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -28,13 +27,13 @@ components:
         DejaVu changes are in the public domain.
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (The AI Alliance)
-    semiont-inference - Apache-2.0 License (The AI Alliance)
-    semiont-service - Apache-2.0 License (The AI Alliance)
-    semiont-worker - Apache-2.0 License (The AI Alliance)
+    semiont - Apache-2.0 License (Xynoplex)
+    semiont-inference - Apache-2.0 License (Xynoplex)
+    semiont-service - Apache-2.0 License (Xynoplex)
+    semiont-worker - Apache-2.0 License (Xynoplex)
 
   Python packages installed at build time from https://pypi.org, each at the
-  version images/worker/uv.lock pins: what those four require, and with every
+  version worker/uv.lock pins: what those four require, and with every
   extra of semiont-inference the library each model provider is asked
   through, with what that library requires.
 

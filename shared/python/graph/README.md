@@ -1,6 +1,6 @@
 # semiont-graph
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=python-graph)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-graph)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The graph databases [Semiont][semiont]'s Python services write and read,
 behind one interface: what the graph holds of a resource and of an
@@ -146,6 +146,6 @@ that database before and after each case. The reader's cases also drop the
 constraints and the indexes a store makes, and a store that connects makes
 them again.
 
-[semiont]: https://github.com/The-AI-Alliance/semiont
-[sdk-python]: https://github.com/The-AI-Alliance/semiont/tree/main/packages/python/sdk
-[codec-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/graph/codec-cases.json
+[semiont]: https://github.com/Xynoplex/images
+[sdk-python]: https://github.com/Xynoplex/images/tree/main/packages/python/sdk
+[codec-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/graph/codec-cases.json

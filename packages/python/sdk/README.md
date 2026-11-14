@@ -1,6 +1,6 @@
 # semiont
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=python-sdk)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-sdk)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The Python SDK for [Semiont][semiont], an open platform for building trusted
 AI knowledge bases: a shared workspace where humans and AI agents annotate,
@@ -1126,40 +1126,40 @@ for word: both type checkers check them, and each one is run.
 
 Apache-2.0. See [LICENSE][license].
 
-[semiont]: https://github.com/The-AI-Alliance/semiont
-[introduction]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/INTRODUCTION.md
-[quick-start]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/QUICK-START.md
-[developer-guide]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/DEVELOPER-GUIDE.md
-[skills]: https://github.com/The-AI-Alliance/semiont/tree/main/docs/builder/skills
-[flows]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/flows/README.md
-[reactive-model]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/REACTIVE-MODEL.md
-[protocol]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/README.md
-[transport-contract]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/TRANSPORT-CONTRACT.md
-[transport-http]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/TRANSPORT-HTTP.md
-[cache-semantics]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/CACHE-SEMANTICS.md
-[conformance]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/conformance/sdk/README.md
-[worker-contract]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/WORKER-CONTRACT.md
-[worker-conformance]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/conformance/worker/README.md
-[sdk-typescript]: https://github.com/The-AI-Alliance/semiont/blob/main/packages/typescript/sdk/README.md
-[sdk-rust]: https://github.com/The-AI-Alliance/semiont/blob/main/packages/rust/sdk/README.md
-[sdk-go]: https://github.com/The-AI-Alliance/semiont/blob/main/packages/go/sdk/README.md
-[sdk-kotlin]: https://github.com/The-AI-Alliance/semiont/blob/main/packages/kotlin/sdk/README.md
-[launcher]: https://github.com/The-AI-Alliance/semiont/blob/main/apps/launcher/README.md
-[specs]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/README.md
-[surface]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/client/surface.json
-[refresh]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/client/refresh.json
-[codes]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/errors/codes.json
-[session-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/session/cases.json
-[reconcile-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/annotations/reconcile-cases.json
-[builder-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/annotations/builder-cases.json
-[id-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/annotations/id-cases.json
-[resource-text]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/W3C-SELECTORS.md#the-text-of-a-resource
-[sign-in-store]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/sign-in-store/README.md
-[stored-keys]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/session/stored.json
-[telemetry]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/sdk-telemetry/telemetry.json
-[bus-log]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/contract/EVENT-BUS.md#wire-format-the-bus-log
-[package]: https://github.com/The-AI-Alliance/semiont/tree/main/packages/python/sdk
-[testing]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/contributor/TESTING.md
-[state-units]: https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/STATE-UNITS.md
-[state-units-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/client/state-units.json
-[license]: https://github.com/The-AI-Alliance/semiont/blob/main/LICENSE
+[semiont]: https://github.com/Xynoplex/images
+[introduction]: https://github.com/Xynoplex/images/blob/main/docs/builder/INTRODUCTION.md
+[quick-start]: https://github.com/Xynoplex/images/blob/main/docs/builder/QUICK-START.md
+[developer-guide]: https://github.com/Xynoplex/images/blob/main/docs/builder/DEVELOPER-GUIDE.md
+[skills]: https://github.com/Xynoplex/images/tree/main/docs/builder/skills
+[flows]: https://github.com/Xynoplex/images/blob/main/protocol/contract/flows/README.md
+[reactive-model]: https://github.com/Xynoplex/images/blob/main/docs/builder/REACTIVE-MODEL.md
+[protocol]: https://github.com/Xynoplex/images/blob/main/protocol/contract/README.md
+[transport-contract]: https://github.com/Xynoplex/images/blob/main/protocol/contract/TRANSPORT-CONTRACT.md
+[transport-http]: https://github.com/Xynoplex/images/blob/main/protocol/contract/TRANSPORT-HTTP.md
+[cache-semantics]: https://github.com/Xynoplex/images/blob/main/protocol/contract/CACHE-SEMANTICS.md
+[conformance]: https://github.com/Xynoplex/images/blob/main/protocol/conformance/sdk/README.md
+[worker-contract]: https://github.com/Xynoplex/images/blob/main/protocol/contract/WORKER-CONTRACT.md
+[worker-conformance]: https://github.com/Xynoplex/images/blob/main/protocol/conformance/worker/README.md
+[sdk-typescript]: https://github.com/Xynoplex/images/blob/main/packages/typescript/sdk/README.md
+[sdk-rust]: https://github.com/Xynoplex/images/blob/main/packages/rust/sdk/README.md
+[sdk-go]: https://github.com/Xynoplex/images/blob/main/packages/go/sdk/README.md
+[sdk-kotlin]: https://github.com/Xynoplex/images/blob/main/packages/kotlin/sdk/README.md
+[launcher]: https://github.com/Xynoplex/images/blob/main/apps/launcher/README.md
+[specs]: https://github.com/Xynoplex/images/blob/main/protocol/specs/README.md
+[surface]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/client/surface.json
+[refresh]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/client/refresh.json
+[codes]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/errors/codes.json
+[session-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/session/cases.json
+[reconcile-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/annotations/reconcile-cases.json
+[builder-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/annotations/builder-cases.json
+[id-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/annotations/id-cases.json
+[resource-text]: https://github.com/Xynoplex/images/blob/main/protocol/contract/W3C-SELECTORS.md#the-text-of-a-resource
+[sign-in-store]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/sign-in-store/README.md
+[stored-keys]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/session/stored.json
+[telemetry]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/sdk-telemetry/telemetry.json
+[bus-log]: https://github.com/Xynoplex/images/blob/main/protocol/contract/EVENT-BUS.md#wire-format-the-bus-log
+[package]: https://github.com/Xynoplex/images/tree/main/packages/python/sdk
+[testing]: https://github.com/Xynoplex/images/blob/main/docs/contributor/TESTING.md
+[state-units]: https://github.com/Xynoplex/images/blob/main/docs/builder/STATE-UNITS.md
+[state-units-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/client/state-units.json
+[license]: https://github.com/Xynoplex/images/blob/main/LICENSE

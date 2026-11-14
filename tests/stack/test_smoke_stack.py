@@ -6,14 +6,13 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 import unittest
 from pathlib import Path
 
 SOURCE = Path(__file__).with_name("smoke-stack.sh")
 DOCUMENTS = {
-    "browser": "image: ghcr.io/the-ai-alliance/semiont-browser:previous\nkeep: browser-setting\n",
-    "worker": "image: ghcr.io/the-ai-alliance/semiont-worker:previous\nkeep: worker-setting\n",
+    "browser": "image: ghcr.io/xynoplex/xynoplex-browser:previous\nkeep: browser-setting\n",
+    "worker": "image: ghcr.io/xynoplex/xynoplex-worker:previous\nkeep: worker-setting\n",
 }
 ISSUER = "http://192.0.2.1:8080/realms/example.github.io-stack-smoke"
 PROTECTED_RESOURCE = {
@@ -41,7 +40,7 @@ def log(name, entry):
     with (root / name).open("a") as f:
         f.write(json.dumps(entry) + "\\n")
 if command == "--version":
-    print("smoke-test launcher")
+    print("smoke-test xynaut")
 elif command == "init":
     inits = root / "inits.jsonl"
     count = len(inits.read_text().splitlines()) if inits.exists() else 0
@@ -51,9 +50,9 @@ elif command == "init":
     port = 4000 + 10 * count
     (stack / "knowledge-base.yaml").write_text(
         "kind: KnowledgeBase\\nspec:\\n  gateway:\\n"
-        "    image: ghcr.io/the-ai-alliance/semiont-gateway:latest\\n"
+        "    image: ghcr.io/xynoplex/xynoplex-gateway:latest\\n"
         f"    port: {port}\\n    publicURL: http://localhost:{port}\\n"
-        "  dispatcher:\\n    image: ghcr.io/the-ai-alliance/semiont-dispatcher:latest\\n"
+        "  dispatcher:\\n    image: ghcr.io/xynoplex/xynoplex-dispatcher:latest\\n"
     )
 elif command == "settings":
     print(root / "state home" / f"{sys.argv[2]}.yaml")
@@ -67,7 +66,7 @@ elif command == "start":
     statuses = os.environ["SMOKE_TEST_START_STATUS"].split(",")
     sys.exit(int(statuses[min(count, len(statuses) - 1)]))
 elif command in ("stop", "clean", "forget", "useradd", "status"):
-    log("launcher.jsonl", sys.argv[1:])
+    log("xynaut.jsonl", sys.argv[1:])
     if command == "useradd":
         sys.stdin.read()
     # The dispatcher's line of a status report, as the launcher prints it when the
@@ -84,42 +83,24 @@ class SmokeStackTest(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.kb = self.root / "kb"
-        script = self.root / "images/tests/stack/smoke-stack.sh"
+        script = self.root / "tests/stack/smoke-stack.sh"
         script.parent.mkdir(parents=True)
         shutil.copyfile(SOURCE, script)
-        runtime_helper = self.root / "images/scripts/container-runtime.sh"
+        runtime_helper = self.root / "scripts/container-runtime.sh"
         runtime_helper.parent.mkdir(parents=True)
         shutil.copyfile(
             SOURCE.parents[2] / "scripts/container-runtime.sh", runtime_helper
         )
-        e2e_package = self.root / "images/e2e/package.json"
+        e2e_package = self.root / "e2e/package.json"
         e2e_package.parent.mkdir(parents=True)
         shutil.copyfile(SOURCE.parents[2] / "e2e/package.json", e2e_package)
-        for directory in (
-            "apps/launcher/dist",
-            "packages/go/launcher",
-            "packages/go/sdk",
-            "bin",
-            "state home",
-        ):
+        for directory in ("bin", "state home"):
             (self.root / directory).mkdir(parents=True)
         for name, text in DOCUMENTS.items():
             (self.root / "state home" / f"{name}.yaml").write_text(text)
-        self.launcher = self.root / "apps/launcher/dist/semiont"
-        self.launcher.write_text(f"#!{sys.executable}\n" + LAUNCHER)
-        self.launcher.chmod(0o755)
-        shutil.copy2(self.launcher, self.root / "built-launcher")
-        # The build. `stale` answers what SMOKE_TEST_STALE says is stale. Every other
-        # operation writes the launcher where there is none, and, as Go does for a
-        # build that changed nothing, leaves one that is there as it was.
-        build = self.root / "images/scripts/build-session.sh"
-        build.write_text(
-            "#!/bin/sh\n"
-            'printf "%s\\n" "$*" >> "$SMOKE_TEST_ROOT/builds.log"\n'
-            'if [ "$1" = stale ]; then printf "%s" "$SMOKE_TEST_STALE"; exit "$SMOKE_TEST_STALE_STATUS"; fi\n'
-            '[ "$SMOKE_TEST_BUILD_STATUS" = 0 ] || exit "$SMOKE_TEST_BUILD_STATUS"\n'
-            f'[ -e "{self.launcher}" ] || cp -p "$SMOKE_TEST_ROOT/built-launcher" "{self.launcher}"\n'
-        )
+        self.xynaut = self.root / "bin/xynaut"
+        self.xynaut.write_text(f"#!{sys.executable}\n" + LAUNCHER)
+        self.xynaut.chmod(0o755)
         self.use_runtime("smoke-test-runtime", 0)
 
     def use_runtime(self, runtime: str, e2e_status: int) -> None:
@@ -160,22 +141,17 @@ class SmokeStackTest(unittest.TestCase):
         self,
         *args: str,
         start_status: str = "0",
-        build_status: str = "0",
-        stale: str = "",
-        stale_status: str = "0",
         queue: str = DRAINED,
     ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
-            ["bash", str(self.root / "images/tests/stack/smoke-stack.sh"), *args],
+            ["bash", str(self.root / "tests/stack/smoke-stack.sh"), *args],
             check=False,
             env={
                 **os.environ,
                 "PATH": str(self.root / "bin") + os.pathsep + os.environ["PATH"],
                 "SMOKE_TEST_ROOT": str(self.root),
                 "SMOKE_TEST_START_STATUS": start_status,
-                "SMOKE_TEST_BUILD_STATUS": build_status,
-                "SMOKE_TEST_STALE": stale,
-                "SMOKE_TEST_STALE_STATUS": stale_status,
+                "XYNAUT": str(self.xynaut),
                 "SMOKE_TEST_QUEUE": queue,
                 "CONTAINER_RUNTIME": self.runtime,
                 "SMOKE_KB": str(self.kb),
@@ -195,7 +171,7 @@ class SmokeStackTest(unittest.TestCase):
 
     def stopped(self) -> list[str]:
         """The root of each `stop`, resolved: macOS reports a temporary directory's cwd under /private."""
-        stops = [call for call in self.lines("launcher.jsonl") if call[0] == "stop"]
+        stops = [call for call in self.lines("xynaut.jsonl") if call[0] == "stop"]
         for call in stops:
             self.assertIn(
                 "--root", call, "a stop naming no root stops whichever stack it finds"
@@ -206,7 +182,7 @@ class SmokeStackTest(unittest.TestCase):
         """The root of each `status`, resolved."""
         return [
             os.path.realpath(call[call.index("--root") + 1])
-            for call in self.lines("launcher.jsonl")
+            for call in self.lines("xynaut.jsonl")
             if call[0] == "status"
         ]
 
@@ -218,20 +194,6 @@ class SmokeStackTest(unittest.TestCase):
             if path.exists()
             else []
         )
-
-    def build_calls(self) -> list[str]:
-        path = self.root / "builds.log"
-        return path.read_text().splitlines() if path.exists() else []
-
-    def builds(self) -> list[str]:
-        """What the smoke built, leaving out what it asked."""
-        return [call for call in self.build_calls() if not call.startswith("stale")]
-
-    def edit_launcher_source(self) -> None:
-        """A launcher source file newer than the launcher."""
-        past = time.time() - 100
-        os.utime(self.launcher, (past, past))
-        (self.root / "packages/go/launcher/start.go").write_text("package launcher\n")
 
     def assert_documents_restored(self) -> None:
         for name, original in DOCUMENTS.items():
@@ -246,13 +208,13 @@ class SmokeStackTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 for name in DOCUMENTS:
                     self.assertIn(
-                        f"image: ghcr.io/the-ai-alliance/semiont-{name}:{tag}\n",
+                        f"image: ghcr.io/xynoplex/xynoplex-{name}:{tag}\n",
                         (self.root / "state home" / f"{name}.yaml").read_text(),
                     )
                 started = self.lines("starts.jsonl")[-1]
                 for name in ("browser", "worker", "gateway"):
                     self.assertIn(
-                        f"ghcr.io/the-ai-alliance/semiont-{name}:{tag}\n", started[name]
+                        f"ghcr.io/xynoplex/xynoplex-{name}:{tag}\n", started[name]
                     )
                     if name != "gateway":
                         self.assertIn(f"keep: {name}-setting\n", started[name])
@@ -262,74 +224,19 @@ class SmokeStackTest(unittest.TestCase):
                 self.assertIn(os.path.realpath(self.kb), self.stopped())
                 shutil.rmtree(self.kb)
 
-    def test_up_builds_a_missing_launcher_before_it_starts_anything(self) -> None:
-        self.launcher.unlink()
-        result = self.smoke("up", "local")
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(self.builds(), ["launcher"])
-        self.assertEqual(len(self.lines("starts.jsonl")), 1)
-
-    def test_a_launcher_older_than_its_source_is_built_once(self) -> None:
-        self.edit_launcher_source()
-        self.assertEqual(self.smoke("up", "local").returncode, 0)
-        result = self.smoke("e2e")
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(self.builds(), ["launcher"])
-
-    def test_down_stops_with_the_launcher_that_is_there(self) -> None:
-        self.assertEqual(self.smoke("up", "local").returncode, 0)
-        self.edit_launcher_source()
-        result = self.smoke("down")
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(self.builds(), [])
-        self.assert_documents_restored()
-
-    def test_a_launcher_that_does_not_build_starts_nothing(self) -> None:
-        self.launcher.unlink()
-        result = self.smoke("up", "local", build_status="1")
-        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    def test_stack_smoke_requires_xynaut_before_starting_anything(self) -> None:
+        env = {**os.environ, "PATH": str(self.root / "bin")}
+        (self.root / "bin/xynaut").unlink()
+        result = subprocess.run(
+            ["bash", str(self.root / "tests/stack/smoke-stack.sh"), "up", "local"],
+            check=False,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("needs the xynaut CLI", result.stderr)
         self.assertEqual(self.lines("starts.jsonl"), [])
-        self.assertEqual(self.lines("inits.jsonl"), [])
-
-    def test_up_of_local_builds_stale_images_before_it_starts_anything(self) -> None:
-        stale = "images/archivist\tDockerfile, copied source, toolchain or npm dependencies changed\n"
-        result = self.smoke("up", "local", stale=stale)
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(
-            self.build_calls(),
-            ["stale --package typescript", "local-build --package typescript"],
-        )
-        self.assertIn("images/archivist", result.stdout)
-        self.assertEqual(len(self.lines("starts.jsonl")), 1)
-
-    def test_up_of_current_local_images_builds_nothing(self) -> None:
-        result = self.smoke("up", "local")
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(self.build_calls(), ["stale --package typescript"])
-        self.assertIn("nothing to build", result.stdout)
-        self.assertIn(
-            "semiont init --domain example.github.io:stack-smoke made it", result.stdout
-        )
-
-    def test_up_of_a_published_tag_asks_nothing_of_the_build(self) -> None:
-        result = self.smoke("up", "0.7.1", stale="images/archivist\tchanged\n")
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(self.build_calls(), [])
-
-    def test_images_that_do_not_build_start_nothing(self) -> None:
-        for status in ("stale", "build"):
-            with self.subTest(failed=status):
-                (self.root / "builds.log").unlink(missing_ok=True)
-                result = self.smoke(
-                    "up",
-                    "local",
-                    stale="images/archivist\tchanged\n",
-                    stale_status="1" if status == "stale" else "0",
-                    build_status="1" if status == "build" else "0",
-                )
-                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
-                self.assertEqual(self.lines("starts.jsonl"), [])
-                self.assertEqual(self.lines("inits.jsonl"), [])
 
     def test_up_checks_the_realm_at_the_issuer_the_gateway_names(self) -> None:
         result = self.smoke("up", "local")
@@ -366,7 +273,7 @@ class SmokeStackTest(unittest.TestCase):
         self.assertEqual(self.smoke("up", "local").returncode, 0)
         result = self.smoke("up", "local")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("make stack-down", result.stderr)
+        self.assertIn("tests/stack/smoke-stack.sh down", result.stderr)
         self.assertEqual(len(self.lines("starts.jsonl")), 1)
 
     def test_each_e2e_runs_on_a_fresh_knowledge_base_beside_up(self) -> None:
@@ -385,7 +292,7 @@ class SmokeStackTest(unittest.TestCase):
             # A queue that reads empty is read once.
             self.assertEqual(self.asked_status().count(os.path.realpath(e2e["cwd"])), 1)
         for start in self.lines("starts.jsonl")[1:]:
-            self.assertIn("semiont-gateway:0.7.1\n", start["gateway"])
+            self.assertIn("ghcr.io/xynoplex/xynoplex-gateway:0.7.1\n", start["gateway"])
         self.assertNotIn(os.path.realpath(self.kb), self.stopped())
         calls = (self.root / "runtime.log").read_text()
         self.assertIn("E2E_GATEWAY_URL=http://localhost:4010", calls)
@@ -467,7 +374,6 @@ class SmokeStackTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
                 self.assertIn("usage", result.stderr)
         self.assertEqual(self.lines("inits.jsonl"), [])
-        self.assertEqual(self.build_calls(), [])
 
     def test_a_failed_e2e_leaves_its_knowledge_base_up_until_down(self) -> None:
         self.assertEqual(self.smoke("up", "0.7.1").returncode, 0)
@@ -478,7 +384,7 @@ class SmokeStackTest(unittest.TestCase):
         self.assertTrue(Path(kept).exists())
         self.assertNotIn(kept, self.stopped())
         self.assertIn(Path(kept).parent.name, result.stdout)
-        self.assertIn("make stack-down", result.stdout)
+        self.assertIn("tests/stack/smoke-stack.sh down", result.stdout)
         result = self.smoke("down")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertFalse(Path(kept).exists())
@@ -521,7 +427,7 @@ class SmokeStackTest(unittest.TestCase):
                     for name in (
                         "starts.jsonl",
                         "inits.jsonl",
-                        "launcher.jsonl",
+                        "xynaut.jsonl",
                         "runtime.log",
                         "suites.log",
                     ):

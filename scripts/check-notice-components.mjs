@@ -29,8 +29,8 @@ import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
-const IMAGES = join(ROOT, 'images');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const IMAGES = ROOT;
 
 const key = (name) => name.trim().toLowerCase().split(/[\s(]/)[0].replace(/\.js$/, '');
 
@@ -77,16 +77,16 @@ for (const image of readdirSync(IMAGES).sort()) {
   const ships = shipped(readFileSync(dockerfile, 'utf-8'));
   const credits = credited(readFileSync(notice, 'utf-8'));
   if (!ships || credits.size === 0) {
-    problems.push(`images/${image}: could not read ${!ships ? 'a final stage from its Dockerfile' : 'any component from its NOTICE'}`);
+    problems.push(`${image}: could not read ${!ships ? 'a final stage from its Dockerfile' : 'any component from its NOTICE'}`);
     continue;
   }
   checked++;
-  for (const c of ships) if (!credits.has(c)) problems.push(`images/${image}/NOTICE does not credit "${c}", which the image ships`);
-  for (const c of credits) if (!ships.has(c)) problems.push(`images/${image}/NOTICE credits "${c}", which the image does not ship`);
+  for (const c of ships) if (!credits.has(c)) problems.push(`${image}/NOTICE does not credit "${c}", which the image ships`);
+  for (const c of credits) if (!ships.has(c)) problems.push(`${image}/NOTICE credits "${c}", which the image does not ship`);
 }
 
 if (checked === 0) {
-  console.error('✗ lint:notice — no images/<service>/ has both a Dockerfile and a NOTICE. Silence is not agreement.');
+  console.error('✗ lint:notice — no <service>/ has both a Dockerfile and a NOTICE. Silence is not agreement.');
   process.exit(1);
 }
 if (problems.length > 0) {

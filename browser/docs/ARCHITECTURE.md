@@ -89,7 +89,7 @@ import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager
 function AppTree() {
   const translationManager = useMergedTranslationManager(); // i18next-backed
 
-  // Global layer — auth-independent (images/browser/src/app/providers.tsx)
+  // Global layer — auth-independent (browser/src/app/providers.tsx)
   return (
     <TranslationProvider translationManager={translationManager}>
       <SemiontProvider>            {/* the SemiontBrowser singleton: sessions, KBs, the client */}
@@ -115,7 +115,7 @@ This architecture enables:
 - **Tested in the library**: the components' tests live with them in `@semiont/react-ui`
 - **Clear Boundaries**: Separation between framework code and UI components
 
-See [Component Library Integration Guide](./COMPONENT-LIBRARY.md) for detailed usage.
+See [Component Library Integration Guide](COMPONENT-LIBRARY.md) for detailed usage.
 
 ### API Communication
 - **`@semiont/sdk`** over `@semiont/http-transport` - every call to a knowledge base. The app itself contains no `fetch` call
@@ -144,7 +144,7 @@ The person's web browser
 
 ## Authentication Architecture
 
-See [AUTHENTICATION.md](./AUTHENTICATION.md) for the full authentication flow.
+See [AUTHENTICATION.md](AUTHENTICATION.md) for the full authentication flow.
 
 ### Key Components
 
@@ -376,7 +376,7 @@ The provider tree has two distinct layers:
 ### Root layer (always present)
 
 ```tsx
-// images/browser/src/app/providers.tsx
+// browser/src/app/providers.tsx
 import { KeyboardShortcutsProvider } from '@/contexts/KeyboardShortcutsContext';
 import { NavigationHandler } from '@/components/knowledge/NavigationHandler';
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
@@ -408,7 +408,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ### Auth shell (mounted around protected routes only)
 
 ```tsx
-// images/browser/src/contexts/AuthShell.tsx — no provider; the SemiontBrowser
+// browser/src/contexts/AuthShell.tsx — no provider; the SemiontBrowser
 // singleton (mounted at the app root) already holds all session state.
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
@@ -424,7 +424,7 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
 
 ### Where the auth shell mounts
 
-`AuthShell` mounts once, in `ProtectedLayout` in `images/browser/src/App.tsx`: a pathless route
+`AuthShell` mounts once, in `ProtectedLayout` in `browser/src/App.tsx`: a pathless route
 that wraps both protected sections, `/know/*` and `/moderate/*`. Navigating between the sections
 keeps the shell mounted rather than tearing it down and rebuilding it.
 
@@ -439,7 +439,7 @@ See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.
 ## Directory Structure
 
 ```text
-images/browser/src/
+browser/src/
 ├── App.tsx                # React Router route tree
 ├── main.tsx               # Entry point
 ├── app/[locale]/          # Locale-prefixed page components
@@ -502,7 +502,7 @@ packages/typescript/react-ui/src/      # Reusable React components library
 ```
 
 **Key Separation:**
-- `images/browser/src` - Vite SPA pages and app-specific implementations
+- `browser/src` - Vite SPA pages and app-specific implementations
 - `packages/typescript/react-ui/src` - Framework-agnostic components and interfaces
 
 **Note**: `AuthErrorDisplay` is framework-agnostic and lives in `packages/typescript/react-ui/src/features/auth/`. Signing in is not a component: the Browser sends the user to the knowledge base's issuer and completes the exchange on its callback route. The Browser provides React Router-specific wrappers that handle routing, translations, and auth state.
@@ -623,7 +623,7 @@ await semiont.mark.annotation({
 
 ### Document Page Layout
 
-The resource page (`images/browser/src/app/[locale]/know/resource/[id]/page.tsx`, which renders `ResourceViewerPage`) consists of:
+The resource page (`browser/src/app/[locale]/know/resource/[id]/page.tsx`, which renders `ResourceViewerPage`) consists of:
 
 **Main Content Area**:
 - **AnnotateView**: Curation mode with text selection and annotation creation
@@ -680,10 +680,10 @@ Panels keep their entries' DOM nodes through React ref callbacks, not through an
 - [`@semiont/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
 
 ### Browser Documentation
-- [AUTHENTICATION.md](./AUTHENTICATION.md) - Authentication and authorization
-- [AUTHORIZATION.md](./AUTHORIZATION.md) - Permission model
+- [AUTHENTICATION.md](AUTHENTICATION.md) - Authentication and authorization
+- [AUTHORIZATION.md](AUTHORIZATION.md) - Permission model
 - [RENDERING-ARCHITECTURE.md](../../../packages/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Rendering pipeline and component hierarchy
 - [CODEMIRROR-INTEGRATION.md](../../../packages/typescript/react-ui/docs/CODEMIRROR-INTEGRATION.md) - AnnotateView rendering with CodeMirror
-- [ANNOTATIONS.md](./ANNOTATIONS.md) - Annotation UI/UX and workflows
+- [ANNOTATIONS.md](ANNOTATIONS.md) - Annotation UI/UX and workflows
 - [ANNOTATION-RENDERING-PRINCIPLES.md](../../../packages/typescript/react-ui/docs/ANNOTATION-RENDERING-PRINCIPLES.md) - Rendering axioms and correctness properties
-- [KEYBOARD-NAV.md](./KEYBOARD-NAV.md) - Keyboard navigation implementation
+- [KEYBOARD-NAV.md](KEYBOARD-NAV.md) - Keyboard navigation implementation

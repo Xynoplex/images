@@ -1,6 +1,6 @@
 # Jaeger evidence
 
-Companion to [`bus-logging.md`](./bus-logging.md). Where `bus` captures
+Companion to [`bus-logging.md`](bus-logging.md). Where `bus` captures
 the Browser's grep-friendly `[bus OP]` lines (Tier 1), the `jaeger`
 fixture pulls the **distributed spans** those events trigger across
 gateway / worker / smelter / Browser (Tier 2) and attaches them to the
@@ -87,7 +87,7 @@ and writes a `<container>.log` slice into the test's output directory.
 
 ```sh
 # After `npx playwright test`
-python3 images/e2e/scripts/slice-container-logs.py
+python3 e2e/scripts/slice-container-logs.py
 ```
 
 That writes `semiont-<kb>-gateway.log`, `semiont-worker.log`, and

@@ -1456,7 +1456,7 @@ wheels = [
 
 [[package]]
 name = "semiont"
-source = { editable = "../../packages/python/sdk" }
+source = { editable = "../packages/python/sdk" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -1491,7 +1491,7 @@ dev = [
 
 [[package]]
 name = "semiont-inference"
-source = { editable = "../../packages/python/inference" }
+source = { editable = "../shared/python/inference" }
 dependencies = [
     { name = "httpx" },
     { name = "opentelemetry-api" },
@@ -1529,7 +1529,7 @@ requires-dist = [
     { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
+    { name = "semiont", editable = "../packages/python/sdk" },
     { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
 ]
 provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
@@ -1547,7 +1547,7 @@ dev = [
 
 [[package]]
 name = "semiont-service"
-source = { editable = "../../packages/python/service" }
+source = { editable = "../shared/python/service" }
 dependencies = [
     { name = "httpx" },
     { name = "opentelemetry-api" },
@@ -1564,7 +1564,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
+    { name = "semiont", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]
@@ -1621,15 +1621,15 @@ dev = [
 requires-dist = [
     { name = "opentelemetry-api" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
-    { name = "semiont-inference", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["anthropic"], marker = "extra == 'anthropic'", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["google"], marker = "extra == 'google'", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["llamacpp"], marker = "extra == 'llamacpp'", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["openai"], marker = "extra == 'openai'", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["together"], marker = "extra == 'together'", editable = "../../packages/python/inference" },
-    { name = "semiont-inference", extras = ["vllm"], marker = "extra == 'vllm'", editable = "../../packages/python/inference" },
-    { name = "semiont-service", editable = "../../packages/python/service" },
+    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "semiont-inference", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["anthropic"], marker = "extra == 'anthropic'", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["google"], marker = "extra == 'google'", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["llamacpp"], marker = "extra == 'llamacpp'", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["openai"], marker = "extra == 'openai'", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["together"], marker = "extra == 'together'", editable = "../shared/python/inference" },
+    { name = "semiont-inference", extras = ["vllm"], marker = "extra == 'vllm'", editable = "../shared/python/inference" },
+    { name = "semiont-service", editable = "../shared/python/service" },
 ]
 provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
 

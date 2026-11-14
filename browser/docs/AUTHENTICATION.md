@@ -84,7 +84,7 @@ Never writes to `localStorage` directly — all persistence goes through
 ## Route protection pattern
 
 A protected layout reads three observables and branches on three
-states. The order matters (`images/browser/src/app/[locale]/know/layout.tsx`,
+states. The order matters (`browser/src/app/[locale]/know/layout.tsx`,
 abridged):
 
 ```tsx
@@ -228,7 +228,7 @@ When no session is active (e.g. on the landing page), `activeSignals$` is
 
 ## Testing
 
-See [images/e2e/specs/07-sign-out-sign-in.spec.ts](../../e2e/specs/07-sign-out-sign-in.spec.ts)
+See [e2e/specs/07-sign-out-sign-in.spec.ts](../../e2e/specs/07-sign-out-sign-in.spec.ts)
 for the end-to-end guard: sign out, sign back in through the
 issuer, confirm the new session's bus/SSE/client round-trip. The test gates
 on the KB row's sign-out control reappearing rather than URL matching,
@@ -242,4 +242,4 @@ callback.
   — class model, observables, invariants.
 - [EVENTS.md (`@semiont/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
   — bus architecture, channel routing.
-- [AUTHORIZATION.md](./AUTHORIZATION.md) — permission model.
+- [AUTHORIZATION.md](AUTHORIZATION.md) — permission model.

@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
 [![npm downloads](https://img.shields.io/npm/dm/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
-[![License](https://img.shields.io/npm/l/@semiont/browser.svg)](https://github.com/The-AI-Alliance/semiont/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/@semiont/browser.svg)](https://github.com/Xynoplex/images/blob/main/LICENSE)
 
 Pre-built Semiont Browser as a Vite SPA with a zero-dependency Node.js static file server. This package contains the compiled Browser application ready to run with Node.js.
 
@@ -12,7 +12,7 @@ Most people should **not** install this package directly. A Semiont stack is run
 launcher — a single static binary that pulls the published container images:
 
 ```bash
-brew install the-ai-alliance/semiont/semiont
+brew install xynoplex/xynaut/xynaut
 
 cd /path/to/your-knowledge-base
 semiont start
@@ -22,7 +22,7 @@ This package is what the `semiont-browser` container image runs inside. To run j
 against an already-running knowledge base, use the published image directly:
 
 ```bash
-docker run --publish 3000:3000 -it ghcr.io/the-ai-alliance/semiont-browser:latest
+docker run --publish 3000:3000 -it ghcr.io/xynoplex/xynoplex-browser:latest
 ```
 
 ## Direct usage
@@ -37,6 +37,6 @@ only environment variable it needs is `PORT`.
 
 ## Links
 
-- [Semiont GitHub](https://github.com/The-AI-Alliance/semiont)
-- [Semiont launcher](https://github.com/The-AI-Alliance/semiont/tree/main/apps/launcher)
-- [Documentation](https://github.com/The-AI-Alliance/semiont#readme)
+- [Semiont GitHub](https://github.com/Xynoplex/images)
+- [Semiont launcher](https://github.com/Xynoplex/images/tree/main/apps/launcher)
+- [Documentation](https://github.com/Xynoplex/images#readme)

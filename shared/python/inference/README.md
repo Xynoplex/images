@@ -1,6 +1,6 @@
 # semiont-inference
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=python-inference)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-inference)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The model providers [Semiont][semiont]'s Python services call, behind one
 interface: ask a model for text, ask it for a JSON array of a stated shape,
@@ -225,6 +225,6 @@ over HTTP on this machine. No test reaches a real one. One test builds the
 package's wheel and source distribution with `uv build`, to read what each
 holds.
 
-[semiont]: https://github.com/The-AI-Alliance/semiont
+[semiont]: https://github.com/Xynoplex/images
 [models-dev]: https://models.dev
 [sdk-python]: ../sdk/

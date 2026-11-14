@@ -1,17 +1,17 @@
 # Browser Container Image
 
-[![ghcr](https://img.shields.io/badge/ghcr-latest-blue)](https://github.com/The-AI-Alliance/semiont/pkgs/container/semiont-browser)
+[![ghcr](https://img.shields.io/badge/ghcr-latest-blue)](https://github.com/Xynoplex/images/pkgs/container/xynoplex-browser)
 
-`ghcr.io/the-ai-alliance/semiont-browser`: the Semiont Browser's built files and a small static
+`ghcr.io/xynoplex/xynoplex-browser`: the Semiont Browser's built files and a small static
 file server, for `linux/amd64` and `linux/arm64`. How it is run, by the launcher or on your own
-platform, is [Deployment](./DEPLOYMENT.md). How every Semiont image is tagged and verified is
+platform, is [Deployment](DEPLOYMENT.md). How every Semiont image is tagged and verified is
 the operator's [Container Images](../../../docs/operator/administration/IMAGES.md).
 
 ## Run it
 
 ```bash
 docker run -d -p 3000:3000 --name semiont-browser \
-  ghcr.io/the-ai-alliance/semiont-browser:latest
+  ghcr.io/xynoplex/xynoplex-browser:latest
 ```
 
 Open <http://localhost:3000> and add a knowledge base in the Knowledge Bases panel: its
@@ -82,15 +82,15 @@ by digest ([Container Images](../../../docs/operator/administration/IMAGES.md#su
 
 ## Building it yourself
 
-The image is built from [`images/browser/Dockerfile`](../Dockerfile). Its build arguments are the
+The image is built from [`browser/Dockerfile`](../Dockerfile). Its build arguments are the
 package version to install and the registry to install it from:
 
 ```bash
 # From the repository root
 docker build \
   --build-arg SEMIONT_BROWSER_VERSION=<version> \
-  -t semiont-browser:custom \
-  -f images/browser/Dockerfile .
+  -t ghcr.io/xynoplex/xynoplex-browser:custom \
+  -f browser/Dockerfile .
 ```
 
 | Build argument | Default | |
@@ -99,7 +99,7 @@ docker build \
 | `NPM_REGISTRY` | `https://registry.npmjs.org` | The registry to install it from |
 
 To run a change that is not published, build every image from your working tree with
-[`make local-build`](../../../Makefile)
+[`make local-build`](../../Makefile)
 ([Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md)). Published images come
 from the `publish-browser.yml` workflow: scanned, with an SBOM and build provenance attested.
 
@@ -125,7 +125,7 @@ the refresh token expired or was revoked, or the account was disabled there. The
 
 ## Related
 
-- [Deployment](./DEPLOYMENT.md): running the image, with the launcher or without
-- [Development](./DEVELOPMENT.md): running the app from source
+- [Deployment](DEPLOYMENT.md): running the image, with the launcher or without
+- [Development](DEVELOPMENT.md): running the app from source
 - [Container Topology](../../../docs/operator/CONTAINER-TOPOLOGY.md): how the containers of a stack connect
 - [Container Images](../../../docs/operator/administration/IMAGES.md): every image, its tags and verifying one

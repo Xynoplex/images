@@ -1,11 +1,11 @@
 # semiont-http-service
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=rust-http-service)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-http-service)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 What Semiont's Rust services that serve HTTP share.
 
 **Not published.** It is a crate of this workspace, built into the
-[gateway](../../../images/gateway/README.md). To use Semiont from Rust, the crate
+[gateway](../../../gateway/README.md). To use Semiont from Rust, the crate
 you want is [`semiont`](../sdk/README.md).
 
 | Item | What it is |
@@ -16,4 +16,4 @@ you want is [`semiont`](../sdk/README.md).
 
 What a response carries, how an error reads and who a token names are each
 service's own: the gateway's are in
-[its `http.rs`](../../../images/gateway/src/http.rs).
+[its `http.rs`](../../../gateway/src/http.rs).

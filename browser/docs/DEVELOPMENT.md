@@ -22,7 +22,7 @@ semiont stop --service browser            # free port 3000 for the dev server
 
 ```bash
 # In this repository
-cd images/browser
+cd browser
 npm run dev                               # Vite on http://localhost:3000, with hot reload
 ```
 
@@ -42,8 +42,8 @@ container. Under Vite, add the knowledge base by hand.
 ## Run it as the shipped container
 
 When a change needs to be exercised as the image, or it touches a package a service runs,
-rebuild with [`make local-build`](../../../Makefile) and name the
-`:local` image: `ghcr.io/the-ai-alliance/semiont-browser:local` as `spec.image` in the
+rebuild with [`make local-build`](../../Makefile) and name the
+`:local` image: `ghcr.io/xynoplex/xynoplex-browser:local` as `spec.image` in the
 Browser's document (`semiont settings browser --path` prints where it is), and `:local` in the
 knowledge base's `.semiont/stack/` documents for the services. An image still named `:latest` is the published one, and your change is not in it.
 [Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md) has the loop.
@@ -67,9 +67,9 @@ knowledge base's `.semiont/stack/` documents for the services. An image still na
 Translations are generated before `dev`, `build`, `start` and the test scripts run:
 `scripts/merge-translations.js` merges `messages-source/` with `@semiont/react-ui`'s strings
 into `messages/` and `public/messages/`. Edit `messages-source/`, never the generated
-directories ([Internationalization](./INTERNATIONALIZATION.md)).
+directories ([Internationalization](INTERNATIONALIZATION.md)).
 
-How the tests are written is [Testing](./TESTING.md).
+How the tests are written is [Testing](TESTING.md).
 
 ## Adding a page
 
@@ -105,15 +105,15 @@ const TimelinePage = React.lazy(() => import('./app/[locale]/know/timeline/page'
 A page that needs a signed-in person goes under `ProtectedLayout`, the pathless route that
 mounts `AuthShell` around `know/` and `moderate/`. There is no per-page guard to write: the
 section's layout decides between its signed-in and signed-out views
-([Authentication](./AUTHENTICATION.md#route-protection-pattern)).
+([Authentication](AUTHENTICATION.md#route-protection-pattern)).
 
 A page reads and writes through the session's client and nothing else. The app contains no
-`fetch` call. [API Integration](./API-INTEGRATION.md) has the client's namespaces and how live
+`fetch` call. [API Integration](API-INTEGRATION.md) has the client's namespaces and how live
 queries refresh themselves.
 
 A component that could serve another host application belongs in `@semiont/react-ui`, not
 here. This app holds routes, providers and the few components that make sense nowhere else
-([Component Library](./COMPONENT-LIBRARY.md)).
+([Component Library](COMPONENT-LIBRARY.md)).
 
 ## Styles
 
@@ -134,7 +134,7 @@ Dark mode is one switch for both. The theme provider sets `data-theme` on the ro
 react-ui's tokens follow it, and Tailwind's `dark:` variant is configured to follow the same
 attribute (`tailwind.config.js`).
 
-The patterns are in the [Style Guide](./style-guide.md), and the tokens and classes in
+The patterns are in the [Style Guide](style-guide.md), and the tokens and classes in
 react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
 
 ## When something is wrong
@@ -157,9 +157,9 @@ react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
 
 ## Related
 
-- [Architecture](./ARCHITECTURE.md): how the app is built
-- [Authentication](./AUTHENTICATION.md): sessions, sign-in, route protection
-- [Testing](./TESTING.md): how the tests are written and run
-- [Container](./CONTAINER.md): the image
+- [Architecture](ARCHITECTURE.md): how the app is built
+- [Authentication](AUTHENTICATION.md): sessions, sign-in, route protection
+- [Testing](TESTING.md): how the tests are written and run
+- [Container](CONTAINER.md): the image
 - [Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md): the monorepo's loop
 - [The launcher](../../../apps/launcher/README.md): every verb and flag

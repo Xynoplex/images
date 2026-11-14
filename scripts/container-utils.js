@@ -1,111 +1,31 @@
 #!/usr/bin/env node
 
-/**
- * Container utility commands for Semiont
- * Automatically detects and uses Apple Container, Docker, or Podman
- */
-
-const { spawn } = require('child_process');
+const { spawnSync } = require('node:child_process');
 
 const command = process.argv[2];
+const names = ['gateway', 'archivist', 'dispatcher', 'browser', 'librarian', 'smelter', 'weaver', 'worker'];
 
-// Detect container runtime
-async function detectContainerRuntime() {
-  // Check if forced via environment variable
-  if (process.env.CONTAINER_RUNTIME) {
-    return process.env.CONTAINER_RUNTIME.toLowerCase();
+function runtime() {
+  if (process.env.CONTAINER_RUNTIME) return process.env.CONTAINER_RUNTIME;
+  for (const candidate of ['container', 'docker', 'podman']) {
+    const result = spawnSync(candidate, ['--version'], { stdio: 'ignore' });
+    if (!result.error && result.status === 0) return candidate;
   }
-
-  // Check if forced via script name
-  const scriptName = process.env.npm_lifecycle_event || '';
-  if (scriptName.includes('podman')) {
-    return 'podman';
-  }
-  if (scriptName.includes('docker')) {
-    return 'docker';
-  }
-
-  // Auto-detect: Apple Container > Docker > Podman
-  for (const runtime of ['container', 'docker', 'podman']) {
-    if (await checkCommand(runtime, ['--version'])) {
-      return runtime;
-    }
-  }
-
   throw new Error('No container runtime found. Install Apple Container, Docker, or Podman.');
 }
 
-function checkCommand(command, args) {
-  return new Promise((resolve) => {
-    const proc = spawn(command, args, { stdio: 'pipe' });
-    proc.on('exit', (code) => resolve(code === 0));
-    proc.on('error', () => resolve(false));
-  });
+const engine = runtime();
+if (command === 'list') {
+  const result = spawnSync(engine, ['images', '--filter', 'reference=ghcr.io/xynoplex/xynoplex-*'], { stdio: 'inherit' });
+  process.exit(result.status ?? 1);
 }
-
-function runCommand(cmd, args) {
-  return new Promise((resolve) => {
-    const proc = spawn(cmd, args, {
-      stdio: 'inherit',
-      shell: true
-    });
-
-    proc.on('close', (code) => {
-      resolve(code);
-    });
-
-    proc.on('error', () => {
-      resolve(1);
-    });
-  });
-}
-
-async function listImages(runtime) {
-  console.log(`Semiont container images (${runtime}):`);
-  const code = await runCommand(runtime, ['images', '--filter', 'reference=semiont-*']);
-  if (code !== 0) {
-    console.log(`No semiont images found or ${runtime} not available`);
+if (command === 'clean') {
+  for (const name of names) {
+    const tag = `ghcr.io/xynoplex/xynoplex-${name}:local`;
+    const result = spawnSync(engine, ['image', 'rm', tag], { stdio: 'ignore' });
+    if (!result.error && result.status === 0) console.log(`Removed ${tag}`);
   }
+  process.exit(0);
 }
-
-async function cleanImages(runtime) {
-  console.log(`Removing Semiont container images (${runtime})...`);
-  
-  const images = ['semiont-gateway:latest', 'semiont-browser:latest'];
-  
-  for (const image of images) {
-    console.log(`Removing ${image}...`);
-    const code = await runCommand(runtime, ['rmi', image]);
-    if (code === 0) {
-      console.log(`✓ Removed ${image}`);
-    } else {
-      console.log(`✗ Could not remove ${image} (may not exist)`);
-    }
-  }
-}
-
-async function main() {
-  // Detect container runtime
-  let runtime;
-  try {
-    runtime = await detectContainerRuntime();
-    console.log(`Using container runtime: ${runtime}`);
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
-  
-  switch (command) {
-    case 'list':
-      await listImages(runtime);
-      break;
-    case 'clean':
-      await cleanImages(runtime);
-      break;
-    default:
-      console.log('Usage: node images/scripts/container-utils.js [list|clean]');
-      process.exit(1);
-  }
-}
-
-main().catch(console.error);
+console.error('Usage: node scripts/container-utils.js [list|clean]');
+process.exit(2);

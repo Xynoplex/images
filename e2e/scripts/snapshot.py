@@ -5,15 +5,15 @@ On-demand "what just happened" snapshot for the live Semiont stack.
 Companion to ``log-filter.py``: where the filter streams interesting
 events as they happen, ``snapshot.py`` rewinds the last N seconds across
 all containers and Jaeger and dumps a single coherent report. Used in
-the live-monitoring workflow (``images/e2e/docs/live-monitoring.md``)
+the live-monitoring workflow (``e2e/docs/live-monitoring.md``)
 when a human says "I just clicked X and something looked off — what
 just fired?"
 
 Usage::
 
-    python3 images/e2e/scripts/snapshot.py [--seconds 60] [--errors-only]
-    python3 images/e2e/scripts/snapshot.py --seconds 30 --errors-only
-    python3 images/e2e/scripts/snapshot.py --jaeger-url http://<host>:16686
+    python3 e2e/scripts/snapshot.py [--seconds 60] [--errors-only]
+    python3 e2e/scripts/snapshot.py --seconds 30 --errors-only
+    python3 e2e/scripts/snapshot.py --jaeger-url http://<host>:16686
 
 Dumps:
 
@@ -29,7 +29,7 @@ Defaults:
   static-server stdout). Each entry is a full container name or a
   bare product, as ``container_names.py`` resolves it.
 - ``--jaeger-url http://localhost:16686`` — local Jaeger from
-  ``semiont start`` (on by default; ``--no-observe`` skips it).
+  ``xynaut start`` (on by default; ``--no-observe`` skips it).
   Override for non-local stacks.
 - ``--max-lines-per-container 40`` — caps verbose dumps so the report
   stays scannable.

@@ -7,8 +7,8 @@ How the Semiont Browser is shipped and run.
 
 ## What ships
 
-`ghcr.io/the-ai-alliance/semiont-browser`, built by CI from
-[images/browser/Dockerfile](../Dockerfile) and tagged per release plus `latest`. The container serves
+`ghcr.io/xynoplex/xynoplex-browser`, built by CI from
+[browser/Dockerfile](../Dockerfile) and tagged per release plus `latest`. The container serves
 on **port 3000** and its entrypoint is a plain `node node_modules/@semiont/browser/server.js` — no
 CLI involved.
 
@@ -26,7 +26,7 @@ semiont stop --service browser      # the Browser alone
 ```
 
 The Browser runs what its document says: `stack/browser.yaml` in the launcher's state home,
-which the first start writes with `ghcr.io/the-ai-alliance/semiont-browser:latest`, 1G and port
+which the first start writes with `ghcr.io/xynoplex/xynoplex-browser:latest`, 1G and port
 3000. Pin a version by writing it into the document's `spec.image`; `semiont settings browser`
 shows the document, and `semiont settings browser --path` prints where it is. See
 [Configuration](../../../docs/operator/administration/CONFIGURATION.md#the-browser),
@@ -36,7 +36,7 @@ shows the document, and `semiont settings browser --path` prints where it is. Se
 ## Local development
 
 For iterating on the Browser itself, run it from source rather than the image — see
-[DEVELOPMENT.md](./DEVELOPMENT.md).
+[DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Running it elsewhere
 
@@ -56,8 +56,8 @@ The full list of what a platform provides: [Deploying Semiont](../../../docs/ope
 
 ## Related Documentation
 
-- [DEVELOPMENT.md](./DEVELOPMENT.md) — local development
+- [DEVELOPMENT.md](DEVELOPMENT.md) — local development
 - [administration/DEPLOYMENT.md](../../../docs/operator/administration/DEPLOYMENT.md) — stack deployment
 - [administration/IMAGES.md](../../../docs/operator/administration/IMAGES.md) — image build/publish
-- [CONTAINER.md](./CONTAINER.md) — the image: its configuration, contents and tags
+- [CONTAINER.md](CONTAINER.md) — the image: its configuration, contents and tags
 - [CONTAINER-TOPOLOGY.md](../../../docs/operator/CONTAINER-TOPOLOGY.md) — what runs where

@@ -1,6 +1,6 @@
 # semiont-librarian
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-librarian)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-librarian)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 **The Librarian is a Semiont knowledge base's reference desk**: a Python service that answers the
 questions that need the graph the Weaver writes, the vector index the Smelter writes, or a
@@ -12,10 +12,10 @@ launcher starts it with `semiont start`.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-librarian` |
+| Image | `ghcr.io/xynoplex/xynoplex-librarian` |
 | Port | 24104 (`/health`, and nothing else: everything it answers is on the bus) |
 | Command | `python -P -m semiont_librarian --config /etc/semiont/librarian.json` |
-| Code | Python, in this directory: [`src/semiont_librarian`](./src/semiont_librarian/) |
+| Code | Python, in this directory: [`src/semiont_librarian`](src/semiont_librarian) |
 | Specification | [protocol/contract/LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) |
 | Judged by | [protocol/conformance/librarian](../../protocol/conformance/librarian/README.md) |
 | Published | to no package index: the image only |
@@ -91,20 +91,20 @@ a status other than 0.
 ## Configuration
 
 It reads one document, the protocol's
-[`LibrarianConfig`](../../protocol/specs/src/components/schemas/LibrarianConfig.json), at the path
+[`LibrarianConfig`](../protocol/specs/src/components/schemas/LibrarianConfig.json), at the path
 `--config` names. Whoever starts a Librarian writes it, resolved, and mounts it where the
 image's command looks: `/etc/semiont/librarian.json`. The Librarian defaults nothing in it.
 
 | Member | |
 | --- | --- |
-| `kb` | the knowledge base it serves ([`KbIdentity`](../../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
+| `kb` | the knowledge base it serves ([`KbIdentity`](../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | the Archivist's host and port |
-| `graph` | the graph database ([`GraphConfig`](../../protocol/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
-| `vectors` | the vector index ([`VectorsConfig`](../../protocol/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
-| `embedding` | the embedding provider ([`EmbeddingConfig`](../../protocol/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, and where it is reached |
-| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](../../protocol/specs/src/components/schemas/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
+| `graph` | the graph database ([`GraphConfig`](../protocol/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
+| `vectors` | the vector index ([`VectorsConfig`](../protocol/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
+| `embedding` | the embedding provider ([`EmbeddingConfig`](../protocol/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, and where it is reached |
+| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](../protocol/specs/src/components/schemas/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
 | `modelCatalogue` | the path of the model catalogue: what each model of `google`, `openai` and `together` can take, which those providers' APIs do not say. It is read only where an actor's model is one of theirs |
 | `gather.settleTimeoutMs` | how long a gather around a resource waits for the Smelter |
 | `search.semanticFloor` | the least similarity a hit by meaning must have |
@@ -120,7 +120,7 @@ the key of each actor's model. It signs in as itself, and the gateway names it b
 **Its token only reads its own index.** The token it presents to its Qdrant may read its
 knowledge base's three collections and nothing else: Qdrant refuses it every write, and every
 request of another knowledge base's collections.
-[The token cases](../../protocol/specs/src/vectors/token-cases.json) state what it says. The
+[The token cases](../protocol/specs/src/vectors/token-cases.json) state what it says. The
 launcher mints it from the key it keeps for a Qdrant it runs, and for one somebody else runs
 is handed it in the variable the stack's `KnowledgeIndex` names
 (`spec.vectors.external.librarianToken`).
@@ -156,8 +156,8 @@ The service, and the five Python packages of this repository it runs on:
   and reads a resource's bytes from the Archivist.
 
 All six are built into the image from the commit it is published from, and carry
-[`version.json`](../../version.json)'s version. Everything else in its environment is what
-[`uv.lock`](./uv.lock) pins. Nothing is built, installed or fetched when the container starts.
+[`version.json`](../version.json)'s version. Everything else in its environment is what
+[`uv.lock`](uv.lock) pins. Nothing is built, installed or fetched when the container starts.
 The image also carries the model catalogue, at `/usr/share/semiont/model-catalogue.json`, the
 path the launcher writes into `modelCatalogue`.
 
@@ -176,12 +176,12 @@ user `semiont`. It carries no installer (`pip`, `uv`) and no Node.
 ### A slimmer image
 
 The one line that decides which clients and which libraries an image has is the builder
-stage's `uv sync` in the [Dockerfile](./Dockerfile). `--all-extras` asks for every extra of
+stage's `uv sync` in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of
 `semiont-librarian`, each of which brings the stores' or the drivers' extra of the same name.
 An image for one database and one provider names those two in its place:
 
 ```dockerfile
-RUN uv sync --project images/librarian --locked --no-dev --no-editable --extra neo4j --extra anthropic
+RUN uv sync --project librarian --locked --no-dev --no-editable --extra neo4j --extra anthropic
 ```
 
 An image whose models are Ollama's names the database's extra alone: Ollama is asked with
@@ -209,11 +209,11 @@ prints:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
-  --file images/librarian/Dockerfile --tag ghcr.io/the-ai-alliance/semiont-librarian:local .
+  --file librarian/Dockerfile --tag ghcr.io/xynoplex/xynoplex-librarian:local .
 ```
 
-[`make local-build`](../../Makefile) builds it so with the other
-images, and [`images/scripts/check-python-image.sh`](../scripts/check-python-image.sh)
+[`make local-build`](../Makefile) builds it so with the other
+images, and [`scripts/check-python-image.sh`](../scripts/check-python-image.sh)
 checks what a built one promises.
 
 ## Related
@@ -223,8 +223,8 @@ checks what a built one promises.
 - [`semiont-graph`](../../packages/python/graph/), [`semiont-vectors`](../../packages/python/vectors/)
   and [`semiont-inference`](../../packages/python/inference/) — the stores, the embedding
   providers and the drivers it reads and asks through
-- [Gateway](../gateway/) — the bus it rides
-- [Archivist](../archivist/) — the other half of the pair: it holds the record and answers
+- [Gateway](../gateway) — the bus it rides
+- [Archivist](../archivist) — the other half of the pair: it holds the record and answers
   *"what is there?"*; the Librarian searches it and answers *"what is relevant?"*
-- [Weaver](../weaver/) and [Smelter](../smelter/) — the writers of the graph and the index it
+- [Weaver](../weaver) and [Smelter](../smelter) — the writers of the graph and the index it
   reads, whose signals its gathers wait on

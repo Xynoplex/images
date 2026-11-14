@@ -9,7 +9,7 @@
       "packages/go/launcher/vectorstokens_test.go"
     ],
     "vectors-python": [
-      "packages/python/vectors/tests/qdrant_live.py"
+      "shared/python/vectors/tests/qdrant_live.py"
     ]
   },
   "cases": [

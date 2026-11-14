@@ -1,71 +1,39 @@
-# Semiont container images
+# Xynoplex Images
 
-The eight services that ship as published, attested container images, each built from its
-directory here. What runs on a host instead, the `semiont` launcher and Semiont Desktop, is in
-[apps/](../apps/README.md). What the images are built on is in [packages/](../packages/README.md).
+This repository builds and publishes the Xynoplex service and Browser container images for macOS, Linux, and Windows container hosts.
 
-## The images
+## Images
 
-| Image | Source | Port | Coverage | What it runs |
-| --- | --- | --- | --- | --- |
-| `semiont-gateway` | [gateway](./gateway/README.md) | 4000 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-gateway)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | **The front door.** It authenticates callers, validates and relays the bus, keeps the reply records, and pipes bytes to and from the Archivist. Rust, built against `protocol/specs/` |
-| `semiont-archivist` | [archivist](./archivist/README.md) | 24103 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-archivist)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | **Keeps the system of record:** the Stower (writes events and projections), the Browser actor (serves `browse:*` reads) and the CloneTokenManager. The only service that mounts the working tree. Rust |
-| `semiont-librarian` | [librarian](./librarian/README.md) | 24104 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-librarian)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | **Searches the record:** the Gatherer (context assembly) and the Matcher (candidate search and scoring). Python |
-| `semiont-smelter` | [smelter](./smelter/README.md) | 24101 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-smelter)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | Chunks and embeds content into the vector store, and owns anchored-text extraction. Python, with PDFium and the `tesseract` program |
-| `semiont-weaver` | [weaver](./weaver/README.md) | 24102 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-weaver)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | Projects the event log into the graph. Python |
-| `semiont-worker` | [worker](./worker/README.md) | 24100 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-worker)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | Claims queued jobs (detection, generation) and runs inference. Python, with every model provider's library |
-| `semiont-dispatcher` | [dispatcher](./dispatcher/README.md) | 24105 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-dispatcher)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | **Hands out the work:** it owns the job queue and answers the `job:*` lifecycle commands, a control plane through which no content flows. Rust |
-| `semiont-browser` | [browser](./browser/README.md) | 3000 | [![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-browser)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components) | **The Semiont Browser**, the Vite and React app people use. TypeScript |
+| Image | Source | Default port | Purpose |
+| --- | --- | ---: | --- |
+| `ghcr.io/xynoplex/xynoplex-gateway` | [gateway](gateway/) | 4000 | Authenticated API and content gateway |
+| `ghcr.io/xynoplex/xynoplex-archivist` | [archivist](archivist/) | 24103 | Record storage and browse operations |
+| `ghcr.io/xynoplex/xynoplex-dispatcher` | [dispatcher](dispatcher/) | 24105 | Job queue and lifecycle operations |
+| `ghcr.io/xynoplex/xynoplex-librarian` | [librarian](librarian/) | 24104 | Search and context assembly |
+| `ghcr.io/xynoplex/xynoplex-smelter` | [smelter](smelter/) | 24101 | Content extraction and embedding |
+| `ghcr.io/xynoplex/xynoplex-weaver` | [weaver](weaver/) | 24102 | Knowledge graph projection |
+| `ghcr.io/xynoplex/xynoplex-worker` | [worker](worker/) | 24100 | Asynchronous detection, generation, and inference |
+| `ghcr.io/xynoplex/xynoplex-browser` | [browser](browser/) | 3000 | Browser user interface |
 
-- **Coverage is each image's own code**, never the packages it is built on: the Rust images'
-  crates under their directories, the Python services' own packages, and the Browser's source.
-  A Rust image's counts what its conformance suite runs of it too: the suites start
-  instrumented binaries, and CI's Rust Coverage job reports what they ran
-  ([packages/rust](../packages/rust/README.md)).
-- **Publishing.** The seven services are built by
-  [`publish-service-images.yml`](../.github/workflows/publish-service-images.yml), and the
-  Browser's image by [`publish-browser.yml`](../.github/workflows/publish-browser.yml). See
-  [Container Images](../docs/operator/administration/IMAGES.md).
-- **The Browser is an npm package too,**
-  [@semiont/browser](https://www.npmjs.com/package/@semiont/browser)
-  [![npm](https://img.shields.io/npm/v/@semiont/browser)](https://www.npmjs.com/package/@semiont/browser),
-  which its image bundles. The other images are not published to npm.
-- What each service reads, mounts and reaches is stated once, in the operator's
-  [service catalog](../docs/operator/services/OVERVIEW.md). What the actors inside them do is
-  [Knowledge System](../docs/architecture/KNOWLEDGE-SYSTEM.md).
+## Build locally
 
-**The Archivist and the Librarian are a deliberate pair.** The Archivist holds the record and
-answers *"what is there?"*; the Librarian searches it and answers *"what is relevant to my
-question?"*, the distinction the professions themselves draw.
+A root Makefile is the primary build interface. Install Docker, Podman, or Apple Container, then run:
 
-## This directory is the set of images
+```sh
+make help
+make build
+make image NAME=gateway
+make clean
+```
 
-Every directory here with a `Dockerfile` is an image, and the tooling takes the set from this
-directory, not from a list: `make local-build` builds what is here, and the supervision
-gate, the NOTICE and Rust-builder lints, the Python licence check and `lint:coverage-roster` all
-read it. Two lists are still written by hand, and each is held to this directory: the matrix in
-[`publish-service-images.yml`](../.github/workflows/publish-service-images.yml), by
-`.github/release/verify-release.sh`, and the path filters in
-[`ci.yml`](../.github/workflows/ci.yml), by `lint:workflows`.
+Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make build`.
 
-So an image added here needs:
+## Repository layout
 
-1. its directory: its source, a `Dockerfile` that passes the supervision gate, and a `NOTICE`
-   that credits exactly what the image ships;
-2. its row in that matrix (the Browser has its own workflow) and a CI path filter;
-3. its coverage: a flag and a component `image-<name>` in
-   [`codecov.yml`](../.github/codecov.yml), an upload under that flag in `ci.yml`, a badge in its
-   README and its row here, which `lint:coverage-roster` names when one is missing;
-4. a role in the launcher's [`descriptors.go`](../packages/go/launcher/descriptors.go), which
-   is what starts it.
+Each top-level service directory contains its image source and Dockerfile. `shared/` contains runtime files copied into images; `shared/python/` contains the Python graph, vector, inference, and service libraries shared by the Python images. `e2e/`, `tests/`, and `scripts/` hold image integration coverage and tooling.
 
-## Local builds and shared tooling
+`packages/` and `protocol/` currently retain the Rust and Python SDK/build inputs these images consume. They are temporary build inputs pending the separate package and protocol repositories.
 
-Run `make local-build` from the repository root to build the local stack,
-including its packages and launcher. [Local builds](LOCAL-BUILD.md) covers the options.
-`shared/` holds the boot entrypoint and supervisor copied into service images;
-`scripts/` holds image build, management, verification, and local-registry helpers.
+## Publishing
 
-The independent [e2e project](e2e/README.md) and [stack smoke tests](./tests/stack/README.md)
-exercise the assembled product. They have no Dockerfiles and are not shipped images.
-Smelter fixture generators live under `smelter/tools/fixtures/`.
+Images are published to GitHub Container Registry by the workflows in `.github/workflows/`. Service images and the Browser image have separate release workflows. Published images are multi-architecture OCI images and use the `xynoplex-*` image names.

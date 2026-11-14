@@ -40,10 +40,10 @@ axioms = ["hypothesis>=6.130,<7"]
 
 [project.urls]
 Homepage = "https://the-ai-alliance.github.io/semiont/"
-Documentation = "https://github.com/The-AI-Alliance/semiont/blob/main/docs/builder/README.md"
-Repository = "https://github.com/The-AI-Alliance/semiont"
-Issues = "https://github.com/The-AI-Alliance/semiont/issues"
-Changelog = "https://github.com/The-AI-Alliance/semiont/releases"
+Documentation = "https://github.com/Xynoplex/images/blob/main/docs/builder/README.md"
+Repository = "https://github.com/Xynoplex/images"
+Issues = "https://github.com/Xynoplex/images/issues"
+Changelog = "https://github.com/Xynoplex/images/releases"
 
 # The checkers, the formatter and the model generator are pinned to a version
 # each: what they say of this package, and what the generator writes, is held

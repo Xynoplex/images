@@ -1,13 +1,13 @@
 # semiont-observability
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=rust-observability)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-observability)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 What a Semiont service writes about itself, and what exports it.
 
 **Not published.** It is a crate of this workspace, built into the
-[gateway](../../../images/gateway/README.md), the
-[dispatcher](../../../images/dispatcher/README.md) and the
-[Archivist](../../../images/archivist/README.md). An application built on the
+[gateway](../../../gateway/README.md), the
+[dispatcher](../../../dispatcher/README.md) and the
+[Archivist](../../../archivist/README.md). An application built on the
 SDK installs an OpenTelemetry of its own instead:
 [`semiont-telemetry`](../telemetry/README.md) says how.
 

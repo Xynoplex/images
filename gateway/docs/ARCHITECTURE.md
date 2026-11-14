@@ -1,29 +1,29 @@
 # Gateway Architecture
 
 How the gateway is put together. What it serves is the spec's
-([protocol/specs/src/openapi.json](../../../protocol/specs/src/openapi.json)); this is the code
+([protocol/specs/src/openapi.json](../../protocol/specs/src/openapi.json)); this is the code
 that serves it.
 
 ## The crates it is built from
 
 The gateway is a member of the repository's Rust workspace
-([Cargo.toml](../../../packages/rust/Cargo.toml)), and is built from these of its crates:
+([Cargo.toml](../../packages/rust/Cargo.toml)), and is built from these of its crates:
 
 | Crate | Directory | What the gateway takes from it |
 |---|---|---|
-| `semiont-gateway` | `images/gateway` | Everything particular to the gateway: the routes, the ledger, the signal plane, token minting, principals and limits |
-| `semiont-core` | [packages/rust/core](../../../packages/rust/core) | What every Rust service shares and no client needs: the embedded spec, reading the configuration document and the other service-only types generated from the spec, and (its `nats` feature) reaching the broker |
-| `semiont` | [packages/rust/sdk](../../../packages/rust/sdk) | What a client needs too: the protocol's types, generated from the spec, which type every body the gateway reads and writes; naming the knowledge base and its principals; the realm's roles; and the bus log |
-| `semiont-telemetry` | [packages/rust/telemetry](../../../packages/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
-| `semiont-http-service` | [packages/rust/http-service](../../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
-| `semiont-observability` | [packages/rust/observability](../../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
-| `semiont-http-transport` | [packages/rust/http-transport](../../../packages/rust/http-transport) | Signing in as a service account, to reach the Archivist |
-| `semiont-codegen` | [packages/rust/codegen](../../../packages/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
+| `semiont-gateway` | `gateway` | Everything particular to the gateway: the routes, the ledger, the signal plane, token minting, principals and limits |
+| `semiont-core` | [packages/rust/core](../../packages/rust/core) | What every Rust service shares and no client needs: the embedded spec, reading the configuration document and the other service-only types generated from the spec, and (its `nats` feature) reaching the broker |
+| `semiont` | [packages/rust/sdk](../../packages/rust/sdk) | What a client needs too: the protocol's types, generated from the spec, which type every body the gateway reads and writes; naming the knowledge base and its principals; the realm's roles; and the bus log |
+| `semiont-telemetry` | [packages/rust/telemetry](../../packages/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
+| `semiont-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
+| `semiont-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
+| `semiont-http-transport` | [packages/rust/http-transport](../../packages/rust/http-transport) | Signing in as a service account, to reach the Archivist |
+| `semiont-codegen` | [packages/rust/codegen](../../packages/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
 
 ## Built against the spec
 
 The spec is compiled into the binary.
-[semiont-core's build.rs](../../../packages/rust/core/build.rs) reads
+[semiont-core's build.rs](../../packages/rust/core/build.rs) reads
 `protocol/specs/src` — the bundles in `protocol/specs/` are gitignored build output — and writes
 three documents the binary embeds: the protocol's OpenAPI document, the
 Archivist's, and the component schemas as JSON Schema draft 7 (OpenAPI 3.0's
@@ -31,7 +31,7 @@ Archivist's, and the component schemas as JSON Schema draft 7 (OpenAPI 3.0's
 malformed spec fails the build, never a boot or a request, and it generates the
 Rust types of the configuration documents from their schemas. The binary also
 embeds the bus registry and
-[bus-classification.json](../../../packages/rust/core/src/bus-classification.json),
+[bus-classification.json](../../packages/rust/core/src/bus-classification.json),
 which `packages/codegen/bus/generate-ts.mjs` derives from the registry beside core's
 TypeScript table. `semiont_core::spec` reads them: validators by schema name,
 each channel's schema, the registry's operations, and which channels are
@@ -64,7 +64,7 @@ step — the process exits non-zero, saying what is missing and never a secret:
    ([src/routes/mod.rs](../src/routes/mod.rs)): a route the spec does not
    declare, or a declared operation nothing serves, stops the process.
 7. **Listen** on `0.0.0.0:<port>`, on its own accept loop
-   ([serve.rs](../../../packages/rust/http-service/src/serve.rs)), which lets a stream close its connection
+   ([serve.rs](../../packages/rust/http-service/src/serve.rs)), which lets a stream close its connection
    from the gateway's side.
 
 `SIGTERM` and `SIGINT` stop accepting connections, flush the plane under the
@@ -107,7 +107,7 @@ on the private network the two share.
 
 ## The signal plane
 
-[src/signal/](../src/signal/) is the hub's fan-out behind one interface
+[src/signal/](../src/signal) is the hub's fan-out behind one interface
 (`SignalPlane`), implemented twice: [in_process.rs](../src/signal/in_process.rs),
 where the fabric is the process and the count of subscribers at dispatch is
 exact; and [nats.rs](../src/signal/nats.rs), where frames ride core subjects
@@ -254,7 +254,7 @@ relays. The gateway makes no bus request of its own.
 ## Telemetry
 
 `semiont_observability::telemetry` exports over OTLP/HTTP (protobuf) the spans and
-metrics [protocol/specs/src/service-telemetry/telemetry.json](../../../protocol/specs/src/service-telemetry/telemetry.json)
+metrics [protocol/specs/src/service-telemetry/telemetry.json](../../protocol/specs/src/service-telemetry/telemetry.json)
 lists for the gateway, and nothing else, under the resource the table lists for
 it: its name, its version and `semiont.kb`, the DID of the knowledge base its
 document's `kb` names. They are the process's own readings, the gateway's

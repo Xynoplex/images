@@ -1,6 +1,6 @@
 # semiont-archivist
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-archivist)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-archivist)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 **The Archivist keeps Semiont's system of record**: the event log, of which everything else — views,
 graph, vectors — is a projection. It appends to that record, serves it, and is **the only process
@@ -9,22 +9,22 @@ service that serves HTTP on port 24103, and the launcher starts it with `semiont
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-archivist` |
+| Image | `ghcr.io/xynoplex/xynoplex-archivist` |
 | Port | 24103 |
 | Command | `/usr/local/bin/semiont-archivist --config /etc/semiont/archivist.json` |
-| Code | Rust, in this directory: [src](./src), and its crates [record](./record) and [staging](./staging) |
+| Code | Rust, in this directory: [src](src), and its crates [record](record) and [staging](staging) |
 | Specification | [protocol/contract/ARCHIVIST.md](../../protocol/contract/ARCHIVIST.md) |
 | Judged by | [protocol/conformance/archivist](../../protocol/conformance/archivist/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
 
-The binary ([src](./src)) composes two crates of its own and the crates the Rust services share:
+The binary ([src](src)) composes two crates of its own and the crates the Rust services share:
 
-- [record](./record) — the event log, the views and the projections, and where each is filed. It
+- [record](record) — the event log, the views and the projections, and where each is filed. It
   reaches no network and runs no program; CI checks that it links no HTTP client or server, no
   broker and no git library.
-- [staging](./staging) — the staging drivers: git, and none for a knowledge base that does not
+- [staging](staging) — the staging drivers: git, and none for a knowledge base that does not
   sync git. The only place git is run.
 
 Its five jobs move together on purpose:
@@ -36,7 +36,7 @@ Its five jobs move together on purpose:
   resource's view is what the events of its stream add up to.
 - **It serves browse requests** from the log, the views and the working tree. It reads no graph,
   no vector index and no embedding provider: a read that needs one is discovery, and the
-  [Librarian](../librarian/)'s.
+  [Librarian](../librarian)'s.
 
 **The startup rebuild also reaps.** It replays the log and writes a view for every resource it
 finds, then **deletes the views the log no longer justifies**. Without that step the pass is
@@ -82,7 +82,7 @@ globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](
 | `GET /events` | every stream of the event log, `__system__` among them, each with the sequence number of its last event | a service that follows the record, when it starts and each time its stream opens again |
 | `GET /events/:resourceId?fromSequence=N` | one stream's events from a sequence number, at most `maxEvents` of them, and the sequence number of its last event; `__system__` is the knowledge base's own stream | the gateway, when a client resumes its subscription with a `lastEventId`; a service that follows the record, for what its stream did not deliver |
 
-The contract is [protocol/specs/src/archivist/openapi.json](../../protocol/specs/src/archivist/openapi.json): every
+The contract is [protocol/specs/src/archivist/openapi.json](../protocol/specs/src/archivist/openapi.json): every
 status each route answers and its body — a missing resource's bytes are a 404 whose `code` is
 `resource` or `representation` — and the headers. The Archivist's conformance suite checks every
 reply against it, and the gateway's holds its stand-in Archivist to it.
@@ -131,7 +131,7 @@ which is what makes that ordering enforceable.
 ## Configuration
 
 It reads one configuration document, an
-[`ArchivistConfig`](../../protocol/specs/src/components/schemas/ArchivistConfig.json), from the path its
+[`ArchivistConfig`](../protocol/specs/src/components/schemas/ArchivistConfig.json), from the path its
 `--config` flag names; the image passes `/etc/semiont/archivist.json`. The document names the
 gateway, the issuer, the knowledge base's root, the state volume, the anchored-text store, the
 engine for each job and each Librarian actor, the port, and the staging bounds. Mount the knowledge base, the state volume and
@@ -155,7 +155,7 @@ start.
 
 Its three crates, `semiont-archivist`, `semiont-archivist-record` and
 `semiont-archivist-staging`, are members of the Rust workspace in
-[packages/rust](../../packages/rust/README.md). From there,
+[packages/rust](../packages/rust/README.md). From there,
 
 ```bash
 cargo test -p semiont-archivist -p semiont-archivist-record -p semiont-archivist-staging
@@ -169,24 +169,24 @@ built instrumented, so its coverage counts what the suite runs too.
 ## Building it
 
 From the repository root, with the toolchain
-[`packages/rust/scripts/rust-toolchain.sh`](../../packages/rust/scripts/rust-toolchain.sh) prints:
+[`packages/rust/scripts/rust-toolchain.sh`](../packages/rust/scripts/rust-toolchain.sh) prints:
 
 ```bash
 docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.sh) \
-  --file images/archivist/Dockerfile --tag ghcr.io/the-ai-alliance/semiont-archivist:local .
+  --file archivist/Dockerfile --tag ghcr.io/xynoplex/xynoplex-archivist:local .
 ```
 
-[`make local-build`](../../Makefile) and the publish workflow pass
+[`make local-build`](../Makefile) and the publish workflow pass
 the toolchain the same way. The [Dockerfile](Dockerfile)'s builder stage is the gateway's and
 the dispatcher's too, and builds all three binaries (`lint:rust-images`). A built image is
 held to
-[`images/scripts/check-document-image.sh`](../scripts/check-document-image.sh):
+[`scripts/check-document-image.sh`](../scripts/check-document-image.sh):
 no source and no Node in it, and, with no configuration document mounted, a prompt refusal
 that names the document it cannot read.
 
 ## Related
 
-- [Librarian](../librarian/) — the deliberate pair: the Archivist holds the record and answers
+- [Librarian](../librarian) — the deliberate pair: the Archivist holds the record and answers
   *"what is there?"*; the Librarian searches it and answers *"what is relevant?"*
 - [Knowledge System](../../docs/architecture/KNOWLEDGE-SYSTEM.md) — the actors and the stores
 - [Where a knowledge base lives on disk](../../docs/architecture/FILESYSTEM.md) — the working

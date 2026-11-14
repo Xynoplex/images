@@ -168,7 +168,7 @@ export function ToolbarPanels({
             locale={locale}
             isPendingLocaleChange={isPending}
             version={__APP_VERSION__}
-            sourceCodeUrl="https://github.com/The-AI-Alliance/semiont"
+            sourceCodeUrl="https://github.com/Xynoplex/images"
             onOpenKeyboardHelp={openKeyboardHelp}
           />
         )}

@@ -2,7 +2,7 @@
 /**
  * lint:rust-images — the Rust service images share one builder stage.
  *
- * A Rust service's image is the images/<service>/Dockerfile whose builder stage
+ * A Rust service's image is the <service>/Dockerfile whose builder stage
  * is `FROM rust:`. Each keeps its own runtime stage, which is where the image
  * states its facts (its port, health route, user, environment and command),
  * and every one carries the same builder stage, which builds every service's
@@ -28,7 +28,7 @@ const fail = (message) => failures.push(message);
 
 /** Each Rust service's Dockerfile: its builder stage, and the binaries it copies from it. */
 const images = readdirSync(join(ROOT, 'images'))
-  .map((app) => `images/${app}/Dockerfile`)
+  .map((app) => `${app}/Dockerfile`)
   .filter((path) => existsSync(join(ROOT, path)))
   .map((path) => ({ path, lines: readFileSync(join(ROOT, path), 'utf8').split('\n') }))
   .filter(({ lines }) => lines.some((l) => /^FROM rust:/.test(l)))
@@ -40,7 +40,7 @@ const images = readdirSync(join(ROOT, 'images'))
     return { path, builder: lines.slice(start, end < 0 ? lines.length : end).join('\n'), copied };
   });
 
-if (images.length === 0) fail('no images/<service>/Dockerfile has a `FROM rust:` builder stage');
+if (images.length === 0) fail('no <service>/Dockerfile has a `FROM rust:` builder stage');
 
 const [first, ...rest] = images;
 for (const image of rest) {

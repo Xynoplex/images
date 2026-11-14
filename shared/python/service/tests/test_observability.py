@@ -44,7 +44,7 @@ from semiont_service.observability import (
     resource_of,
 )
 
-PYTHON_SERVICES: Final = sorted(path.parent.name for path in ROOT.glob("images/*/pyproject.toml"))
+PYTHON_SERVICES: Final = sorted(path.parent.name for path in ROOT.glob("*/pyproject.toml"))
 """The services built on this package, each by its word for itself."""
 
 NAMED: Final = {"service.name": "semiont-service", "service.version": version("semiont-service")}

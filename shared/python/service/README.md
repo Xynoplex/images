@@ -1,6 +1,6 @@
 # semiont-service
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=python-service)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-service)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 What every Python service of [Semiont][semiont] does to be one: read its
 configuration document, answer for its health, write its log, and export its
@@ -72,9 +72,9 @@ uv sync --locked
 uv run pytest
 ```
 
-[semiont]: https://github.com/The-AI-Alliance/semiont
-[worker]: ../../../images/worker/README.md
-[weaver]: ../../../images/weaver/README.md
-[smelter]: ../../../images/smelter/README.md
+[semiont]: https://github.com/Xynoplex/images
+[worker]: ../../../worker/README.md
+[weaver]: ../../../weaver/README.md
+[smelter]: ../../../smelter/README.md
 [sdk-python]: ../sdk/README.md
 [telemetry]: ../../../protocol/specs/src/service-telemetry/telemetry.json

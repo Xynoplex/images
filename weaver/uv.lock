@@ -1783,7 +1783,7 @@ wheels = [
 
 [[package]]
 name = "semiont"
-source = { editable = "../../packages/python/sdk" }
+source = { editable = "../packages/python/sdk" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -1818,7 +1818,7 @@ dev = [
 
 [[package]]
 name = "semiont-graph"
-source = { editable = "../../packages/python/graph" }
+source = { editable = "../shared/python/graph" }
 dependencies = [
     { name = "pydantic" },
     { name = "semiont" },
@@ -1841,7 +1841,7 @@ requires-dist = [
     { name = "gremlinpython", marker = "extra == 'neptune'", specifier = ">=3.8,<4" },
     { name = "neo4j", marker = "extra == 'neo4j'", specifier = ">=6.4,<7" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
+    { name = "semiont", editable = "../packages/python/sdk" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 
@@ -1857,7 +1857,7 @@ dev = [
 
 [[package]]
 name = "semiont-service"
-source = { editable = "../../packages/python/service" }
+source = { editable = "../shared/python/service" }
 dependencies = [
     { name = "httpx" },
     { name = "opentelemetry-api" },
@@ -1874,7 +1874,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
+    { name = "semiont", editable = "../packages/python/sdk" },
 ]
 
 [package.metadata.requires-dev]
@@ -1921,12 +1921,12 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pydantic" },
-    { name = "semiont", editable = "../../packages/python/sdk" },
-    { name = "semiont-graph", editable = "../../packages/python/graph" },
-    { name = "semiont-graph", extras = ["janusgraph"], marker = "extra == 'janusgraph'", editable = "../../packages/python/graph" },
-    { name = "semiont-graph", extras = ["neo4j"], marker = "extra == 'neo4j'", editable = "../../packages/python/graph" },
-    { name = "semiont-graph", extras = ["neptune"], marker = "extra == 'neptune'", editable = "../../packages/python/graph" },
-    { name = "semiont-service", editable = "../../packages/python/service" },
+    { name = "semiont", editable = "../packages/python/sdk" },
+    { name = "semiont-graph", editable = "../shared/python/graph" },
+    { name = "semiont-graph", extras = ["janusgraph"], marker = "extra == 'janusgraph'", editable = "../shared/python/graph" },
+    { name = "semiont-graph", extras = ["neo4j"], marker = "extra == 'neo4j'", editable = "../shared/python/graph" },
+    { name = "semiont-graph", extras = ["neptune"], marker = "extra == 'neptune'", editable = "../shared/python/graph" },
+    { name = "semiont-service", editable = "../shared/python/service" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 

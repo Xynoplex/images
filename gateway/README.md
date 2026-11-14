@@ -1,9 +1,9 @@
 # semiont-gateway
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-gateway)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-gateway)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 **The HTTP entry point to a Semiont knowledge base**: the one address clients and sidecar
-services dial. It is a Rust binary built against [`protocol/specs/`](../../protocol/specs/src/openapi.json),
+services dial. It is a Rust binary built against [`protocol/specs/`](../protocol/specs/src/openapi.json),
 which is compiled into it, and it serves on port 4000. The launcher starts it, as the
 `semiont-<kb>-gateway` container, with the rest of the stack (`semiont start`). `<kb>` is the
 knowledge base's did:web domain made safe for a name
@@ -11,11 +11,11 @@ knowledge base's did:web domain made safe for a name
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-gateway` |
+| Image | `ghcr.io/xynoplex/xynoplex-gateway` |
 | Port | 4000 |
 | Command | `/usr/local/bin/semiont-gateway --config /etc/semiont/gateway.json` |
-| Code | Rust, in this directory: [src](./src) |
-| Specification | the OpenAPI spec, [protocol/specs/src/openapi.json](../../protocol/specs/src/openapi.json) |
+| Code | Rust, in this directory: [src](src) |
+| Specification | the OpenAPI spec, [protocol/specs/src/openapi.json](../protocol/specs/src/openapi.json) |
 | Judged by | [protocol/conformance/gateway](../../protocol/conformance/gateway/README.md) |
 | Published | to no package index: the image only |
 
@@ -49,7 +49,7 @@ container mounts the KB, and it is the Archivist.
 
 ## HTTP surface
 
-The OpenAPI document in [protocol/specs/src](../../protocol/specs/src/openapi.json) is the contract:
+The OpenAPI document in [protocol/specs/src](../protocol/specs/src/openapi.json) is the contract:
 every route, every status each can answer and its body, the headers, the bus
 stream's messages and id formats, the limits, and the claims a token must carry.
 [TRANSPORT-HTTP.md](../../protocol/contract/TRANSPORT-HTTP.md) states the semantics a
@@ -89,7 +89,7 @@ container run -d --name semiont-<kb>-gateway \
   --env SEMIONT_OIDC_CLIENT_SECRET=<secret> \
   --env JWT_SECRET=<key> \
   --env SEMIONT_SUPERVISE=1 \
-  ghcr.io/the-ai-alliance/semiont-gateway:latest
+  ghcr.io/xynoplex/xynoplex-gateway:latest
 ```
 
 The state volume holds only the supervisor's events log; the gateway itself writes nothing to
@@ -118,7 +118,7 @@ frames reach the broker, export what telemetry is buffered, and exit.
 ## Configuration
 
 One document: a JSON `GatewayConfig`
-([schema](../../protocol/specs/src/components/schemas/GatewayConfig.json)) at the path its `--config`
+([schema](../protocol/specs/src/components/schemas/GatewayConfig.json)) at the path its `--config`
 flag names, bind-mounted read-only. Without `--config`, the gateway refuses to start; the
 image passes `/etc/semiont/gateway.json`, where the launcher mounts the document. The
 launcher writes it from the knowledge base's stack documents and its committed identity:
@@ -160,7 +160,7 @@ connection.
 A broker credential is named by the variable holding it (`signal.userEnv`,
 `signal.passwordEnv`). Every environment variable the gateway reads, what sets it and what it
 changes, is in
-[`protocol/specs/src/service-environment/variables.json`](../../protocol/specs/src/service-environment/variables.json).
+[`protocol/specs/src/service-environment/variables.json`](../protocol/specs/src/service-environment/variables.json).
 
 It runs one worker thread per CPU it may use — its container's CPU limit and affinity — so
 that limit is what sizes it. No variable does: not even `TOKIO_WORKER_THREADS`, which its
@@ -175,8 +175,8 @@ fetched at start.
 ## Working on it
 
 The gateway is a member of the repository's Rust workspace, whose root is `packages/rust`
-([Cargo.toml](../../packages/rust/Cargo.toml)). The toolchain is the one
-[rust-toolchain.toml](../../packages/rust/rust-toolchain.toml) pins; run it in its image
+([Cargo.toml](../packages/rust/Cargo.toml)). The toolchain is the one
+[rust-toolchain.toml](../packages/rust/rust-toolchain.toml) pins; run it in its image
 (`rust:<channel>-alpine`), as the repository runs its other tools, from `packages/rust`:
 
 ```bash
@@ -195,18 +195,18 @@ on both signal planes; see [TESTING.md](docs/TESTING.md). To run one by hand, wr
 ## Building it
 
 From the repository root, with the toolchain
-[`packages/rust/scripts/rust-toolchain.sh`](../../packages/rust/scripts/rust-toolchain.sh) prints:
+[`packages/rust/scripts/rust-toolchain.sh`](../packages/rust/scripts/rust-toolchain.sh) prints:
 
 ```bash
 docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.sh) \
-  --file images/gateway/Dockerfile --tag ghcr.io/the-ai-alliance/semiont-gateway:local .
+  --file gateway/Dockerfile --tag ghcr.io/xynoplex/xynoplex-gateway:local .
 ```
 
-[`make local-build`](../../Makefile) and the publish workflow pass
+[`make local-build`](../Makefile) and the publish workflow pass
 the toolchain the same way. The [Dockerfile](Dockerfile)'s builder stage is the Archivist's
 and the dispatcher's too, and builds all three binaries (`lint:rust-images`). A built image is
 held to
-[`images/scripts/check-gateway-image.sh`](../scripts/check-gateway-image.sh):
+[`scripts/check-gateway-image.sh`](../scripts/check-gateway-image.sh):
 no source in it, and `/api/health` served within its start bound.
 
 ## Related

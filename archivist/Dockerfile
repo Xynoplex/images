@@ -24,20 +24,20 @@ COPY protocol/specs/src protocol/specs/src
 # The workspace (packages/rust/Cargo.toml): cargo loads every member
 # to build any one of them, so each member's crate is copied.
 COPY packages/rust/Cargo.toml packages/rust/Cargo.lock packages/rust/
-COPY images/archivist/Cargo.toml images/archivist/
-COPY images/archivist/src images/archivist/src
-COPY images/archivist/record/Cargo.toml images/archivist/record/
-COPY images/archivist/record/src images/archivist/record/src
-COPY images/archivist/staging/Cargo.toml images/archivist/staging/
-COPY images/archivist/staging/src images/archivist/staging/src
-COPY images/gateway/Cargo.toml images/gateway/
-COPY images/gateway/src images/gateway/src
-COPY images/dispatcher/Cargo.toml images/dispatcher/
-COPY images/dispatcher/src images/dispatcher/src
-COPY images/dispatcher/handlers/Cargo.toml images/dispatcher/handlers/
-COPY images/dispatcher/handlers/src images/dispatcher/handlers/src
-COPY images/dispatcher/jetstream/Cargo.toml images/dispatcher/jetstream/build.rs images/dispatcher/jetstream/
-COPY images/dispatcher/jetstream/src images/dispatcher/jetstream/src
+COPY archivist/Cargo.toml archivist/
+COPY archivist/src archivist/src
+COPY archivist/record/Cargo.toml archivist/record/
+COPY archivist/record/src archivist/record/src
+COPY archivist/staging/Cargo.toml archivist/staging/
+COPY archivist/staging/src archivist/staging/src
+COPY gateway/Cargo.toml gateway/
+COPY gateway/src gateway/src
+COPY dispatcher/Cargo.toml dispatcher/
+COPY dispatcher/src dispatcher/src
+COPY dispatcher/handlers/Cargo.toml dispatcher/handlers/
+COPY dispatcher/handlers/src dispatcher/handlers/src
+COPY dispatcher/jetstream/Cargo.toml dispatcher/jetstream/build.rs dispatcher/jetstream/
+COPY dispatcher/jetstream/src dispatcher/jetstream/src
 COPY packages/rust/codegen/Cargo.toml packages/rust/codegen/
 COPY packages/rust/codegen/src packages/rust/codegen/src
 COPY packages/rust/core/Cargo.toml packages/rust/core/build.rs packages/rust/core/
@@ -83,9 +83,9 @@ RUN addgroup --system --gid 1001 semiont && \
     adduser --system --uid 1001 --ingroup semiont --home /home/semiont semiont
 
 COPY --from=builder /semiont-archivist /usr/local/bin/semiont-archivist
-COPY LICENSE images/archivist/NOTICE /home/semiont/
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY LICENSE archivist/NOTICE /home/semiont/
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 # The knowledge base is mounted here, and is where git is run.
 WORKDIR /kb

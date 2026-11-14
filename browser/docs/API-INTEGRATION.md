@@ -13,7 +13,7 @@ that maintains framework independence:
 
 ```text
 ┌─────────────────────────────────────┐
-│         images/browser                │
+│         browser                │
 │         (Vite + React Router)       │
 │                                     │
 │  • Auth + session wiring            │
@@ -88,7 +88,7 @@ function useClient() {
 ```
 
 The app mounts the provider once at the root (see
-`images/browser/src/app/providers.tsx`):
+`browser/src/app/providers.tsx`):
 
 ```tsx
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
@@ -144,7 +144,7 @@ permission denied, KB identity conflict; each reads the active session's
 signals (`activeSignals$`):
 
 ```tsx
-// images/browser/src/contexts/AuthShell.tsx
+// browser/src/contexts/AuthShell.tsx
 import { useLocation } from 'react-router';
 import {
   ProtectedErrorBoundary,

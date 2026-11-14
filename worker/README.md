@@ -1,6 +1,6 @@
 # semiont-worker
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-worker)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-worker)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 **The worker claims queued jobs and runs them against a model**: the detection passes, the
 generation and the other long-running work that a request cannot wait on. It is a Python
@@ -10,10 +10,10 @@ serves every knowledge base on its list at once, each apart from the others.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-worker` |
+| Image | `ghcr.io/xynoplex/xynoplex-worker` |
 | Port | 24100 (`/health`, and nothing else) |
 | Command | `python -P -m semiont_worker --config /etc/semiont/worker.json` |
-| Code | Python, in this directory: [`src/semiont_worker`](./src/semiont_worker/) |
+| Code | Python, in this directory: [`src/semiont_worker`](src/semiont_worker) |
 | Specification | [protocol/contract/WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) |
 | Judged by | [protocol/conformance/worker-service](../../protocol/conformance/worker-service/README.md) |
 | Published | to no package index: the image only |
@@ -116,7 +116,7 @@ When a job does fail, the service classes the failure:
 ## What it reports
 
 With `OTEL_EXPORTER_OTLP_ENDPOINT` set it exports, as `semiont-worker`, the rows
-[`protocol/specs/src/service-telemetry/telemetry.json`](../../protocol/specs/src/service-telemetry/telemetry.json)
+[`protocol/specs/src/service-telemetry/telemetry.json`](../protocol/specs/src/service-telemetry/telemetry.json)
 lists for the worker: a span and an outcome for every job, every generation, and every
 detection call with its items, tokens and anchoring outcomes (the `semiont.detection.*`
 metrics), so a run's cost, yield and precision can be queried. Its own spans and metrics
@@ -128,7 +128,7 @@ inventory and where the metrics flow.
 ## Configuration
 
 A JSON document, named by `--config` (the image passes `/etc/semiont/worker.json`), whose
-schema is [`WorkerConfig`](../../protocol/specs/src/components/schemas/WorkerConfig.json). The worker
+schema is [`WorkerConfig`](../protocol/specs/src/components/schemas/WorkerConfig.json). The worker
 defaults nothing in it.
 
 | Member | |
@@ -161,7 +161,7 @@ anything: one line on stderr that begins `[fatal] ` and says which, and exit sta
 services.
 
 `GET /health` answers once a knowledge base is confirmed, with a
-[`WorkerHealth`](../../protocol/specs/src/components/schemas/WorkerHealth.json):
+[`WorkerHealth`](../protocol/specs/src/components/schemas/WorkerHealth.json):
 `{"status": "ok", "knowledgeBases": [...]}`, each knowledge base in the document's order with
 its `domain` and `state` (`starting`, `working` or `refused`), and, while it is `working`, the
 agent's `did` there and its `engines`. Each engine is its `engine` (`provider` and `model`),
@@ -178,8 +178,8 @@ ask a model provider; and what every Python service is built on
 ([`packages/python/service`](../../packages/python/service/)), which reads its configuration,
 answers for its health, writes its log and exports its telemetry. All four are built into
 the image from the commit it is published from, and carry
-[`version.json`](../../version.json)'s version. Everything else in its environment is what
-[`uv.lock`](./uv.lock) pins. Nothing is built, installed or fetched when the container
+[`version.json`](../version.json)'s version. Everything else in its environment is what
+[`uv.lock`](uv.lock) pins. Nothing is built, installed or fetched when the container
 starts.
 
 **Every provider's library is in it.** The drivers ask each provider through that provider's
@@ -189,7 +189,7 @@ image is built with every extra, so it is not rebuilt to be pointed at another p
 
 **The service can be configured for any of the seven providers the protocol names:**
 `anthropic`, `google`, `llamacpp`, `ollama`, `openai`, `together` and `vllm`. An engine of its
-document ([`WorkerEngineConfig`](../../protocol/specs/src/components/schemas/WorkerEngineConfig.json))
+document ([`WorkerEngineConfig`](../protocol/specs/src/components/schemas/WorkerEngineConfig.json))
 names one of them, and a document that names another is refused when the service starts. A
 model of `google`, `openai` or `together` is asked with what the model catalogue says of it,
 which the image carries at `/usr/share/semiont/model-catalogue.json` and the document names
@@ -204,12 +204,12 @@ user `semiont`. It carries no installer (`pip`, `uv`) and no Node.
 ### A slimmer image
 
 The one line that decides which providers' libraries an image has is the builder stage's
-`uv sync` in the [Dockerfile](./Dockerfile). `--all-extras` asks for every extra of
+`uv sync` in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of
 `semiont-worker`, each of which brings the drivers' extra of the same name. An image for one
 provider names that provider's in its place:
 
 ```dockerfile
-RUN uv sync --project images/worker --locked --no-dev --no-editable --extra anthropic
+RUN uv sync --project worker --locked --no-dev --no-editable --extra anthropic
 ```
 
 An image for Ollama alone names none: Ollama is asked with what every install has. A
@@ -226,7 +226,7 @@ uv run pytest        # needs the `typst` program on PATH
 ```
 
 The tests of the Typst compiler fail without it rather than skip; CI takes `typst` from the
-image the [Dockerfile](./Dockerfile) copies it from. The checkers are `uv run mypy`,
+image the [Dockerfile](Dockerfile) copies it from. The checkers are `uv run mypy`,
 `uv run pyright`, `uv run ruff check` and `uv run ruff format --check`.
 
 ## Building it
@@ -236,11 +236,11 @@ prints:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
-  --file images/worker/Dockerfile --tag ghcr.io/the-ai-alliance/semiont-worker:local .
+  --file worker/Dockerfile --tag ghcr.io/xynoplex/xynoplex-worker:local .
 ```
 
-[`make local-build`](../../Makefile) builds it so with the other
-images, and [`images/scripts/check-python-image.sh`](../scripts/check-python-image.sh)
+[`make local-build`](../Makefile) builds it so with the other
+images, and [`scripts/check-python-image.sh`](../scripts/check-python-image.sh)
 checks what a built one promises.
 
 ## Related

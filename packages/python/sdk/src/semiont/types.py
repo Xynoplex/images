@@ -4585,8 +4585,8 @@ class Representation(WireModel, frozen=True, extra="allow"):
     ] = None
     encoding: Annotated[str | None, Field(description="Compression/transfer encoding if applicable.")] = None
     language: Annotated[str | None, Field(description="IETF BCP 47 language tag (e.g., en, es-ES).")] = None
-    width: Annotated[int | None, Field(description="Pixels (images/video).", ge=0)] = None
-    height: Annotated[int | None, Field(description="Pixels (images/video).", ge=0)] = None
+    width: Annotated[int | None, Field(description="Pixels (video).", ge=0)] = None
+    height: Annotated[int | None, Field(description="Pixels (video).", ge=0)] = None
     duration: Annotated[float | None, Field(description="Seconds (audio/video).", ge=0.0)] = None
     created: str | None = None
     modified: str | None = None

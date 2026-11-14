@@ -54,13 +54,13 @@ llamacpp = ["openai>=3.28,<4"]
 
 [project.urls]
 Homepage = "https://the-ai-alliance.github.io/semiont/"
-Repository = "https://github.com/The-AI-Alliance/semiont"
-Issues = "https://github.com/The-AI-Alliance/semiont/issues"
+Repository = "https://github.com/Xynoplex/images"
+Issues = "https://github.com/Xynoplex/images/issues"
 
 # The SDK is the one in this repository: this package is checked and tested
 # against the types the tree's spec generates.
 [tool.uv.sources]
-semiont = { path = "../sdk", editable = true }
+semiont = { path = "../../../packages/python/sdk", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to

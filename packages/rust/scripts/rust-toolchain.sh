@@ -4,8 +4,8 @@
 #
 # rustup reads that file itself. What cannot, a Rust image's tag
 # (rust:<channel>-<variant>), asks here, so the file is read in one place and
-# one way: images/scripts/build-session.sh, apps/desktop/build.sh,
-# publish-service-images.yml and images/scripts/build-images.js.
+# one way: scripts/build-session.sh, apps/desktop/build.sh,
+# publish-service-images.yml and scripts/build-images.js.
 #
 # With no channel it prints nothing and fails, so a build that cannot name its
 # compiler stops. It is plain sh: an image with no bash can run it.

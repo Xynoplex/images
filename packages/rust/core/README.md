@@ -1,12 +1,12 @@
 # semiont-core
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=rust-core)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-core)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 What Semiont's Rust services share and no client needs.
 
 **Not published.** It is a crate of this workspace, built into the
-[gateway](../../../images/gateway/README.md) and the
-[dispatcher](../../../images/dispatcher/README.md). To use Semiont from Rust, the
+[gateway](../../../gateway/README.md) and the
+[dispatcher](../../../dispatcher/README.md). To use Semiont from Rust, the
 crate you want is [`semiont`](../sdk/README.md).
 
 | Module | What it holds |

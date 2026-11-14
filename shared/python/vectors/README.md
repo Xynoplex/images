@@ -1,6 +1,6 @@
 # semiont-vectors
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=python-vectors)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-vectors)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The vector index [Semiont][semiont]'s Python services write and search, and
 the embedding providers that make its vectors, each behind one interface.
@@ -231,10 +231,10 @@ does, and holds what the Qdrant allows each and refuses it. It deletes every
 collection of that Qdrant before each case, and fails, and is not skipped,
 without either variable.
 
-[semiont]: https://github.com/The-AI-Alliance/semiont
-[sdk-python]: https://github.com/The-AI-Alliance/semiont/tree/main/packages/python/sdk
-[payload-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/vectors/payload-cases.json
-[store-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/vectors/store-cases.json
-[token-cases]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/vectors/token-cases.json
-[vectors-config]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/components/schemas/VectorsConfig.json
-[embedding-config]: https://github.com/The-AI-Alliance/semiont/blob/main/protocol/specs/src/components/schemas/EmbeddingConfig.json
+[semiont]: https://github.com/Xynoplex/images
+[sdk-python]: https://github.com/Xynoplex/images/tree/main/packages/python/sdk
+[payload-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/payload-cases.json
+[store-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/store-cases.json
+[token-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/token-cases.json
+[vectors-config]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/components/schemas/VectorsConfig.json
+[embedding-config]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/components/schemas/EmbeddingConfig.json

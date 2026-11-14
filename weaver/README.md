@@ -1,9 +1,9 @@
 # semiont-weaver
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-weaver)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-weaver)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 **The Weaver keeps the graph in step with the record.** The record is a knowledge base's event
-log, which the [Archivist](../archivist/) keeps; the graph is a graph database, Neo4j where the
+log, which the [Archivist](../archivist) keeps; the graph is a graph database, Neo4j where the
 [launcher](../../apps/launcher/) runs it. The Weaver follows the recorded events that change
 what the graph holds, applies each to the graph, and says how far it has got. It is a Python
 service that answers `/health` on port 24102, and the launcher starts it with a knowledge base's
@@ -11,10 +11,10 @@ other services (`semiont start`).
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-weaver` |
+| Image | `ghcr.io/xynoplex/xynoplex-weaver` |
 | Port | 24102 (`/health`, and nothing else: everything it does is on the bus and in the graph) |
 | Command | `python -P -m semiont_weaver --config /etc/semiont/weaver.json` |
-| Code | Python, in this directory: [`src/semiont_weaver`](./src/semiont_weaver/) |
+| Code | Python, in this directory: [`src/semiont_weaver`](src/semiont_weaver) |
 | Specification | [protocol/contract/WEAVER.md](../../protocol/contract/WEAVER.md) |
 | Judged by | [protocol/conformance/weaver](../../protocol/conformance/weaver/README.md) |
 | Published | to no package index: the image only |
@@ -37,7 +37,7 @@ as nothing:
   resource and its entity tags
 - `mark:entity-tag-added`, `mark:entity-tag-removed`: a resource's entity types
 
-That graph is what the [Librarian](../librarian/) answers
+That graph is what the [Librarian](../librarian) answers
 [`gather.referencedBy`](../../protocol/contract/flows/GATHER.md) from, and what gather's
 knowledge-graph traversal walks.
 
@@ -102,18 +102,18 @@ them.
 ## Configuration
 
 It reads one document, the protocol's
-[`WeaverConfig`](../../protocol/specs/src/components/schemas/WeaverConfig.json), at the path `--config`
+[`WeaverConfig`](../protocol/specs/src/components/schemas/WeaverConfig.json), at the path `--config`
 names. The launcher writes it for the Weaver it starts, resolved, and mounts it at
 `/etc/semiont/weaver.json`. Whoever starts a Weaver another way writes the same document.
 
 | Member | |
 | --- | --- |
-| `kb` | the knowledge base it serves ([`KbIdentity`](../../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
+| `kb` | the knowledge base it serves ([`KbIdentity`](../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | where the Archivist listens: it reads the record by position there, and a resource's annotations |
-| `graph` | the graph database ([`GraphConfig`](../../protocol/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
-| `cursorsPath` | the file it keeps its cursors in ([`CursorsPath`](../../protocol/specs/src/components/schemas/CursorsPath.json)) |
+| `graph` | the graph database ([`GraphConfig`](../protocol/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
+| `cursorsPath` | the file it keeps its cursors in ([`CursorsPath`](../protocol/specs/src/components/schemas/CursorsPath.json)) |
 | `port` | the port `/health` answers on |
 | `logLevel`, `logFormat` | how it logs |
 
@@ -150,8 +150,8 @@ The service, and the three Python packages of this repository it runs on:
   which reads its configuration, answers for its health, writes its log and exports its telemetry
 
 All four are built into the image from the commit it is published from, and carry
-[`version.json`](../../version.json)'s version. Everything else in its environment is what
-[`uv.lock`](./uv.lock) pins. Nothing is built, installed or fetched when the container starts.
+[`version.json`](../version.json)'s version. Everything else in its environment is what
+[`uv.lock`](uv.lock) pins. Nothing is built, installed or fetched when the container starts.
 
 **Every graph database's client is in it.** The stores ask each database through that
 database's own client, which their package brings as an extra named for the store
@@ -168,12 +168,12 @@ It runs on the oldest Python the repository's Python packages support, on Alpine
 ### A slimmer image
 
 The one line that decides which databases' clients an image has is the builder stage's `uv sync`
-in the [Dockerfile](./Dockerfile). `--all-extras` asks for every extra of `semiont-weaver`, each
+in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of `semiont-weaver`, each
 of which brings the stores' extra of the same name. An image for one database names that
 database's in its place:
 
 ```dockerfile
-RUN uv sync --project images/weaver --locked --no-dev --no-editable --extra neo4j
+RUN uv sync --project weaver --locked --no-dev --no-editable --extra neo4j
 ```
 
 A service whose document names a database its image has no client for refuses to start, and
@@ -189,7 +189,7 @@ uv run pytest        # CI adds --cov --cov-report=xml: what the badge reports
 uv run mypy && uv run pyright && uv run ruff check && uv run ruff format --check
 ```
 
-The tests run the fold's case table ([`fold-cases.json`](../../protocol/specs/src/weaver/fold-cases.json))
+The tests run the fold's case table ([`fold-cases.json`](../protocol/specs/src/weaver/fold-cases.json))
 and the Weaver over a scripted transport and a graph in the process. They start no service and
 reach no database: the Weaver as a process is the conformance suite's.
 
@@ -200,18 +200,18 @@ prints:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh) \
-  --file images/weaver/Dockerfile --tag ghcr.io/the-ai-alliance/semiont-weaver:local .
+  --file weaver/Dockerfile --tag ghcr.io/xynoplex/xynoplex-weaver:local .
 ```
 
-[`make local-build`](../../Makefile) builds it the same way, with the
-other images, and [`images/scripts/check-python-image.sh`](../scripts/check-python-image.sh)
+[`make local-build`](../Makefile) builds it the same way, with the
+other images, and [`scripts/check-python-image.sh`](../scripts/check-python-image.sh)
 checks what a built one promises.
 
 ## Related
 
 - [WEAVER.md](../../protocol/contract/WEAVER.md) — what a Weaver does, rule by rule
 - [`semiont-graph`](../../packages/python/graph/) — the graph stores, and what the graph holds
-- [Gateway](../gateway/) — the bus it rides
-- [Librarian](../librarian/) — the reader whose barrier waits on its signals
-- [Archivist](../archivist/) — the record it reads, by position, and a resource's annotations
-- [Smelter](../smelter/) — the other projection: the same shape, vectors instead of a graph
+- [Gateway](../gateway) — the bus it rides
+- [Librarian](../librarian) — the reader whose barrier waits on its signals
+- [Archivist](../archivist) — the record it reads, by position, and a resource's annotations
+- [Smelter](../smelter) — the other projection: the same shape, vectors instead of a graph

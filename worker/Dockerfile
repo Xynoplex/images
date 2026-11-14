@@ -1,6 +1,6 @@
-# The worker image: the Worker service (images/worker, Python) and the three
+# The worker image: the Worker service (worker, Python) and the three
 # packages of this repository it runs on, built here from the repository, in
-# an environment of exactly what images/worker/uv.lock pins. Nothing is built,
+# an environment of exactly what worker/uv.lock pins. Nothing is built,
 # installed or fetched when the container starts: the entrypoint runs the
 # service.
 #
@@ -8,7 +8,7 @@
 # packages support, which packages/python/sdk/pyproject.toml states
 # (requires-python), the one place it is written:
 #
-#   --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -28,12 +28,12 @@ COPY version.json ./
 # where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
 COPY packages/python/sdk/src packages/python/sdk/src
-COPY packages/python/inference/pyproject.toml packages/python/inference/README.md packages/python/inference/
-COPY packages/python/inference/src packages/python/inference/src
-COPY packages/python/service/pyproject.toml packages/python/service/
-COPY packages/python/service/src packages/python/service/src
-COPY images/worker/pyproject.toml images/worker/uv.lock images/worker/
-COPY images/worker/src images/worker/src
+COPY shared/python/inference/pyproject.toml shared/python/inference/README.md shared/python/inference/
+COPY shared/python/inference/src shared/python/inference/src
+COPY shared/python/service/pyproject.toml shared/python/service/
+COPY shared/python/service/src shared/python/service/src
+COPY worker/pyproject.toml worker/uv.lock worker/
+COPY worker/src worker/src
 # The environment is made on this stage's Python and no other, with its
 # bytecode written here: the image's user cannot write it. uv keeps no cache,
 # and the stage mounts none: from a cache that outlives a build, uv installs
@@ -53,7 +53,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # library that provider is asked through. An image for one provider names
 # that provider's extra in its place (`--extra anthropic`), and one for Ollama
 # alone names none: Ollama is asked with what every install has.
-RUN uv sync --project images/worker --locked --no-dev --no-editable --all-extras
+RUN uv sync --project worker --locked --no-dev --no-editable --all-extras
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
@@ -83,19 +83,19 @@ COPY --from=builder /opt/venv /opt/venv
 # same diff as this tag.
 COPY --from=ghcr.io/typst/typst:0.15.1 /bin/typst /usr/local/bin/typst
 
-COPY LICENSE images/worker/NOTICE /home/semiont/
+COPY LICENSE worker/NOTICE /home/semiont/
 
 # The model catalogue: what models.dev says each model of Google, OpenAI and
 # Together can take, which those providers' own APIs do not say. A model of one
 # of them is asked with these facts, and the service's document names this
 # path (modelCatalogue). It is the repository's one generated copy, made by
-# packages/python/inference/scripts/generate-model-catalogue.mjs from the npm package
+# shared/python/inference/scripts/generate-model-catalogue.mjs from the npm package
 # package.json pins, and held to that pin by CI's drift job. Nothing is fetched
 # to build it here. Its licence notice goes with it.
-COPY packages/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
-COPY packages/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY shared/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
+COPY shared/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 WORKDIR /kb
 RUN chown semiont:semiont /kb

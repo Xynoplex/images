@@ -1,6 +1,6 @@
-# The smelter image: the Smelter service (images/smelter, Python) and the three
+# The smelter image: the Smelter service (smelter, Python) and the three
 # packages of this repository it runs on, built here from the repository, in
-# an environment of exactly what images/smelter/uv.lock pins, with the program
+# an environment of exactly what smelter/uv.lock pins, with the program
 # that reads a scanned page beside it. Nothing is built, installed or fetched
 # when the container starts: the entrypoint runs the service.
 #
@@ -8,7 +8,7 @@
 # packages support, which packages/python/sdk/pyproject.toml states
 # (requires-python), the one place it is written:
 #
-#   --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -28,12 +28,12 @@ COPY version.json ./
 # where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
 COPY packages/python/sdk/src packages/python/sdk/src
-COPY packages/python/vectors/pyproject.toml packages/python/vectors/README.md packages/python/vectors/
-COPY packages/python/vectors/src packages/python/vectors/src
-COPY packages/python/service/pyproject.toml packages/python/service/
-COPY packages/python/service/src packages/python/service/src
-COPY images/smelter/pyproject.toml images/smelter/uv.lock images/smelter/
-COPY images/smelter/src images/smelter/src
+COPY shared/python/vectors/pyproject.toml shared/python/vectors/README.md shared/python/vectors/
+COPY shared/python/vectors/src shared/python/vectors/src
+COPY shared/python/service/pyproject.toml shared/python/service/
+COPY shared/python/service/src shared/python/service/src
+COPY smelter/pyproject.toml smelter/uv.lock smelter/
+COPY smelter/src smelter/src
 # The environment is made on this stage's Python and no other, with its
 # bytecode written here: the image's user cannot write it. uv keeps no cache,
 # and the stage mounts none: from a cache that outlives a build, uv installs
@@ -54,7 +54,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # PDFium, which reads a PDF, comes in the wheel of its binding (pypdfium2),
 # built for Alpine's C library with its C++ runtime inside it. It asks for no
 # package of the system, in this stage or the next.
-RUN uv sync --project images/smelter --locked --no-dev --no-editable
+RUN uv sync --project smelter --locked --no-dev --no-editable
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
@@ -80,9 +80,9 @@ RUN addgroup --system --gid 1001 semiont && \
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY LICENSE images/smelter/NOTICE /home/semiont/
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY LICENSE smelter/NOTICE /home/semiont/
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 WORKDIR /kb
 RUN chown semiont:semiont /kb

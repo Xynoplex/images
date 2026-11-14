@@ -57,12 +57,12 @@
     "width": {
       "type": "integer",
       "minimum": 0,
-      "description": "Pixels (images/video)."
+      "description": "Pixels (video)."
     },
     "height": {
       "type": "integer",
       "minimum": 0,
-      "description": "Pixels (images/video)."
+      "description": "Pixels (video)."
     },
     "duration": {
       "type": "number",

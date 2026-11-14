@@ -32,13 +32,13 @@ RUN chown semiont:nodejs /app
 # Supervision runtime — ROOT-TIME on purpose: apk refuses to run and
 # /usr/local/bin refuses writes once USER drops privileges below.
 RUN apk add --no-cache tini
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 USER semiont
 
 COPY --from=installer --chown=semiont:nodejs /app /app
-COPY LICENSE images/browser/NOTICE /app/
+COPY LICENSE browser/NOTICE /app/
 
 ENV NODE_ENV=production
 ENV PORT=3000

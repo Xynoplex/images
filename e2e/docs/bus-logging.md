@@ -27,7 +27,7 @@ whose whole name is one a credential goes by (`token`, `password`,
 `apiKey` and the rest of a short list) as `[withheld]`, wherever in a
 payload the member is; everything else of a payload is written as it is.
 The list and the rule are one table,
-[`protocol/specs/src/bus/log-cases.json`](../../../protocol/specs/src/bus/log-cases.json),
+[`protocol/specs/src/bus/log-cases.json`](../../protocol/specs/src/bus/log-cases.json),
 which every bus log runs.
 
 Cost when disabled: a single truthy check, zero allocations.
@@ -50,7 +50,7 @@ event flows through one of these.
 | `EMIT` | `HttpTransport.emit()` (http-transport)                          |
 | `RECV` | HttpTransport's wire-parse (SSE-side fan-in inside actor-state-unit) |
 | `EMIT` | Gateway `/bus/emit` HTTP route                               |
-| `SSE`  | Gateway `Connection::deliver` in `images/gateway/src/routes/stream.rs`|
+| `SSE`  | Gateway `Connection::deliver` in `gateway/src/routes/stream.rs`|
 | `PUT`  | `HttpContentTransport.putBinary()`                           |
 | `GET`  | `HttpContentTransport.getBinary()` / `getBinaryStream()` + matching gateway route |
 
@@ -91,7 +91,7 @@ stdout.
 
 The gateway runs in a container, so the variable has to reach the
 container — and the launcher passes a container only the variables its
-config references, so `SEMIONT_BUS_LOG=1 semiont start` does not. The
+config references, so `SEMIONT_BUS_LOG=1 xynaut start` does not. The
 launcher has no option to set it.
 
 ## A typical full-trace timeline

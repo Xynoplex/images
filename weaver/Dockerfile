@@ -1,6 +1,6 @@
-# The weaver image: the Weaver service (images/weaver, Python) and the three
+# The weaver image: the Weaver service (weaver, Python) and the three
 # packages of this repository it runs on, built here from the repository, in
-# an environment of exactly what images/weaver/uv.lock pins. Nothing is built,
+# an environment of exactly what weaver/uv.lock pins. Nothing is built,
 # installed or fetched when the container starts: the entrypoint runs the
 # service.
 #
@@ -8,7 +8,7 @@
 # packages support, which packages/python/sdk/pyproject.toml states
 # (requires-python), the one place it is written:
 #
-#   --build-arg PYTHON_FLOOR=$(packages/python/scripts/python-floor.sh)
+#   --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh)
 #
 # There is no default: without it a FROM names no image and the build stops,
 # rather than building on a Python nothing pinned.
@@ -28,12 +28,12 @@ COPY version.json ./
 # where it names one, and its source.
 COPY packages/python/sdk/pyproject.toml packages/python/sdk/README.md packages/python/sdk/
 COPY packages/python/sdk/src packages/python/sdk/src
-COPY packages/python/graph/pyproject.toml packages/python/graph/README.md packages/python/graph/
-COPY packages/python/graph/src packages/python/graph/src
-COPY packages/python/service/pyproject.toml packages/python/service/
-COPY packages/python/service/src packages/python/service/src
-COPY images/weaver/pyproject.toml images/weaver/uv.lock images/weaver/
-COPY images/weaver/src images/weaver/src
+COPY shared/python/graph/pyproject.toml shared/python/graph/README.md shared/python/graph/
+COPY shared/python/graph/src shared/python/graph/src
+COPY shared/python/service/pyproject.toml shared/python/service/
+COPY shared/python/service/src shared/python/service/src
+COPY weaver/pyproject.toml weaver/uv.lock weaver/
+COPY weaver/src weaver/src
 # The environment is made on this stage's Python and no other, with its
 # bytecode written here: the image's user cannot write it. uv keeps no cache,
 # and the stage mounts none: from a cache that outlives a build, uv installs
@@ -52,7 +52,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # brings the graph stores' extra of the same name, and with it the client
 # that database is asked through. An image for one database names that
 # database's extra in its place (`--extra neo4j`).
-RUN uv sync --project images/weaver --locked --no-dev --no-editable --all-extras
+RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
@@ -68,9 +68,9 @@ RUN addgroup --system --gid 1001 semiont && \
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY LICENSE images/weaver/NOTICE /home/semiont/
-COPY images/shared/supervise.sh /usr/local/bin/supervise.sh
-COPY images/shared/boot.sh /usr/local/bin/boot.sh
+COPY LICENSE weaver/NOTICE /home/semiont/
+COPY shared/supervise.sh /usr/local/bin/supervise.sh
+COPY shared/boot.sh /usr/local/bin/boot.sh
 
 WORKDIR /kb
 RUN chown semiont:semiont /kb

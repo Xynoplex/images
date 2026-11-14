@@ -3,7 +3,7 @@
  * `creator` / `generator` / `wasAttributedTo` are built in exactly one place.
  *
  * Provenance is DERIVED, never asserted: the one function `attribution()` in
- * the Archivist's record (`images/archivist/record/src/agents.rs`) takes the
+ * the Archivist's record (`archivist/record/src/agents.rs`) takes the
  * requester and the executor — identities the gateway stamped from tokens —
  * and returns the W3C/PROV triple, which every write the Archivist records
  * copies. A second site that assembles `wasAttributedTo` by hand
@@ -36,7 +36,7 @@
  * how every artifact came to read "By 59523dd4-…" — and the name is filled in
  * when a reply is READ, from the profiles projection: what each principal last
  * said it is called. Two services read it, the Librarian in Python and the
- * Archivist in Rust (`images/archivist/src/naming.rs`), and
+ * Archivist in Rust (`archivist/src/naming.rs`), and
  * `protocol/specs/src/principals/naming-cases.json` holds both to one rule. A second
  * place that names a principal is a second answer to "what is this principal
  * called", and the one that wins would be whichever ran last. The Librarian's
@@ -55,9 +55,9 @@ import { fileURLToPath } from 'url';
 import { repositoryFiles } from '../../../.github/scripts/checks/repository-files.mjs';
 
 const ROOT = fileURLToPath(new URL('../../..', import.meta.url));
-const ALLOWED = 'images/archivist/record/src/agents.rs';
+const ALLOWED = 'archivist/record/src/agents.rs';
 /** Where a principal acquires a name in TypeScript or Python — the Librarian's read-side resolver, and only it. */
-const NAMES_A_PRINCIPAL = 'images/librarian/src/semiont_librarian/naming.py';
+const NAMES_A_PRINCIPAL = 'librarian/src/semiont_librarian/naming.py';
 /**
  * Assigning `name` onto something already known to be a principal. Matches
  * the resolver's own shape and a hand-rolled equivalent; reading a name is not
@@ -70,7 +70,7 @@ const CONSTRUCTION = new RegExp([
   String.raw`\blet\s+(?:mut\s+)?was_attributed_to\b`,  // Rust: a local being built
 ].join('|'));
 
-/** A source directory at the head of a path: `packages/<language>/<name>/src`, `apps/<name>/src`, `images/<name>/src`, or a crate's inside an image, `images/<name>/<crate>/src`. */
+/** A source directory at the head of a path: `packages/<language>/<name>/src`, `apps/<name>/src`, `<name>/src`, or a crate's inside an image, `<name>/<crate>/src`. */
 const SOURCE_ROOT = /^(?:packages\/[^/]+\/[^/]+|apps\/[^/]+|images\/[^/]+(?:\/[^/]+)?)\/src(?=\/)/;
 const TEST = /(^|\/)__tests__\/|\.test\.ts$/;
 

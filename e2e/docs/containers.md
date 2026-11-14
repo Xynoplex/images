@@ -10,10 +10,10 @@ through that lifecycle.
 
 | Container | What's inside | Where it comes from |
 |---|---|---|
-| `semiont-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make local-build` |
-| `semiont-<kb>-gateway` | the gateway (Rust, `images/gateway`) on `:4000` | published image, or `:local` via `make local-build` |
+| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make local-build` |
+| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make local-build` |
 | `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make local-build` |
-| plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `semiont start` |
+| plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynaut start` |
 
 A knowledge base's containers are named `semiont-<kb>-<product>`, where
 `<kb>` is its did:web domain made safe for a name: `did:web:example.org:my-kb`
@@ -27,9 +27,9 @@ worker, Ollama and Jaeger are shared by every knowledge base, and keep
 Semiont image from them as a local-only `:local` tag (plus the
 launcher binary). KB repos build nothing — the stack runs the `:local`
 images only when the KB's `.semiont/stack/*.yaml` documents name them
-(`ghcr.io/the-ai-alliance/semiont-<service>:local`) and the Browser's and the
-worker's own documents name theirs (`semiont settings browser --path`,
-`semiont settings worker --path`); an image still named
+(`ghcr.io/xynoplex/xynoplex-<service>:local`) and the Browser's and the
+worker's own documents name theirs (`xynaut settings browser --path`,
+`xynaut settings worker --path`); an image still named
 `:latest` is pulled as published, and your local changes are invisible.
 
 So the "full rebuild" flow depends on what changed:
@@ -37,9 +37,9 @@ So the "full rebuild" flow depends on what changed:
 | Change in | Rebuild | Restart |
 |---|---|---|
 | `packages/typescript/react-ui`, `packages/typescript/http-transport`, `packages/typescript/core` | `make local-build` | browser |
-| `images/browser` only | `make local-build` | browser |
-| `images/librarian`, `images/worker`, `images/weaver`, `images/smelter`, or a Python package one of them runs on | `make local-build` (rebuilds the `:local` images) | the stack: `semiont start` |
-| `images/gateway` | `make local-build` | the stack: `semiont start` |
+| `browser` only | `make local-build` | browser |
+| `librarian`, `worker`, `weaver`, `smelter`, or a Python package one of them runs on | `make local-build` (rebuilds the `:local` images) | the stack: `xynaut start` |
+| `gateway` | `make local-build` | the stack: `xynaut start` |
 
 ## Apple container CLI primer
 
@@ -58,7 +58,7 @@ container inspect <name>                  # JSON dump — mounts, env, IP, etc.
 
 Use `container logs --follow semiont-<kb>-gateway` when diagnosing a failing test
 — the gateway's structured logs often reveal whether a bus handler
-actually ran. (`semiont logs`, from the KB directory, follows all
+actually ran. (`xynaut logs`, from the KB directory, follows all
 services at once with `[svc]` prefixes.)
 
 ## <a name="ip-refresh"></a>IP refresh after every restart
@@ -94,7 +94,7 @@ make local-build IMAGE_NAMES=<list>    # narrow the image set
 2. Builds each package in a Node container (Alpine) and publishes it
    to Verdaccio.
 3. Builds every Semiont image against Verdaccio, tagged
-   `ghcr.io/the-ai-alliance/semiont-<svc>:local` (never pushed), and
+   `ghcr.io/xynoplex/xynoplex-<svc>:local` (never pushed), and
    loads them into every container engine on the machine.
 4. Builds the launcher binary to `apps/launcher/dist/semiont`.
 
@@ -113,16 +113,16 @@ cd /path/to/semiont-template-kb
 # Browser's and the worker's own documents name theirs (once):
 perl -pi -e 's#(semiont-browser):\S+#$1:local#' "$(semiont settings browser --path)"
 perl -pi -e 's#(semiont-worker):\S+#$1:local#' "$(semiont settings worker --path)"
-# semiont start reads ANTHROPIC_API_KEY from env when --config anthropic.
+# xynaut start reads ANTHROPIC_API_KEY from env when --config anthropic.
 # Source your secrets first if it's not already exported.
 semiont start --config anthropic
-echo password | semiont useradd --email admin@example.com
+echo password | xynaut useradd --email admin@example.com
 ```
 
 The `ollama-gemma` Inference document avoids the API-key requirement if
 you only need to exercise non-inference paths.
 
-`semiont start` stops and recreates the running containers, so their IPs
+`xynaut start` stops and recreates the running containers, so their IPs
 change. **That is exactly why e2e should not use them** — target the host
 bridge gateway `192.168.64.1`, which routes to the published ports and is
 stable across restarts. See

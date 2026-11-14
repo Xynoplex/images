@@ -1,112 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-SCRIPT_DIR="$REPO_ROOT/images"
-BUILD_DIR="$SCRIPT_DIR/scripts/local-build"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
-OPERATION="${1:?A build operation is required}"
-shift
-case "$OPERATION" in
-  local-build|packages|images-only|launcher|npm-publish-local|plan|stale) ;;
-  *) echo "Unknown build operation: $OPERATION" >&2; exit 2 ;;
-esac
-source "$BUILD_DIR/common.sh"
-source "$BUILD_DIR/selection.sh"
 
-VERDACCIO_NAME=semiont-verdaccio
-VERDACCIO_USER=semiont
-VERDACCIO_PASS=semiont
-REGISTRY=http://localhost:4873
-VERDACCIO_OURS=false
-SESSION_SUCCEEDED=false
-cleanup() {
-  local result=$?
-  trap - EXIT INT TERM
-  if [[ "$SESSION_SUCCEEDED" != true ]]; then
-    if declare -F stop_builds >/dev/null; then stop_builds; fi
-    if [[ "$VERDACCIO_OURS" == true ]]; then
-      "$RT" stop "$VERDACCIO_NAME" >/dev/null 2>&1 || true
-      "$RT" rm "$VERDACCIO_NAME" >/dev/null 2>&1 || true
-    fi
-  fi
-  stop_python_tools
-  exit "$result"
+usage() {
+  echo "Usage: $0 [all|gateway|archivist|dispatcher|browser|librarian|smelter|weaver|worker] ..." >&2
+  exit 2
 }
-trap cleanup EXIT
-trap 'exit 130' INT
-trap 'exit 143' TERM
 
-# stale: what plan would build, one `<packages/… or images/…><tab><reason>` line each, on
-# stdout alone. A named package narrows the list rather than forcing its build.
-if [[ "$OPERATION" == stale ]]; then
-  exec 3>&1 1>&2
-  start_python_tools
-  source "$BUILD_DIR/package-plan.sh"
-  printf "%s" "$PACKAGE_REASONS" >&3
-  source "$BUILD_DIR/image-plan.sh"
-  for image in $IMAGES; do
-    decide_image "$image"
-    [[ "$IMAGE_ACTION" == build ]] && printf 'images/%s\t%s\n' "$image" "$IMAGE_REASON" >&3
-  done
-  SESSION_SUCCEEDED=true
-  exit 0
+if [[ $# -eq 0 ]]; then set -- all; fi
+if [[ "$1" == all ]]; then
+  [[ $# -eq 1 ]] || usage
+  set -- gateway archivist dispatcher browser librarian smelter weaver worker
 fi
-if [[ "$OPERATION" == plan ]]; then
-  start_python_tools
-  source "$BUILD_DIR/package-plan.sh"
-  print_summary
-  printf "%s" "$PACKAGE_REASONS"
-  source "$BUILD_DIR/image-plan.sh"
-  for image in $IMAGES; do
-    decide_image "$image"
-    echo "  images/$image: $IMAGE_ACTION ($IMAGE_REASON)"
-    if [[ " $REGISTRY_IMAGES " == *" $image "* && "$FORCE" != true && "$IMAGES_NAMED" != true ]]; then
-      echo "    npm integrity is the current registry snapshot; fresh publication is rechecked before building."
-    fi
-  done
-  [[ -n "$REGISTRY_IMAGES" ]] && echo "  registry: fresh local npm publication required for $REGISTRY_IMAGES"
-  echo "  launcher: build for the host"
-  SESSION_SUCCEEDED=true
-  exit 0
-fi
-prepare_caches
-if [[ "$OPERATION" == launcher ]]; then
-  source "$BUILD_DIR/launcher.sh"
-  SESSION_SUCCEEDED=true
-  exit 0
-fi
-start_python_tools
-source "$BUILD_DIR/publication.sh"
-if [[ "$OPERATION" == npm-publish-local ]]; then
-  verify_local_npm
-  source "$BUILD_DIR/registry.sh"
-  publish_local_npm
-  echo "Local npm packages are available at $REGISTRY; stop with: $RT stop $VERDACCIO_NAME"
-  SESSION_SUCCEEDED=true
-  exit 0
-fi
-source "$BUILD_DIR/package-plan.sh"
-source "$BUILD_DIR/packages.sh"
-if [[ "$OPERATION" == local-build ]]; then source "$BUILD_DIR/checks.sh"; fi
-if [[ "$OPERATION" != packages ]]; then source "$BUILD_DIR/registry.sh"; fi
-if [[ "$IMAGES_ONLY" != true ]]; then
-  banner PACKAGES
-  build_npm
-  build_rust
-  build_python
-  build_go
-  build_kotlin
-  build_csharp
-  build_swift
-fi
-if [[ "$OPERATION" == packages ]]; then
-  print_summary
-  SESSION_SUCCEEDED=true
-  exit 0
-fi
-source "$BUILD_DIR/images.sh"
-source "$BUILD_DIR/launcher.sh"
-source "$BUILD_DIR/cache-maintenance.sh"
-source "$BUILD_DIR/summary.sh"
-SESSION_SUCCEEDED=true
+
+source "$REPO_ROOT/scripts/container-runtime.sh"
+RT="$(detect_container_runtime)"
+RUST_TOOLCHAIN="$(packages/rust/scripts/rust-toolchain.sh)"
+PYTHON_FLOOR="$(shared/python/python-floor.sh)"
+VERSION="$(python3 -c 'import json; print(json.load(open("version.json"))["version"])')"
+BROWSER_VERSION="${SEMIONT_BROWSER_VERSION:-$(python3 -c 'import json; print(json.load(open("version.json"))["packages"]["semiont-browser"]["version"])')}"
+
+for service in "$@"; do
+  case "$service" in
+    gateway|archivist|dispatcher) args=(--build-arg "RUST_TOOLCHAIN=$RUST_TOOLCHAIN") ;;
+    librarian|smelter|weaver|worker) args=(--build-arg "PYTHON_FLOOR=$PYTHON_FLOOR") ;;
+    browser) args=(--build-arg "SEMIONT_BROWSER_VERSION=$BROWSER_VERSION") ;;
+    *) usage ;;
+  esac
+  tag="ghcr.io/xynoplex/xynoplex-$service:local"
+  echo "Building $tag using $RT"
+  "$RT" build "${args[@]}" --file "$service/Dockerfile" --tag "$tag" .
+done
+
+echo "Built image version $VERSION locally. No image was pushed."

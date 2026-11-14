@@ -4,47 +4,25 @@ Real-browser Playwright tests that drive the Browser against a locally
 running gateway. Intended to catch cross-layer regressions (SSE timing,
 React lifecycle, bus round-trips) that unit and component tests can't.
 
-## With `make`
+## Stack smoke test
 
-From the repository root (from anywhere, `make -C <repository root> <target>`):
+The image repository builds images only. The optional real-stack smoke script
+uses the separately installed `xynaut` CLI (set `XYNAUT` to its executable path
+if needed) to start a knowledge base from the selected images:
 
 ```sh
-make stack-up     # a new knowledge base's stack from :local images, checked, left up
-make e2e          # the default tier, on a knowledge base and user of its own beside it
-make e2e          # again: each run makes its own, and removes it when it passes
-make e2e E2E_SCRIPT=test:slow                                 # another of the suite's npm scripts
-make e2e E2E_SCRIPT=test:slow E2E_MODEL=gemma4:26b            # on a knowledge base bound to another model
-make e2e E2E_ARGS='specs/01-sign-in.spec.ts --repeat-each=5'  # Playwright's arguments
-make stack-down   # stop the stack and each knowledge base a failed e2e left; check every port is released
-make smoke        # all three in one run
+make build
+./tests/stack/smoke-stack.sh up local
+./tests/stack/smoke-stack.sh e2e
+./tests/stack/smoke-stack.sh down
+./tests/stack/smoke-stack.sh run local --e2e
 ```
 
-`make stack-up` builds what it needs first: the `:local` images, as
-`make local-build PACKAGE_NAMES=typescript` does, when the build finds them or the
-TypeScript packages they install older than the checkout, and the launcher when it is
-older than its Go source. It then runs `semiont init` in a new directory and
-`semiont start`, and checks health, the realm the start created and the Browser's origin.
-`SMOKE_TAG=<tag>` boots a published release's images instead, and `CONTAINER_RUNTIME`
-selects the engine. Every `semiont` command it runs is shown as it runs.
-
-`make e2e` runs `npm run test:ci`, which typechecks the specs and leaves out `@slow` and
-`@model`, in the Playwright image this suite's version pins, with a user made by
-`semiont useradd` for the run. `E2E_SCRIPT` names another of the suite's npm scripts
-(`test`, `test:slow`, `test:model`), and `E2E_ARGS` gives Playwright arguments, split at
-spaces: a spec file, `--grep`, `--repeat-each`. The run's knowledge base is bound to the
-model `semiont init` picks, `gemma3:270m`, unless `E2E_MODEL` names another, which
-`semiont init --model` binds; `@slow` and `@model` ask more than `gemma3:270m` can answer.
-`make smoke` passes all three on to its `e2e`.
-After the suite, `make e2e` reads the knowledge base's job queue from `semiont status` until
-nothing is pending or running; a job still pending or running two minutes later fails the
-run, though every test passed. A run that passes removes its knowledge base. One that fails
-leaves it running, its logs, jobs and traces there to read, and prints where it is;
-`make stack-down` removes it with the stack. The report is in `playwright-report/`. The script and the
-steps it takes are described in [How CI runs the suite](#how-ci-runs-the-suite), which runs
-the same script.
-
-To run the suite by hand instead, against a stack you started yourself, see the
-[Quick start](#quick-start) and [Running against a freshly-built stack](#running-against-a-freshly-built-stack).
+A published image tag can replace `local`. `e2e` creates a separate test KB and
+user, runs Playwright in the pinned Playwright container, and waits for its job
+queue to drain. Successful runs clean up automatically; failed runs remain for
+inspection until `down`. Use `--script` to choose an npm script, `--model` to
+choose the test KB's model, and arguments after `--` for Playwright.
 
 ## Quick start
 
@@ -57,7 +35,7 @@ PW=$(node -p "require('./node_modules/@playwright/test/package.json').version")
 
 container run --rm \
   -v "$(git rev-parse --show-toplevel):/workspace" \
-  -w /workspace/images/e2e \
+  -w /workspace/e2e \
   -e E2E_EMAIL=admin@example.com \
   -e E2E_PASSWORD=password \
   -e E2E_BROWSER_URL=http://localhost:3000 \
@@ -88,7 +66,7 @@ container run --rm \
 
 > Use `npm test`, not `npx playwright test`: the `pretest` hook typechecks
 > the specs first (`tsc --noEmit`) and aborts before launching a browser.
-> `images/e2e` is not a root workspace, so this gate is the ONLY thing that
+> `e2e` is not a root workspace, so this gate is the ONLY thing that
 > typechecks these files — bypassing it means an SDK signature change
 > surfaces as a runtime `TypeError` minutes in, instead of a file:line.
 
@@ -107,7 +85,7 @@ Dependabot bumps `package.json` and `package-lock.json` together, but
 nothing installs them here, so the declared and installed versions diverge
 silently until someone runs `npm ci`; a hard-coded tag would make a third.
 
-**Nothing else catches this on a laptop.** `images/e2e` is not a root
+**Nothing else catches this on a laptop.** `e2e` is not a root
 workspace, so its dependencies are installed only by a person deciding to, or
 by [Stack Smoke](#how-ci-runs-the-suite), which runs `npm ci` before every
 run. After a Dependabot bump, sync before running:
@@ -141,7 +119,7 @@ reaches it: `:3000`→`:13000`, `:4000`→`:14000`, and `:8080` (Keycloak) and
 needs, and the knowledge base it registers is the origin the launcher
 advertises. The launcher's tests hold the bridge's ports to the launcher's own.
 
-Under Docker, `images/tests/stack/smoke-stack.sh e2e` runs the suite with
+Under Docker, `tests/stack/smoke-stack.sh e2e` runs the suite with
 `--network host`, where `localhost` is the host, and starts no bridge.
 
 > **No CORS origin to configure.** The gateway serves open CORS
@@ -153,7 +131,7 @@ Run the suite with the bridge in front of it:
 ```sh
 container run --rm \
   -v "$(git rev-parse --show-toplevel):/workspace" \
-  -w /workspace/images/e2e \
+  -w /workspace/e2e \
   -e E2E_EMAIL=admin@example.com \
   -e E2E_PASSWORD=password \
   -e E2E_BROWSER_URL=http://localhost:3000 \
@@ -195,7 +173,7 @@ container run --rm \
 
 ## The specs
 
-[`specs/`](specs/) holds one `NN-short-name.spec.ts` per path it
+[`specs/`](specs) holds one `NN-short-name.spec.ts` per path it
 guards; a regression in that path fails that spec. Specs tagged
 `@slow` run only under `npm run test:slow`.
 
@@ -219,77 +197,34 @@ nor `gemma3:1b` answered them correctly within their timeouts.
   storage URI, so a re-run against a seeded knowledge base skips it.
 - **Real sign-in.** Connect leaves the Browser for the launcher-run
   Keycloak, and the `signIn` fixture types the credentials into its login
-  page. An account's first sign-in asks for a name, which `semiont useradd`
+  page. An account's first sign-in asks for a name, which `xynaut useradd`
   does not set; the seed's sign-in, always the run's first, gives one.
 - **One worker, no retries.** Specs share the knowledge base; a flake is
   diagnosed, not retried away.
 - **Chromium only.**
 
-## How CI runs the suite
+## CI
 
-[`stack-smoke.yml`](../../.github/workflows/stack-smoke.yml) runs
-[`images/tests/stack/smoke-stack.sh run <images> --e2e`](../tests/stack/smoke-stack.sh),
-nightly on `main`, on dispatch, and on a pull request that changes the
-workflow or its script. The script boots a new knowledge base's stack on
-the runtime selected by `CONTAINER_RUNTIME` (or the first responding engine), with the inference and embedding models `semiont init` names, and,
-after its own checks and before it stops the stack, makes a second knowledge base
-beside it, as `semiont init` makes one, and:
+Continuous integration builds the image set with `make build`. The real-stack
+e2e smoke requires a running container engine, Ollama or another configured
+inference provider, and an installed `xynaut` CLI, so it is run explicitly with
+`tests/stack/smoke-stack.sh` rather than as part of the default image build.
 
-- makes the suite's user in its realm with `semiont useradd`, a password generated for the
-  run, and passes both as `E2E_EMAIL` and `E2E_PASSWORD`;
-- runs `npm ci && npm run test:ci` here, in `mcr.microsoft.com/playwright:v<version>-noble`,
-  `<version>` read from `package.json`, with `--network host` on Docker/Podman
-  or the existing localhost bridge on Apple `container`, so the `localhost` defaults reach the stack;
-- adds a JSON report to the list and HTML ones, at
-  `test-results/report.json`;
-- reads the knowledge base's job queue from `semiont status` until nothing is pending or
-  running, and fails when a job is still pending or running two minutes after the suite.
+## Running against freshly-built images
 
-It passes that knowledge base's gateway as `E2E_GATEWAY_URL`, which the bridge forwards
-too. A failing suite fails the job and still stops the stack; a container whose health
-gate fails has its last log lines printed by the launcher. Whatever the result, `playwright-report/` and
-`test-results/` are kept as the run's `e2e-report` artifact for 30 days, and a
-table of the specs with the tier's wall time is written to the run's summary.
-On a laptop, `make smoke` does the same against `:local` images, including on Apple
-`container`; `make stack-up`, `make e2e` and `make stack-down` run its steps apart, each
-`make e2e` on a fresh knowledge base ([With `make`](#with-make)). Use
-`CONTAINER_RUNTIME=container make smoke` to select it explicitly.
-A selected runtime that is not responding fails with startup instructions; nothing is
-started automatically. The [Quick start](#quick-start) runs the suite alone against a stack
-that is already up.
-
-## Running against a freshly-built stack
-
-The e2e harness assumes containers are already up. To bring up a stack
-that exactly matches the current branch's source:
+Build the image set from this checkout, then use a KB configured for the local
+tags with `xynaut`:
 
 ```sh
-# 1. Build all @semiont/* packages, publish to local Verdaccio,
-#    build the semiont-browser image.
-make local-build
-
-# 2. From the KB project (typically ../semiont-template-kb), bring up
-#    the full stack from the :local images just built: name them in
-#    .semiont/stack/*.yaml (ghcr.io/the-ai-alliance/semiont-gateway:local,
-#    and so on), and the Browser's and the worker's in their own documents. The
-#    --config anthropic flag avoids host-Ollama networking issues (see
-#    "Gotchas" below).
-cd ../semiont-template-kb
-perl -pi -e 's#(semiont-browser):\S+#$1:local#' "$(semiont settings browser --path)"
-perl -pi -e 's#(semiont-worker):\S+#$1:local#' "$(semiont settings worker --path)"
-ANTHROPIC_API_KEY="$(op read op://OSS/Anthropic/credential)" \
-  semiont start --config anthropic
-echo password | semiont useradd --email admin@example.com
-
-# 3. Run the e2e suite (see Quick start above). The stack publishes
-#    :3000 / :4000 / :24100 on the host — reach them from the Playwright
-#    container via the gateway 192.168.64.1, never a container's own IP.
+make build
+# In a knowledge base directory, update configured image references to :local,
+# then run the stack with xynaut using that configuration.
+xynaut start
 ```
 
-The launcher brings up a Jaeger sidecar **by default** and wires
-`OTEL_EXPORTER_OTLP_ENDPOINT` for gateway / worker / smelter — useful
-for inspecting cross-service traces while debugging an e2e failure
-(`--no-observe` to skip). Jaeger UI lands on http://localhost:16686.
+The standalone `tests/stack/smoke-stack.sh` automates this flow for a fresh KB.
+The browser e2e specs can also run directly against a stack already running on
+the host; see the [Quick start](#quick-start).
 
 ## Gotchas
 
@@ -300,15 +235,15 @@ for inspecting cross-service traces while debugging an e2e failure
 - **Host Ollama needs `OLLAMA_HOST=0.0.0.0`.** Otherwise the gateway
   container can't reach it. Either configure Ollama Desktop with
   `launchctl setenv OLLAMA_HOST 0.0.0.0` (and quit/relaunch), or use
-  `semiont start --config anthropic` to skip Ollama entirely.
-- **Code changes require rebuilding the `:local` images.** `make stack-up` does it
-  for you. On a stack you started yourself, rerun `make local-build`, then restart
-  the stack with `semiont start`, its documents naming the `:local` images. Without the
+  `xynaut start --config anthropic` to skip Ollama entirely.
+- **Code changes require rebuilding the `:local` images.** `./tests/stack/smoke-stack.sh up` does it
+  for you. On a stack you started yourself, rerun `make build`, then restart
+  the stack with `xynaut start`, its documents naming the `:local` images. Without the
   rebuild + restart, you'll run yesterday's images with today's source.
 - **SPA tracing is not wired.** Gateway / worker / smelter
   produce traces; the Browser SPA does not. End-to-end traces
   therefore start at `bus.dispatch:*` (server-side EMIT receive)
   rather than the SPA's `bus.emit:*`. Enabling SPA tracing
   would need `VITE_OTEL_OTLP_ENDPOINT` threaded
-  through `make local-build` into the vite build container, plus
+  through `make build` into the vite build container, plus
   `COLLECTOR_OTLP_HTTP_CORS_ALLOWED_ORIGINS=*` on the Jaeger sidecar.

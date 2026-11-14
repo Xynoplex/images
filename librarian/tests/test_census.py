@@ -19,7 +19,7 @@ by name are the ones the protocol's page lists.
 
 How its document is read, how its log is written and what exports its
 telemetry are every Python service's, in the package the service is built on
-(`packages/python/service`).
+(`shared/python/service`).
 """
 
 import ast
@@ -40,10 +40,10 @@ from semiont_librarian.service import CHANNELS
 
 SRC = PROJECT / "src/semiont_librarian"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PROJECT / top).rglob("*.py"))
-GRAPH = ROOT / "packages/python/graph"
-INFERENCE = ROOT / "packages/python/inference"
-SHARED = ROOT / "packages/python/service"
-VECTORS = ROOT / "packages/python/vectors"
+GRAPH = ROOT / "shared/python/graph"
+INFERENCE = ROOT / "shared/python/inference"
+SHARED = ROOT / "shared/python/service"
+VECTORS = ROOT / "shared/python/vectors"
 
 # The modules whose names other code imports: every one of the package but its root and what begins with an underscore.
 PUBLIC = sorted(path.stem for path in SRC.glob("*.py") if not path.stem.startswith("_"))
@@ -251,10 +251,10 @@ def test_the_sdk_and_the_packages_it_is_built_on_are_the_ones_in_this_repository
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
         "semiont": {"path": "../../packages/python/sdk", "editable": True},
-        "semiont-graph": {"path": "../../packages/python/graph", "editable": True},
-        "semiont-inference": {"path": "../../packages/python/inference", "editable": True},
-        "semiont-service": {"path": "../../packages/python/service", "editable": True},
-        "semiont-vectors": {"path": "../../packages/python/vectors", "editable": True},
+        "semiont-graph": {"path": "../../shared/python/graph", "editable": True},
+        "semiont-inference": {"path": "../../shared/python/inference", "editable": True},
+        "semiont-service": {"path": "../../shared/python/service", "editable": True},
+        "semiont-vectors": {"path": "../../shared/python/vectors", "editable": True},
     }
     for there in (SDK, GRAPH, INFERENCE, SHARED, VECTORS):
         assert (PROJECT / "../../packages/python" / there.name / "pyproject.toml").resolve() == there / "pyproject.toml"
@@ -276,7 +276,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     beside = sorted(str(path.relative_to(SRC)) for path in SRC.rglob("*") if path.is_file() and path.suffix not in (".py", ".pyc"))
     assert beside == []
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
-    for other in sorted(ROOT.glob("packages/python/*/pyproject.toml")) + sorted(ROOT.glob("images/*/pyproject.toml")):
+    for other in sorted(ROOT.glob("packages/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PROJECT:
             assert "semiont-librarian" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Librarian"
 
@@ -407,7 +407,7 @@ def test_the_variables_it_reads_by_name_are_the_ones_the_protocol_lists() -> Non
     }
     # Every variable the service's code names: its own, and the shared package's it is built on.
     sources = sorted([*SRC.rglob("*.py"), *(SHARED / "src").rglob("*.py")])
-    assert any(path.is_relative_to(SHARED) for path in sources), "packages/python/service has no source"
+    assert any(path.is_relative_to(SHARED) for path in sources), "shared/python/service has no source"
     # A module's `__all__` names what it exports, in quotes too: a constant's name there is no variable read.
     texts = [re.sub(r"^__all__ = \[.*?\]$", "", path.read_text(encoding="utf-8"), flags=re.DOTALL | re.MULTILINE) for path in sources]
     read_here = {name for text in texts for name in re.findall(r'"([A-Z][A-Z0-9]*_[A-Z0-9_]+)"', text)}

@@ -129,7 +129,7 @@ The split is **display vs programmatic**, not text vs binary:
 ## Related documentation
 
 - [`@semiont/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) — the canonical media-token spec (claims, threat model, OpenAPI)
-- [Browser Authentication Architecture](./AUTHENTICATION.md) — the SPA's bearer-only session model
+- [Browser Authentication Architecture](AUTHENTICATION.md) — the SPA's bearer-only session model
 - [Gateway Authentication Guide](../../gateway/docs/AUTHENTICATION.md) — JWT validation, including the `?token=` media path
 - [System Authentication Architecture](../../../docs/operator/administration/AUTHENTICATION.md) — end-to-end auth flows
 

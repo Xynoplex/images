@@ -2,9 +2,9 @@
 
 [![crates.io](https://img.shields.io/crates/v/semiont-telemetry.svg)](https://crates.io/crates/semiont-telemetry)
 [![docs.rs](https://img.shields.io/docsrs/semiont-telemetry)](https://docs.rs/semiont-telemetry)
-[![CI](https://github.com/The-AI-Alliance/semiont/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/The-AI-Alliance/semiont/actions/workflows/ci.yml?query=branch%3Amain)
-[![License](https://img.shields.io/crates/l/semiont-telemetry.svg)](https://github.com/The-AI-Alliance/semiont/blob/main/LICENSE)
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=rust-telemetry)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![CI](https://github.com/Xynoplex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Xynoplex/actions/workflows/ci.yml?query=branch%3Amain)
+[![License](https://img.shields.io/crates/l/semiont-telemetry.svg)](https://github.com/Xynoplex/blob/main/LICENSE)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-telemetry)](https://app.codecov.io/gh/Xynoplex/images/components)
 
 The traces and counts of the [Semiont Rust SDK](../sdk/README.md), as
 [OpenTelemetry](https://opentelemetry.io). When a Semiont client sends to a

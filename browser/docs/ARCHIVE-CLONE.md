@@ -61,5 +61,5 @@ The token carries its own `expiresAt`. Tokens are issued and checked by the Arch
 
 ## Related
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — how the Browser reaches the knowledge base
-- [API-INTEGRATION.md](./API-INTEGRATION.md) — the SDK's namespaces and the bus
+- [ARCHITECTURE.md](ARCHITECTURE.md) — how the Browser reaches the knowledge base
+- [API-INTEGRATION.md](API-INTEGRATION.md) — the SDK's namespaces and the bus

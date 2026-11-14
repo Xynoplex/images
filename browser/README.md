@@ -1,8 +1,8 @@
 # semiont-browser
 
-[![codecov](https://codecov.io/gh/The-AI-Alliance/semiont/graph/badge.svg?component=image-browser)](https://app.codecov.io/gh/The-AI-Alliance/semiont/components)
+[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-browser)](https://app.codecov.io/gh/Xynoplex/images/components)
 [![npm version](https://img.shields.io/npm/v/@semiont/browser.svg)](https://www.npmjs.com/package/@semiont/browser)
-[![ghcr](https://img.shields.io/badge/ghcr-semiont--browser-blue)](https://github.com/The-AI-Alliance/semiont/pkgs/container/semiont-browser)
+[![ghcr](https://img.shields.io/badge/ghcr-xynoplex--browser-blue)](https://github.com/Xynoplex/images/pkgs/container/xynoplex-browser)
 
 **The Browser is the human entry point to Semiont**: a single-page app (SPA) for browsing,
 annotating and generating resources in a knowledge base, written in TypeScript with React and
@@ -11,10 +11,10 @@ which serves the pre-built SPA on port 3000.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/the-ai-alliance/semiont-browser` |
+| Image | `ghcr.io/xynoplex/xynoplex-browser` |
 | Port | 3000 |
 | Command | `node /app/node_modules/@semiont/browser/server.js`, under `tini` |
-| Code | TypeScript, in this directory: [src](./src) |
+| Code | TypeScript, in this directory: [src](src) |
 | Published | npm, as [@semiont/browser](https://www.npmjs.com/package/@semiont/browser), which the image installs |
 
 ## What it does
@@ -45,7 +45,7 @@ non-file routes.
 
 ## What it talks to
 
-- **The [gateway](../gateway/) of each knowledge base it connects to**, through `@semiont/sdk`.
+- **The [gateway](../gateway) of each knowledge base it connects to**, through `@semiont/sdk`.
 - **The issuer of each knowledge base**, its sign-in provider, to sign in and to sign out.
 - **The launcher's discovery document**, from the Browser's own `server.js`, under `/discovery/`.
 - **An OTLP endpoint**, for its OpenTelemetry traces, when the bundle is built with one.
@@ -99,7 +99,7 @@ npm run test:a11y    # accessibility suite
 ```
 
 **Translations are generated: edit `messages-source/`, never `messages/`.** `messages-source/`
-holds this app's strings; [`scripts/merge-translations.js`](./scripts/merge-translations.js)
+holds this app's strings; [`scripts/merge-translations.js`](scripts/merge-translations.js)
 merges them with `@semiont/react-ui`'s on the `pre*` hooks and writes `messages/` and
 `public/messages/`, both untracked.
 
@@ -107,17 +107,17 @@ merges them with `@semiont/react-ui`'s on the `pre*` hooks and writes `messages/
 
 The image does not build the app: it installs a published `@semiont/browser` from an npm
 registry, `NPM_REGISTRY` (npm's own by default), at the version `SEMIONT_BROWSER_VERSION`
-(`latest` by default). [`make local-build`](../../Makefile) builds
+(`latest` by default). [`make local-build`](../Makefile) builds
 this directory's package, publishes it to the Verdaccio it starts, and builds the image
-against that registry, tagged `ghcr.io/the-ai-alliance/semiont-browser:local`;
-[`publish-browser.yml`](../../.github/workflows/publish-browser.yml) builds it from the
+against that registry, tagged `ghcr.io/xynoplex/xynoplex-browser:local`;
+[`publish-browser.yml`](../.github/workflows/publish-browser.yml) builds it from the
 published package.
 
 ## Related
 
 - [Human UI](../../docs/architecture/HUMAN-UI.md) — how the Browser fits the rest of Semiont
 - [The analyst's guide](../../docs/analyst/README.md) — working in it
-- This app's documents: [Architecture](./docs/ARCHITECTURE.md) · [Development](./docs/DEVELOPMENT.md) ·
-  [Container](./docs/CONTAINER.md) · [Deployment](./docs/DEPLOYMENT.md) · [Testing](./docs/TESTING.md) ·
-  [Authentication](./docs/AUTHENTICATION.md) · [Internationalization](./docs/INTERNATIONALIZATION.md) ·
-  [Accessibility](./docs/ACCESSIBILITY.md); the full set is in [`docs/`](./docs/)
+- This app's documents: [Architecture](docs/ARCHITECTURE.md) · [Development](docs/DEVELOPMENT.md) ·
+  [Container](docs/CONTAINER.md) · [Deployment](docs/DEPLOYMENT.md) · [Testing](docs/TESTING.md) ·
+  [Authentication](docs/AUTHENTICATION.md) · [Internationalization](docs/INTERNATIONALIZATION.md) ·
+  [Accessibility](docs/ACCESSIBILITY.md); the full set is in [`docs/`](docs)

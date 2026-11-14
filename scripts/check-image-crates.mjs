@@ -25,8 +25,8 @@
  *   cargo metadata --format-version 1 --locked > <dir>/metadata.json
  *   cargo tree --locked -p <binary> -e normal,no-proc-macro --target <target> --prefix none --format '{p}' \
  *     > <dir>/linked-<binary>-<target>.txt                          # per binary, per target
- *   node images/scripts/check-image-crates.mjs <dir>                  # check
- *   node images/scripts/check-image-crates.mjs --write <dir>          # rewrite the NOTICEs' crate lists
+ *   node scripts/check-image-crates.mjs <dir>                  # check
+ *   node scripts/check-image-crates.mjs --write <dir>          # rewrite the NOTICEs' crate lists
  */
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -36,9 +36,9 @@ import { loadPolicy } from '../../.github/scripts/license-policy.mjs';
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 /** Each image that ships a Rust binary: the binary's package, and the image's NOTICE. */
 const IMAGES = [
-  { service: 'gateway', binary: 'semiont-gateway', notice: 'images/gateway/NOTICE' },
-  { service: 'dispatcher', binary: 'semiont-dispatcher', notice: 'images/dispatcher/NOTICE' },
-  { service: 'archivist', binary: 'semiont-archivist', notice: 'images/archivist/NOTICE' },
+  { service: 'gateway', binary: 'semiont-gateway', notice: 'gateway/NOTICE' },
+  { service: 'dispatcher', binary: 'semiont-dispatcher', notice: 'dispatcher/NOTICE' },
+  { service: 'archivist', binary: 'semiont-archivist', notice: 'archivist/NOTICE' },
 ];
 const NATIVE_HEADING = '  Native code those crates compile into the binary:';
 
@@ -58,7 +58,7 @@ const args = process.argv.slice(2);
 const write = args.includes('--write');
 const [directory, ...rest] = args.filter((a) => a !== '--write');
 if (!directory || rest.length > 0) {
-  console.error('Usage: node images/scripts/check-image-crates.mjs [--write] <directory of metadata.json and linked-<binary>-<target>.txt>');
+  console.error('Usage: node scripts/check-image-crates.mjs [--write] <directory of metadata.json and linked-<binary>-<target>.txt>');
   process.exit(2);
 }
 

@@ -3,17 +3,17 @@
 # `requires-python = ">=X.Y"` in packages/python/sdk/pyproject.toml.
 #
 # An installer reads that line itself, and so does ruff. What cannot asks
-# here, so the line is read in one place and one way: images/scripts/build-session.sh
+# here, so the line is read in one place and one way: scripts/build-session.sh
 # (its Python image is python:<floor>-alpine), the SDK's model generator (the
 # Python its classes are written for), whatever builds the worker image (the
-# Python it runs on, which images/worker/Dockerfile takes as PYTHON_FLOOR:
+# Python it runs on, which worker/Dockerfile takes as PYTHON_FLOOR:
 # the local-build session and publish-service-images.yml), and lint:python-version,
 # which holds every restatement of the floor to it.
 #
 # With no floor it prints nothing and fails, so a build that cannot name its
 # Python stops. It is plain sh: an image with no bash can run it.
 set -eu
-cd "$(dirname "$0")/../../.."
+cd "$(dirname "$0")/../.."
 
 floor=$(sed -n 's/^requires-python = ">=\([0-9][0-9.]*\)"$/\1/p' packages/python/sdk/pyproject.toml)
 if [ -z "$floor" ]; then
