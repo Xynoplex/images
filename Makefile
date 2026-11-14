@@ -1,4 +1,5 @@
 .PHONY: help local build image clean
+.DEFAULT_GOAL := build
 
 IMAGE_NAMES := gateway archivist dispatcher browser librarian smelter weaver worker
 
