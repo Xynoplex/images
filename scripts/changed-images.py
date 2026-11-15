@@ -16,6 +16,8 @@ An image is affected when a changed path is one of its inputs:
 With no base (a new branch, or a base this clone does not have), every image
 is affected. A Dockerfile that copies a path which neither exists nor is
 staged fails the run, by its path: a new input must be added here, not missed.
+Whether a path exists is git's answer, so the check needs no submodule checked
+out.
 
 The output is the build matrix: a JSON list of {"name", "images"} groups, the
 Rust images together, since they share one compile of the workspace.
@@ -54,7 +56,14 @@ def git(*arguments: str) -> str:
     return subprocess.check_output(["git", "-C", str(ROOT), *arguments], text=True)
 
 
-def copied_paths(image: str) -> list[str]:
+def in_tree(path: str, tracked: list[str], submodules: list[str]) -> bool:
+    """Whether git holds the path: a tracked file, a directory of them, or a path inside a submodule."""
+    return (path in tracked
+            or any(each.startswith(path + "/") for each in tracked)
+            or any(path.startswith(each + "/") for each in submodules))
+
+
+def copied_paths(image: str, tracked: list[str], submodules: list[str]) -> list[str]:
     """The build-context paths an image's Dockerfile copies, staged ones resolved to their sources."""
     dockerfile = f"{image}/Dockerfile"
     paths = [dockerfile]
@@ -74,7 +83,7 @@ def copied_paths(image: str) -> list[str]:
                 paths.extend(STAGED[staged])
                 continue
             literal = re.split(r"[*?\[$]", source, maxsplit=1)[0].rstrip("/")
-            if not literal or not (ROOT / literal).exists():
+            if not literal or not in_tree(literal, tracked, submodules):
                 raise SystemExit(f"{dockerfile} copies {source}, which is neither in the tree nor staged by build-session.sh")
             paths.append(literal)
     return paths
@@ -90,6 +99,8 @@ def main() -> None:
         raise SystemExit("usage: changed-images.py <base commit> <head commit>")
     base, head = sys.argv[1], sys.argv[2]
 
+    tracked = git("ls-files", "-z").split("\0")
+    submodules = [line.split("\t", 1)[1] for line in git("ls-files", "--stage").splitlines() if line.startswith("160000 ")]
     language_of = {image: variable for variable in SHARED_ROOT for image in group(variable)}
     every = group("IMAGE_NAMES")
     if sorted(every) != sorted(language_of):
@@ -106,7 +117,7 @@ def main() -> None:
 
     affected = []
     for image in every:
-        inputs = copied_paths(image) + SHARED_ROOT[language_of[image]] + EVERY_BUILD
+        inputs = copied_paths(image, tracked, submodules) + SHARED_ROOT[language_of[image]] + EVERY_BUILD
         hits = sorted({path for path in changed for each in inputs if touches(path, each)})
         if not known_base or hits:
             affected.append(image)
