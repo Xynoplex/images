@@ -27,6 +27,7 @@ COPY version.json ./
 # against: each is built from its manifest, the README its manifest names,
 # where it names one, and its source.
 COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
+COPY .local/shared-python-packages/*.whl /build/.local/shared-python-packages/
 COPY shared/python/vectors/pyproject.toml shared/python/vectors/README.md shared/python/vectors/
 COPY shared/python/vectors/src shared/python/vectors/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -53,8 +54,14 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # PDFium, which reads a PDF, comes in the wheel of its binding (pypdfium2),
 # built for Alpine's C library with its C++ runtime inside it. It asks for no
 # package of the system, in this stage or the next.
-RUN uv sync --project smelter --locked --no-dev --no-editable --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
+RUN uv sync --project smelter --locked --no-dev --no-editable \
+      --no-install-package xynoplex \
+      --no-install-package semiont-service \
+      --no-install-package semiont-vectors && \
+    uv pip install --python /opt/venv/bin/python --no-deps \
+      .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl \
+      .local/shared-python-packages/semiont_service-*.whl \
+      .local/shared-python-packages/semiont_vectors-*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the

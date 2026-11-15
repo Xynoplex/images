@@ -11,7 +11,7 @@ help:
 	  '  make                  Build all eight images (default target)' \
 	  '  make local            Same as make' \
 	  '  make build            Same as make' \
-	  '  make shared           Build the shared Python distributions: graph, vectors, inference, service' \
+	  '  make shared           Build the shared Python distributions; Python image builds use these wheels' \
 	  '  make gateway          Build the Gateway image' \
 	  '  make archivist        Build the Archivist image' \
 	  '  make dispatcher       Build the Dispatcher image' \
@@ -34,7 +34,7 @@ help:
 
 build: local
 
-local:
+local: shared
 	@./scripts/build-session.sh all
 
 shared:
@@ -46,6 +46,8 @@ image:
 
 $(IMAGE_NAMES):
 	@./scripts/build-session.sh "$@"
+
+librarian smelter weaver worker: shared
 
 clean:
 	@./scripts/clean.sh

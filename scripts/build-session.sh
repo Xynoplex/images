@@ -15,6 +15,21 @@ if [[ "$1" == all ]]; then
   set -- gateway archivist dispatcher browser librarian smelter weaver worker
 fi
 
+needs_python=false
+for service in "$@"; do
+  case "$service" in
+    librarian|smelter|weaver|worker) needs_python=true ;;
+  esac
+done
+if [[ "$needs_python" == true ]]; then
+  bash "$REPO_ROOT/scripts/build-shared-python.sh" --ensure
+  shared_output="${XDG_CACHE_HOME:-$HOME/.cache}/xynoplex-images/local/python/packages"
+  shared_staging="$REPO_ROOT/.local/shared-python-packages"
+  rm -rf "$shared_staging"
+  mkdir -p "$shared_staging"
+  cp "$shared_output"/*.whl "$shared_staging/"
+fi
+
 source "$REPO_ROOT/scripts/container-runtime.sh"
 RT="$(detect_container_runtime)"
 RUST_TOOLCHAIN="$(packages/rust/scripts/rust-toolchain.sh)"

@@ -25,6 +25,7 @@ COPY version.json ./
 # The SDK wheel is built and pinned by the SDK repository. The graph stores,
 # vector stores, inference drivers and shared service packages are owned here.
 COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
+COPY .local/shared-python-packages/*.whl /build/.local/shared-python-packages/
 COPY shared/python/graph/pyproject.toml shared/python/graph/README.md shared/python/graph/
 COPY shared/python/graph/src shared/python/graph/src
 COPY shared/python/vectors/pyproject.toml shared/python/vectors/README.md shared/python/vectors/
@@ -58,8 +59,18 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # the database's alone: Ollama is asked with what every install has. The
 # vector index and the embedding providers are asked over HTTP, with what
 # every install has too.
-RUN uv sync --project librarian --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
+RUN uv sync --project librarian --locked --no-dev --no-editable --all-extras \
+      --no-install-package xynoplex \
+      --no-install-package semiont-graph \
+      --no-install-package semiont-inference \
+      --no-install-package semiont-service \
+      --no-install-package semiont-vectors && \
+    uv pip install --python /opt/venv/bin/python --no-deps \
+      .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl \
+      .local/shared-python-packages/semiont_graph-*.whl \
+      .local/shared-python-packages/semiont_inference-*.whl \
+      .local/shared-python-packages/semiont_service-*.whl \
+      .local/shared-python-packages/semiont_vectors-*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the

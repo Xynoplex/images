@@ -25,6 +25,7 @@ COPY version.json ./
 # The SDK wheel is built and pinned by the SDK repository. The inference
 # drivers and shared service packages are owned here.
 COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
+COPY .local/shared-python-packages/*.whl /build/.local/shared-python-packages/
 COPY shared/python/inference/pyproject.toml shared/python/inference/README.md shared/python/inference/
 COPY shared/python/inference/src shared/python/inference/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -50,8 +51,14 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # library that provider is asked through. An image for one provider names
 # that provider's extra in its place (`--extra anthropic`), and one for Ollama
 # alone names none: Ollama is asked with what every install has.
-RUN uv sync --project worker --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
+RUN uv sync --project worker --locked --no-dev --no-editable --all-extras \
+      --no-install-package xynoplex \
+      --no-install-package semiont-inference \
+      --no-install-package semiont-service && \
+    uv pip install --python /opt/venv/bin/python --no-deps \
+      .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl \
+      .local/shared-python-packages/semiont_inference-*.whl \
+      .local/shared-python-packages/semiont_service-*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the

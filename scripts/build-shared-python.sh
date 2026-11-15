@@ -6,7 +6,34 @@ source "$ROOT/scripts/container-runtime.sh"
 RUNTIME="$(detect_container_runtime)"
 STATE_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/xynoplex-images/local"
 OUTPUT="$STATE_ROOT/python/packages"
+MANIFEST="$STATE_ROOT/python/source.sha256"
 PACKAGES=(graph vectors inference service)
+
+source_hash() {
+  find "${PACKAGES[@]/#/$ROOT/shared/python/}" -type f \
+    ! -path '*/__pycache__/*' ! -name '*.pyc' -print0 |
+    sort -z |
+    xargs -0 shasum -a 256 |
+    shasum -a 256 | awk '{print $1}'
+}
+
+current_hash="$(source_hash)"
+if [[ "${1:-}" == --ensure ]]; then
+  fresh=true
+  [[ -f "$MANIFEST" && "$(cat "$MANIFEST")" == "$current_hash" ]] || fresh=false
+  shopt -s nullglob
+  for package in "${PACKAGES[@]}"; do
+    wheels=("$OUTPUT/semiont_${package}-"*.whl)
+    (( ${#wheels[@]} == 1 )) || fresh=false
+  done
+  if [[ "$fresh" == true ]]; then
+    printf 'Shared Python distributions are current:\n  %s\n' "$OUTPUT"
+    exit 0
+  fi
+elif [[ $# -ne 0 ]]; then
+  echo "Usage: $0 [--ensure]" >&2
+  exit 2
+fi
 
 # Remove artifacts from the previous checkout-local location.
 rm -rf "$ROOT/.local/shared-python-packages"
@@ -30,3 +57,4 @@ printf '==> Building shared Python distributions with uv 0.13.7\n'
   '
 
 printf '\nShared Python distributions are under:\n  %s\n' "$OUTPUT"
+printf '%s\n' "$current_hash" > "$MANIFEST"

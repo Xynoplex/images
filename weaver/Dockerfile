@@ -27,6 +27,7 @@ COPY version.json ./
 # against: each is built from its manifest, the README its manifest names,
 # where it names one, and its source.
 COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/python/*.whl /build/.local/sdk-artifacts/current/python/
+COPY .local/shared-python-packages/*.whl /build/.local/shared-python-packages/
 COPY shared/python/graph/pyproject.toml shared/python/graph/README.md shared/python/graph/
 COPY shared/python/graph/src shared/python/graph/src
 COPY shared/python/service/pyproject.toml shared/python/service/
@@ -51,8 +52,14 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # brings the graph stores' extra of the same name, and with it the client
 # that database is asked through. An image for one database names that
 # database's extra in its place (`--extra neo4j`).
-RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras --no-install-package xynoplex && \
-    uv pip install --python /opt/venv/bin/python --no-deps .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl
+RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras \
+      --no-install-package xynoplex \
+      --no-install-package semiont-graph \
+      --no-install-package semiont-service && \
+    uv pip install --python /opt/venv/bin/python --no-deps \
+      .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl \
+      .local/shared-python-packages/semiont_graph-*.whl \
+      .local/shared-python-packages/semiont_service-*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
