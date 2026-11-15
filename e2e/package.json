@@ -1,5 +1,5 @@
 {
-  "name": "@xynoplex/tests-e2e",
+  "name": "@xynolog/tests-e2e",
   "version": "0.0.0",
   "private": true,
   "description": "End-to-end smoke tests. Runs against a locally-running gateway and frontend; see README.md.",
@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
-    "@xynoplex/core": "0.7.3",
-    "@xynoplex/sdk": "0.7.3",
+    "@xynolog/core": "0.7.3",
+    "@xynolog/sdk": "0.7.3",
     "@types/node": "^26.0.0",
     "typescript": "^6.0.2"
   }

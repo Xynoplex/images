@@ -1,4 +1,4 @@
-//! What Semiont's Rust services that serve HTTP share.
+//! What Xynolog's Rust services that serve HTTP share.
 //!
 //! - [`serve`]: connections a service can close from its side.
 //! - [`bearer_token`]: the token an `Authorization` header carries.

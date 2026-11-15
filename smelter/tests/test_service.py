@@ -17,24 +17,24 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.channels import PERSISTED_EVENT_TYPES
-from xynoplex.http import SecretCredential, ServiceToken
-from xynoplex.identifiers import UserId
-from xynoplex.testing import FaultyTransport
-from xynoplex.types import SmelterConfig, VectorsConfig
-from xynoplex.watched import Variable, Watched
-from semiont_service.config import Refused
-from semiont_vectors.ollama import OllamaEmbeddingProvider
-from semiont_vectors.qdrant import QdrantVectorStore
-from semiont_vectors.voyage import VoyageEmbeddingProvider
+from xynolog.channels import PERSISTED_EVENT_TYPES
+from xynolog.http import SecretCredential, ServiceToken
+from xynolog.identifiers import UserId
+from xynolog.testing import FaultyTransport
+from xynolog.types import SmelterConfig, VectorsConfig
+from xynolog.watched import Variable, Watched
+from xynolog_service.config import Refused
+from xynolog_vectors.ollama import OllamaEmbeddingProvider
+from xynolog_vectors.qdrant import QdrantVectorStore
+from xynolog_vectors.voyage import VoyageEmbeddingProvider
 
-from semiont_smelter import service
-from semiont_smelter.config import vectors_token_of
-from semiont_smelter.service import CHANNELS, boot, main
+from xynolog_smelter import service
+from xynolog_smelter.config import vectors_token_of
+from xynolog_smelter.service import CHANNELS, boot, main
 
 pytestmark = pytest.mark.usefixtures("the_log_as_it_was")
 
-ACCOUNT: Final = {"SEMIONT_OIDC_CLIENT_ID": "semiont-smelter", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+ACCOUNT: Final = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-smelter", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
 TOKEN: Final = {"QDRANT_TOKEN": "a-token"}
 STARTED: Final = {**ACCOUNT, **TOKEN}
 """Everything the environment holds for a Smelter whose document names no provider's key: its account, and its index's token."""
@@ -51,13 +51,13 @@ QDRANT: Final[dict[str, JsonValue]] = {"type": "qdrant", "host": "127.0.0.1", "p
 DOCUMENT: Final[dict[str, JsonValue]] = {
     "kb": {"name": "example-kb", "domain": "example.github.io:example-kb"},
     "gatewayUrl": "http://127.0.0.1:1",
-    "identity": {"issuer": "http://127.0.0.1:1/realms/semiont"},
+    "identity": {"issuer": "http://127.0.0.1:1/realms/xynolog"},
     "archivist": {"host": "127.0.0.1", "port": 1},
     "embedding": OLLAMA,
     "vectors": QDRANT,
     "chunking": {"chunkSize": 512, "overlap": 64},
     "pdfsAtOnce": 1,
-    "cursorsPath": "/tmp/semiont/smelter-cursors.json",
+    "cursorsPath": "/tmp/xynolog/smelter-cursors.json",
     "port": 24101,
     "logLevel": "warn",
     "logFormat": "simple",
@@ -89,7 +89,7 @@ def test_started_with_everything_it_boots_and_dials_nothing(tmp_path: Path) -> N
     started = boot(["--config", written(tmp_path)], STARTED)
     assert started.config.gateway_url == "http://127.0.0.1:1"
     assert started.credential == SecretCredential(
-        issuer="http://127.0.0.1:1/realms/semiont", client_id="semiont-smelter", client_secret="s3cret"
+        issuer="http://127.0.0.1:1/realms/xynolog", client_id="xynolog-smelter", client_secret="s3cret"
     )
     assert isinstance(started.provider, OllamaEmbeddingProvider)
     assert isinstance(started.index, QdrantVectorStore)
@@ -213,10 +213,10 @@ def test_the_document_is_settled_before_the_account_the_account_before_the_provi
     assert refusal(["--config", written(tmp_path, without("vectors"))], {}).endswith("  Missing required property: vectors")
     keyed = written(tmp_path, {**DOCUMENT, "embedding": VOYAGE})
     assert refusal(["--config", keyed], {}) == (
-        "SEMIONT_OIDC_CLIENT_ID is not set in the smelter's environment: a smelter signs in as a service account"
+        "XYNOLOG_OIDC_CLIENT_ID is not set in the smelter's environment: a smelter signs in as a service account"
     )
-    assert refusal(["--config", keyed], {"SEMIONT_OIDC_CLIENT_ID": "semiont-smelter", "SEMIONT_OIDC_CLIENT_SECRET": ""}) == (
-        "SEMIONT_OIDC_CLIENT_SECRET is not set in the smelter's environment: a smelter signs in as a service account"
+    assert refusal(["--config", keyed], {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-smelter", "XYNOLOG_OIDC_CLIENT_SECRET": ""}) == (
+        "XYNOLOG_OIDC_CLIENT_SECRET is not set in the smelter's environment: a smelter signs in as a service account"
     )
     assert refusal(["--config", keyed], ACCOUNT) == (
         "embedding.apiKeyEnv names VOYAGE_API_KEY, which is not set in the smelter's environment"
@@ -248,7 +248,7 @@ def test_the_indexs_token_is_read_from_the_variable_the_document_names() -> None
 def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["semiont_smelter", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_smelter", "--config", written(tmp_path)])
     for name in ACCOUNT:
         monkeypatch.delenv(name, raising=False)
 
@@ -256,7 +256,7 @@ def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
 
     said = capsys.readouterr()
     assert said.out == ""
-    unset = "SEMIONT_OIDC_CLIENT_ID is not set in the smelter's environment"
+    unset = "XYNOLOG_OIDC_CLIENT_ID is not set in the smelter's environment"
     assert said.err == f"[fatal] {unset}: a smelter signs in as a service account\n"
 
 
@@ -300,7 +300,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     @final
     class SignedIn:
         def __init__(self, gateway: str, *, service: ServiceToken) -> None:
-            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:semiont-smelter")
+            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:xynolog-smelter")
             self.token: Final[Watched[str | None]] = Variable[str | None]("issued")
 
         async def refresh(self) -> str | None:
@@ -349,7 +349,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     monkeypatch.setattr(service, "HttpTransport", Stream)
     monkeypatch.setattr(service, "create_vector_store", made)
     monkeypatch.setattr(service, "current_stamp", stamp)
-    monkeypatch.setattr(sys, "argv", ["semiont_smelter", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_smelter", "--config", written(tmp_path)])
     for name, value in {**STARTED, "OTEL_SDK_DISABLED": "true"}.items():
         monkeypatch.setenv(name, value)
 

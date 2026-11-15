@@ -2,8 +2,8 @@
 //! the attribution of something asked for by one and sent by another.
 
 use crate::Object;
-use xynoplex::identity::{Kind, kind_of};
 use serde_json::{Value, json};
+use xynolog::identity::{Kind, kind_of};
 
 /// Whether `value` reads as a URI: a scheme, a colon, and something after it.
 fn uri_shaped(value: &str) -> bool {
@@ -99,7 +99,7 @@ mod tests {
     #[test]
     fn a_did_names_who_and_nothing_else() {
         for (did, kind) in [
-            ("did:web:kb.example:agents:semiont-worker", "Software"),
+            ("did:web:kb.example:agents:xynolog-worker", "Software"),
             ("did:web:kb.example:users:alice%40kb.example", "Person"),
             ("did:web:kb.example:alice", "Person"),
         ] {

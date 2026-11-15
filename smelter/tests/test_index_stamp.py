@@ -4,12 +4,12 @@ import logging
 
 import pytest
 from aio import run
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import SmelterConfig
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.store import EmbeddingChunk, IndexStamp
+from xynolog.identifiers import ResourceId
+from xynolog.types import SmelterConfig
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.store import EmbeddingChunk, IndexStamp
 
-from semiont_smelter.index_stamp import hold_to, stamp_of
+from xynolog_smelter.index_stamp import hold_to, stamp_of
 
 STAMP: IndexStamp = {"embedding": {"type": "ollama", "model": "nomic-embed-text"}, "chunking": {"chunkSize": 512, "overlap": 64}}
 OTHER_MODEL: IndexStamp = {"embedding": {"type": "ollama", "model": "all-minilm"}, "chunking": {"chunkSize": 512, "overlap": 64}}
@@ -22,13 +22,13 @@ def configured(embedding: dict[str, str], chunk_size: int, overlap: int) -> Smel
         {
             "kb": {"name": "example-kb", "domain": "example.github.io:example-kb"},
             "gatewayUrl": "http://127.0.0.1:1",
-            "identity": {"issuer": "http://127.0.0.1:1/realms/semiont"},
+            "identity": {"issuer": "http://127.0.0.1:1/realms/xynolog"},
             "archivist": {"host": "127.0.0.1", "port": 1},
             "embedding": embedding,
             "vectors": {"type": "qdrant", "host": "127.0.0.1", "port": 1, "tokenEnv": "QDRANT_TOKEN"},
             "chunking": {"chunkSize": chunk_size, "overlap": overlap},
             "pdfsAtOnce": 1,
-            "cursorsPath": "/tmp/semiont/smelter-cursors.json",
+            "cursorsPath": "/tmp/xynolog/smelter-cursors.json",
             "port": 24101,
             "logLevel": "warn",
             "logFormat": "simple",
@@ -84,9 +84,9 @@ def test_an_index_that_states_another_stamp_or_none_is_made_again_empty_and_a_wa
         assert await index.count() == 0
         assert await index.index_stamp() == STAMP
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
-    (said,) = [record for record in caplog.records if record.name == "semiont_smelter"]
+    (said,) = [record for record in caplog.records if record.name == "xynolog_smelter"]
     assert said.levelno == logging.WARNING
     assert (vars(said)["stated"], vars(said)["stamp"]) == (stated, STAMP)
 
@@ -100,6 +100,6 @@ def test_an_index_that_holds_nothing_and_states_nothing_is_stamped_and_no_warnin
 
         assert await index.index_stamp() == STAMP
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
-    assert [record.levelno for record in caplog.records if record.name == "semiont_smelter"] == [logging.INFO]
+    assert [record.levelno for record in caplog.records if record.name == "xynolog_smelter"] == [logging.INFO]

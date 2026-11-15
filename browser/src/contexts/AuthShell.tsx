@@ -3,9 +3,9 @@
  *
  * Mounts the protected error boundary and the session modals (session
  * ended, permission denied, KB identity conflict).
- * The session state (KB list, active KB, per-KB XynoplexSession) is owned
- * by the module-scoped `XynoplexBrowser` singleton, made available via
- * `<XynoplexProvider>` at the app root; the modals read the active
+ * The session state (KB list, active KB, per-KB XynologSession) is owned
+ * by the module-scoped `XynologBrowser` singleton, made available via
+ * `<XynologProvider>` at the app root; the modals read the active
  * `SessionSignals`.
  *
  * `ProtectedLayout` in App.tsx mounts this once above the authenticated
@@ -20,7 +20,7 @@ import {
   SessionEndedModal,
   PermissionDeniedModal,
   KbIdentityConflictModal,
-} from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();

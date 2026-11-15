@@ -12,13 +12,13 @@ from typing import Annotated, Final, Literal
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.types import UnitCursor
-from xynoplex.watched import Variable
-from semiont_inference.interface import InferenceLimits, StructuredReadError, TokenUsage
 from spec import SPEC
+from xynolog.types import UnitCursor
+from xynolog.watched import Variable
+from xynolog_inference.interface import InferenceLimits, StructuredReadError, TokenUsage
 
-from semiont_worker.chunking import Chunking
-from semiont_worker.detection.chunk_plan import (
+from xynolog_worker.chunking import Chunking
+from xynolog_worker.detection.chunk_plan import (
     AdaptiveChunk,
     ChunkCallResult,
     DetectionBudget,
@@ -29,7 +29,7 @@ from semiont_worker.detection.chunk_plan import (
     derive_detection_budget,
     run_adaptive_chunks,
 )
-from semiont_worker.detection.chunk_size import (
+from xynolog_worker.detection.chunk_size import (
     CHUNK_SIZING_POLICY,
     CallOutcome,
     ChunkSizingPolicy,
@@ -37,8 +37,8 @@ from semiont_worker.detection.chunk_size import (
     SizingBounds,
     next_chunk_size,
 )
-from semiont_worker.failure_class import DeterministicJobError
-from semiont_worker.inference_call import InferenceTimeoutError
+from xynolog_worker.failure_class import DeterministicJobError
+from xynolog_worker.inference_call import InferenceTimeoutError
 
 
 class Stated(BaseModel, frozen=True, extra="forbid", strict=True):

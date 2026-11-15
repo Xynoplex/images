@@ -35,7 +35,7 @@ from provider_google import Generated, Google, blocked, candidate, counted, gemi
 from pydantic import JsonValue, TypeAdapter
 from spec import PACKAGE, SPEC, JsonObject, objects, read, strings, text, thing
 
-from semiont_inference.catalogue import (
+from xynolog_inference.catalogue import (
     BudgetTokensOption,
     CatalogueFacts,
     CatalogueLimit,
@@ -46,8 +46,8 @@ from semiont_inference.catalogue import (
     catalogue_facts,
     read_catalogue,
 )
-from semiont_inference.google import GoogleInferenceClient
-from semiont_inference.interface import (
+from xynolog_inference.google import GoogleInferenceClient
+from xynolog_inference.interface import (
     InferenceClient,
     InferenceLimits,
     InferenceResponse,
@@ -148,7 +148,7 @@ async def generation(client: GoogleInferenceClient, structured: bool) -> Inferen
 
 
 def ours(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference"]
+    return [record for record in caplog.records if record.name == "xynolog_inference"]
 
 
 def logged_errors(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
@@ -976,7 +976,7 @@ def test_a_reply_of_more_than_one_candidate_is_a_failure_and_none_of_them_is_cho
                 "Structured response could not be read: the reply holds 2 candidates, not one (stop_reason: end_turn)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = logged_errors(caplog)
     assert error.getMessage() == "More than one candidate from Google"
@@ -1093,7 +1093,7 @@ def test_a_reply_with_no_text_is_a_failure_that_carries_the_stop_reason(
                 "Structured response could not be read: response is empty (stop_reason: max_tokens)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = logged_errors(caplog)
     assert error.getMessage() == "Empty response from Google"
@@ -1156,7 +1156,7 @@ def test_a_candidate_the_provider_stopped_is_an_answer_withheld_for_the_reason_i
             assert (withheld.value.reason, str(withheld.value)) == (reason, f"The provider withheld its answer: {reason}{explained}")
             assert len(played.generating) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = logged_errors(caplog)
     assert error.getMessage() == "The provider withheld its answer"
@@ -1180,7 +1180,7 @@ def test_a_prompt_the_provider_blocked_is_an_answer_withheld_for_the_reason_it_s
             )
             assert len(played.generating) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = logged_errors(caplog)
     assert error.getMessage() == "The provider withheld its answer"
@@ -1323,7 +1323,7 @@ def test_a_call_logs_what_the_other_drivers_do_at_the_same_levels(caplog: pytest
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0.2, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     records = ours(caplog)
     assert [(record.levelname, record.getMessage()) for record in records] == [
@@ -1540,23 +1540,23 @@ FACTS = """CatalogueFacts(
 
 ASKING_FOR_ANOTHER = f"""
 import sys
-import semiont_inference
-from semiont_inference.factory import create_inference_client
+import xynolog_inference
+from xynolog_inference.factory import create_inference_client
 
 ollama = create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None)
-print(ollama.provider, {LOADED}, "semiont_inference.google" in sys.modules)
+print(ollama.provider, {LOADED}, "xynolog_inference.google" in sys.modules)
 """
 
 ASKING_FOR_GOOGLE = f"""
 import sys
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
 
 facts = {FACTS}
 before = {LOADED}
-from semiont_inference.google import GoogleInferenceClient
+from xynolog_inference.google import GoogleInferenceClient
 
 client = GoogleInferenceClient(api_key="k", model="gemini-x", base_url="http://127.0.0.1:1", facts=facts)
-print(before, client.provider, "google.genai" in sys.modules, "semiont_inference.google" in sys.modules)
+print(before, client.provider, "google.genai" in sys.modules, "xynolog_inference.google" in sys.modules)
 """
 
 WITHOUT_GOOGLES_LIBRARY = """
@@ -1572,10 +1572,10 @@ class NotInstalled(importlib.abc.MetaPathFinder):
 
 
 sys.meta_path.insert(0, NotInstalled())
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 try:
-    import semiont_inference.google
+    import xynolog_inference.google
 except ModuleNotFoundError as missing:
     cause = missing.__cause__
     print(type(missing).__name__, "|", missing.name, "|", None if cause is None else cause.name, "|", missing)
@@ -1602,7 +1602,7 @@ def test_asking_for_the_google_driver_is_what_imports_googles_library_and_statin
 def test_without_googles_library_its_driver_fails_naming_the_extra_and_an_ollama_client_is_made(missing: str) -> None:
     said_of_it = (
         "The Google driver needs Google's `google-genai` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[google]`."
+        "It comes with the extra: install `xynolog-inference[google]`."
     )
     assert alone(WITHOUT_GOOGLES_LIBRARY.format(missing=missing)).splitlines() == [
         # Its cause is the interpreter's own failure, which names what it did not find.
@@ -1633,9 +1633,9 @@ from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from provider import HOLD
 from provider_google import Generated, Google, candidate, counted, generated, google_error, said, text_part
 
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
-from semiont_inference.google import GoogleInferenceClient
-from semiont_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.google import GoogleInferenceClient
+from xynolog_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError
 
 MODEL = "telemetry-gemini"
 FACTS = CatalogueFacts(
@@ -1709,7 +1709,7 @@ print(
     )
 )
 """
-PREFIX = "semiont.inference."
+PREFIX = "xynolog.inference."
 
 
 def test_the_driver_records_the_three_the_table_lists_by_the_tables_keys_under_its_own_providers_name() -> None:

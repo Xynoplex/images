@@ -5,16 +5,16 @@ from typing import Final, final
 import pytest
 from aio import run
 from rig import FakeAnchoredText, FakeContent, FakeInference, FakeRecord, described, reference, sent, tag, view
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation, ContextualSummaryResponse, ContextualSummaryResponseContext, GatherSummaryRequest, ResourceView
-from semiont_service.content import Content
 from spec import JsonObject
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation, ContextualSummaryResponse, ContextualSummaryResponseContext, GatherSummaryRequest, ResourceView
+from xynolog_service.content import Content
 
-from semiont_librarian.annotation_gather import Ungathered
-from semiont_librarian.prompts import annotation_summary_prompt
-from semiont_librarian.summary import summarize
-from semiont_librarian.window import Unplaced
+from xynolog_librarian.annotation_gather import Ungathered
+from xynolog_librarian.prompts import annotation_summary_prompt
+from xynolog_librarian.summary import summarize
+from xynolog_librarian.window import Unplaced
 
 WAR: Final = ResourceId("res-war")
 TREATY: Final = AnnotationId("ann-treaty")

@@ -11,8 +11,8 @@ from pathlib import Path
 
 SOURCE = Path(__file__).with_name("smoke-stack.sh")
 DOCUMENTS = {
-    "browser": "image: ghcr.io/xynoplex/xynoplex-browser:previous\nkeep: browser-setting\n",
-    "worker": "image: ghcr.io/xynoplex/xynoplex-worker:previous\nkeep: worker-setting\n",
+    "browser": "image: ghcr.io/xynolog/xynolog-browser:previous\nkeep: browser-setting\n",
+    "worker": "image: ghcr.io/xynolog/xynolog-worker:previous\nkeep: worker-setting\n",
 }
 ISSUER = "http://192.0.2.1:8080/realms/example.github.io-stack-smoke"
 PROTECTED_RESOURCE = {
@@ -45,14 +45,14 @@ elif command == "init":
     inits = root / "inits.jsonl"
     count = len(inits.read_text().splitlines()) if inits.exists() else 0
     log("inits.jsonl", {"cwd": os.getcwd(), "domain": sys.argv[sys.argv.index("--domain") + 1], "flags": sys.argv[2:]})
-    stack = Path.cwd() / ".semiont/stack"
+    stack = Path.cwd() / ".xynolog/stack"
     stack.mkdir(parents=True)
     port = 4000 + 10 * count
     (stack / "knowledge-base.yaml").write_text(
         "kind: KnowledgeBase\\nspec:\\n  gateway:\\n"
-        "    image: ghcr.io/xynoplex/xynoplex-gateway:latest\\n"
+        "    image: ghcr.io/xynolog/xynolog-gateway:latest\\n"
         f"    port: {port}\\n    publicURL: http://localhost:{port}\\n"
-        "  dispatcher:\\n    image: ghcr.io/xynoplex/xynoplex-dispatcher:latest\\n"
+        "  dispatcher:\\n    image: ghcr.io/xynolog/xynolog-dispatcher:latest\\n"
     )
 elif command == "settings":
     print(root / "state home" / f"{sys.argv[2]}.yaml")
@@ -60,7 +60,7 @@ elif command == "start":
     starts = root / "starts.jsonl"
     count = len(starts.read_text().splitlines()) if starts.exists() else 0
     snapshot = {name: (root / "state home" / f"{name}.yaml").read_text() for name in ("browser", "worker")}
-    snapshot["gateway"] = (Path.cwd() / ".semiont/stack/knowledge-base.yaml").read_text()
+    snapshot["gateway"] = (Path.cwd() / ".xynolog/stack/knowledge-base.yaml").read_text()
     snapshot["cwd"] = os.getcwd()
     log("starts.jsonl", snapshot)
     statuses = os.environ["SMOKE_TEST_START_STATUS"].split(",")
@@ -131,7 +131,7 @@ class SmokeStackTest(unittest.TestCase):
             f"  exit {e2e_status}\n"
             "fi\n"
             # Another knowledge base's container, stopped, as a machine keeps one.
-            'case "$1" in ps|ls) echo semiont-another-kb-gateway ;; logs) echo "a log line of $*" ;; esac\nexit 0',
+            'case "$1" in ps|ls) echo xynolog-another-kb-gateway ;; logs) echo "a log line of $*" ;; esac\nexit 0',
         }.items():
             executable = self.root / "bin" / name
             executable.write_text(f"#!/bin/sh\n{body}\n")
@@ -208,13 +208,13 @@ class SmokeStackTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 for name in DOCUMENTS:
                     self.assertIn(
-                        f"image: ghcr.io/xynoplex/xynoplex-{name}:{tag}\n",
+                        f"image: ghcr.io/xynolog/xynolog-{name}:{tag}\n",
                         (self.root / "state home" / f"{name}.yaml").read_text(),
                     )
                 started = self.lines("starts.jsonl")[-1]
                 for name in ("browser", "worker", "gateway"):
                     self.assertIn(
-                        f"ghcr.io/xynoplex/xynoplex-{name}:{tag}\n", started[name]
+                        f"ghcr.io/xynolog/xynolog-{name}:{tag}\n", started[name]
                     )
                     if name != "gateway":
                         self.assertIn(f"keep: {name}-setting\n", started[name])
@@ -257,7 +257,7 @@ class SmokeStackTest(unittest.TestCase):
         self.assertFalse((self.kb / ".smoke-kept").exists())
         self.assertNotEqual(self.smoke("down").returncode, 0)
         self.assertNotIn(
-            "semiont-another-kb-gateway",
+            "xynolog-another-kb-gateway",
             result.stdout + result.stderr,
             "the launcher prints a failed container's log; the smoke prints none of the machine's",
         )
@@ -292,7 +292,7 @@ class SmokeStackTest(unittest.TestCase):
             # A queue that reads empty is read once.
             self.assertEqual(self.asked_status().count(os.path.realpath(e2e["cwd"])), 1)
         for start in self.lines("starts.jsonl")[1:]:
-            self.assertIn("ghcr.io/xynoplex/xynoplex-gateway:0.7.1\n", start["gateway"])
+            self.assertIn("ghcr.io/xynolog/xynolog-gateway:0.7.1\n", start["gateway"])
         self.assertNotIn(os.path.realpath(self.kb), self.stopped())
         calls = (self.root / "runtime.log").read_text()
         self.assertIn("E2E_GATEWAY_URL=http://localhost:4010", calls)

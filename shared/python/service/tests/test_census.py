@@ -19,7 +19,7 @@ from pathlib import Path
 from pydantic import JsonValue, TypeAdapter
 from spec import PROJECT, ROOT, SDK
 
-SRC = PROJECT / "src/semiont_service"
+SRC = PROJECT / "src/xynolog_service"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PROJECT / top).rglob("*.py"))
 SERVICES = sorted(path.parent for path in ROOT.glob("*/pyproject.toml"))
 
@@ -160,8 +160,8 @@ def test_what_the_manifest_requires_is_what_the_source_imports() -> None:
     everything = imported(sorted(SRC.rglob("*.py")))
     roots = {module.split(".")[0] for module in everything}
     # Every module imported from outside the standard library is declared, and nothing declared goes unused.
-    assert roots - set(sys.stdlib_module_names) - {"semiont_service"} == declared
-    assert declared == {"httpx", "opentelemetry", "pydantic", "semiont"}
+    assert roots - set(sys.stdlib_module_names) - {"xynolog_service"} == declared
+    assert declared == {"httpx", "opentelemetry", "pydantic", "xynolog"}
     # The one request a service makes itself is for a resource's bytes, of the Archivist.
     assert modules({"httpx"}) == ["archivist.py"]
     assert names >= set(part_of_opentelemetry)
@@ -194,14 +194,14 @@ def test_a_dependency_the_sdk_bounds_is_named_here_without_a_bound_of_its_own() 
 
 def test_the_sdk_source_is_the_pinned_artifact() -> None:
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
-    expected = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"
-    assert sources == {"xynoplex": {"path": expected}}
+    expected = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"
+    assert sources == {"xynolog": {"path": expected}}
     # The lockfile points to the same immutable local artifact.
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
-    assert taken_from["xynoplex"] == {"path": "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"}
-    assert taken_from["semiont-service"] == {"editable": "."}
+    assert taken_from["xynolog"] == {"path": "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"}
+    assert taken_from["xynolog-service"] == {"editable": "."}
 
 
 def test_it_is_the_services_own_code_and_every_python_service_is_built_on_it() -> None:
@@ -215,13 +215,13 @@ def test_it_is_the_services_own_code_and_every_python_service_is_built_on_it() -
     assert len(SERVICES) >= 2
     for service in SERVICES:
         manifest = toml(service / "pyproject.toml")
-        assert "semiont-service" in required(manifest), f"{service.name} is not built on semiont-service"
+        assert "xynolog-service" in required(manifest), f"{service.name} is not built on xynolog-service"
         sources = table(table(table(manifest["tool"], "tool")["uv"], "uv")["sources"], "sources")
-        assert sources["semiont-service"] == {"path": "../../shared/python/service", "editable": True}, service.name
+        assert sources["xynolog-service"] == {"path": "../../shared/python/service", "editable": True}, service.name
     for package in sorted(path.parent for path in ROOT.glob("shared/python/*/pyproject.toml")):
         if package != PROJECT:
             requires = {name_of(requirement) for requirement in required(toml(package / "pyproject.toml"))}
-            assert "semiont-service" not in requires, package.name
+            assert "xynolog-service" not in requires, package.name
 
 
 def test_no_service_keeps_a_copy_of_a_module_here() -> None:
@@ -256,8 +256,8 @@ def test_no_service_keeps_a_copy_of_a_module_here() -> None:
             source = path.read_text(encoding="utf-8")
             for marks in stated_here.values():
                 for mark in marks:
-                    assert mark not in source, f"{path.relative_to(ROOT)} states {mark}, which is semiont_service's"
-            assert ".browse.kb(" not in source, f"{path.relative_to(ROOT)} asks which knowledge base it is, which is semiont_service's"
+                    assert mark not in source, f"{path.relative_to(ROOT)} states {mark}, which is xynolog_service's"
+            assert ".browse.kb(" not in source, f"{path.relative_to(ROOT)} asks which knowledge base it is, which is xynolog_service's"
         assert not list((service / "src").rglob("follower.py")), service.name
         assert not list((service / "src").rglob("health.py")), service.name
         assert not list((service / "src").rglob("lanes.py")), service.name

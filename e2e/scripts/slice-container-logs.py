@@ -26,7 +26,7 @@ Usage::
     # Override the test-results root or container list
     python3 e2e/scripts/slice-container-logs.py \\
         --results-dir e2e/test-results \\
-        --containers semiont-example.org-my-kb-gateway,worker
+        --containers xynolog-example.org-my-kb-gateway,worker
 
 Limitations
 -----------
@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument('--results-dir', type=Path, default=default_results_dir,
                    help='Playwright test-results root (default: e2e/test-results)')
     p.add_argument('--containers', default='gateway,worker,smelter',
-                   help='Comma-separated containers to slice: full names (semiont-…) or bare products (default: gateway,worker,smelter)')
+                   help='Comma-separated containers to slice: full names (xynolog-…) or bare products (default: gateway,worker,smelter)')
     p.add_argument('--max-lines', type=int, default=0,
                    help='If >0, pass `-n N` to `container logs` to cap the dump from the tail')
     p.add_argument('--keep-full', action='store_true',

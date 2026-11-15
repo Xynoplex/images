@@ -11,14 +11,14 @@ IMAGE_NAMES := $(RUST_IMAGES) $(TYPESCRIPT_IMAGES) $(PYTHON_IMAGES)
 .PHONY: help build shared clean $(IMAGE_NAMES) stack-up e2e stack-down smoke
 
 # `make help` prints the `##` lines below, in order (build-tools/make-help.awk).
-##@ Xynoplex Images: make [target] [VARIABLE=value ...]
+##@ Xynolog Images: make [target] [VARIABLE=value ...]
 ##@ Variables
 ## CONTAINER_RUNTIME=name: container|docker|podman; else the first to respond
 CONTAINER_RUNTIME ?=
 ## SDK_REPO=path: The SDK checkout that builds and resolves artifacts when SDK_ARTIFACTS is unset
 SDK_REPO ?= ../sdk
 ## SDK_ARTIFACTS=path: Use and verify this SDK artifact bundle instead
-## SEMIONT_BROWSER_VERSION=version: The Browser package version; else browser/package.publish.json's
+## XYNOLOG_BROWSER_VERSION=version: The Browser package version; else browser/package.publish.json's
 ## SMOKE_TAG=tag: The image tag stack-up and smoke run
 SMOKE_TAG ?= local
 ## E2E_SCRIPT=name: The E2E npm script
@@ -39,7 +39,7 @@ help:
 build: shared
 	@./scripts/build-session.sh all
 
-## shared: The shared Python distributions the Python images install, under the XDG cache's xynoplex-images/local/python/packages
+## shared: The shared Python distributions the Python images install, under the XDG cache's xynolog-images/local/python/packages
 shared:
 	@./scripts/build-shared-python.sh
 

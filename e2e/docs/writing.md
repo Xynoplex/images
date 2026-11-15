@@ -32,7 +32,7 @@ session. The `bus` fixture enables and captures the Browser's
 ## Fixture ordering matters
 
 The `bus` fixture's `addInitScript` must run **before** `page.goto` —
-the init script flips the `__SEMIONT_BUS_LOG__` flag that the Browser
+the init script flips the `__XYNOLOG_BUS_LOG__` flag that the Browser
 reads at startup. That ordering is guaranteed when you:
 
 - Destructure `bus` in the test params, **or**

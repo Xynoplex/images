@@ -1455,160 +1455,6 @@ wheels = [
 ]
 
 [[package]]
-name = "semiont-inference"
-source = { editable = "../shared/python/inference" }
-dependencies = [
-    { name = "httpx" },
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "xynoplex" },
-]
-
-[package.optional-dependencies]
-anthropic = [
-    { name = "anthropic" },
-]
-google = [
-    { name = "google-genai" },
-]
-llamacpp = [
-    { name = "openai" },
-]
-openai = [
-    { name = "openai" },
-]
-together = [
-    { name = "together" },
-]
-vllm = [
-    { name = "openai" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=2.1,<3" },
-    { name = "google-genai", marker = "extra == 'google'", specifier = ">=2.33,<3" },
-    { name = "httpx" },
-    { name = "openai", marker = "extra == 'llamacpp'", specifier = ">=3.28,<4" },
-    { name = "openai", marker = "extra == 'openai'", specifier = ">=3.28,<4" },
-    { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
-    { name = "xynoplex", path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" },
-]
-provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy", specifier = "==2.4.1" },
-    { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
-    { name = "pyright", specifier = "==1.1.414" },
-    { name = "pytest", specifier = ">=9.1,<10" },
-    { name = "pytest-cov", specifier = "==7.1.0" },
-    { name = "ruff", specifier = "==0.17.3" },
-    { name = "semiont-inference", extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
-]
-
-[[package]]
-name = "semiont-service"
-source = { editable = "../shared/python/service" }
-dependencies = [
-    { name = "httpx" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp-proto-http" },
-    { name = "opentelemetry-sdk" },
-    { name = "pydantic" },
-    { name = "xynoplex" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "httpx" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
-    { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
-    { name = "pydantic" },
-    { name = "xynoplex", path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy", specifier = "==2.4.1" },
-    { name = "pyright", specifier = "==1.1.414" },
-    { name = "pytest", specifier = ">=9.1,<10" },
-    { name = "pytest-cov", specifier = "==7.1.0" },
-    { name = "ruff", specifier = "==0.17.3" },
-]
-
-[[package]]
-name = "semiont-worker"
-source = { editable = "." }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "semiont-inference" },
-    { name = "semiont-service" },
-    { name = "xynoplex" },
-]
-
-[package.optional-dependencies]
-anthropic = [
-    { name = "semiont-inference", extra = ["anthropic"] },
-]
-google = [
-    { name = "semiont-inference", extra = ["google"] },
-]
-llamacpp = [
-    { name = "semiont-inference", extra = ["llamacpp"] },
-]
-openai = [
-    { name = "semiont-inference", extra = ["openai"] },
-]
-together = [
-    { name = "semiont-inference", extra = ["together"] },
-]
-vllm = [
-    { name = "semiont-inference", extra = ["vllm"] },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "mypy" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "semiont-worker", extra = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "semiont-inference", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["anthropic"], marker = "extra == 'anthropic'", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["google"], marker = "extra == 'google'", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["llamacpp"], marker = "extra == 'llamacpp'", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["openai"], marker = "extra == 'openai'", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["together"], marker = "extra == 'together'", editable = "../shared/python/inference" },
-    { name = "semiont-inference", extras = ["vllm"], marker = "extra == 'vllm'", editable = "../shared/python/inference" },
-    { name = "semiont-service", editable = "../shared/python/service" },
-    { name = "xynoplex", path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" },
-]
-provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy", specifier = "==2.4.1" },
-    { name = "pyright", specifier = "==1.1.414" },
-    { name = "pytest", specifier = ">=9.1,<10" },
-    { name = "pytest-cov", specifier = "==7.1.0" },
-    { name = "ruff", specifier = "==0.17.3" },
-    { name = "semiont-worker", extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
-]
-
-[[package]]
 name = "sniffio"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1774,9 +1620,9 @@ wheels = [
 ]
 
 [[package]]
-name = "xynoplex"
+name = "xynolog"
 version = "0.7.3"
-source = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+source = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -1784,7 +1630,7 @@ dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { filename = "xynoplex-0.7.3-py3-none-any.whl", hash = "sha256:81a4330ca386853f80045d8428ac2b78836354666046379c44ac279910545b91" },
+    { filename = "xynolog-0.7.3-py3-none-any.whl", hash = "sha256:d5049a803690ce67039f8fa72222d37930f2c034b69c5efced5979b4e178efd8" },
 ]
 
 [package.metadata]
@@ -1796,3 +1642,157 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12,<3" },
 ]
 provides-extras = ["axioms"]
+
+[[package]]
+name = "xynolog-inference"
+source = { editable = "../shared/python/inference" }
+dependencies = [
+    { name = "httpx" },
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+    { name = "xynolog" },
+]
+
+[package.optional-dependencies]
+anthropic = [
+    { name = "anthropic" },
+]
+google = [
+    { name = "google-genai" },
+]
+llamacpp = [
+    { name = "openai" },
+]
+openai = [
+    { name = "openai" },
+]
+together = [
+    { name = "together" },
+]
+vllm = [
+    { name = "openai" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=2.1,<3" },
+    { name = "google-genai", marker = "extra == 'google'", specifier = ">=2.33,<3" },
+    { name = "httpx" },
+    { name = "openai", marker = "extra == 'llamacpp'", specifier = ">=3.28,<4" },
+    { name = "openai", marker = "extra == 'openai'", specifier = ">=3.28,<4" },
+    { name = "openai", marker = "extra == 'vllm'", specifier = ">=3.28,<4" },
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+    { name = "together", marker = "extra == 'together'", specifier = ">=2.40,<3" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" },
+]
+provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = "==2.4.1" },
+    { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
+    { name = "pyright", specifier = "==1.1.414" },
+    { name = "pytest", specifier = ">=9.1,<10" },
+    { name = "pytest-cov", specifier = "==7.1.0" },
+    { name = "ruff", specifier = "==0.17.3" },
+    { name = "xynolog-inference", extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
+]
+
+[[package]]
+name = "xynolog-service"
+source = { editable = "../shared/python/service" }
+dependencies = [
+    { name = "httpx" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-http" },
+    { name = "opentelemetry-sdk" },
+    { name = "pydantic" },
+    { name = "xynolog" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "httpx" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
+    { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
+    { name = "pydantic" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = "==2.4.1" },
+    { name = "pyright", specifier = "==1.1.414" },
+    { name = "pytest", specifier = ">=9.1,<10" },
+    { name = "pytest-cov", specifier = "==7.1.0" },
+    { name = "ruff", specifier = "==0.17.3" },
+]
+
+[[package]]
+name = "xynolog-worker"
+source = { editable = "." }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+    { name = "xynolog" },
+    { name = "xynolog-inference" },
+    { name = "xynolog-service" },
+]
+
+[package.optional-dependencies]
+anthropic = [
+    { name = "xynolog-inference", extra = ["anthropic"] },
+]
+google = [
+    { name = "xynolog-inference", extra = ["google"] },
+]
+llamacpp = [
+    { name = "xynolog-inference", extra = ["llamacpp"] },
+]
+openai = [
+    { name = "xynolog-inference", extra = ["openai"] },
+]
+together = [
+    { name = "xynolog-inference", extra = ["together"] },
+]
+vllm = [
+    { name = "xynolog-inference", extra = ["vllm"] },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "xynolog-worker", extra = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "opentelemetry-api" },
+    { name = "pydantic" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" },
+    { name = "xynolog-inference", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["anthropic"], marker = "extra == 'anthropic'", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["google"], marker = "extra == 'google'", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["llamacpp"], marker = "extra == 'llamacpp'", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["openai"], marker = "extra == 'openai'", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["together"], marker = "extra == 'together'", editable = "../shared/python/inference" },
+    { name = "xynolog-inference", extras = ["vllm"], marker = "extra == 'vllm'", editable = "../shared/python/inference" },
+    { name = "xynolog-service", editable = "../shared/python/service" },
+]
+provides-extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = "==2.4.1" },
+    { name = "pyright", specifier = "==1.1.414" },
+    { name = "pytest", specifier = ">=9.1,<10" },
+    { name = "pytest-cov", specifier = "==7.1.0" },
+    { name = "ruff", specifier = "==0.17.3" },
+    { name = "xynolog-worker", extras = ["anthropic", "google", "llamacpp", "openai", "together", "vllm"] },
+]

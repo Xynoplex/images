@@ -35,7 +35,7 @@ source "$REPO_ROOT/build-tools/container-runtime.sh"
 RT="$(detect_container_runtime)"
 RUST_TOOLCHAIN="$(packages/rust/scripts/rust-toolchain.sh)"
 VERSION="$(python3 -c 'import json; print(json.load(open("version.json"))["version"])')"
-BROWSER_VERSION="${SEMIONT_BROWSER_VERSION:-$(python3 -c 'import json; print(json.load(open("browser/package.publish.json"))["version"])')}"
+BROWSER_VERSION="${XYNOLOG_BROWSER_VERSION:-$(python3 -c 'import json; print(json.load(open("browser/package.publish.json"))["version"])')}"
 
 languages=()
 for service in "$@"; do
@@ -45,7 +45,7 @@ done
 languages_csv="$(printf '%s\n' "${languages[@]}" | sort -u | paste -sd, -)"
 if [[ ",$languages_csv," == *,python,* ]]; then
   bash "$REPO_ROOT/scripts/build-shared-python.sh" --ensure
-  shared_output="${XDG_CACHE_HOME:-$HOME/.cache}/xynoplex-images/local/python/packages"
+  shared_output="${XDG_CACHE_HOME:-$HOME/.cache}/xynolog-images/local/python/packages"
   shared_staging="$REPO_ROOT/.local/shared-python-packages"
   rm -rf "$shared_staging"
   mkdir -p "$shared_staging"
@@ -66,10 +66,10 @@ for service in "$@"; do
     python) args=(--build-arg "PYTHON_FLOOR=$PYTHON_FLOOR" --build-arg "SDK_ARTIFACT_BUNDLE=$bundle_id") ;;
     typescript)
       bash "$REPO_ROOT/scripts/build-browser-package.sh" "$REPO_ROOT/$bundle_dir"
-      args=(--build-arg "SEMIONT_BROWSER_VERSION=$BROWSER_VERSION" --build-arg "BROWSER_PACKAGE_DIR=.local/browser-package")
+      args=(--build-arg "XYNOLOG_BROWSER_VERSION=$BROWSER_VERSION" --build-arg "BROWSER_PACKAGE_DIR=.local/browser-package")
       ;;
   esac
-  tag="ghcr.io/xynoplex/xynoplex-$service:local"
+  tag="ghcr.io/xynolog/xynolog-$service:local"
   echo "Building $tag using $RT"
   "$RT" build "${args[@]}" --file "$service/Dockerfile" --tag "$tag" .
 done

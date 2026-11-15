@@ -2,7 +2,7 @@
 # image-tags.sh <service> <version> <tag_latest> — the image a service publishes
 # to and the tags it carries, as GITHUB_OUTPUT lines:
 #
-#   image  ghcr.io/xynoplex/xynoplex-<service>
+#   image  ghcr.io/xynolog/xynolog-<service>
 #   tags   <image>:<version>,<image>:sha-<commit>, and <image>:latest when
 #          <tag_latest> is `true`
 #   sha    the checkout's short commit
@@ -16,7 +16,7 @@ SERVICE="${1:?$USAGE}"
 VERSION="${2:?$USAGE}"
 TAG_LATEST="${3:?$USAGE}"
 SHA=$(git rev-parse --short HEAD)
-IMAGE="ghcr.io/xynoplex/xynoplex-$SERVICE"
+IMAGE="ghcr.io/xynolog/xynolog-$SERVICE"
 TAGS="$IMAGE:$VERSION,$IMAGE:sha-$SHA"
 if [ "$TAG_LATEST" = true ]; then
   TAGS="$TAGS,$IMAGE:latest"

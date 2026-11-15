@@ -12,13 +12,13 @@ import pytest
 from aio import run
 from pydantic import ValidationError
 from rig import FakeGraph, FakeRecord, described, link, reference, view
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.types import GatherReferencedByRequest, GatherReferencedByResult, ResourceView
 from spec import JsonObject
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.types import GatherReferencedByRequest, GatherReferencedByResult, ResourceView
 
-from semiont_librarian.annotation_gather import Ungathered
-from semiont_librarian.referenced_by import answer
+from xynolog_librarian.annotation_gather import Ungathered
+from xynolog_librarian.referenced_by import answer
 
 CITED = ResourceId("res-cited")
 """The resource a request asks about."""
@@ -48,7 +48,7 @@ def entries(reply: GatherReferencedByResult) -> list[JsonObject]:
 
 def lines(caplog: pytest.LogCaptureFixture, level: int) -> list[dict[str, object]]:
     """What the Librarian logged at one level, each line with its facts."""
-    return [dict(vars(record)) for record in caplog.records if record.name == "semiont_librarian" and record.levelno == level]
+    return [dict(vars(record)) for record in caplog.records if record.name == "xynolog_librarian" and record.levelno == level]
 
 
 def test_the_answer_has_one_entry_for_each_annotation_in_the_graph_s_order(graph: FakeGraph) -> None:
@@ -130,7 +130,7 @@ def test_a_resource_the_graph_does_not_hold_is_named_by_its_view_and_that_is_log
 ) -> None:
     graph.resources[R1] = None
     graph.referenced_by[CITED] = [reference("ann-1", R1, link(CITED)), reference("ann-2", R2, link(CITED))]
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         reply = reply_to(GatherReferencedByRequest(resource_id=CITED), graph, view(described(R1, name="As the view holds it")))
     assert [entry.resource_name for entry in reply.response.referenced_by] == ["As the view holds it", "Keokuk"]
     (said,) = lines(caplog, logging.INFO)
@@ -150,7 +150,7 @@ def test_a_resource_nobody_holds_is_logged_as_a_warning_and_its_annotation_is_st
 ) -> None:
     graph.resources[R1] = None
     graph.referenced_by[CITED] = [reference("ann-1", R1, link(CITED))]
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         reply = reply_to(GatherReferencedByRequest(resource_id=CITED), graph)
     assert [(entry.id, entry.target.source) for entry in reply.response.referenced_by] == [("ann-1", R1)]
     # No name is made up for it: the entry states none.
@@ -174,7 +174,7 @@ def test_a_view_that_cannot_be_read_leaves_its_resource_unnamed_and_the_request_
     graph.referenced_by[CITED] = [reference("ann-1", R1, link(CITED)), reference("ann-2", R2, link(CITED))]
     record = FakeRecord(view(described(CITED)), view(described(R1, name="As the view holds it")))
     record.unread.add(R1)
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         reply = run(answer(GatherReferencedByRequest(resource_id=CITED), graph=graph, record=record))
     assert [entry.resource_name for entry in reply.response.referenced_by] == [None, "Keokuk"]
     # One warning says the view could not be read, and one that nobody holds the resource.
@@ -182,7 +182,7 @@ def test_a_view_that_cannot_be_read_leaves_its_resource_unnamed_and_the_request_
 
 
 def test_what_is_looked_for_is_logged_for_whoever_reads_the_log_closely(graph: FakeGraph, caplog: pytest.LogCaptureFixture) -> None:
-    with caplog.at_level(logging.DEBUG, logger="semiont_librarian"):
+    with caplog.at_level(logging.DEBUG, logger="xynolog_librarian"):
         reply_to(GatherReferencedByRequest(resource_id=CITED), graph)
         reply_to(GatherReferencedByRequest(resource_id=CITED, motivation="linking"), graph)
     looked_for = [line for line in lines(caplog, logging.DEBUG) if line["msg"] == "Looking for annotations referencing resource"]

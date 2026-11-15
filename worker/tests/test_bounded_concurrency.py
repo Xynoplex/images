@@ -5,7 +5,7 @@ import asyncio
 import pytest
 from aio import run, turns
 
-from semiont_worker.detection.bounded_concurrency import run_bounded
+from xynolog_worker.detection.bounded_concurrency import run_bounded
 
 
 class Tracked:

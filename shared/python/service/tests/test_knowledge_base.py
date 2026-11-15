@@ -8,11 +8,11 @@ from typing import Final, final
 import pytest
 from aio import pass_time, run, under_way
 from pydantic import JsonValue
-from xynoplex.bus import Bus
-from xynoplex.testing import FaultyTransport
+from xynolog.bus import Bus
+from xynolog.testing import FaultyTransport
 
-from semiont_service.config import Refused
-from semiont_service.knowledge_base import CONFIRMING_CHANNELS, Unanswered, confirmed
+from xynolog_service.config import Refused
+from xynolog_service.knowledge_base import CONFIRMING_CHANNELS, Unanswered, confirmed
 
 _OPERATION: Final = "browse:kb-requested"
 
@@ -98,12 +98,12 @@ def test_a_knowledge_base_nobody_answers_for_yet_is_asked_again_until_it_answers
 def test_a_knowledge_base_that_answers_with_a_failure_is_refused_once_asked_saying_why() -> None:
     async def scenario() -> None:
         archivist = Archivist(NAMED)
-        archivist.failing = {"message": "It commits no .semiont/config.yaml"}
+        archivist.failing = {"message": "It commits no .xynolog/config.yaml"}
         with pytest.raises(Refused) as refused:
             await confirmed(archivist.bus, NAMED, asyncio.Event())
         assert type(refused.value) is Refused
         assert str(refused.value) == (
-            "The knowledge base answered which it is with a failure (browse:kb-failed): It commits no .semiont/config.yaml"
+            "The knowledge base answered which it is with a failure (browse:kb-failed): It commits no .xynolog/config.yaml"
         )
         assert archivist.asked == 1
         await archivist.transport.close()

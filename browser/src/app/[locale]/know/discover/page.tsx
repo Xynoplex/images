@@ -5,17 +5,17 @@ import { useRouter } from '@/i18n/routing';
 import {
   useTheme,
   useObservable,
-  useXynoplex,
+  useXynolog,
   useSessionStateUnit,
   ResourceDiscoveryPage,
-} from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
-import { useShellStateUnit } from '@xynoplex/react-ui';
-import { createDiscoverStateUnit } from '@xynoplex/react-ui';
+import { useShellStateUnit } from '@xynolog/react-ui';
+import { createDiscoverStateUnit } from '@xynolog/react-ui';
 export default function DiscoverPage() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Discover' });
   const router = useRouter();
-  const session = useObservable(useXynoplex().activeSession$) ?? undefined;
+  const session = useObservable(useXynolog().activeSession$) ?? undefined;
 
   const browseStateUnit = useShellStateUnit();
   const stateUnit = useSessionStateUnit(session, (s) => createDiscoverStateUnit(s, browseStateUnit));

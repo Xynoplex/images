@@ -27,8 +27,8 @@ const documents = {
 };
 
 // An agent's account, as the realm grants one: the kind it stamps on every
-// agent's, and semiont-worker, whose coefficients are unlimited
-// (x-semiont-limits), so the benchmark measures the gateway rather than a
+// agent's, and xynolog-worker, whose coefficients are unlimited
+// (x-xynolog-limits), so the benchmark measures the gateway rather than a
 // principal's bucket. No `name`: the gateway publishes no profile for it.
 const now = Math.floor(Date.now() / 1000);
 const claims = {
@@ -37,7 +37,7 @@ const claims = {
   sub: 'service-account-load',
   azp: 'load',
   [declared('kind')]: declared('agent'),
-  [declared('roles')]: [declared('semiont-worker')],
+  [declared('roles')]: [declared('xynolog-worker')],
   iat: now,
   exp: now + 36000,
 };

@@ -3,17 +3,17 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-graph"
+name = "xynolog-graph"
 dynamic = ["version"]
-description = "The graph databases Semiont's Python services write and read, behind one interface: what the graph holds of a resource and of an annotation"
+description = "The graph databases Xynolog's Python services write and read, behind one interface: what the graph holds of a resource and of an annotation"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-keywords = ["semiont", "graph", "neo4j", "janusgraph", "neptune"]
+keywords = ["xynolog", "graph", "neo4j", "janusgraph", "neptune"]
 classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    # A library of Semiont's Python services, installed in their images: no index takes an upload that says this.
+    # A library of Xynolog's Python services, installed in their images: no index takes an upload that says this.
     "Private :: Do Not Upload",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -26,7 +26,7 @@ classifiers = [
 # bound written here would be a second copy of its.
 dependencies = [
     "pydantic",
-    "xynoplex",
+    "xynolog",
 ]
 
 # A database's own client is not required: it comes with the extra named for
@@ -41,13 +41,13 @@ janusgraph = ["gremlinpython>=3.8,<4"]
 neptune = ["gremlinpython>=3.8,<4"]
 
 [project.urls]
-Homepage = "https://the-ai-alliance.github.io/semiont/"
-Repository = "https://github.com/Xynoplex/images"
-Issues = "https://github.com/Xynoplex/images/issues"
+Homepage = "https://github.com/xynolog/images"
+Repository = "https://github.com/xynolog/images"
+Issues = "https://github.com/xynolog/images/issues"
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -55,7 +55,7 @@ xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3
 [dependency-groups]
 dev = [
     # Every extra: the checkers and the tests read every store.
-    "semiont-graph[janusgraph,neo4j,neptune]",
+    "xynolog-graph[janusgraph,neo4j,neptune]",
     "mypy==2.4.1",
     "pyright==1.1.414",
     "pytest>=9.1,<10",
@@ -69,12 +69,12 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_graph"]
+packages = ["src/xynolog_graph"]
 
 # What the wheel is built from, and no more. The tests read the repository
 # around this package, which a source distribution does not hold.
 [tool.hatch.build.targets.sdist]
-only-include = ["src/xynoplex_graph", "README.md"]
+only-include = ["src/xynolog_graph", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -84,7 +84,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this package's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_graph"]
+source = ["xynolog_graph"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { resourceId as ridBrand } from '@xynoplex/sdk';
+import { resourceId as ridBrand } from '@xynolog/sdk';
 import { signInSession } from '../fixtures/sdk-session';
 import { buildLargeDocument } from '../fixtures/large-document';
 
@@ -32,7 +32,7 @@ import { buildLargeDocument } from '../fixtures/large-document';
  *
  * What a run exercises follows from the budget a detection opens with
  * (protocol/contract/WORKER-SERVICE.md D3 and D21; `derive_detection_budget` in
- * `worker/src/semiont_worker/detection/chunk_plan.py`), which sizes
+ * `worker/src/xynolog_worker/detection/chunk_plan.py`), which sizes
  * every call from the provider's limits:
  *
  *   - OUTPUT per call is capped at what the provider's output rate produces

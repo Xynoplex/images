@@ -1,15 +1,15 @@
-# semiont-graph
+# xynolog-graph
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-graph)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=python-graph)](https://app.codecov.io/gh/xynolog/images/components)
 
-The graph databases [Semiont][semiont]'s Python services write and read,
+The graph databases [Xynolog][xynolog]'s Python services write and read,
 behind one interface: what the graph holds of a resource and of an
 annotation, and the questions only a graph answers.
 
-It is for whoever writes a Semiont service in Python that keeps the graph or
+It is for whoever writes a Xynolog service in Python that keeps the graph or
 reads it: the Weaver keeps it, and the Librarian reads it. A program that
 only reads and writes a knowledge base needs the SDK,
-[`semiont`][sdk-python], and not this package.
+[`xynolog`][sdk-python], and not this package.
 
 It runs on asyncio and requires Python 3.12 or later. It is checked by
 `mypy --strict` and by `pyright` in strict mode, and ships its types
@@ -18,7 +18,7 @@ It runs on asyncio and requires Python 3.12 or later. It is checked by
 ## What an install has
 
 The package alone has the interface, the codec and the store that holds its
-graph in the process. Its dependencies are `semiont` and `pydantic`.
+graph in the process. Its dependencies are `xynolog` and `pydantic`.
 
 The client a store asks its database through is not required. It comes with
 the extra named for the store, and is imported only when that store is asked
@@ -26,10 +26,10 @@ for:
 
 | Store | Install | What the extra brings | Run against a server |
 | --- | --- | --- | --- |
-| `memory` | `semiont-graph` | Nothing: the graph is in the process | It needs none |
-| `neo4j` | `semiont-graph[neo4j]` | Neo4j's `neo4j` client | Yes: every case of the store contract |
-| `janusgraph` | `semiont-graph[janusgraph]` | Apache TinkerPop's `gremlinpython` | **Never** |
-| `neptune` | `semiont-graph[neptune]` | Apache TinkerPop's `gremlinpython` | **Never, nor on AWS** |
+| `memory` | `xynolog-graph` | Nothing: the graph is in the process | It needs none |
+| `neo4j` | `xynolog-graph[neo4j]` | Neo4j's `neo4j` client | Yes: every case of the store contract |
+| `janusgraph` | `xynolog-graph[janusgraph]` | Apache TinkerPop's `gremlinpython` | **Never** |
+| `neptune` | `xynolog-graph[neptune]` | Apache TinkerPop's `gremlinpython` | **Never, nor on AWS** |
 
 An image built for one database installs that store's extra alone. One that
 may be configured for any database installs every extra. Asked for a store
@@ -51,9 +51,9 @@ environment variable that holds it, and whoever reads the environment hands
 the password over.
 
 ```python
-from xynoplex.types import GraphConfig, ResourceDescriptor
-from semiont_graph.factory import create_graph_database
-from semiont_graph.interface import GraphDatabase
+from xynolog.types import GraphConfig, ResourceDescriptor
+from xynolog_graph.factory import create_graph_database
+from xynolog_graph.interface import GraphDatabase
 
 
 async def stored(config: GraphConfig, password: str | None, resource: ResourceDescriptor) -> GraphDatabase:
@@ -69,9 +69,9 @@ its database: connecting one to a Neo4j makes no constraint and no index. A
 read of a database nobody has written to yet answers nothing.
 
 ```python
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import GraphConfig, ResourceDescriptor
-from semiont_graph.factory import create_graph_reader
+from xynolog.identifiers import ResourceId
+from xynolog.types import GraphConfig, ResourceDescriptor
+from xynolog_graph.factory import create_graph_reader
 
 
 async def read(config: GraphConfig, password: str | None, resource_id: ResourceId) -> ResourceDescriptor | None:
@@ -97,7 +97,7 @@ What `create_graph_reader` answers for each kind of database:
 Every name is imported from the module that has it. The package's root
 exports nothing.
 
-- `semiont_graph.interface`: `GraphReader`, the protocol every reader is
+- `xynolog_graph.interface`: `GraphReader`, the protocol every reader is
   (`connect`, `disconnect`, `get_resource`, `list_resources`,
   `get_resource_annotations`, `get_resource_referenced_by`,
   `get_resource_connections`, `get_entity_type_stats`); `GraphDatabase`, the
@@ -107,17 +107,17 @@ exports nothing.
   `resolve_reference`, `clear_database`) and three more reads
   (`get_annotation`, `find_path`, `get_stats`); and what their members take
   and answer.
-- `semiont_graph.codec`: how a resource and an annotation become stored
+- `xynolog_graph.codec`: how a resource and an annotation become stored
   properties and back, and `intended_graph_annotation`, which says what the
   graph is to hold of an annotation.
-- `semiont_graph.factory`: `create_graph_database` and `create_graph_reader`,
+- `xynolog_graph.factory`: `create_graph_database` and `create_graph_reader`,
   which make the store and the reader a service's configuration document
   names.
-- `semiont_graph.neo4j`: `Neo4jGraphDatabase`, which makes its constraints
+- `xynolog_graph.neo4j`: `Neo4jGraphDatabase`, which makes its constraints
   and its indexes when it connects, and `Neo4jGraphReader`, which makes
   nothing.
-- `semiont_graph.memory`, `semiont_graph.janusgraph`,
-  `semiont_graph.neptune`: one store each, and so a reader too.
+- `xynolog_graph.memory`, `xynolog_graph.janusgraph`,
+  `xynolog_graph.neptune`: one store each, and so a reader too.
 
 ## What the graph holds
 
@@ -146,6 +146,6 @@ that database before and after each case. The reader's cases also drop the
 constraints and the indexes a store makes, and a store that connects makes
 them again.
 
-[semiont]: https://github.com/Xynoplex/images
-[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python
-[codec-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/graph/codec-cases.json
+[xynolog]: https://github.com/xynolog/images
+[sdk-python]: https://github.com/xynolog/sdk/tree/main/python
+[codec-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/graph/codec-cases.json

@@ -61,12 +61,12 @@ import httpx
 import pytest
 from aio import run
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.identifiers import AnnotationId, ResourceId, UserId
 from spec import SPEC, JsonObject, objects, read, text, thing
 from store_contract import StoreContract, decline_resource, only, part, put_annotation, put_resource, width_of
+from xynolog.identifiers import AnnotationId, ResourceId, UserId
 
-from semiont_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
-from semiont_vectors.store import (
+from xynolog_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
+from xynolog_vectors.store import (
     AnnotationPayload,
     AnnotationStamp,
     CollectionAbsent,

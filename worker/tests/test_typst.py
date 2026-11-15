@@ -18,7 +18,7 @@ from typing import Final, final
 
 import pytest
 
-from semiont_worker.generation.typst import (
+from xynolog_worker.generation.typst import (
     PINNED_CREATION_TIMESTAMP,
     Compiled,
     Landed,
@@ -139,7 +139,7 @@ def test_a_compiler_that_exits_well_and_leaves_no_pdf_fails_loudly(typst: StandI
 
 MARK_0: Final = (
     "#context [#metadata((citation: 0, page: here().position().page, x: here().position().x.pt(), y: here().position().y.pt(), "
-    "height: if type(page.height) == length { page.height.pt() } else { none }))<semiont-citation>];"
+    "height: if type(page.height) == length { page.height.pt() } else { none }))<xynolog-citation>];"
 )
 """The mark the first citation's end is given: a point Typst can be asked for after the compile, which draws nothing."""
 
@@ -180,7 +180,7 @@ def test_a_landing_compile_marks_the_ends_compiles_pinned_and_asks_the_same_sour
     assert landed == LandedCompile(pdf=b"%PDF-MARKED", landed=[Landed(page=1, x=10.5, y=179.75)])
     assert (typst.kept / "marked").read_text(encoding="utf-8") == "Tea is hot." + MARK_0
     asked = (typst.kept / "eval-argv").read_text(encoding="utf-8").splitlines()
-    assert asked[:3] == ["eval", "query(<semiont-citation>).map(it => it.value)", "--in"]
+    assert asked[:3] == ["eval", "query(<xynolog-citation>).map(it => it.value)", "--in"]
     assert Path(asked[3]).name == "doc.typ"
     assert asked[4:] == ["--format", "json", "--creation-timestamp", str(PINNED_CREATION_TIMESTAMP)]
 

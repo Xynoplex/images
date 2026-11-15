@@ -17,18 +17,18 @@ from pathlib import Path
 
 from spec import PACKAGE, SDK, JsonObject
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
-from semiont_inference.google import GoogleInferenceClient
-from semiont_inference.interface import InferenceClient, InferenceLimits
-from semiont_inference.llamacpp import LlamaCppInferenceClient
-from semiont_inference.mock import MockInferenceClient
-from semiont_inference.ollama import OllamaInferenceClient
-from semiont_inference.openai import OpenAIInferenceClient
-from semiont_inference.together import TogetherInferenceClient
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.google import GoogleInferenceClient
+from xynolog_inference.interface import InferenceClient, InferenceLimits
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.mock import MockInferenceClient
+from xynolog_inference.ollama import OllamaInferenceClient
+from xynolog_inference.openai import OpenAIInferenceClient
+from xynolog_inference.together import TogetherInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
-SRC = PACKAGE / "src/semiont_inference"
+SRC = PACKAGE / "src/xynolog_inference"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PACKAGE / top).rglob("*.py"))
 REFUSALS = PACKAGE / "tests/refusals"
 
@@ -101,18 +101,18 @@ def test_the_public_modules_and_their_names_are_the_ones_the_design_lists() -> N
     modules = sorted(path.stem for path in SRC.glob("*.py") if not path.stem.startswith("_"))
     assert modules == sorted(SURFACE)
     for module, names in SURFACE.items():
-        assert sorted(importlib.import_module(f"semiont_inference.{module}").__all__) == sorted(names), f"semiont_inference.{module}"
+        assert sorted(importlib.import_module(f"xynolog_inference.{module}").__all__) == sorted(names), f"xynolog_inference.{module}"
 
 
 def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_root() -> None:
     # One path to each name, as the SDK has it. It is also why importing the package imports no provider's library.
     root_source = (SRC / "__init__.py").read_text(encoding="utf-8")
     assert not re.search(r"^\s*(import|from)\s", root_source, re.MULTILINE), "the package's root imports something"
-    root = importlib.import_module("semiont_inference")
+    root = importlib.import_module("xynolog_inference")
     assert not hasattr(root, "__all__")
     for module, names in SURFACE.items():
         for name in names:
-            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from semiont_inference.{module}"
+            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from xynolog_inference.{module}"
     assert (SRC / "py.typed").read_bytes() == b""
 
 
@@ -170,8 +170,8 @@ def test_a_library_is_named_only_by_the_modules_that_ask_through_it() -> None:
     # OpenAI's library is what three providers are asked through: OpenAI itself, and the two servers that speak its
     # Chat Completions API. One module sets the library up for all three, and one asks those two servers.
     assert importing("openai") == ["_chat_completions.py", "_openai_library.py", "openai.py"]
-    assert importing(r"semiont_inference\._openai_library") == ["_chat_completions.py", "openai.py"]
-    assert importing(r"semiont_inference\._chat_completions") == ["llamacpp.py", "vllm.py"]
+    assert importing(r"xynolog_inference\._openai_library") == ["_chat_completions.py", "openai.py"]
+    assert importing(r"xynolog_inference\._chat_completions") == ["llamacpp.py", "vllm.py"]
     # Ollama has no library and is asked over HTTPX. Google's library is handed the HTTPX client its requests go through.
     assert importing("httpx") == ["google.py", "ollama.py"]
     assert importing("httpx2") == []
@@ -181,7 +181,7 @@ def test_one_module_names_opentelemetry_and_one_names_the_logger() -> None:
     assert importing("opentelemetry") == ["_telemetry.py"]
     naming = sorted(str(path.relative_to(SRC)) for path in SRC.rglob("*.py") if "getLogger(" in path.read_text(encoding="utf-8"))
     assert naming == ["_log.py"]
-    assert (SRC / "_log.py").read_text(encoding="utf-8").count('getLogger("semiont_inference")') == 1
+    assert (SRC / "_log.py").read_text(encoding="utf-8").count('getLogger("xynolog_inference")') == 1
 
 
 def test_the_package_holds_nothing_beside_its_modules_but_its_typed_marker() -> None:
@@ -209,7 +209,7 @@ def test_a_catalogue_is_a_third_partys_word_and_only_a_driver_whose_provider_is_
     # and Together are silent on some of a model's facts, and their drivers are the ones handed a catalogue's, with
     # the one module that puts the reasoning efforts a catalogue names in order. The factory looks a model up in the
     # catalogue it is handed, for those three alone.
-    assert importing(r"semiont_inference\.catalogue") == ["_effort.py", "factory.py", "google.py", "openai.py", "together.py"]
+    assert importing(r"xynolog_inference\.catalogue") == ["_effort.py", "factory.py", "google.py", "openai.py", "together.py"]
 
 
 def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
@@ -269,8 +269,8 @@ def test_what_every_install_has_is_what_the_package_imports_without_a_providers_
     assert isinstance(required, list)
     assert isinstance(extras, dict)
     # Every module imported from outside the standard library is declared, and nothing declared goes unused.
-    assert {name_of(requirement) for requirement in required} == {"httpx", "opentelemetry-api", "pydantic", "semiont"}
-    for library in ("httpx", "opentelemetry", "pydantic", "semiont"):
+    assert {name_of(requirement) for requirement in required} == {"httpx", "opentelemetry-api", "pydantic", "xynolog"}
+    for library in ("httpx", "opentelemetry", "pydantic", "xynolog"):
         assert importing(library), f"{library} is required and nothing imports it"
 
     # An extra is named for a provider, and brings the library that provider's driver asks through: the
@@ -299,4 +299,4 @@ def test_what_every_install_has_is_what_the_package_imports_without_a_providers_
     # The checkers and the tests read every driver: the environment they run in has every extra.
     dev = manifest(PACKAGE)["dependency-groups"]["dev"]
     assert isinstance(dev, list)
-    assert f"semiont-inference[{','.join(sorted(extras))}]" in dev
+    assert f"xynolog-inference[{','.join(sorted(extras))}]" in dev

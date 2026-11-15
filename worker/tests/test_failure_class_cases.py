@@ -9,15 +9,15 @@ from typing import Annotated, Final, Literal
 
 import pytest
 from pydantic import BaseModel, Field
-from xynoplex.errors import TransportError
-from xynoplex.retry import RetryFacts
-from xynoplex.types import FailureClass
-from semiont_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError, StructuredUnsupportedError
 from spec import SPEC
+from xynolog.errors import TransportError
+from xynolog.retry import RetryFacts
+from xynolog.types import FailureClass
+from xynolog_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError, StructuredUnsupportedError
 
-from semiont_worker.detection.chunk_plan import UnderReportedPiece, YieldCollapseError
-from semiont_worker.failure_class import JOB, DeterministicJobError, classify_failure, words_of
-from semiont_worker.inference_call import InferenceTimeoutError
+from xynolog_worker.detection.chunk_plan import UnderReportedPiece, YieldCollapseError
+from xynolog_worker.failure_class import JOB, DeterministicJobError, classify_failure, words_of
+from xynolog_worker.inference_call import InferenceTimeoutError
 
 
 class Described(BaseModel, frozen=True, extra="forbid", strict=True):

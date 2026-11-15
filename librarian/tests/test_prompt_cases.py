@@ -12,7 +12,7 @@ import pytest
 from pydantic import JsonValue
 from spec import SPEC, JsonObject, number, objects, read, strings, text, thing, whole
 
-from semiont_librarian.prompts import (
+from xynolog_librarian.prompts import (
     Candidate,
     Prompt,
     annotation_summary_prompt,
@@ -21,7 +21,7 @@ from semiont_librarian.prompts import (
     resource_summary_prompt,
     score_prompt,
 )
-from semiont_librarian.replies import SCORE_ELEMENT, SUGGESTION_ELEMENT
+from xynolog_librarian.replies import SCORE_ELEMENT, SUGGESTION_ELEMENT
 
 TABLE: Final = read(SPEC / "librarian/prompt-cases.json")
 CASES: Final = objects(TABLE["cases"], "the table's cases")

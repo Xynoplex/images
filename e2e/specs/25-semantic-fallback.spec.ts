@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { SemiontClient, resourceId as ridBrand } from '@xynoplex/sdk';
-import type { ResourceDescriptor } from '@xynoplex/core';
+import { XynologClient, resourceId as ridBrand } from '@xynolog/sdk';
+import type { ResourceDescriptor } from '@xynolog/core';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**
@@ -36,7 +36,7 @@ import { signInSession } from '../fixtures/sdk-session';
  *
  * **Lexical search never reads the body** — every term must appear in a
  * resource's name, storage URI or entity types
- * (`shared/python/graph/src/semiont_graph/_query.py`, which Neo4j expresses in Cypher).
+ * (`shared/python/graph/src/xynolog_graph/_query.py`, which Neo4j expresses in Cypher).
  * So a query drawn from a resource's BODY, whose tokens appear in none of
  * those, returns zero lexical hits by construction. Any result at all can only
  * have come from the fallback.
@@ -104,7 +104,7 @@ const INDEXING_TIMEOUT = 120_000;
 
 /** Search by body phrase — zero lexical hits by construction, so this is the fallback's answer. */
 async function semanticSearch(
-  client: SemiontClient,
+  client: XynologClient,
 ): Promise<Array<ResourceDescriptor & { content?: string }>> {
   return (await client.match
     .resources(BODY_QUERY)
@@ -113,7 +113,7 @@ async function semanticSearch(
 
 test.describe.serial('semantic fallback answers what lexical search cannot', () => {
   let opened: Awaited<ReturnType<typeof signInSession>>;
-  let client: SemiontClient;
+  let client: XynologClient;
   let rid: ReturnType<typeof ridBrand>;
 
   test.beforeAll(async () => {

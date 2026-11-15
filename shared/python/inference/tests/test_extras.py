@@ -25,36 +25,36 @@ FACTS = """CatalogueFacts(
 
 ASKING_FOR_NEITHER = f"""
 import sys
-import semiont_inference
-from semiont_inference.factory import create_inference_client
-from semiont_inference.interface import InferenceLimits
-from semiont_inference.mock import MockInferenceClient
+import xynolog_inference
+from xynolog_inference.factory import create_inference_client
+from xynolog_inference.interface import InferenceLimits
+from xynolog_inference.mock import MockInferenceClient
 
 ollama = create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None)
 mock = MockInferenceClient(["[]"], stop_reasons=["end_turn"], limits={LIMITS})
-print(ollama.provider, mock.provider, {LOADED}, "semiont_inference.anthropic" in sys.modules, "semiont_inference.openai" in sys.modules)
+print(ollama.provider, mock.provider, {LOADED}, "xynolog_inference.anthropic" in sys.modules, "xynolog_inference.openai" in sys.modules)
 """
 
 ASKING_FOR_ANTHROPIC = """
 import sys
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 client = create_inference_client(provider="anthropic", model="claude-x", base_url="http://127.0.0.1:1", api_key="k", catalogue=None)
-print(client.provider, "anthropic" in sys.modules, "semiont_inference.anthropic" in sys.modules)
+print(client.provider, "anthropic" in sys.modules, "xynolog_inference.anthropic" in sys.modules)
 """
 
 WITHOUT_THE_LIBRARY = """
 import sys
 
 sys.modules["anthropic"] = None  # as an interpreter has it where the library is not installed
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 for ask in ("the factory", "the module"):
     try:
         if ask == "the factory":
             create_inference_client(provider="anthropic", model="claude-x", base_url="http://127.0.0.1:1", api_key="k", catalogue=None)
         else:
-            import semiont_inference.anthropic
+            import xynolog_inference.anthropic
     except ModuleNotFoundError as missing:
         print(ask, "|", type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None).provider)
@@ -63,24 +63,24 @@ print(create_inference_client(provider="ollama", model="llama3", base_url="http:
 # The driver is asked for by its own module here: what importing it loads is what is held, and the factory imports it the same way.
 ASKING_FOR_OPENAI = f"""
 import sys
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
 
 facts = {FACTS}
 before = {LOADED}
-from semiont_inference.openai import OpenAIInferenceClient
+from xynolog_inference.openai import OpenAIInferenceClient
 
 client = OpenAIInferenceClient(api_key="k", model="gpt-x", base_url="http://127.0.0.1:1/v1", facts=facts)
-print(before, client.provider, "openai" in sys.modules, "semiont_inference.openai" in sys.modules)
+print(before, client.provider, "openai" in sys.modules, "xynolog_inference.openai" in sys.modules)
 """
 
 WITHOUT_OPENAIS_LIBRARY = """
 import sys
 
 sys.modules["openai"] = None  # as an interpreter has it where the library is not installed
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 try:
-    import semiont_inference.openai
+    import xynolog_inference.openai
 except ModuleNotFoundError as missing:
     print(type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None).provider)
@@ -106,7 +106,7 @@ def test_asking_for_an_anthropic_client_is_what_imports_the_library() -> None:
 def test_without_the_library_an_anthropic_client_fails_naming_the_extra_and_an_ollama_client_is_made() -> None:
     said = (
         "The Anthropic driver needs Anthropic's `anthropic` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[anthropic]`."
+        "It comes with the extra: install `xynolog-inference[anthropic]`."
     )
     assert alone(WITHOUT_THE_LIBRARY).splitlines() == [
         f"the factory | ModuleNotFoundError | anthropic | ModuleNotFoundError | {said}",
@@ -122,6 +122,6 @@ def test_asking_for_the_openai_driver_is_what_imports_openais_library_and_statin
 def test_without_openais_library_its_driver_fails_naming_the_extra_and_an_ollama_client_is_made() -> None:
     said = (
         "The OpenAI driver needs OpenAI's `openai` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[openai]`."
+        "It comes with the extra: install `xynolog-inference[openai]`."
     )
     assert alone(WITHOUT_OPENAIS_LIBRARY).splitlines() == [f"ModuleNotFoundError | openai | ModuleNotFoundError | {said}", "ollama"]

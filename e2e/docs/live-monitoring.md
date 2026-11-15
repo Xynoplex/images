@@ -33,18 +33,18 @@ dependencies on the host beyond Python (which macOS ships with).
 ### Streaming tails (one terminal each, or all backgrounded)
 
 One per container, filtered to errors and warnings. The gateway and the
-smelter are the knowledge base's, `semiont-<kb>-<product>`, where `<kb>` is
+smelter are the knowledge base's, `xynolog-<kb>-<product>`, where `<kb>` is
 its did:web domain made safe for a name; the worker is shared
 ([the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names)):
 
 ```sh
-container logs --follow semiont-<kb>-gateway 2>&1 \
+container logs --follow xynolog-<kb>-gateway 2>&1 \
   | python3 e2e/scripts/log-filter.py --source gateway &
 
-container logs --follow semiont-worker 2>&1 \
+container logs --follow xynolog-worker 2>&1 \
   | python3 e2e/scripts/log-filter.py --source worker &
 
-container logs --follow semiont-<kb>-smelter 2>&1 \
+container logs --follow xynolog-<kb>-smelter 2>&1 \
   | python3 e2e/scripts/log-filter.py --source smelter &
 ```
 
@@ -78,7 +78,7 @@ python3 e2e/scripts/snapshot.py --seconds 300
 # product (gateway, worker, smelter) is this machine's one container of it;
 # with several knowledge bases running, name each container in full.
 python3 e2e/scripts/snapshot.py --jaeger-url http://other:16686 \
-  --containers semiont-<kb>-gateway,worker,semiont-<kb>-smelter
+  --containers xynolog-<kb>-gateway,worker,xynolog-<kb>-smelter
 ```
 
 Output: per-container log lines in the window, plus per-service Jaeger
@@ -111,7 +111,7 @@ full trace ID:
 
 ```sh
 # List recent traces from a service, get full IDs
-curl -s "http://localhost:16686/api/traces?service=semiont-gateway&limit=20" \
+curl -s "http://localhost:16686/api/traces?service=xynolog-gateway&limit=20" \
   | python3 -c "import json,sys; [print(t['traceID']) for t in json.load(sys.stdin)['data']]"
 ```
 
@@ -131,7 +131,7 @@ got console errors." Steps:
 2. **Spot the smoking gun** in the worker's slice:
 
    ```
-   --- semiont-worker ---
+   --- xynolog-worker ---
    2026-04-29T16:50:22.447Z ERROR Job failed  jobId=job-92dba... error=XMLHttpRequest is not defined
    ```
 
@@ -139,7 +139,7 @@ got console errors." Steps:
    snapshot's bottom section). The `content.put` span shows:
 
    ```
-   semiont-worker  content.put
+   xynolog-worker  content.put
        error: True
        otel.status_code: ERROR
        otel.status_description: XMLHttpRequest is not defined

@@ -149,11 +149,11 @@ import asyncio
 import sys
 from pathlib import Path
 
-from semiont.types import ExtractedText
-from semiont_smelter.extraction import PdfExtractor
-from semiont_smelter.pdfium import PdfiumReader
-from semiont_smelter.stamp import current_stamp
-from semiont_smelter.tesseract import TesseractEngine
+from xynolog.types import ExtractedText
+from xynolog_smelter.extraction import PdfExtractor
+from xynolog_smelter.pdfium import PdfiumReader
+from xynolog_smelter.stamp import current_stamp
+from xynolog_smelter.tesseract import TesseractEngine
 
 WORDS = ("RECOVERED", "FROM", "THE", "PIXELS")
 SECONDS = 120

@@ -20,20 +20,20 @@ import pytest
 from aio import run, turns
 from holding import EVERY_JOB, SOURCE, TEXT, Parties, answering, claimed, job, worked
 from pydantic import JsonValue
-from xynoplex.errors import TransportError
-from xynoplex.identifiers import ResourceId
-from xynoplex.testing import ContentCall, GetAnchoredText, GetBinary, PutBinary
-from xynoplex.timing import GENERATED_TEXT_ASKS_COUNT
-from xynoplex.transport import Frame
-from xynoplex.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, GenerationJobParams, JobProgress
-from xynoplex.watched import Watched
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from standing_in import GENERATOR
+from xynolog.errors import TransportError
+from xynolog.identifiers import ResourceId
+from xynolog.testing import ContentCall, GetAnchoredText, GetBinary, PutBinary
+from xynolog.timing import GENERATED_TEXT_ASKS_COUNT
+from xynolog.transport import Frame
+from xynolog.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, GenerationJobParams, JobProgress
+from xynolog.watched import Watched
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 
-from semiont_worker import held_job
-from semiont_worker.generation.typst import Landed
-from semiont_worker.held_job import run_job
-from semiont_worker.processors import Cancelled, GeneratedArtifact, GeneratedPdf, GeneratedText, OnProgress, PdfCitation
+from xynolog_worker import held_job
+from xynolog_worker.generation.typst import Landed
+from xynolog_worker.held_job import run_job
+from xynolog_worker.processors import Cancelled, GeneratedArtifact, GeneratedPdf, GeneratedText, OnProgress, PdfCitation
 
 HIGHLIGHTING: Final[dict[str, JsonValue]] = {"motivation": "highlighting"}
 ONE_HIGHLIGHT: Final = '[{"exact": "the first program"}]'
@@ -44,7 +44,7 @@ def channels_sent(parties: Parties) -> list[str]:
 
 
 def logged(caplog: pytest.LogCaptureFixture, message: str) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.getMessage().startswith(message)]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.getMessage().startswith(message)]
 
 
 # ── a mark job ──────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ def test_a_completion_the_gateway_did_not_take_is_said_in_the_log_and_is_not_fol
         return await emit(channel, payload, scope=scope, correlation_id=correlation_id)
 
     monkeypatch.setattr(parties.transport, "emit", refusing_the_completion)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, job("job-1", "mark", HIGHLIGHTING), answering(ONE_HIGHLIGHT)))
 
     # The settle released the job when it was asked for: there is nothing more the worker can say of it.
@@ -171,7 +171,7 @@ def test_a_failure_the_gateway_does_not_take_is_said_in_the_log_and_ends_nothing
         return await emit(channel, payload, scope=scope, correlation_id=correlation_id)
 
     monkeypatch.setattr(parties.transport, "emit", refusing_the_failure)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, job("job-1", "mark", HIGHLIGHTING), answering(ONE_HIGHLIGHT)))
 
     assert parties.sequence() == ["job:start", "browse:resource-requested"]
@@ -185,7 +185,7 @@ def test_a_failure_the_gateway_does_not_take_is_said_in_the_log_and_ends_nothing
 def test_a_failure_is_said_with_its_class_and_the_stack_it_was_raised_from_is_in_the_log(caplog: pytest.LogCaptureFixture) -> None:
     parties = Parties()
     parties.describe(SOURCE, "image/png")
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, job("job-1", "mark", {"motivation": "commenting"}), answering("[]")))
 
     (failure,) = parties.sent("job:fail")
@@ -316,7 +316,7 @@ def test_a_cancellation_that_names_the_held_job_is_said_in_the_log_and_the_job_i
             await turns()
         await parties.transport.close()
 
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(scenario())
 
 
@@ -387,7 +387,7 @@ def test_a_location_whose_extension_is_not_the_format_s_is_written_as_asked_and_
 ) -> None:
     parties = Parties()
     making(monkeypatch, markdown())
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/out.txt"), answering("unused")))
 
     (warned,) = logged(caplog, "Storage URI extension does not match the generated format")
@@ -409,7 +409,7 @@ def test_a_location_whose_extension_is_the_format_s_in_any_case_says_nothing(
 ) -> None:
     parties = Parties()
     making(monkeypatch, markdown())
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/OUT.MD"), answering("unused")))
     assert logged(caplog, "Storage URI extension") == []
     assert len(parties.sent("job:complete")) == 1
@@ -551,7 +551,7 @@ def test_a_claim_the_pdf_s_text_does_not_have_is_dropped_and_said_in_the_log_and
     making(
         monkeypatch, pdf(cited("a claim that was never rendered", COMPLICATED_LANDED), cited("Nothing else is said.", SAID_LANDED, SOURCE))
     )
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/out.pdf", outputMediaType="application/pdf"), answering("unused")))
 
     (kept,) = citations_committed(parties)
@@ -613,7 +613,7 @@ def test_a_claim_that_is_in_the_pdf_but_not_where_the_compiler_says_it_ended_is_
     parties = Parties()
     pdf_text(parties, EXTRACTED)
     making(monkeypatch, pdf(cited("extraordinarily complicated", Landed(page=2, x=272.0, y=680.0))))
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/out.pdf", outputMediaType="application/pdf"), answering("unused")))
 
     assert citations_committed(parties) == []
@@ -654,7 +654,7 @@ def test_a_pdf_whose_text_never_arrives_completes_with_its_resource_and_without_
     parties = Parties()
     pdf_text(parties, NOT_YET)
     making(monkeypatch, pdf(cited("extraordinarily complicated", COMPLICATED_LANDED), cited("Nothing else is said.", SAID_LANDED)))
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/out.pdf", outputMediaType="application/pdf"), answering("unused")))
 
     # Asked as many times as the timing table states, and no more.
@@ -686,7 +686,7 @@ def test_a_pdf_whose_text_is_not_to_be_had_is_asked_for_once_and_its_citations_a
     parties = Parties()
     pdf_text(parties, answer)
     making(monkeypatch, pdf(cited("extraordinarily complicated", COMPLICATED_LANDED)))
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(worked(parties, generation("file://generated/out.pdf", outputMediaType="application/pdf"), answering("unused")))
 
     assert text_asks(parties) == [ASKED]

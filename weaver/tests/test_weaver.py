@@ -18,13 +18,13 @@ from pathlib import Path
 import pytest
 from aio import run
 from rig import Rig, added, archived, body_updated, created, event, link, removed, tag, tagged
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.transport import Frame
-from xynoplex.types import ResourceDescriptor
-from semiont_graph.interface import ResourceChange
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.transport import Frame
+from xynolog.types import ResourceDescriptor
+from xynolog_graph.interface import ResourceChange
 
-from semiont_weaver.weaver import Reconciled
+from xynolog_weaver.weaver import Reconciled
 
 R1, R2 = ResourceId("res-1"), ResourceId("res-2")
 
@@ -81,7 +81,7 @@ def test_a_frame_on_a_channel_of_the_record_that_is_no_recorded_event_is_said_an
             assert rig.applied() == {"res-1": 1}
             assert rig.weaver.follower.refused == 0
 
-    with caplog.at_level(logging.ERROR, logger="semiont_weaver"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_weaver"):
         run(scenario())
     assert [record.getMessage() for record in caplog.records] == ["A frame on a channel of the record is not a recorded event"]
 
@@ -376,7 +376,7 @@ def test_a_graph_changed_behind_the_weaver_is_found_and_healed_from_the_record(r
             assert [annotation.id for annotation in await rig.graph.get_resource_referenced_by(R1, None)] == ["ann-2"]
             assert await rig.weaver.reconcile() == Reconciled(resources_checked=2, divergent=0, healed=0, heal_failures=0, orphaned=0)
 
-    with caplog.at_level(logging.WARNING, logger="semiont_weaver"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_weaver"):
         run(scenario())
     assert reasons(caplog) == [reason]
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Semiont Browser leverages **`@xynoplex/react-ui`**, a framework-
+The Xynolog Browser leverages **`@xynolog/react-ui`**, a framework-
 agnostic React component library, reusable across different
 applications and frameworks. This document
 explains the package boundary, what lives where, and how the Browser
@@ -36,7 +36,7 @@ composes the library.
 └─────────────────────────────────────┘
 ```
 
-### What Lives in `@xynoplex/react-ui`
+### What Lives in `@xynolog/react-ui`
 
 #### Components
 - **Core UI** — Toolbar, StatusDisplay, Toast
@@ -46,19 +46,19 @@ composes the library.
 - **Modals** — SearchModal, ReferenceWizardModal, ResourceGenerateModal, KeyboardShortcutsHelpModal, SessionEndedModal, PermissionDeniedModal, KbIdentityConflictModal
 - **Layout** — UnifiedHeader, LeftSidebar, PageLayout
 - **Session** — SessionTimer, SessionExpiryBanner
-- **Branding** — SemiontBranding
+- **Branding** — XynologBranding
 
 #### Hooks and utilities
 - `useObservable`, `useShellStateUnit`, `useResourceContent`, `useMediaToken`, `useLineNumbers`, `useHoverDelay`, `useKeyboardShortcuts`, `useToast`, `useSessionExpiry`, `useTheme`
-- `useSemiont`, `useEventSubscription`, `useEventSubscriptions`
+- `useXynolog`, `useEventSubscription`, `useEventSubscriptions`
 
 #### Providers and contexts
-- `SemiontProvider` — puts the `SemiontBrowser` singleton (sessions, KBs, the per-KB `SemiontClient`) into context; read via `useSemiont()`
+- `XynologProvider` — puts the `XynologBrowser` singleton (sessions, KBs, the per-KB `XynologClient`) into context; read via `useXynolog()`
 - `TranslationProvider` — pluggable i18n manager
 - `AnnotationProvider`, `ResourceAnnotationsProvider` — annotation + workspace state
 - `ThemeProvider`, `LineNumbersProvider`, `ToastProvider`, `LiveRegionProvider` — theming, line-number display, toasts, a11y live region
 
-#### Flow state units (from `@xynoplex/sdk`, re-exported)
+#### Flow state units (from `@xynolog/sdk`, re-exported)
 - `createMarkStateUnit`, `createGatherStateUnit`, `createMatchStateUnit`, `createYieldStateUnit`, `createBeckonStateUnit`
 
 #### Page state units (react-ui's own)
@@ -91,8 +91,8 @@ wrapper layer to maintain.
 ### The Provider Stack
 
 Global providers are mounted once at the app root
-(`browser/src/app/providers.tsx`). The `SemiontBrowser` singleton
-behind `SemiontProvider` carries all session state, so there is **no**
+(`browser/src/app/providers.tsx`). The `XynologBrowser` singleton
+behind `XynologProvider` carries all session state, so there is **no**
 per-layout auth/client provider:
 
 ```tsx
@@ -105,7 +105,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <TranslationProvider translationManager={translationManager}>
-      <SemiontProvider>            {/* sessions, KBs, the per-KB SemiontClient */}
+      <XynologProvider>            {/* sessions, KBs, the per-KB XynologClient */}
         <ToastProvider>
           <LiveRegionProvider>
             <KeyboardShortcutsProvider>
@@ -118,7 +118,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </KeyboardShortcutsProvider>
           </LiveRegionProvider>
         </ToastProvider>
-      </SemiontProvider>
+      </XynologProvider>
     </TranslationProvider>
   );
 }
@@ -152,15 +152,15 @@ decision about where to mount them. For the provider/session API reference
 ### Basic usage
 
 ```tsx
-import { Toolbar, ResourceViewer, useSemiont } from '@xynoplex/react-ui';
+import { Toolbar, ResourceViewer, useXynolog } from '@xynolog/react-ui';
 ```
 
 Provider-reading components (`Toolbar`, `SearchModal`, `SessionEndedModal`,
-anything calling `useSemiont()`) read from the provider stack via hooks — no explicit props
+anything calling `useXynolog()`) read from the provider stack via hooks — no explicit props
 for the client, event bus, or token. Layouts mount providers once; any
 component in the subtree has access. The bring-your-own-session ones
 (`ResourceViewer`, the annotation panels and their entries) take the
-`SemiontSession` as a prop instead.
+`XynologSession` as a prop instead.
 
 ### Subscribing to observable data
 
@@ -168,12 +168,12 @@ Flow VMs and namespace methods return RxJS Observables. The
 `useObservable` hook bridges them into React state:
 
 ```tsx
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
-import { readyValue } from '@xynoplex/sdk';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
+import { readyValue } from '@xynolog/sdk';
 
 function ResourceTitle({ resourceId }: { resourceId: ResourceId }) {
   // The client lives on the active session (null until one is active)
-  const client = useObservable(useSemiont().activeSession$)?.client;
+  const client = useObservable(useXynolog().activeSession$)?.client;
   const state = useObservable(client?.browse.resource(resourceId)); // CacheState<ResourceDescriptor>
   const resource = state && readyValue(state);
   return <h1>{resource?.name}</h1>;
@@ -205,10 +205,10 @@ override component-internal styling.
 
 ## Benefits
 
-1. **Framework independence** — `@xynoplex/react-ui` works with any React framework (Vite, Next.js, etc.). Nothing in the library imports framework-specific modules.
+1. **Framework independence** — `@xynolog/react-ui` works with any React framework (Vite, Next.js, etc.). Nothing in the library imports framework-specific modules.
 2. **Consistent design system** — shared components and tokens across apps.
 3. **Testing split** — components + flow VMs tested in isolation in react-ui; app tests focus on composition.
-4. **Clear dependency direction** — `browser` depends on `@xynoplex/react-ui`, never the reverse.
+4. **Clear dependency direction** — `browser` depends on `@xynolog/react-ui`, never the reverse.
 5. **Observable-first** — dynamic state is modeled as RxJS Observables end-to-end, so consumers can compose and transform without framework coupling.
 
 ## Development Workflow
@@ -219,7 +219,7 @@ When developing features that span both packages:
 
 ```bash
 # Rebuild react-ui after changing it (the Browser consumes its dist/)
-npm run build --workspace=@xynoplex/react-ui
+npm run build --workspace=@xynolog/react-ui
 
 # Run the Browser
 cd browser && npm run dev
@@ -229,7 +229,7 @@ cd browser && npm run dev
 
 Decide where the component lives:
 
-- **Framework-agnostic UI, reusable outside the Browser** → `@xynoplex/react-ui`.
+- **Framework-agnostic UI, reusable outside the Browser** → `@xynolog/react-ui`.
 - **App-specific (routing, auth wiring, feature composition)** → `browser`.
 
 For library components:
@@ -257,7 +257,7 @@ importing `react-router` or an icon library (condensed from
 `src/components/knowledge/KnowledgeNavigation.tsx`):
 
 ```tsx
-import { CollapsibleResourceNavigation } from '@xynoplex/react-ui';
+import { CollapsibleResourceNavigation } from '@xynolog/react-ui';
 import { PlusIcon, ChevronLeftIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import { Link, routes } from '@/lib/routing';
 
@@ -282,7 +282,7 @@ dependency.
 **Styles not loading**: import the package CSS once in your app entry:
 
 ```css
-@import '@xynoplex/react-ui/styles';
+@import '@xynolog/react-ui/styles';
 ```
 
 **Provider errors (`useX must be used within XProvider`)**: check
@@ -293,13 +293,13 @@ inside `AuthShell`.
 packages so the generated OpenAPI types propagate:
 
 ```bash
-npm run generate:openapi --workspace=@xynoplex/core
-npm run build:packages -- @xynoplex/http-transport
+npm run generate:openapi --workspace=@xynolog/core
+npm run build:packages -- @xynolog/http-transport
 ```
 
 ## Best Practices
 
-1. **Don't duplicate** — if a component exists in `@xynoplex/react-ui`, use it.
+1. **Don't duplicate** — if a component exists in `@xynolog/react-ui`, use it.
 2. **Extend, don't override** — add layout classes, not styling overrides.
 3. **Mount providers once** — at the layout level, not in components.
 4. **Prefer Observables for shared state** — the library uses RxJS for anything dynamic; stay on that rail.
@@ -307,8 +307,8 @@ npm run build:packages -- @xynoplex/http-transport
 
 ## Related Documentation
 
-- [`@xynoplex/react-ui` README](../../../packages/typescript/react-ui/README.md)
-- [`@xynoplex/react-ui` providers](../../../docs/builder/react-ui/SESSION.md)
-- [`@xynoplex/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
+- [`@xynolog/react-ui` README](../../../packages/typescript/react-ui/README.md)
+- [`@xynolog/react-ui` providers](../../../docs/builder/react-ui/SESSION.md)
+- [`@xynolog/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
 - [API Integration](API-INTEGRATION.md)
 - [Browser Architecture](ARCHITECTURE.md)

@@ -22,7 +22,7 @@ from typing import Final, final
 import pytest
 from contract import annotation, link, resource
 from pydantic import JsonValue
-from xynoplex.identifiers import AnnotationId, ResourceId
+from xynolog.identifiers import AnnotationId, ResourceId
 
 type Answers = Callable[[str, Mapping[str, object]], list[object]]
 """What a script, with what it binds, is answered."""
@@ -158,10 +158,10 @@ def without_the_library(store: str) -> str:
 import sys
 
 sys.modules["gremlin_python"] = None  # as an interpreter has it where the library is not installed
-from semiont_graph.memory import MemoryGraphDatabase
+from xynolog_graph.memory import MemoryGraphDatabase
 
 try:
-    import semiont_graph.{store}
+    import xynolog_graph.{store}
 except ModuleNotFoundError as missing:
     print(type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(MemoryGraphDatabase().is_connected())

@@ -10,11 +10,11 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.timing import HELD_JOB_STALL_MS
-from xynoplex.types import KbIdentity, LibrarianConfig
-from semiont_service.config import Refused
+from xynolog.timing import HELD_JOB_STALL_MS
+from xynolog.types import KbIdentity, LibrarianConfig
+from xynolog_service.config import Refused
 
-from semiont_librarian.config import SERVICE, api_key_of, embedding_key_of, graph_password_of, read_librarian_config, vectors_token_of
+from xynolog_librarian.config import SERVICE, api_key_of, embedding_key_of, graph_password_of, read_librarian_config, vectors_token_of
 
 NEO4J: Final[dict[str, JsonValue]] = {
     "type": "neo4j",
@@ -37,14 +37,14 @@ ENGINE: Final[dict[str, JsonValue]] = {"engine": {"provider": "ollama", "model":
 DOCUMENT: Final[dict[str, JsonValue]] = {
     "kb": {"name": "example-kb", "domain": "example.github.io:example-kb"},
     "gatewayUrl": "http://127.0.0.1:1",
-    "identity": {"issuer": "http://127.0.0.1:1/realms/semiont"},
+    "identity": {"issuer": "http://127.0.0.1:1/realms/xynolog"},
     "archivist": {"host": "127.0.0.1", "port": 1},
     "graph": NEO4J,
     "vectors": QDRANT,
     "embedding": OLLAMA,
     "matcher": ENGINE,
     "gatherer": ENGINE,
-    "modelCatalogue": "/usr/share/semiont/model-catalogue.json",
+    "modelCatalogue": "/usr/share/xynolog/model-catalogue.json",
     "gather": {"settleTimeoutMs": 15000},
     "search": {"semanticFloor": 0.6},
     "port": 24104,

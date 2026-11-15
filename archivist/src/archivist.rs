@@ -4,19 +4,19 @@
 
 use crate::anchored::SmeltProgress;
 use crate::content::Content;
-use xynoplex::channels::{Channel, MarkAdded, MarkBodyUpdated};
-use xynoplex::types::CommandErrorCode;
-use semiont_archivist_record::kb::Committed;
-use semiont_archivist_record::record::Record;
-use semiont_archivist_record::{Object, SYSTEM};
-use semiont_archivist_staging::Staging;
-use semiont_core::types::ArchivistConfig;
 use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 use tokio::sync::mpsc::UnboundedSender;
+use xynolog::channels::{Channel, MarkAdded, MarkBodyUpdated};
+use xynolog::types::CommandErrorCode;
+use xynolog_archivist_record::kb::Committed;
+use xynolog_archivist_record::record::Record;
+use xynolog_archivist_record::{Object, SYSTEM};
+use xynolog_archivist_staging::Staging;
+use xynolog_core::types::ArchivistConfig;
 
 /// A clone token: the resource it lets its holder copy, and until when.
 pub struct CloneToken {
@@ -63,8 +63,8 @@ impl From<&str> for Refusal {
     }
 }
 
-impl From<semiont_archivist_record::RecordError> for Refusal {
-    fn from(error: semiont_archivist_record::RecordError) -> Refusal {
+impl From<xynolog_archivist_record::RecordError> for Refusal {
+    fn from(error: xynolog_archivist_record::RecordError) -> Refusal {
         Refusal::from(error.to_string())
     }
 }
@@ -181,7 +181,7 @@ impl Archivist {
             let record = self.record();
             let read = record.log.read_from(stream, from, at_most)?;
             let last = record.log.last_sequence(stream)?;
-            Ok::<_, semiont_archivist_record::RecordError>((read.events, last))
+            Ok::<_, xynolog_archivist_record::RecordError>((read.events, last))
         })?)
     }
 
@@ -200,7 +200,7 @@ impl Archivist {
                     let last = record.log.last_sequence(&stream)?;
                     Ok((stream, last))
                 })
-                .collect::<Result<Vec<_>, semiont_archivist_record::RecordError>>()
+                .collect::<Result<Vec<_>, xynolog_archivist_record::RecordError>>()
         })?)
     }
 }

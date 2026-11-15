@@ -14,7 +14,7 @@ without manually fetching from the Jaeger UI.
 ## How it wires
 
 The `jaeger` fixture depends on `bus`. At test entry, the bus fixture
-flips `globalThis.__SEMIONT_BUS_LOG__ = true` so Browser `busLog()`
+flips `globalThis.__XYNOLOG_BUS_LOG__ = true` so Browser `busLog()`
 calls write `console.debug` lines that include a `trace=<8hex>` suffix
 when an OTel SDK is initialized in the page (or when the line was
 emitted from a gateway handler whose response carried the propagated
@@ -36,7 +36,7 @@ Three env vars, all optional:
 | Variable | Default | Purpose |
 |---|---|---|
 | `JAEGER_QUERY_URL` | `http://192.168.64.1:16686` | Jaeger UI/Query base URL: the host bridge gateway, which reaches the published port from the Playwright container and from the host alike. |
-| `JAEGER_SERVICES` | `semiont-gateway,semiont-worker,semiont-smelter,semiont-browser` | Comma-separated services to query. |
+| `JAEGER_SERVICES` | `xynolog-gateway,xynolog-worker,xynolog-smelter,xynolog-browser` | Comma-separated services to query. |
 | `JAEGER_ATTACH` | `failure` | When to attach evidence — `failure` (default), `always`, or `off`. |
 
 The default `failure` mode means passing tests don't pay the per-test
@@ -90,8 +90,8 @@ and writes a `<container>.log` slice into the test's output directory.
 python3 e2e/scripts/slice-container-logs.py
 ```
 
-That writes `semiont-<kb>-gateway.log`, `semiont-worker.log`, and
-`semiont-<kb>-smelter.log` (when each has events in the test window) into
+That writes `xynolog-<kb>-gateway.log`, `xynolog-worker.log`, and
+`xynolog-<kb>-smelter.log` (when each has events in the test window) into
 every test directory next to the existing Jaeger artifacts. Combined
 with the `jaeger-*.json` artifacts and the Playwright trace.zip, a
 failing test's directory ends up with the full cross-process record.
@@ -99,8 +99,8 @@ failing test's directory ends up with the full cross-process record.
 Defaults:
 
 - **Containers**: `gateway,worker,smelter`. A bare product is the one
-  container named `semiont-<product>` (a shared one, such as the
-  worker) or `semiont-<kb>-<product>` (a knowledge base's, where `<kb>`
+  container named `xynolog-<product>` (a shared one, such as the
+  worker) or `xynolog-<kb>-<product>` (a knowledge base's, where `<kb>`
   is its did:web domain made safe for a name:
   [the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names)).
   With several knowledge bases running, a bare product matches several

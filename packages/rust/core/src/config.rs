@@ -147,23 +147,23 @@ pub fn from_environment(field: &str, name: &str) -> Result<String, ConfigError> 
     }
 }
 
-/// The service's own account at the issuer, `SEMIONT_OIDC_CLIENT_ID` and
-/// `SEMIONT_OIDC_CLIENT_SECRET`: the credential it signs in with, whose token
+/// The service's own account at the issuer, `XYNOLOG_OIDC_CLIENT_ID` and
+/// `XYNOLOG_OIDC_CLIENT_SECRET`: the credential it signs in with, whose token
 /// is its bearer at the gateway. Both are required; the refusal names each
 /// one missing, and never a value.
 pub fn service_account(document: &Document) -> Result<(String, String), ConfigError> {
-    let id = std::env::var("SEMIONT_OIDC_CLIENT_ID")
+    let id = std::env::var("XYNOLOG_OIDC_CLIENT_ID")
         .ok()
         .filter(|v| !v.is_empty());
-    let secret = std::env::var("SEMIONT_OIDC_CLIENT_SECRET")
+    let secret = std::env::var("XYNOLOG_OIDC_CLIENT_SECRET")
         .ok()
         .filter(|v| !v.is_empty());
     if let (Some(id), Some(secret)) = (&id, &secret) {
         return Ok((id.clone(), secret.clone()));
     }
     let missing: Vec<&str> = [
-        ("SEMIONT_OIDC_CLIENT_ID", id.is_none()),
-        ("SEMIONT_OIDC_CLIENT_SECRET", secret.is_none()),
+        ("XYNOLOG_OIDC_CLIENT_ID", id.is_none()),
+        ("XYNOLOG_OIDC_CLIENT_SECRET", secret.is_none()),
     ]
     .into_iter()
     .filter_map(|(name, absent)| absent.then_some(name))
@@ -171,7 +171,7 @@ pub fn service_account(document: &Document) -> Result<(String, String), ConfigEr
     let service = document.service;
     Err(ConfigError::Unset(format!(
         "{} not set — this {service} has no service account to sign in with.\n\
-         The launcher passes both for each service it starts; a {service} started another way needs the client its realm registers for it (SEMIONT_OIDC_CLIENT_ID=semiont-{service}).",
+         The launcher passes both for each service it starts; a {service} started another way needs the client its realm registers for it (XYNOLOG_OIDC_CLIENT_ID=xynolog-{service}).",
         missing.join(" and ")
     )))
 }

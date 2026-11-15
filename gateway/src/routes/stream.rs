@@ -4,7 +4,7 @@
 //! replay of each watermarked scope's persisted events and of the replies it
 //! names in `pendingReplies`; then a ping every `heartbeatSeconds`.
 //!
-//! Two bounds hold a connection (the operation's `x-semiont-limits`): a
+//! Two bounds hold a connection (the operation's `x-xynolog-limits`): a
 //! subscriber that stops reading is disconnected once `pendingWriteBytes` are
 //! waiting for it, and a replay that live frames outrun past
 //! `replayBufferEvents` is abandoned. Opening and closing a stream is
@@ -25,13 +25,6 @@ use axum::response::Response;
 use bytes::Bytes;
 use opentelemetry::KeyValue;
 use opentelemetry::trace::SpanKind;
-use xynoplex::bus_log::bus_log;
-use xynoplex::channels::TRACE_FIELD;
-use xynoplex::transport::TraceCarrier;
-use xynoplex::types::{BusSubscribeRequest, LimitRefusalCode};
-use semiont_core::spec::spec;
-use semiont_http_service::ConnectionAbort;
-use semiont_observability::logging;
 use serde_json::{Map, Value, json};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::pin::Pin;
@@ -40,6 +33,13 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use std::task::{Context, Poll, Waker};
 use std::time::Duration;
 use tokio::sync::Notify;
+use xynolog::bus_log::bus_log;
+use xynolog::channels::TRACE_FIELD;
+use xynolog::transport::TraceCarrier;
+use xynolog::types::{BusSubscribeRequest, LimitRefusalCode};
+use xynolog_core::spec::spec;
+use xynolog_http_service::ConnectionAbort;
+use xynolog_observability::logging;
 
 /// Scopes on one connection past which the matrix is logged as large.
 const SCOPE_WARN_THRESHOLD: usize = 128;
@@ -367,7 +367,7 @@ impl Connection {
         };
         let parent = match &trace {
             Some((traceparent, tracestate)) => {
-                xynoplex_telemetry::continued(Some(traceparent), tracestate.as_deref())
+                xynolog_telemetry::continued(Some(traceparent), tracestate.as_deref())
             }
             None => opentelemetry::Context::current(),
         };
@@ -379,7 +379,7 @@ impl Connection {
                     traceparent,
                     tracestate,
                 }),
-            ) = (&mut payload, xynoplex_telemetry::active_trace())
+            ) = (&mut payload, xynolog_telemetry::active_trace())
             {
                 let mut carrier = Map::new();
                 carrier.insert("traceparent".to_owned(), json!(traceparent));
@@ -415,7 +415,7 @@ impl Connection {
                 if let Some(scope) = &scope {
                     attributes.push(KeyValue::new("bus.scope", scope.clone()));
                 }
-                xynoplex_telemetry::in_span_now(
+                xynolog_telemetry::in_span_now(
                     format!("sse.deliver:{channel}"),
                     SpanKind::Producer,
                     attributes,

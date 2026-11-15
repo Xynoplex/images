@@ -1,6 +1,6 @@
 """What a Librarian is handed, for a test: a fake of each thing it reads by, and a few things said shortly.
 
-A Librarian's code is handed what it reads by (`semiont_librarian.reads`, and
+A Librarian's code is handed what it reads by (`xynolog_librarian.reads`, and
 four protocols of the packages it is built on). Here is one fake of each. A
 fake answers what a test states, keeps what it was asked in `asked`, in
 order, and can be told to fail: whatever a test puts in `failing` is raised
@@ -19,9 +19,10 @@ from dataclasses import dataclass
 from typing import Final, final, override
 
 from pydantic import JsonValue
-from xynoplex.errors import BusRequestError
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.types import (
+from spec import JsonObject
+from xynolog.errors import BusRequestError
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.types import (
     AnchoredTextAbsent,
     AnchoredTextAnswer,
     Annotation,
@@ -32,19 +33,18 @@ from xynoplex.types import (
     ResourceDescriptor,
     ResourceView,
 )
-from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
-from semiont_graph.memory import MemoryGraphDatabase
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
-from semiont_inference.mock import MockInferenceClient
-from semiont_service.content import Content, ContentReads, ContentUnread
-from semiont_vectors.embedding import EmbeddingProvider
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.mock import MockEmbeddingProvider
-from semiont_vectors.store import ResourceStamp, SearchOptions, VectorReader, VectorSearchResult
-from spec import JsonObject
+from xynolog_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
+from xynolog_graph.memory import MemoryGraphDatabase
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
+from xynolog_inference.mock import MockInferenceClient
+from xynolog_service.content import Content, ContentReads, ContentUnread
+from xynolog_vectors.embedding import EmbeddingProvider
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.mock import MockEmbeddingProvider
+from xynolog_vectors.store import ResourceStamp, SearchOptions, VectorReader, VectorSearchResult
 
-from semiont_librarian.prompts import Prompt
-from semiont_librarian.reads import (
+from xynolog_librarian.prompts import Prompt
+from xynolog_librarian.reads import (
     AnchoredText,
     Degraded,
     Described,
@@ -378,7 +378,7 @@ class FakeVectors(VectorReader):
 class FakeEmbedding(EmbeddingProvider):
     """A provider in the process that answers each text with the vector worked out from it. `asked` is every text, in order.
 
-    The vector of a text is `semiont_vectors.mock.deterministic_vector` of
+    The vector of a text is `xynolog_vectors.mock.deterministic_vector` of
     it, `DIMENSIONS` wide.
     """
 

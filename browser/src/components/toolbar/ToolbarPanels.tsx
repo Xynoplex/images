@@ -5,19 +5,19 @@ import {
   ResizeHandle,
   usePanelWidth,
   useEventSubscriptions,
-  useXynoplex,
+  useXynolog,
   useObservable,
   useHoverDelay,
   useTheme,
   useLineNumbers,
-} from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
 import { UserPanel } from '../UserPanel';
 import { KnowledgeBasePanel } from '../KnowledgeBasePanel';
 import { useKeyboardShortcutsContext } from '@/contexts/KeyboardShortcutsContext';
 import { useLocale } from '@/i18n/routing';
 import { usePathname, useRouter } from '@/i18n/routing';
-import { COMMON_PANELS } from '@xynoplex/react-ui';
-import type { ToolbarPanelType } from '@xynoplex/react-ui';
+import { COMMON_PANELS } from '@xynolog/react-ui';
+import type { ToolbarPanelType } from '@xynolog/react-ui';
 
 interface ToolbarPanelsProps {
   activePanel: ToolbarPanelType | null;
@@ -68,7 +68,7 @@ export function ToolbarPanels({
   // The Settings panel opens keyboard help.
   const { openKeyboardHelp } = useKeyboardShortcutsContext();
   const { t: _t } = useTranslation();
-  const session = useObservable(useXynoplex().activeSession$);
+  const session = useObservable(useXynolog().activeSession$);
   const user = useObservable(session?.user$);
   const isAuthenticated = !!user;
   const locale = useLocale();
@@ -120,7 +120,7 @@ export function ToolbarPanels({
   }
 
   return (
-    <div className="semiont-toolbar-panels" style={{ width: `${width}px`, position: 'relative' }}>
+    <div className="xynolog-toolbar-panels" style={{ width: `${width}px`, position: 'relative' }}>
       {/* Resize handle on left edge */}
       <ResizeHandle
         onResize={setWidth}
@@ -132,7 +132,7 @@ export function ToolbarPanels({
       />
 
       {/* Custom context-specific panels */}
-      <div className="semiont-toolbar-panels__content">
+      <div className="xynolog-toolbar-panels__content">
         {children}
 
         {/* Knowledge Base Panel - common to all contexts */}
@@ -145,14 +145,14 @@ export function ToolbarPanels({
           isAuthenticated ? (
             <UserPanel />
           ) : (
-            <div className="semiont-panel">
-              <div className="semiont-panel-header">
-                <h2 className="semiont-panel-header__title">
-                  <span className="semiont-panel-header__text">{_t('UserPanel.account')}</span>
+            <div className="xynolog-panel">
+              <div className="xynolog-panel-header">
+                <h2 className="xynolog-panel-header__title">
+                  <span className="xynolog-panel-header__text">{_t('UserPanel.account')}</span>
                 </h2>
               </div>
-              <div className="semiont-panel__content" style={{ padding: '1rem', textAlign: 'center' }}>
-                <p style={{ color: 'var(--semiont-color-neutral-400)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+              <div className="xynolog-panel__content" style={{ padding: '1rem', textAlign: 'center' }}>
+                <p style={{ color: 'var(--xynolog-color-neutral-400)', fontSize: '0.85rem', lineHeight: 1.5 }}>
                   {_t('AccountPanel.notAuthenticated')}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export function ToolbarPanels({
             locale={locale}
             isPendingLocaleChange={isPending}
             version={__APP_VERSION__}
-            sourceCodeUrl="https://github.com/Xynoplex/images"
+            sourceCodeUrl="https://github.com/xynolog/images"
             onOpenKeyboardHelp={openKeyboardHelp}
           />
         )}

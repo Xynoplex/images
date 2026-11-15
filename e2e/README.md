@@ -164,7 +164,7 @@ container run --rm \
 - [Debugging failures](docs/debugging.md) — traces, report UI, JSONL
   extraction, diagnostic specs, gateway-log tailing, instrument don't
   speculate.
-- [Bus logging](docs/bus-logging.md) — the `__SEMIONT_BUS_LOG__` wire
+- [Bus logging](docs/bus-logging.md) — the `__XYNOLOG_BUS_LOG__` wire
   logger, the `bus` capture fixture, assertion helpers.
 - [Jaeger evidence](docs/jaeger.md) — the `jaeger` fixture that pulls
   matching distributed traces on test teardown and attaches them to
@@ -202,7 +202,7 @@ nor `gemma3:1b` answered them correctly within their timeouts.
   (see [How CI runs the suite](#how-ci-runs-the-suite)); otherwise run it
   against a stack you brought up.
 - **Seeded.** Playwright's global setup ([`scripts/seed.ts`](scripts/seed.ts))
-  authenticates through `@xynoplex/sdk` and uploads the fixtures the specs
+  authenticates through `@xynolog/sdk` and uploads the fixtures the specs
   assume: text resources for the annotation specs, PDFs for the PDF specs.
   Each seed has a stable
   storage URI, so a re-run against a seeded knowledge base skips it.
@@ -239,9 +239,9 @@ the host; see the [Quick start](#quick-start).
 
 ## Gotchas
 
-- **Apple Container `--rm` is unreliable.** Stopped semiont-* containers
+- **Apple Container `--rm` is unreliable.** Stopped xynolog-* containers
   often linger and conflict on next start with `Error: container with
-  id semiont-foo already exists`. Wipe with `container stop $name &&
+  id xynolog-foo already exists`. Wipe with `container stop $name &&
   container rm $name` before retrying.
 - **Host Ollama needs `OLLAMA_HOST=0.0.0.0`.** Otherwise the gateway
   container can't reach it. Either configure Ollama Desktop with

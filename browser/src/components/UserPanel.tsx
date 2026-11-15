@@ -4,10 +4,10 @@ import {
   sanitizeImageURL,
   useSessionExpiry,
   formatTime,
-  useXynoplex,
+  useXynolog,
   useObservable,
-} from '@xynoplex/react-ui';
-import type { XynoplexSession } from '@xynoplex/sdk';
+} from '@xynolog/react-ui';
+import type { XynologSession } from '@xynolog/sdk';
 import { useRouter } from '@/i18n/routing';
 
 // Fallback avatar when image fails to load or is invalid
@@ -15,8 +15,8 @@ const FALLBACK_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdod
 
 export function UserPanel() {
   const { t } = useTranslation(undefined, { keyPrefix: 'UserPanel' });
-  const semiont = useXynoplex();
-  const session = useObservable(semiont.activeSession$);
+  const xynolog = useXynolog();
+  const session = useObservable(xynolog.activeSession$);
   const user = useObservable(session?.user$) ?? null;
   const activeKnowledgeBase = session?.kb ?? null;
   const displayName = user?.name ?? t('user');
@@ -42,13 +42,13 @@ export function UserPanel() {
   })();
 
   return (
-    <div className="semiont-user-panel">
-      <h3 className="semiont-user-panel__title">
+    <div className="xynolog-user-panel">
+      <h3 className="xynolog-user-panel__title">
         {t('account')}
       </h3>
 
       {activeKnowledgeBase && (
-        <div style={{ padding: '0 0.75rem 0.5rem', fontSize: '0.8rem', color: 'var(--semiont-color-neutral-400)' }}>
+        <div style={{ padding: '0 0.75rem 0.5rem', fontSize: '0.8rem', color: 'var(--xynolog-color-neutral-400)' }}>
           {activeKnowledgeBase.label}
         </div>
       )}
@@ -65,11 +65,11 @@ export function UserPanel() {
             onError={() => setImageError(true)}
           />
           <div className="flex-1 min-w-0">
-            <div className="semiont-panel-text">
+            <div className="xynolog-panel-text">
               {displayName}
             </div>
             {userDomain && (
-              <div className="semiont-panel-text-secondary">
+              <div className="xynolog-panel-text-secondary">
                 @{userDomain}
               </div>
             )}
@@ -78,12 +78,12 @@ export function UserPanel() {
 
         {/* Session Info */}
         <div>
-          <label className="semiont-panel-label">
+          <label className="xynolog-panel-label">
             {t('session')}
           </label>
-          <div className="semiont-session-box">
+          <div className="xynolog-session-box">
             {sessionTimeFormatted !== null && (
-              <div className="semiont-panel-hint">
+              <div className="xynolog-panel-hint">
                 {t('expiresIn', { time: sessionTimeFormatted })}
               </div>
             )}
@@ -114,18 +114,18 @@ export function UserPanel() {
  * the refresh token at the issuer. The gateway has no part in it — it never
  * issued the session, so it has nothing to revoke.
  */
-function SignOutButton({ session, label }: { session: XynoplexSession; label: string }) {
-  const semiont = useXynoplex();
+function SignOutButton({ session, label }: { session: XynologSession; label: string }) {
+  const xynolog = useXynolog();
   const router = useRouter();
 
   const handleSignOut = async () => {
-    await semiont.signOut(session.kb.id);
+    await xynolog.signOut(session.kb.id);
     router.push('/');
   };
 
   return (
-    <div className="semiont-panel-divider">
-      <button onClick={handleSignOut} className="semiont-signout-button">
+    <div className="xynolog-panel-divider">
+      <button onClick={handleSignOut} className="xynolog-signout-button">
         {label}
       </button>
     </div>

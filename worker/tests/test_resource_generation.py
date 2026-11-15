@@ -13,14 +13,14 @@ from typing import Final, final
 import pytest
 from aio import pass_time, run, turns
 from pydantic import JsonValue
-from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from xynoplex.types import GenerationJobParams, SupportedMediaType
-from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, ProviderStatusError, StructuredResponse
-from semiont_inference.mock import MockInferenceClient
+from xynolog.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynolog.types import GenerationJobParams, SupportedMediaType
+from xynolog_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, ProviderStatusError, StructuredResponse
+from xynolog_inference.mock import MockInferenceClient
 
-from semiont_worker.chunking import estimate_tokens
-from semiont_worker.failure_class import DeterministicJobError, classify_failure
-from semiont_worker.generation.resource_generation import (
+from xynolog_worker.chunking import estimate_tokens
+from xynolog_worker.failure_class import DeterministicJobError, classify_failure
+from xynolog_worker.generation.resource_generation import (
     GeneratedDocument,
     Repair,
     document_of,
@@ -28,7 +28,7 @@ from semiont_worker.generation.resource_generation import (
     generation_prompt,
     tokens_asked,
 )
-from semiont_worker.inference_call import INFERENCE_TIMEOUT_SECONDS, InferenceTimeoutError
+from xynolog_worker.inference_call import INFERENCE_TIMEOUT_SECONDS, InferenceTimeoutError
 
 
 def window(context_tokens: int, max_output_tokens: int) -> InferenceLimits:

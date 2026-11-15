@@ -20,7 +20,7 @@
 // models.dev is an open database of what each model can take, kept by its
 // maintainers from each provider's documentation (MIT, the data included).
 // A driver whose provider's own API does not state a model's facts takes
-// them from a catalogue file, which `semiont_inference.catalogue` reads at
+// them from a catalogue file, which `xynolog_inference.catalogue` reads at
 // the path it is pointed to. The Python package carries no copy of the
 // catalogue and downloads nothing: an image that runs such a driver carries
 // the repository's generated copy (worker/Dockerfile,
@@ -49,7 +49,7 @@
 // place. A reasoning option has the members of its kind, each null where the
 // catalogue leaves it out; a kind this script does not know is refused. What
 // the words of a fact may be (a status, a reasoning effort) is the reader's
-// to say: `semiont_inference.catalogue` refuses a word it does not know, and
+// to say: `xynolog_inference.catalogue` refuses a word it does not know, and
 // the package's tests read every entry of the fixture through it.
 //
 // The notice is the npm package's own LICENSE, which MIT asks to go with a

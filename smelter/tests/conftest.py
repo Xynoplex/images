@@ -5,7 +5,7 @@ from collections.abc import Generator
 
 import pytest
 
-from semiont_smelter.log import LOG
+from xynolog_smelter.log import LOG
 
 
 @pytest.fixture

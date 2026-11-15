@@ -1,12 +1,12 @@
 /**
- * Routing configuration for the Semiont Browser
+ * Routing configuration for the Xynolog Browser
  *
  * This module provides the concrete implementation of the RoutingContext
  * interface for this React Router application.
  */
 
 import { Link as LocaleLink } from '@/i18n/routing';
-import type { RouteBuilder, LinkComponentProps } from '@xynoplex/react-ui';
+import type { RouteBuilder, LinkComponentProps } from '@xynolog/react-ui';
 
 /**
  * react-ui components pass `href`; React Router's link takes `to`.
@@ -19,7 +19,7 @@ export function Link({ href, ...props }: LinkComponentProps) {
 }
 
 /**
- * Route builder for the Semiont Browser
+ * Route builder for the Xynolog Browser
  */
 export const routes: RouteBuilder = {
   resourceDetail: (id: string) => `/know/resource/${id}`,

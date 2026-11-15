@@ -12,17 +12,17 @@ from collections.abc import Awaitable, Callable
 import pytest
 from aio import run
 from pydantic import JsonValue
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation, ResourceDescriptor
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation, ResourceDescriptor
 
-from semiont_graph.codec import intended_graph_annotation
-from semiont_graph.interface import GraphDatabase, ResourceChange, ResourceQuery
+from xynolog_graph.codec import intended_graph_annotation
+from xynolog_graph.interface import GraphDatabase, ResourceChange, ResourceQuery
 
 ADA: dict[str, JsonValue] = {"@type": "Person", "@id": "did:web:example.org:users:ada"}
 MODEL: dict[str, JsonValue] = {
     "@type": "Software",
-    "@id": "did:web:example.org:agents:semiont-worker",
+    "@id": "did:web:example.org:agents:xynolog-worker",
     "name": "anthropic model",
     "provider": "anthropic",
     "model": "model",

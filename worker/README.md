@@ -1,19 +1,19 @@
-# semiont-worker
+# xynolog-worker
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-worker)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=image-worker)](https://app.codecov.io/gh/xynolog/images/components)
 
 **The worker claims queued jobs and runs them against a model**: the detection passes, the
 generation and the other long-running work that a request cannot wait on. It is a Python
 service, answers for its health on port 24100, and is started by the
-[launcher](../../apps/launcher/README.md) (`semiont start`) as a shared service: one worker
+[launcher](../../apps/launcher/README.md) (`xynolog start`) as a shared service: one worker
 serves every knowledge base on its list at once, each apart from the others.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-worker` |
+| Image | `ghcr.io/xynolog/xynolog-worker` |
 | Port | 24100 (`/health`, and nothing else) |
-| Command | `python -P -m semiont_worker --config /etc/semiont/worker.json` |
-| Code | Python, in this directory: [`src/semiont_worker`](src/semiont_worker) |
+| Command | `python -P -m xynolog_worker --config /etc/xynolog/worker.json` |
+| Code | Python, in this directory: [`src/xynolog_worker`](src/xynolog_worker) |
 | Specification | [protocol/contract/WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) |
 | Judged by | [protocol/conformance/worker-service](../../protocol/conformance/worker-service/README.md) |
 | Published | to no package index: the image only |
@@ -66,7 +66,7 @@ knowledge base the job came from and the engine that made it, so `_userId` on th
 `generator` on every annotation refer to the same agent.
 
 What the agent is called is its profile. At each knowledge base, once it has signed in, it
-first asks which knowledge base it is (`browse:kb-requested`), as every Semiont service does:
+first asks which knowledge base it is (`browse:kb-requested`), as every Xynolog service does:
 on a stream that names nothing the agent answers, and again while the Archivist is not there to
 answer. It goes on only at the domain its entry names. Then it opens its own stream there, and,
 before any engine claims, says it is called by that knowledge base's `identity.clientId`, on
@@ -115,19 +115,19 @@ When a job does fail, the service classes the failure:
 
 ## What it reports
 
-With `OTEL_EXPORTER_OTLP_ENDPOINT` set it exports, as `semiont-worker`, the rows
+With `OTEL_EXPORTER_OTLP_ENDPOINT` set it exports, as `xynolog-worker`, the rows
 [`protocol/specs/src/service-telemetry/telemetry.json`](../protocol/specs/src/service-telemetry/telemetry.json)
 lists for the worker: a span and an outcome for every job, every generation, and every
-detection call with its items, tokens and anchoring outcomes (the `semiont.detection.*`
+detection call with its items, tokens and anchoring outcomes (the `xynolog.detection.*`
 metrics), so a run's cost, yield and precision can be queried. Its own spans and metrics
-name, as `semiont.kb`, the knowledge base whose job it was; what a provider's driver
-counts of a generation (`semiont.inference.*`) names none.
+name, as `xynolog.kb`, the knowledge base whose job it was; what a provider's driver
+counts of a generation (`xynolog.inference.*`) names none.
 See [Observability](../../docs/operator/administration/OBSERVABILITY.md) for the full
 inventory and where the metrics flow.
 
 ## Configuration
 
-A JSON document, named by `--config` (the image passes `/etc/semiont/worker.json`), whose
+A JSON document, named by `--config` (the image passes `/etc/xynolog/worker.json`), whose
 schema is [`WorkerConfig`](../protocol/specs/src/components/schemas/WorkerConfig.json). The worker
 defaults nothing in it.
 
@@ -148,7 +148,7 @@ document and the Inference document of each local knowledge base on the worker's
 document for the worker it starts, and a worker started some other way is given the same
 document.
 
-Its environment is `SEMIONT_OIDC_CLIENT_KEY`, the RSA key it proves itself with at every
+Its environment is `XYNOLOG_OIDC_CLIENT_KEY`, the RSA key it proves itself with at every
 knowledge base, and each variable its document names, such as `ANTHROPIC_API_KEY`. Each
 knowledge base's issuer holds the key's public half on the client that knowledge base's
 `identity.clientId` names. No secret is sent: each sign-in carries an assertion signed with the
@@ -172,7 +172,7 @@ the `jobs` it claims, and what its claims say of themselves: `lastQueuedEventAt`
 ## What the image carries
 
 The service, and the three Python packages of this repository it runs on: the SDK
-([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway; the
+([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway; the
 inference drivers ([`shared/python/inference`](../../shared/python/inference/)), which
 ask a model provider; and what every Python service is built on
 ([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
@@ -192,20 +192,20 @@ image is built with every extra, so it is not rebuilt to be pointed at another p
 document ([`WorkerEngineConfig`](../protocol/specs/src/components/schemas/WorkerEngineConfig.json))
 names one of them, and a document that names another is refused when the service starts. A
 model of `google`, `openai` or `together` is asked with what the model catalogue says of it,
-which the image carries at `/usr/share/semiont/model-catalogue.json` and the document names
+which the image carries at `/usr/share/xynolog/model-catalogue.json` and the document names
 (`modelCatalogue`). Only `anthropic` and `ollama` have been run against the real provider.
 
 **Typst ships in the image** (pinned) so generation can produce PDFs with real page geometry
 rather than recovered coordinates.
 
 It runs on the oldest Python the repository's Python packages support, on Alpine, as the
-user `semiont`. It carries no installer (`pip`, `uv`) and no Node.
+user `xynolog`. It carries no installer (`pip`, `uv`) and no Node.
 
 ### A slimmer image
 
 The one line that decides which providers' libraries an image has is the builder stage's
 `uv sync` in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of
-`semiont-worker`, each of which brings the drivers' extra of the same name. An image for one
+`xynolog-worker`, each of which brings the drivers' extra of the same name. An image for one
 provider names that provider's in its place:
 
 ```dockerfile
@@ -235,7 +235,7 @@ After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
-  --file worker/Dockerfile --tag ghcr.io/xynoplex/xynoplex-worker:local .
+  --file worker/Dockerfile --tag ghcr.io/xynolog/xynolog-worker:local .
 ```
 
 [`make build`](../Makefile) builds it so with the other
@@ -247,5 +247,5 @@ checks what a built one promises.
 - [WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) — what the worker does, rule by rule
 - [WORKER-CONTRACT.md](../../protocol/contract/WORKER-CONTRACT.md) — the contract every worker keeps
 - [JOBS.md](../../protocol/contract/JOBS.md) — the job protocol, and the dispatcher's side of it
-- [`semiont-worker` skill](../../docs/builder/skills/semiont-worker/SKILL.md) — building your own job-claim daemon
+- [`xynolog-worker` skill](../../docs/builder/skills/xynolog-worker/SKILL.md) — building your own job-claim daemon
 - [Adding a kind of job](../../docs/contributor/ADDING-A-JOB.md) — the path of a new kind of job through the spec, the SDKs, the dispatcher, this service, its suite and its rules

@@ -23,8 +23,8 @@ from opentelemetry import trace
 from provider import HANG_UP, HOLD, Answer, Anthropic, Reply, model_info, refused, reply, saying
 from spec import JsonObject
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.interface import (
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.interface import (
     InferenceLimits,
     InferenceResponse,
     ProviderStatusError,
@@ -58,7 +58,7 @@ def limits(*, context: int = 200_000, output: int = 64_000) -> InferenceLimits:
 
 
 def ours(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference"]
+    return [record for record in caplog.records if record.name == "xynolog_inference"]
 
 
 # ── limits ──────────────────────────────────────────────────────────────
@@ -415,7 +415,7 @@ def test_a_reply_with_nothing_in_it_is_a_failure_that_carries_the_stop_reason(
                 "Structured response could not be read: response is empty (stop_reason: max_tokens)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = [record for record in ours(caplog) if record.levelno == logging.ERROR]
     assert error.getMessage() == "Empty response from Anthropic"
@@ -470,7 +470,7 @@ def test_an_answer_the_provider_withheld_is_a_failure_of_its_own_and_nothing_it_
                 await generation()
             assert (withheld.value.reason, str(withheld.value)) == ("refusal", said)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = [record for record in ours(caplog) if record.levelno == logging.ERROR]
     assert error.getMessage() == "The provider withheld its answer"
@@ -491,7 +491,7 @@ def test_a_call_logs_what_typescripts_does_at_the_same_levels(caplog: pytest.Log
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0.2, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     records = ours(caplog)
     assert [(record.levelname, record.getMessage()) for record in records] == [
@@ -535,7 +535,7 @@ def test_a_streamed_answer_is_logged_with_the_id_of_its_request(caplog: pytest.L
             played.script(reply("hello"))
             await driver(played).generate_text("prompt", 64_000, 0)
 
-    caplog.set_level(logging.INFO, logger="semiont_inference")
+    caplog.set_level(logging.INFO, logger="xynolog_inference")
     run(scenario())
     assert [vars(record)["requestId"] for record in ours(caplog) if record.getMessage() == "Text generation completed"] == ["req_played_1"]
 

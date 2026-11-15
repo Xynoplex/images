@@ -1,13 +1,13 @@
 [package]
-name = "semiont-archivist"
+name = "xynolog-archivist"
 workspace = "../packages/rust"
 edition = "2024"
 publish = false
 license = "Apache-2.0"
-description = "The Semiont Archivist: it keeps the knowledge base's record, as protocol/contract/ARCHIVIST.md states it."
+description = "The Xynolog Archivist: it keeps the knowledge base's record, as protocol/contract/ARCHIVIST.md states it."
 
 [[bin]]
-name = "semiont-archivist"
+name = "xynolog-archivist"
 path = "src/main.rs"
 
 [dependencies]
@@ -19,14 +19,14 @@ percent-encoding.workspace = true
 reqwest = { workspace = true, features = ["rustls-no-provider"] }
 ring.workspace = true
 rustls = { workspace = true, features = ["ring", "std"] }
-xynoplex.workspace = true
-semiont-archivist-record.workspace = true
-semiont-archivist-staging.workspace = true
-semiont-core.workspace = true
-semiont-http-service.workspace = true
-xynoplex-http-transport.workspace = true
-semiont-observability.workspace = true
-xynoplex-telemetry.workspace = true
+xynolog.workspace = true
+xynolog-archivist-record.workspace = true
+xynolog-archivist-staging.workspace = true
+xynolog-core.workspace = true
+xynolog-http-service.workspace = true
+xynolog-http-transport.workspace = true
+xynolog-observability.workspace = true
+xynolog-telemetry.workspace = true
 serde_json = { workspace = true, features = ["preserve_order"] }
 tikv-jemallocator.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros", "net", "signal", "sync", "time", "fs", "io-util"] }

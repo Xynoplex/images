@@ -16,19 +16,19 @@ from collections.abc import Mapping, Sequence
 from typing import Final, final
 
 from pydantic import JsonValue
-from xynoplex.claims import ClaimRefusal, Claims, HeldJob
-from xynoplex.client import SemiontClient
-from xynoplex.identifiers import ResourceId, UserId
-from xynoplex.identity import kb_did
-from xynoplex.testing import FaultyTransport, create_test_client, refuse_unscripted_operation
-from xynoplex.transport import Content, Frame
-from xynoplex.types import JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter
-from semiont_inference.interface import InferenceClient, InferenceLimits
-from semiont_inference.mock import MockInferenceClient
 from standing_in import GENERATOR
+from xynolog.claims import ClaimRefusal, Claims, HeldJob
+from xynolog.client import XynologClient
+from xynolog.identifiers import ResourceId, UserId
+from xynolog.identity import kb_did
+from xynolog.testing import FaultyTransport, create_test_client, refuse_unscripted_operation
+from xynolog.transport import Content, Frame
+from xynolog.types import JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter
+from xynolog_inference.interface import InferenceClient, InferenceLimits
+from xynolog_inference.mock import MockInferenceClient
 
-from semiont_worker.agent import WORKER_CHANNELS
-from semiont_worker.held_job import run_job
+from xynolog_worker.agent import WORKER_CHANNELS
+from xynolog_worker.held_job import run_job
 
 EVERY_JOB: Final[list[JobFilter]] = [
     MarkJobFilter(job_type="mark", params=MarkJobFilterParams(motivation="highlighting")),
@@ -173,7 +173,7 @@ async def worked(
 ) -> None:
     """Hand a job over by a real claim, and run it with `run_job` until it has settled it."""
     parties.queue.append(handed_over)
-    client: SemiontClient[FaultyTransport] = parties.client
+    client: XynologClient[FaultyTransport] = parties.client
     async with client, client.job.claim(accepts) as claims:
         held = await claimed(parties, claims)
         await run_job(held, client=client, inference=inference, generator=GENERATOR, accepts=accepts)

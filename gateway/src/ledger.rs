@@ -28,13 +28,13 @@ use crate::signal::{Meta, SharedTable, SignalPlane, Subscription, now_ms};
 use crate::{limits, metrics};
 use futures::FutureExt;
 use futures::future::{BoxFuture, Shared};
-use semiont_observability::logging;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, HashMap};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard, Weak};
 use std::time::Duration;
+use xynolog_observability::logging;
 
 const CLAIMS: &str = "ledger_claims";
 const REPLIES: &str = "ledger_replies";

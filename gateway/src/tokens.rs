@@ -26,7 +26,7 @@ pub struct KeyRing {
 /// JWT_SECRET, as a ring, or why it cannot be one. The message never carries a key.
 pub fn require_jwt_secret() -> Result<Vec<String>, String> {
     let raw = std::env::var("JWT_SECRET").ok().filter(|v| !v.is_empty()).ok_or_else(|| {
-        "JWT_SECRET is not set. `semiont start` generates one per knowledge base and injects it; set JWT_SECRET explicitly to override."
+        "JWT_SECRET is not set. `xynolog start` generates one per knowledge base and injects it; set JWT_SECRET explicitly to override."
             .to_owned()
     })?;
     let ring: Vec<String> = raw

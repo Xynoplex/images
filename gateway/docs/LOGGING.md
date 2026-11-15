@@ -1,8 +1,8 @@
 # Gateway Logging
 
 The gateway logs structured lines to stdout, which is the container's contract:
-`semiont logs` reads the runtime's stream, and anything that ships logs reads
-the same. Its code is `semiont-observability`'s [logging.rs](../../packages/rust/observability/src/logging.rs).
+`xynolog logs` reads the runtime's stream, and anything that ships logs reads
+the same. Its code is `xynolog-observability`'s [logging.rs](../../packages/rust/observability/src/logging.rs).
 
 ## Level and format
 
@@ -13,8 +13,8 @@ the same. Its code is `semiont-observability`'s [logging.rs](../../packages/rust
   line) or `simple` (`<timestamp> [LEVEL] message {fields}`, for reading at a
   terminal). The launcher writes `json`.
 
-`SEMIONT_BUS_LOG` lines (`[bus EMIT] …`) and a fatal error's `[fatal] …` go to
-stderr, so stdout stays one format. A `SEMIONT_BUS_LOG` line shows the payload
+`XYNOLOG_BUS_LOG` lines (`[bus EMIT] …`) and a fatal error's `[fatal] …` go to
+stderr, so stdout stays one format. A `XYNOLOG_BUS_LOG` line shows the payload
 of the frame it is about, less one thing: the value of a member whose name is
 one a credential goes by (`token`, which is what a payload names the token a
 resource is cloned by, `password`, `apiKey` and the rest of a short list) is
@@ -56,8 +56,8 @@ A refused request is three lines: this one between its two request lines,
 whether it is answered 401 or, past its holder's allowance, 429 `refusal-rate`
 ([AUTHENTICATION.md](AUTHENTICATION.md#what-a-refused-request-costs)). A client
 retrying a refused credential therefore writes three lines a request, at
-whatever rate it retries; `semiont.gateway.unauthenticated` counts the 401s by
-`reason` without the log, and `semiont.gateway.refused` the 429s.
+whatever rate it retries; `xynolog.gateway.unauthenticated` counts the 401s by
+`reason` without the log, and `xynolog.gateway.refused` the 429s.
 
 ### Unhandled errors (`error`)
 

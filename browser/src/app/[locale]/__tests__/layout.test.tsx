@@ -27,8 +27,8 @@ vi.mock('@/contexts/AuthShell', () => ({
     <div data-testid="auth-shell-marker">{children}</div>,
 }));
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
     SkipLinks: () => null,

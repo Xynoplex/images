@@ -7,8 +7,12 @@
 
 use crate::archivist::{Archivist, Refusal};
 use crate::{browse, commands};
-use xynoplex::bus::{Bus, operation};
-use xynoplex::channels::{
+use serde_json::{Value, json};
+use std::sync::Arc;
+use std::sync::atomic::Ordering;
+use tokio::sync::mpsc::UnboundedReceiver;
+use xynolog::bus::{Bus, operation};
+use xynolog::channels::{
     BindUpdateBody, BrowseAnnotationHistoryRequested, BrowseAnnotationRequested,
     BrowseDirectoryRequested, BrowseEnginesRequested, BrowseEntityTypesRequested,
     BrowseEventsRequested, BrowseKbRequested, BrowseProfilesRequested, BrowseResourceRequested,
@@ -18,15 +22,11 @@ use xynoplex::channels::{
     MarkUpdateEntityTypes, PrincipalProfile, SmeltSettled, YieldCloneCreate, YieldClonePersist,
     YieldCloneResourceRequested, YieldCloneTokenRequested, YieldCreate, YieldUpdate,
 };
-use xynoplex::errors::TransportError;
-use xynoplex::transport::{Envelope, Frame, Frames};
-use xynoplex::types::CommandError;
-use semiont_archivist_record::{Object, ids};
-use semiont_observability::logging;
-use serde_json::{Value, json};
-use std::sync::Arc;
-use std::sync::atomic::Ordering;
-use tokio::sync::mpsc::UnboundedReceiver;
+use xynolog::errors::TransportError;
+use xynolog::transport::{Envelope, Frame, Frames};
+use xynolog::types::CommandError;
+use xynolog_archivist_record::{Object, ids};
+use xynolog_observability::logging;
 
 /// The commands: each channel's frames are handled one at a time, in the
 /// order they arrive.
@@ -188,10 +188,10 @@ async fn handle(archivist: &Archivist, channel: &str, payload: &Object) -> Optio
 }
 
 /// The most a frame sent on the bus may be, as the gateway's API states it
-/// (`POST /bus/emit`'s `x-semiont-limits.maxBodyBytes`). One it does not state
+/// (`POST /bus/emit`'s `x-xynolog-limits.maxBodyBytes`). One it does not state
 /// is an API the Archivist was not built against, and it does not start.
 pub fn largest_message(document: &Value) -> Result<usize, String> {
-    document["paths"]["/bus/emit"]["post"]["x-semiont-limits"]["maxBodyBytes"]
+    document["paths"]["/bus/emit"]["post"]["x-xynolog-limits"]["maxBodyBytes"]
         .as_u64()
         .and_then(|bytes| usize::try_from(bytes).ok())
         .ok_or_else(|| "the gateway's API states no maxBodyBytes for post /bus/emit".to_owned())
@@ -232,7 +232,7 @@ async fn send(bus: &Bus, reply: Reply, envelope: Envelope) -> Result<(), Transpo
 
 async fn answer(archivist: &Archivist, bus: &Bus, frame: Frame) {
     let trace = frame.trace.clone();
-    xynoplex_telemetry::continuing(trace.as_ref(), async {
+    xynolog_telemetry::continuing(trace.as_ref(), async {
         let Some(reply) = handle(archivist, &frame.channel, &frame.payload).await else {
             return;
         };

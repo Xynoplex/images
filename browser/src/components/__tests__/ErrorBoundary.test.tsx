@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ErrorBoundary, AsyncErrorBoundary } from '@xynoplex/react-ui';
+import { ErrorBoundary, AsyncErrorBoundary } from '@xynolog/react-ui';
 
 // Mock component that throws an error
 const ThrowError = ({ shouldThrow = false, message = 'Test error' }: { shouldThrow?: boolean; message?: string }) => {
@@ -308,7 +308,7 @@ describe('AsyncErrorBoundary', () => {
     );
 
     expect(screen.getByText('Retry')).toBeInTheDocument();
-    expect(container.querySelector('.semiont-async-error-message')).toBeEmptyDOMElement();
+    expect(container.querySelector('.xynolog-async-error-message')).toBeEmptyDOMElement();
   });
 
   it('should handle retry functionality', () => {
@@ -337,7 +337,7 @@ describe('AsyncErrorBoundary', () => {
     // Check for SVG warning icon by class and viewBox
     const svgIcon = container.querySelector('svg[viewBox]');
     expect(svgIcon).toHaveAttribute('viewBox', '0 0 20 20');
-    expect(svgIcon).toHaveClass('semiont-icon-warning');
+    expect(svgIcon).toHaveClass('xynolog-icon-warning');
   });
 });
 

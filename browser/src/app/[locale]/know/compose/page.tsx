@@ -6,7 +6,7 @@ import { useLocale } from '@/i18n/routing';
 import { useRouter } from '@/i18n/routing';
 import { useSearchParams } from 'react-router';
 import {
-  useXynoplex,
+  useXynolog,
   useToast,
   useTheme,
   useShellStateUnit,
@@ -16,9 +16,9 @@ import {
   Toolbar,
   ComposeLoadingState,
   ResourceComposePage,
-} from '@xynoplex/react-ui';
-import type { SaveResourceParams as UISaveResourceParams } from '@xynoplex/react-ui';
-import { createComposePageStateUnit } from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
+import type { SaveResourceParams as UISaveResourceParams } from '@xynolog/react-ui';
+import { createComposePageStateUnit } from '@xynolog/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 
 function ComposeResourceContent() {
@@ -26,9 +26,9 @@ function ComposeResourceContent() {
   const locale = useLocale();
   const router = useRouter();
   const [searchParams] = useSearchParams();
-  const semiont = useXynoplex();
-  const activeKbId = useObservable(semiont.activeKbId$);
-  const session = useObservable(semiont.activeSession$);
+  const xynolog = useXynolog();
+  const activeKbId = useObservable(xynolog.activeKbId$);
+  const session = useObservable(xynolog.activeSession$);
   const user = useObservable(session?.user$);
   const authToken = useObservable(session?.token$);
   const isAuthenticated = !!user;

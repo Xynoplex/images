@@ -27,12 +27,12 @@ from opentelemetry.metrics import CallbackOptions
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import Gauge, InMemoryMetricReader, Metric, NumberDataPoint
 from opentelemetry.util.types import AttributeValue
-from xynoplex.identifiers import UserId
-from xynoplex.identity import kb_did
 from spec import ROOT
 from telemetry_rows import MetricRow, as_the_table_writes, metrics_named, resource_keys
+from xynolog.identifiers import UserId
+from xynolog.identity import kb_did
 
-from semiont_service.observability import (
+from xynolog_service.observability import (
     Exporting,
     Lag,
     install,
@@ -47,7 +47,7 @@ from semiont_service.observability import (
 PYTHON_SERVICES: Final = sorted(path.parent.name for path in ROOT.glob("*/pyproject.toml"))
 """The services built on this package, each by its word for itself."""
 
-NAMED: Final = {"service.name": "semiont-service", "service.version": version("semiont-service")}
+NAMED: Final = {"service.name": "xynolog-service", "service.version": version("xynolog-service")}
 """The name and the version every resource built here states: this package's own (`exported_under`)."""
 
 
@@ -55,7 +55,7 @@ def exported(environment: Mapping[str, str], lag: Lag) -> dict[str, Metric]:
     """What a process reports of itself in `environment`, read once: each metric by its name."""
     reader = InMemoryMetricReader()
     provider = MeterProvider(metric_readers=[reader], shutdown_on_exit=False)
-    report_the_process(provider.get_meter("semiont"), lag, environment)
+    report_the_process(provider.get_meter("xynolog"), lag, environment)
     data = reader.get_metrics_data()
     provider.shutdown()
     if data is None:
@@ -137,16 +137,16 @@ def test_a_service_that_serves_one_knowledge_base_is_exported_under_its_name_its
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # What OpenTelemetry's SDK would read of its own adds nothing, and changes nothing: the resource is built on no other.
-    monkeypatch.setenv("OTEL_RESOURCE_ATTRIBUTES", "semiont.kb=did:web:elsewhere,deployment.environment=test")
+    monkeypatch.setenv("OTEL_RESOURCE_ATTRIBUTES", "xynolog.kb=did:web:elsewhere,deployment.environment=test")
     monkeypatch.setenv("OTEL_SERVICE_NAME", "elsewhere")
     # A domain may hold what that variable would have had to escape. The DID is carried as it is.
     kb = kb_did("example.github.io:kb%2C1,v=2")
-    assert exported_under({}, kb) == {**NAMED, "semiont.kb": kb}
-    assert exported_under({"OTEL_SERVICE_NAME": "renamed"}, kb) == {**NAMED, "service.name": "renamed", "semiont.kb": kb}
+    assert exported_under({}, kb) == {**NAMED, "xynolog.kb": kb}
+    assert exported_under({"OTEL_SERVICE_NAME": "renamed"}, kb) == {**NAMED, "service.name": "renamed", "xynolog.kb": kb}
 
 
 def test_a_service_that_names_no_knowledge_base_is_exported_under_its_name_and_its_version_alone(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("OTEL_RESOURCE_ATTRIBUTES", "semiont.kb=did:web:elsewhere")
+    monkeypatch.setenv("OTEL_RESOURCE_ATTRIBUTES", "xynolog.kb=did:web:elsewhere")
     assert exported_under({}, None) == NAMED
 
 
@@ -154,7 +154,7 @@ def test_each_service_built_on_this_package_is_exported_under_the_keys_the_table
     assert PYTHON_SERVICES
     for service in PYTHON_SERVICES:
         listed = resource_keys(service)
-        kb = kb_did("example.github.io:kb") if "semiont.kb" in listed else None
+        kb = kb_did("example.github.io:kb") if "xynolog.kb" in listed else None
         assert sorted(exported_under({}, kb)) == listed, service
 
 
@@ -191,16 +191,16 @@ def test_a_process_reports_when_it_started_how_late_its_loop_runs_and_its_memory
     for late in (0.0, 1.0, 4.0):
         lag.note(late)
     metrics = exported({}, lag)
-    rows = {**metrics_named("semiont.process."), **metrics_named("semiont.runtime.")}
-    assert sorted(metrics) == ["semiont.process.start_time", "semiont.runtime.event_loop.lag", "semiont.runtime.heap"]
+    rows = {**metrics_named("xynolog.process."), **metrics_named("xynolog.runtime.")}
+    assert sorted(metrics) == ["xynolog.process.start_time", "xynolog.runtime.event_loop.lag", "xynolog.runtime.heap"]
     for name, metric in metrics.items():
         held_to(rows[name], metric)
 
-    (started,) = points(metrics["semiont.process.start_time"])
+    (started,) = points(metrics["xynolog.process.start_time"])
     assert isinstance(started.value, int)
     assert started.value > 1_700_000_000
 
-    lateness = {(point.attributes or {})["lag.stat"]: point.value for point in points(metrics["semiont.runtime.event_loop.lag"])}
+    lateness = {(point.attributes or {})["lag.stat"]: point.value for point in points(metrics["xynolog.runtime.event_loop.lag"])}
     assert lateness == {"mean": pytest.approx(5 / 3), "p99": 4.0, "max": 4.0}
 
 
@@ -259,7 +259,7 @@ def test_under_a_supervisor_a_process_reports_the_lives_its_log_records_less_one
         return f"[supervise 2026-09-30T00:00:0{n}Z] starting {name} (rapid failures so far: {n})"
 
     supervised = {"SUPERVISE_EVENTS": str(events), "SUPERVISE_NAME": "worker"}
-    restarts = "semiont.process.restarts"
+    restarts = "xynolog.process.restarts"
     (row,) = metrics_named(restarts).values()
 
     # One life is no restart, and another service's lives are not this one's.
@@ -286,7 +286,7 @@ def test_a_log_that_cannot_be_read_says_nothing_and_never_nought(tmp_path: Path)
     [{}, {"SUPERVISE_EVENTS": "/tmp/events.log"}, {"SUPERVISE_NAME": "worker"}, {"SUPERVISE_EVENTS": "", "SUPERVISE_NAME": "worker"}],
 )
 def test_without_either_of_the_supervisor_s_two_variables_the_restarts_do_not_exist(environment: dict[str, str]) -> None:
-    assert "semiont.process.restarts" not in exported(environment, Lag())
+    assert "xynolog.process.restarts" not in exported(environment, Lag())
 
 
 # ── a number a service reads of what it keeps ───────────────────────────
@@ -296,7 +296,7 @@ def test_a_number_a_service_samples_is_reported_as_last_read_and_not_at_all_wher
     metric_reader: InMemoryMetricReader,
 ) -> None:
     # The one row of the table that is such a number: the Smelter's count of the points its index holds.
-    (row,) = metrics_named("semiont.vector.index.size").values()
+    (row,) = metrics_named("xynolog.vector.index.size").values()
 
     async def scenario() -> None:
         answers = iter([3, 5, None, 8])
@@ -332,7 +332,7 @@ def test_a_sampled_number_is_read_at_once_and_then_once_in_each_export_interval(
             reads.append(asyncio.get_running_loop().time())
             return len(reads)
 
-        name = "semiont.test.sampled.each_interval"
+        name = "xynolog.test.sampled.each_interval"
         sampling = await under_way(Exporting(Lag(), lambda: None, 60_000).sample(name, read, description="A test's own"))
         assert len(reads) == 1
         for read_so_far in (1, 2, 3):
@@ -356,7 +356,7 @@ def test_a_number_is_sampled_for_as_long_as_that_is_awaited_and_is_not_reported_
             reads.append(asyncio.get_running_loop().time())
             return 7
 
-        name = "semiont.test.sampled.until_cancelled"
+        name = "xynolog.test.sampled.until_cancelled"
         sampling = await under_way(Exporting(Lag(), lambda: None, 60_000).sample(name, read, description="A test's own"))
         assert numbers(metric_reader, name) == [7]
         sampling.cancel()
@@ -375,7 +375,7 @@ def test_a_number_is_sampled_for_as_long_as_that_is_awaited_and_is_not_reported_
 
 
 def test_a_failure_nothing_caught_is_counted_once_under_the_reason_the_table_lists(metric_reader: InMemoryMetricReader) -> None:
-    (row,) = metrics_named("semiont.process.abnormal_exit").values()
+    (row,) = metrics_named("xynolog.process.abnormal_exit").values()
     assert row.instrument == "counter"
     (listed,) = row.attributes
     assert listed.key == "reason"

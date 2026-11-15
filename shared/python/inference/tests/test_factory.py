@@ -9,17 +9,17 @@ import pytest
 from aio import run
 from provider import Anthropic, Ollama
 from refusals.a_provider_the_vocabulary_lacks import an_unknown_provider
-from xynoplex.types import EngineProvider
+from xynolog.types import EngineProvider
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.catalogue import read_catalogue
-from semiont_inference.factory import CatalogueRequired, KeyRequired, create_inference_client
-from semiont_inference.google import GoogleInferenceClient
-from semiont_inference.llamacpp import LlamaCppInferenceClient
-from semiont_inference.ollama import OllamaInferenceClient
-from semiont_inference.openai import OpenAIInferenceClient
-from semiont_inference.together import TogetherInferenceClient
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.catalogue import read_catalogue
+from xynolog_inference.factory import CatalogueRequired, KeyRequired, create_inference_client
+from xynolog_inference.google import GoogleInferenceClient
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.ollama import OllamaInferenceClient
+from xynolog_inference.openai import OpenAIInferenceClient
+from xynolog_inference.together import TogetherInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
 CATALOGUE: Final = Path(__file__).parent / "catalogue" / "model-catalogue.json"
 """The catalogue file the repository keeps for these tests: real entries, at the version it pins."""

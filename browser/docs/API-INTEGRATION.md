@@ -1,9 +1,9 @@
 # API Integration Guide
 
-How the Semiont Browser integrates with the gateway through the
-framework-agnostic `@xynoplex/react-ui` library, the `@xynoplex/sdk` client
-(`SemiontClient`, sessions, the namespace verb API), and the
-`@xynoplex/http-transport` wire adapter — including the provider model, bus
+How the Xynolog Browser integrates with the gateway through the
+framework-agnostic `@xynolog/react-ui` library, the `@xynolog/sdk` client
+(`XynologClient`, sessions, the namespace verb API), and the
+`@xynolog/http-transport` wire adapter — including the provider model, bus
 gateway transport, and W3C annotation model.
 
 ## Overview
@@ -26,8 +26,8 @@ that maintains framework independence:
 │    packages/typescript/react-ui                │
 │  (Framework-agnostic library)       │
 │                                     │
-│  • SemiontProvider — the single     │
-│    React bridge to SemiontBrowser   │
+│  • XynologProvider — the single     │
+│    React bridge to XynologBrowser   │
 │  • Flow state units (RxJS)          │
 │  • UI components & hooks            │
 └─────────────┬───────────────────────┘
@@ -35,9 +35,9 @@ that maintains framework independence:
               ▼
 ┌─────────────────────────────────────┐
 │    packages/typescript/sdk                     │
-│  (SemiontClient + sessions)         │
+│  (XynologClient + sessions)         │
 │                                     │
-│  • SemiontBrowser / SemiontSession  │
+│  • XynologBrowser / XynologSession  │
 │  • Namespace verb API               │
 │    (browse, mark, yield, …)         │
 │  • Bus gateway (single SSE)         │
@@ -59,31 +59,31 @@ All API interactions feature:
 
 - **Type-safety** — TypeScript types generated from the OpenAPI spec
 - **Framework-agnostic react-ui** — plugs into any React framework via providers
-- **Bearer auth** — the per-KB `SemiontSession` feeds the client's `token$` and keeps the access and refresh pair in `localStorage`; no cookies, no ambient credentials
-- **One bus connection** — `SemiontClient` maintains a single SSE subscription to `/bus/subscribe`
+- **Bearer auth** — the per-KB `XynologSession` feeds the client's `token$` and keeps the access and refresh pair in `localStorage`; no cookies, no ambient credentials
+- **One bus connection** — `XynologClient` maintains a single SSE subscription to `/bus/subscribe`
 - **Structured errors** — consistent error shape from the gateway, surfaced through `APIError`
 
 ## Provider Model
 
-`@xynoplex/react-ui` stays framework-neutral by keeping all session and client
-logic in `@xynoplex/sdk` — pure RxJS classes with no React inside — and exposing
-exactly **one** React bridge: `SemiontProvider`.
+`@xynolog/react-ui` stays framework-neutral by keeping all session and client
+logic in `@xynolog/sdk` — pure RxJS classes with no React inside — and exposing
+exactly **one** React bridge: `XynologProvider`.
 
 ### How it works
 
-`SemiontProvider` puts the module-scoped `SemiontBrowser` singleton into React
-context; `useSemiont()` hands it back. The browser owns everything
-session-related (the KB list, the active KB, and the per-KB `SemiontSession`),
+`XynologProvider` puts the module-scoped `XynologBrowser` singleton into React
+context; `useXynolog()` hands it back. The browser owns everything
+session-related (the KB list, the active KB, and the per-KB `XynologSession`),
 lives outside React, and survives every re-render and route change. There is
 **no** stack of token/client providers — a component reads the active client
 through the browser's observables:
 
 ```tsx
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 function useClient() {
   // null until a session is active for the current KB
-  return useObservable(useSemiont().activeSession$)?.client;
+  return useObservable(useXynolog().activeSession$)?.client;
 }
 ```
 
@@ -97,10 +97,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const translationManager = useMergedTranslationManager();
   return (
     <TranslationProvider translationManager={translationManager}>
-      <SemiontProvider>
+      <XynologProvider>
         {/* Toast, LiveRegion, KeyboardShortcuts, Theme and LineNumbers providers wrap the app */}
         {children}
-      </SemiontProvider>
+      </XynologProvider>
     </TranslationProvider>
   );
 }
@@ -118,15 +118,15 @@ for the client and bus subscription.
 ## Authentication Flow
 
 A user is always authenticated against a specific Knowledge Base; there is
-**no global session**. The `SemiontBrowser` singleton holds:
+**no global session**. The `XynologBrowser` singleton holds:
 
 - `kbs$` — the known Knowledge Bases
 - `activeKbId$` — which one is active
-- `activeSession$` — the active KB's `SemiontSession` (or `null` when signed out)
+- `activeSession$` — the active KB's `XynologSession` (or `null` when signed out)
 - `activeSignals$` — that session's session-expired / permission-denied signals
 
-Switching KBs swaps `activeSession$` atomically. Each `SemiontSession` owns its
-own `SemiontClient` and the per-KB **bearer token** — a short-lived access token
+Switching KBs swaps `activeSession$` atomically. Each `XynologSession` owns its
+own `XynologClient` and the per-KB **bearer token** — a short-lived access token
 ([lifetimes](../../../docs/operator/administration/AUTHENTICATION.md#token-lifecycle)),
 renewed at the issuer from a refresh token, the pair kept in `localStorage`.
 Bearer-only: no cookie, no ambient credential.
@@ -151,7 +151,7 @@ import {
   SessionEndedModal,
   PermissionDeniedModal,
   KbIdentityConflictModal,
-} from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -170,10 +170,10 @@ Components read auth state by subscribing to the browser's observables — a
 `null` `activeSession$` means the user isn't signed into the active KB:
 
 ```tsx
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 function UserBadge() {
-  const browser = useSemiont();
+  const browser = useXynolog();
   const session = useObservable(browser.activeSession$);
   const activeKbId = useObservable(browser.activeKbId$);
   if (!session || !activeKbId) return null;
@@ -184,7 +184,7 @@ function UserBadge() {
 **Key points:**
 
 - **Per-KB sessions** — there is no global session; switching KBs switches sessions atomically.
-- **No manual token management** — the `SemiontSession` renews the access token at the issuer and stores it; the client reads it observably.
+- **No manual token management** — the `XynologSession` renews the access token at the issuer and stores it; the client reads it observably.
 - **Type-safe** — types flow from the OpenAPI spec through the transport to components.
 
 ## Bus Gateway Transport
@@ -205,13 +205,13 @@ for the client side.
 
 ## W3C Web Annotation Model
 
-Semiont implements the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/)
+Xynolog implements the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/)
 for interoperability with other annotation systems.
 
 ### Annotation Structure
 
 The wire type is `Annotation`, generated from the OpenAPI spec and exported
-by `@xynoplex/sdk`:
+by `@xynolog/sdk`:
 
 ```typescript
 const linked: Annotation = {
@@ -259,14 +259,14 @@ Two complementary selector types anchor annotations to text:
 
 **TextPositionSelector** — offsets into the text, counted in Unicode code points (fast, precise):
 ```typescript
-import type { TextPositionSelector } from '@xynoplex/core';
+import type { TextPositionSelector } from '@xynolog/core';
 
 const position: TextPositionSelector = { type: 'TextPositionSelector', start: 100, end: 115 };
 ```
 
 **TextQuoteSelector** — text with context (resilient to edits):
 ```typescript
-import type { TextQuoteSelector } from '@xynoplex/core';
+import type { TextQuoteSelector } from '@xynolog/core';
 
 const quote: TextQuoteSelector = {
   type: 'TextQuoteSelector',
@@ -321,7 +321,7 @@ Every gateway error answers with the spec's `ErrorResponse` body, whatever
 the status and route:
 
 ```typescript
-import type { components } from '@xynoplex/core';
+import type { components } from '@xynolog/core';
 
 type ErrorResponse = components['schemas']['ErrorResponse'];
 // error: what went wrong, in a sentence; code?: a machine-readable class;
@@ -333,12 +333,12 @@ type ErrorResponse = components['schemas']['ErrorResponse'];
 HTTP errors from the http-transport surface as `APIError`:
 
 ```typescript
-import { APIError } from '@xynoplex/http-transport';
+import { APIError } from '@xynolog/http-transport';
 
 declare const input: CreateAnnotationInput;
 
 try {
-  await semiont.mark.annotation(input);
+  await xynolog.mark.annotation(input);
 } catch (err) {
   if (err instanceof APIError) {
     if (err.status === 401) { /* session expired */ }
@@ -353,7 +353,7 @@ like `browse:resources-failed`), raised from the promise returned by
 
 ### Automatic Recovery
 
-- **401 errors** — the `SemiontSession` re-mints a fresh access token from the refresh token and retries once before propagating the error.
+- **401 errors** — the `XynologSession` re-mints a fresh access token from the refresh token and retries once before propagating the error.
 - **Session ended** — when the session's token cannot be renewed, or the knowledge base refuses the renewed one, the active session's signals surface `SessionEndedModal`, which says which.
 - **Permission denied** — surfaced via `PermissionDeniedModal`.
 
@@ -362,14 +362,14 @@ like `browse:resources-failed`), raised from the promise returned by
 ### React UI library
 
 - [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) — provider reference
-- [`@xynoplex/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
+- [`@xynolog/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
 - [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) — annotation UI components
 
 ### API client
 
-- [`@xynoplex/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
+- [`@xynolog/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
 - [`docs/builder/Usage.md`](../../../docs/builder/Usage.md) — setup, bus subscription, namespace reference
-- [`@xynoplex/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
+- [`@xynolog/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
 
 ### Gateway
 

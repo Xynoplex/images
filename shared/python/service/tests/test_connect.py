@@ -5,8 +5,8 @@ import asyncio
 import pytest
 from aio import pass_time, run, under_way
 
-from semiont_service.config import Refused
-from semiont_service.connect import connected
+from xynolog_service.config import Refused
+from xynolog_service.connect import connected
 
 
 def test_what_answers_within_the_minute_is_answered() -> None:

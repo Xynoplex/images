@@ -11,9 +11,9 @@ import pytest
 from aio import hurried, pass_time, run, settle, soon
 from provider import HANG_UP, HOLD, Answer, Ollama, Play, Voyage, always, told, unstarted
 
-from semiont_vectors._dimensions import PROBE, resolve_dimensions
-from semiont_vectors._retry import EMBEDDING_PROVIDER_RETRY
-from semiont_vectors.embedding import EMBED_ROUND_TRIP_SECONDS, EmbeddingProviderError
+from xynolog_vectors._dimensions import PROBE, resolve_dimensions
+from xynolog_vectors._retry import EMBEDDING_PROVIDER_RETRY
+from xynolog_vectors.embedding import EMBED_ROUND_TRIP_SECONDS, EmbeddingProviderError
 
 MODEL = "a-model"
 WIDTH = len(told(PROBE))

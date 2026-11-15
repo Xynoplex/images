@@ -18,8 +18,8 @@ from aio import run, soon
 from provider import KEY, MOST_TEXTS, Answer, Voyage, always, items, listed, saying, wait_out
 from pydantic import JsonValue
 
-from semiont_vectors.embedding import BatchPolicy, EmbeddingProviderError, SliceRef
-from semiont_vectors.voyage import VOYAGE_BATCH_POLICY, VoyageEmbeddingProvider
+from xynolog_vectors.embedding import BatchPolicy, EmbeddingProviderError, SliceRef
+from xynolog_vectors.voyage import VOYAGE_BATCH_POLICY, VoyageEmbeddingProvider
 
 MODEL = "voyage-3"
 VECTOR: JsonValue = [0.1, 0.2]

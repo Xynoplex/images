@@ -4,10 +4,10 @@ A resource is as near as its best passage, and not as its average one or the
 first one seen: both of those are folds that look right and are not.
 """
 
-from xynoplex.identifiers import ResourceId
+from xynolog.identifiers import ResourceId
 
-from semiont_vectors.merge import merge_by_resource
-from semiont_vectors.store import VectorSearchResult
+from xynolog_vectors.merge import merge_by_resource
+from xynolog_vectors.store import VectorSearchResult
 
 
 def hit(resource: str, score: float, text: str) -> VectorSearchResult:

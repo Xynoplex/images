@@ -44,7 +44,7 @@ def unconfigured() -> Generator[None]:
     """Put the process's logging back as it was once the test is over."""
     root = logging.getLogger()
     handlers, level = list(root.handlers), root.level
-    own = ("semiont_worker", "semiont_inference", "semiont")
+    own = ("xynolog_worker", "xynolog_inference", "xynolog")
     levels = {name: logging.getLogger(name).level for name in own}
     try:
         yield

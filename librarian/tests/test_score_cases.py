@@ -27,15 +27,15 @@ from typing import Final, final, override
 import pytest
 from aio import run
 from rig import FakeEmbedding, FakeInference, FakeProfiles, FakeVectors
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation, MatchSearchRequest, MatchSearchResult, Motivation, ResourceDescriptor
-from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
-from semiont_vectors.store import SearchFilter, SearchOptions, VectorSearchResult
 from spec import ROOT, JsonObject, number, objects, only, read, strings, text, thing, why
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation, MatchSearchRequest, MatchSearchResult, Motivation, ResourceDescriptor
+from xynolog_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
+from xynolog_vectors.store import SearchFilter, SearchOptions, VectorSearchResult
 
-from semiont_librarian.reads import Described, GraphReads, Record
-from semiont_librarian.reference_search import search
+from xynolog_librarian.reads import Described, GraphReads, Record
+from xynolog_librarian.reference_search import search
 
 TABLE = read(ROOT / "protocol/specs/src/librarian/score-cases.json")
 CASES = objects(TABLE["cases"], "cases")

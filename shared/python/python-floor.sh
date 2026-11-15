@@ -17,9 +17,9 @@ import sys
 import zipfile
 
 wheel_dir = pathlib.Path(sys.argv[1]) / "python"
-wheels = sorted(wheel_dir.glob("xynoplex-*-py3-none-any.whl"))
+wheels = sorted(wheel_dir.glob("xynolog-*-py3-none-any.whl"))
 if len(wheels) != 1:
-    raise SystemExit(f"python-floor.sh: expected one xynoplex wheel in {wheel_dir}, found {len(wheels)}")
+    raise SystemExit(f"python-floor.sh: expected one xynolog wheel in {wheel_dir}, found {len(wheels)}")
 with zipfile.ZipFile(wheels[0]) as wheel:
     metadata_path = next((name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")), None)
     if metadata_path is None:

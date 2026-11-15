@@ -18,10 +18,10 @@ from typing import Annotated, Final, Literal, final
 import pytest
 from aio import run
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.types import StoredEventResponse
 from spec import SPEC, objects, read, text
+from xynolog.types import StoredEventResponse
 
-from semiont_service.follower import SYSTEM, Cursors, Followed, Follower, FromTheFirst, OwnStart, Unfinished, WithNoCursor, log_of
+from xynolog_service.follower import SYSTEM, Cursors, Followed, Follower, FromTheFirst, OwnStart, Unfinished, WithNoCursor, log_of
 
 type How = Literal["applied", "nothing", "refused"]
 """How an event was taken: applied by the fold, applied as nothing (the fold has no use for its type), or refused as recorded."""

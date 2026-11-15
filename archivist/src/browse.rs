@@ -3,14 +3,14 @@
 
 use crate::archivist::{Archivist, Refusal, primary_representation, text};
 use crate::naming;
-use xynoplex::channels::{Channel, MarkAdded, MarkBodyUpdated, MarkRemoved};
-use xynoplex::types::{
-    CommandErrorCode, JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter,
-};
-use semiont_archivist_record::agents::did_to_agent;
-use semiont_archivist_record::{Object, dictionary_order, kb};
 use serde_json::{Value, json};
 use std::path::{Component, Path};
+use xynolog::channels::{Channel, MarkAdded, MarkBodyUpdated, MarkRemoved};
+use xynolog::types::{
+    CommandErrorCode, JobFilter, MarkJobFilter, MarkJobFilterParams, YieldJobFilter,
+};
+use xynolog_archivist_record::agents::did_to_agent;
+use xynolog_archivist_record::{Object, dictionary_order, kb};
 
 type Answered = Result<Value, Refusal>;
 
@@ -40,7 +40,7 @@ fn named(archivist: &Archivist, mut reply: Value) -> Value {
     let profiles = match tokio::task::block_in_place(|| archivist.record().projections.profiles()) {
         Ok(profiles) => profiles,
         Err(error) => {
-            semiont_observability::logging::warn(
+            xynolog_observability::logging::warn(
                 "Profiles projection unreadable — this reply names no one",
                 json!({ "component": "browser", "error": error.to_string() }),
             );
@@ -344,7 +344,7 @@ pub async fn engines(archivist: &Archivist, _: &Object) -> Answered {
 pub async fn knowledge_base(archivist: &Archivist, _: &Object) -> Answered {
     let Some(domain) = kb::committed(&archivist.root)?.domain else {
         return Err(
-            "The knowledge base commits no .semiont/config.yaml, so declares no site.domain".into(),
+            "The knowledge base commits no .xynolog/config.yaml, so declares no site.domain".into(),
         );
     };
     let branch = archivist

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
-import { LOCALES } from '@xynoplex/core';
-import { MainContent } from '@xynoplex/react-ui';
+import { LOCALES } from '@xynolog/core';
+import { MainContent } from '@xynolog/react-ui';
 
 /**
  * Shown when the URL names no locale the Browser serves. It assumes no
@@ -13,7 +13,7 @@ export function LanguagePicker({ path }: { path: string }) {
   return (
     <MainContent className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="px-4 py-12 text-center">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Semiont</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Xynolog</h1>
         <ul className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3 md:grid-cols-4">
           {LOCALES.map(({ code, nativeName }) => (
             <li key={code}>

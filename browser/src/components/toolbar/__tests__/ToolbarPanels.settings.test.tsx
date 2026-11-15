@@ -29,8 +29,8 @@ vi.mock('@/i18n/routing', () => ({
 vi.mock('../../UserPanel', () => ({ UserPanel: () => null }));
 vi.mock('../../KnowledgeBasePanel', () => ({ KnowledgeBasePanel: () => null }));
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   const { BehaviorSubject } = await vi.importActual<typeof import('rxjs')>('rxjs');
   return {
     ...actual,
@@ -39,7 +39,7 @@ vi.mock('@xynoplex/react-ui', async () => {
     },
     useTheme: () => ({ theme: 'system', resolvedTheme: 'light', setTheme: spies.setTheme }),
     useLineNumbers: () => ({ showLineNumbers: false, toggleLineNumbers: spies.toggleLineNumbers }),
-    useXynoplex: () => ({ activeSession$: new BehaviorSubject(null) }),
+    useXynolog: () => ({ activeSession$: new BehaviorSubject(null) }),
     useHoverDelay: () => ({ hoverDelayMs: 150 }),
     usePanelWidth: () => ({ width: 320, setWidth: vi.fn(), minWidth: 200, maxWidth: 600 }),
   };

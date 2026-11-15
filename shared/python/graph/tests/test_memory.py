@@ -4,8 +4,8 @@ from typing import final, override
 
 from contract import GraphContract
 
-from semiont_graph.interface import GraphDatabase
-from semiont_graph.memory import MemoryGraphDatabase
+from xynolog_graph.interface import GraphDatabase
+from xynolog_graph.memory import MemoryGraphDatabase
 
 
 @final

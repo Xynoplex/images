@@ -13,11 +13,11 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import FakeInference
-from semiont_inference.interface import StructuredReadError
 from spec import SPEC, JsonObject, number, objects, read, strings, text, whole
+from xynolog_inference.interface import StructuredReadError
 
-from semiont_librarian.prompts import Prompt
-from semiont_librarian.replies import SCORE_ELEMENT, ReplyCutOff, ask_for_elements, read_scores, read_suggestions
+from xynolog_librarian.prompts import Prompt
+from xynolog_librarian.replies import SCORE_ELEMENT, ReplyCutOff, ask_for_elements, read_scores, read_suggestions
 
 TABLE: Final = read(SPEC / "librarian/reply-cases.json")
 CASES: Final = objects(TABLE["cases"], "the table's cases")

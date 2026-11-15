@@ -16,15 +16,15 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from pydantic import JsonValue
-from xynoplex.http import SecretCredential
-from xynoplex.types import WeaverConfig, WorkerConfig
+from xynolog.http import SecretCredential
+from xynolog.types import WeaverConfig, WorkerConfig
 
-from semiont_service.config import Refused, config_path_of, key_account_of, read_config, service_account_of, set_in
+from xynolog_service.config import Refused, config_path_of, key_account_of, read_config, service_account_of, set_in
 
 KNOWLEDGE_BASE: Final[dict[str, JsonValue]] = {
     "domain": "kb.example",
     "gatewayUrl": "http://gateway:4000",
-    "identity": {"issuer": "http://issuer:8080/realms/semiont", "clientId": "semiont-worker"},
+    "identity": {"issuer": "http://issuer:8080/realms/xynolog", "clientId": "xynolog-worker"},
     "engines": [
         {
             "engine": {"provider": "anthropic", "model": "claude-test"},
@@ -38,7 +38,7 @@ KNOWLEDGE_BASE: Final[dict[str, JsonValue]] = {
 
 DOCUMENT: Final[dict[str, JsonValue]] = {
     "knowledgeBases": [KNOWLEDGE_BASE],
-    "modelCatalogue": "/usr/share/semiont/model-catalogue.json",
+    "modelCatalogue": "/usr/share/xynolog/model-catalogue.json",
     "port": 24100,
     "logLevel": "info",
     "logFormat": "json",
@@ -87,8 +87,8 @@ def refusal_of(tmp_path: Path, document: object) -> str:
 
 
 def test_the_path_is_what_follows_the_flag_or_is_joined_to_it() -> None:
-    assert config_path_of("worker", ["--config", "/etc/semiont/worker.json"]) == "/etc/semiont/worker.json"
-    assert config_path_of("worker", ["--config=/etc/semiont/worker.json"]) == "/etc/semiont/worker.json"
+    assert config_path_of("worker", ["--config", "/etc/xynolog/worker.json"]) == "/etc/xynolog/worker.json"
+    assert config_path_of("worker", ["--config=/etc/xynolog/worker.json"]) == "/etc/xynolog/worker.json"
     assert config_path_of("worker", ["--verbose", "--config", "worker.json", "--more"]) == "worker.json"
 
 
@@ -112,7 +112,7 @@ def test_the_document_is_read_as_the_protocol_s_shape(tmp_path: Path) -> None:
     assert (config.port, config.log_level, config.log_format) == (24100, "info", "json")
     (knowledge_base,) = config.knowledge_bases
     assert (knowledge_base.domain, knowledge_base.gateway_url) == ("kb.example", "http://gateway:4000")
-    assert (knowledge_base.identity.issuer, knowledge_base.identity.client_id) == ("http://issuer:8080/realms/semiont", "semiont-worker")
+    assert (knowledge_base.identity.issuer, knowledge_base.identity.client_id) == ("http://issuer:8080/realms/xynolog", "xynolog-worker")
     assert [(entry.engine.provider, entry.engine.model, entry.api_key_env) for entry in knowledge_base.engines] == [
         ("anthropic", "claude-test", "ANTHROPIC_API_KEY"),
         ("ollama", "gemma2:27b", None),
@@ -152,8 +152,8 @@ def test_bytes_that_are_no_text_are_refused_as_not_json(tmp_path: Path) -> None:
         ("port", {name: value for name, value in DOCUMENT.items() if name != "port"}),
         ("domain", without_at_the_knowledge_base("domain")),
         ("gatewayUrl", without_at_the_knowledge_base("gatewayUrl")),
-        ("issuer", changed_at_the_knowledge_base(identity={"clientId": "semiont-worker"})),
-        ("clientId", changed_at_the_knowledge_base(identity={"issuer": "http://issuer:8080/realms/semiont"})),
+        ("issuer", changed_at_the_knowledge_base(identity={"clientId": "xynolog-worker"})),
+        ("clientId", changed_at_the_knowledge_base(identity={"issuer": "http://issuer:8080/realms/xynolog"})),
         ("jobs", changed_at_the_knowledge_base(engines=[{"engine": {"provider": "ollama", "model": "m"}, "baseUrl": "http://ollama"}])),
         (
             "model",
@@ -305,20 +305,20 @@ def test_a_refusal_is_worded_for_the_service_and_the_shape_the_document_was_read
 
 # ── what the environment holds beside the document ──────────────────────
 
-ISSUER: Final = "http://issuer:8080/realms/semiont"
+ISSUER: Final = "http://issuer:8080/realms/xynolog"
 
 
 def test_the_service_account_is_the_two_variables_every_service_signs_in_with() -> None:
-    environment = {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+    environment = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
     assert service_account_of("worker", ISSUER, environment) == SecretCredential(
-        issuer="http://issuer:8080/realms/semiont", client_id="semiont-worker", client_secret="s3cret"
+        issuer="http://issuer:8080/realms/xynolog", client_id="xynolog-worker", client_secret="s3cret"
     )
 
 
-@pytest.mark.parametrize("variable", ["SEMIONT_OIDC_CLIENT_ID", "SEMIONT_OIDC_CLIENT_SECRET"])
+@pytest.mark.parametrize("variable", ["XYNOLOG_OIDC_CLIENT_ID", "XYNOLOG_OIDC_CLIENT_SECRET"])
 @pytest.mark.parametrize("left", ["unset", "empty"])
 def test_either_variable_of_the_account_unset_or_empty_is_refused_by_name_and_the_secret_is_not_said(variable: str, left: str) -> None:
-    environment = {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+    environment = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
     if left == "unset":
         del environment[variable]
     else:
@@ -344,24 +344,24 @@ _PKCS1: Final = _KEY.private_bytes(
 def test_a_key_account_is_the_documents_client_proven_by_the_rsa_key_its_variable_holds_and_no_client_id_is_read() -> None:
     # Which client holds the key's public half is each knowledge base's to say, in the document.
     account = key_account_of(
-        "worker", "https://auth.example.org/realms/kb", "semiont-worker-alice", {"SEMIONT_OIDC_CLIENT_KEY": _pem(_KEY)}
+        "worker", "https://auth.example.org/realms/kb", "xynolog-worker-alice", {"XYNOLOG_OIDC_CLIENT_KEY": _pem(_KEY)}
     )
-    assert (account.issuer, account.client_id) == ("https://auth.example.org/realms/kb", "semiont-worker-alice")
+    assert (account.issuer, account.client_id) == ("https://auth.example.org/realms/kb", "xynolog-worker-alice")
     assert account.private_key.private_numbers() == _KEY.private_numbers()
 
 
 @pytest.mark.parametrize("left", ["unset", "empty"])
 def test_the_key_unset_or_empty_is_refused_by_name(left: str) -> None:
-    environment = {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker"} if left == "unset" else {"SEMIONT_OIDC_CLIENT_KEY": ""}
+    environment = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker"} if left == "unset" else {"XYNOLOG_OIDC_CLIENT_KEY": ""}
     with pytest.raises(Refused) as refused:
-        key_account_of("worker", ISSUER, "semiont-worker", environment)
-    assert str(refused.value) == "SEMIONT_OIDC_CLIENT_KEY is not set in the worker's environment: a worker signs in as a service account"
+        key_account_of("worker", ISSUER, "xynolog-worker", environment)
+    assert str(refused.value) == "XYNOLOG_OIDC_CLIENT_KEY is not set in the worker's environment: a worker signs in as a service account"
 
 
 def test_a_secret_is_no_key() -> None:
-    with pytest.raises(Refused, match=r"^SEMIONT_OIDC_CLIENT_KEY is not set in the worker's environment"):
+    with pytest.raises(Refused, match=r"^XYNOLOG_OIDC_CLIENT_KEY is not set in the worker's environment"):
         key_account_of(
-            "worker", ISSUER, "semiont-worker", {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+            "worker", ISSUER, "xynolog-worker", {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
         )
 
 
@@ -377,8 +377,8 @@ def test_a_secret_is_no_key() -> None:
 )
 def test_a_key_that_is_not_an_unencrypted_rsa_key_is_refused_and_never_said(held: str, saying: str) -> None:
     with pytest.raises(Refused) as refused:
-        key_account_of("worker", ISSUER, "semiont-worker", {"SEMIONT_OIDC_CLIENT_KEY": held})
-    assert str(refused.value) == f"SEMIONT_OIDC_CLIENT_KEY in the worker's environment {saying}"
+        key_account_of("worker", ISSUER, "xynolog-worker", {"XYNOLOG_OIDC_CLIENT_KEY": held})
+    assert str(refused.value) == f"XYNOLOG_OIDC_CLIENT_KEY in the worker's environment {saying}"
     assert held not in str(refused.value)
     assert refused.value.__cause__ is None
 

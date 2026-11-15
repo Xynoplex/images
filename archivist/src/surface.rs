@@ -10,17 +10,17 @@ use axum::extract::{DefaultBodyLimit, FromRequest, Multipart, Path, Query, Reque
 use axum::http::{HeaderMap, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post, put};
-use xynoplex::media_types::{base_media_type, capabilities_of};
-use xynoplex::roles::{SERVICE_ROLE, has_role};
-use semiont_archivist_record::{Object, ids};
-use semiont_http_service::{IssuerVerifier, bearer_token};
-use semiont_observability::logging;
 use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::ops::RangeInclusive;
 use std::sync::{Arc, Mutex, Weak};
 use std::time::Duration;
 use tokio::io::AsyncReadExt;
+use xynolog::media_types::{base_media_type, capabilities_of};
+use xynolog::roles::{SERVICE_ROLE, has_role};
+use xynolog_archivist_record::{Object, ids};
+use xynolog_http_service::{IssuerVerifier, bearer_token};
+use xynolog_observability::logging;
 
 pub struct Surface {
     pub archivist: Arc<Archivist>,
@@ -54,7 +54,7 @@ impl UploadLocks {
 
 /// The limits the Archivist's API states: the most each operation that takes
 /// a JSON body is sent, the most events one answer of a stream holds, and how
-/// long a read of anchored text waits for the Smelter (`x-semiont-limits`);
+/// long a read of anchored text waits for the Smelter (`x-xynolog-limits`);
 /// and the characters an upload's `Idempotency-Key` may have.
 pub struct Limits {
     anchored_text: usize,
@@ -69,7 +69,7 @@ impl Limits {
     /// document the Archivist was not built against, and it does not start.
     pub fn of(document: &Value) -> Result<Limits, String> {
         let limit = |path: &str, method: &str, key: &str| -> Result<usize, String> {
-            document["paths"][path][method]["x-semiont-limits"][key]
+            document["paths"][path][method]["x-xynolog-limits"][key]
                 .as_u64()
                 .and_then(|limit| usize::try_from(limit).ok())
                 .ok_or_else(|| format!("the Archivist's API states no {key} for {method} {path}"))
@@ -414,7 +414,7 @@ fn recording(
         let Ok(parsed) = serde_json::from_str::<Value>(generator) else {
             return Err("generator is not JSON");
         };
-        if semiont_core::spec::problems("Agent", &parsed).is_some() {
+        if xynolog_core::spec::problems("Agent", &parsed).is_some() {
             return Err("generator is not an Agent");
         }
         command.insert("generator".into(), parsed);
@@ -457,10 +457,10 @@ async fn upload(State(surface): Shared, request: Request) -> Response {
             .trim()
             .to_owned()
     };
-    let principal = header_text("semiont-principal");
+    let principal = header_text("xynolog-principal");
     if principal.is_empty() {
         return bad(
-            "Semiont-Principal is required: the record attributes every resource to someone",
+            "Xynolog-Principal is required: the record attributes every resource to someone",
         );
     }
     let Some(key) = headers.get("idempotency-key") else {
@@ -477,7 +477,7 @@ async fn upload(State(surface): Shared, request: Request) -> Response {
             lengths.end()
         ));
     }
-    let roles: Vec<String> = header_text("semiont-roles")
+    let roles: Vec<String> = header_text("xynolog-roles")
         .split(',')
         .map(str::trim)
         .filter(|role| !role.is_empty())
@@ -620,7 +620,7 @@ async fn store_anchored_text(
         Ok(write) => write,
         Err(answer) => return *answer,
     };
-    if let Some(problems) = semiont_core::spec::problems("AnchoredTextWrite", &write) {
+    if let Some(problems) = xynolog_core::spec::problems("AnchoredTextWrite", &write) {
         return bad(format!("The body is no AnchoredTextWrite: {problems}"));
     }
     if !ids::is_safe(&resource_id) {
@@ -719,7 +719,7 @@ async fn state_anchored_text_stamp(State(surface): Shared, request: Request) -> 
         Ok(stated) => stated,
         Err(answer) => return *answer,
     };
-    if let Some(problems) = semiont_core::spec::problems("AnchoredTextStamp", &stated) {
+    if let Some(problems) = xynolog_core::spec::problems("AnchoredTextStamp", &stated) {
         return bad(format!("The body is no AnchoredTextStamp: {problems}"));
     }
     let Some(stamp) = stated["stamp"].as_str() else {

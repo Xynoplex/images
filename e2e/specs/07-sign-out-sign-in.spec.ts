@@ -5,10 +5,10 @@ import { E2E_EMAIL, E2E_PASSWORD } from '../playwright.config';
  * Smoke test: sign out, then sign back in against the same KB, and
  * confirm the fresh session's bus + SSE + client are wired correctly.
  *
- * The session lifetime is owned by `SemiontBrowser.setActiveKb` —
- * `signOut` disposes the `SemiontSession` (which closes its client, completes
+ * The session lifetime is owned by `XynologBrowser.setActiveKb` —
+ * `signOut` disposes the `XynologSession` (which closes its client, completes
  * its observables, and unsubscribes the SessionStorage listener), and
- * `signIn` constructs a fresh session with a new `SemiontClient`
+ * `signIn` constructs a fresh session with a new `XynologClient`
  * that spins up its own EventBus and its own SSE ActorStateUnit. If any part
  * of the new session wiring breaks — `client.emit` routing to a
  * dead bus, SSE not reconnecting on the new client, storage adapter
@@ -36,7 +36,7 @@ test.describe('sign out and sign back in', () => {
     // and return exact readings of the session's state — not a proxy for
     // one. UserPanel has a "Sign Out" of its own that also navigates, so
     // scope this to the KB row.
-    const kbRow = page.locator('.semiont-panel-item--clickable').first();
+    const kbRow = page.locator('.xynolog-panel-item--clickable').first();
     const signOutButton = kbRow.getByTitle(/^sign out$/i);
     await expect(signOutButton).toBeVisible({ timeout: 10_000 });
     await signOutButton.click();

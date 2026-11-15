@@ -5,7 +5,7 @@ import asyncio
 import pytest
 from aio import run
 
-from semiont_service.lanes import Lanes
+from xynolog_service.lanes import Lanes
 
 
 def test_a_lanes_work_is_done_one_at_a_time_in_order_and_lanes_work_beside_each_other() -> None:

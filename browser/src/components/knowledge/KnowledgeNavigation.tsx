@@ -4,14 +4,14 @@ import { usePathname, useRouter } from '@/i18n/routing';
 import { Link } from '@/lib/routing';
 import { PlusIcon, ChevronLeftIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import {
-  useXynoplex,
+  useXynolog,
   useObservable,
   useEventSubscriptions,
   CollapsibleResourceNavigation,
   type NavigationItem,
-} from '@xynoplex/react-ui';
-import type { EventMap } from '@xynoplex/core';
-import type { OpenResource } from '@xynoplex/sdk';
+} from '@xynolog/react-ui';
+import type { EventMap } from '@xynolog/core';
+import type { OpenResource } from '@xynolog/sdk';
 // Custom telescope icon component
 const TelescopeIcon = ({ className }: { className?: string }) => (
   <span className={className} style={{ fontSize: '1.25rem', lineHeight: '1' }}>🔭</span>
@@ -27,10 +27,10 @@ export function KnowledgeNavigation({ isCollapsed, toggleCollapsed, navigationMe
   const { t } = useTranslation(undefined, { keyPrefix: 'Sidebar' });
   const pathname = usePathname();
   const router = useRouter();
-  const semiont = useXynoplex();
-  const openResources = useObservable(semiont.openResources$) ?? [];
-  const removeResource = semiont.removeOpenResource.bind(semiont);
-  const reorderResources = semiont.reorderOpenResources.bind(semiont);
+  const xynolog = useXynolog();
+  const openResources = useObservable(xynolog.openResources$) ?? [];
+  const removeResource = xynolog.removeOpenResource.bind(xynolog);
+  const reorderResources = xynolog.reorderOpenResources.bind(xynolog);
 
   const fixedNavigation: NavigationItem[] = [
     {

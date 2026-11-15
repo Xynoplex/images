@@ -3,8 +3,8 @@
 //! a principal's name: a person and an agent are each identified by a DID,
 //! and what each last said it is called is its profile.
 
-use semiont_archivist_record::Object;
 use serde_json::Value;
+use xynolog_archivist_record::Object;
 
 /// The types a principal states of itself: a person, or an agent, which the
 /// record's W3C vocabulary calls software.

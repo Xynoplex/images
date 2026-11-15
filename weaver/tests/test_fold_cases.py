@@ -15,12 +15,12 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import Rig
-from xynoplex.model import written
-from xynoplex.types import Annotation, ResourceDescriptor, StoredEventResponse
-from semiont_graph.interface import GraphDatabase, ResourceQuery
 from spec import SPEC, JsonObject, objects, read, strings, text, thing, whole
+from xynolog.model import written
+from xynolog.types import Annotation, ResourceDescriptor, StoredEventResponse
+from xynolog_graph.interface import GraphDatabase, ResourceQuery
 
-from semiont_weaver.recorded import ENRICHED, PLAIN
+from xynolog_weaver.recorded import ENRICHED, PLAIN
 
 CASES = objects(read(SPEC / "weaver/fold-cases.json")["cases"], "cases")
 READ = {channel.name: channel for channel in (*PLAIN, *ENRICHED)}

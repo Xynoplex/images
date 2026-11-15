@@ -10,7 +10,7 @@
  * nothing would say so. So:
  *
  *   - the `async_nats` crate is named only in the gateway's NATS plane, in the
- *     dispatcher's JetStream queue, and in semiont-core's broker helpers (its
+ *     dispatcher's JetStream queue, and in xynolog-core's broker helpers (its
  *     `nats` feature, which a crate must ask for; CI's crate-tree check holds
  *     the crates that must not);
  *   - that plane (`signal::nats`, `NatsPlane`) is named only where the plane
@@ -81,4 +81,4 @@ if (problems.length > 0) {
   console.error('  Reach the broker through SignalPlane/SharedTable (the gateway) or JobQueue (the dispatcher).');
   process.exit(1);
 }
-console.log('✓ lint:broker-boundary — async_nats only in the gateway\'s NATS plane, the dispatcher\'s JetStream queue and semiont-core\'s broker helpers, that plane chosen only in app.rs, and no nats npm client');
+console.log('✓ lint:broker-boundary — async_nats only in the gateway\'s NATS plane, the dispatcher\'s JetStream queue and xynolog-core\'s broker helpers, that plane chosen only in app.rs, and no nats npm client');

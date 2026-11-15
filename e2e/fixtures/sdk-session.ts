@@ -11,7 +11,7 @@
 
 import { sessionFor } from '../lib/session';
 import { GATEWAY_URL, E2E_EMAIL, E2E_PASSWORD } from '../playwright.config';
-import type { OpenedSession } from '@xynoplex/sdk';
+import type { OpenedSession } from '@xynolog/sdk';
 
 /**
  * Sign in over HTTP and return a live session with its client. Callers reach

@@ -8,8 +8,8 @@
 
 mod support;
 
-use semiont_dispatcher_handlers::handlers::Reply;
 use serde_json::{Value, json};
+use xynolog_dispatcher_handlers::handlers::Reply;
 
 const ALICE: &str = "did:web:example.org:users:alice";
 
@@ -71,7 +71,7 @@ async fn a_create_by_a_user_id_that_is_not_a_did_is_refused_and_queues_nothing()
 
 #[tokio::test]
 async fn a_claim_by_a_user_id_that_is_not_a_did_is_refused_before_the_queue_is_asked() {
-    let claim = |user_id: &str| json!({ "accepts": [{ "jobType": "yield" }], "_roles": ["semiont-worker"], "_userId": user_id });
+    let claim = |user_id: &str| json!({ "accepts": [{ "jobType": "yield" }], "_roles": ["xynolog-worker"], "_userId": user_id });
     let (replies, asked) = handled("job:claim", claim("")).await;
     let message = refusal(&replies, "job:claim-failed");
     assert!(

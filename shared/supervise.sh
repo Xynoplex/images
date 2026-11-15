@@ -1,5 +1,5 @@
 #!/bin/sh
-# supervise.sh — the in-container supervisor for every long-running Semiont
+# supervise.sh — the in-container supervisor for every long-running Xynolog
 # service, shared by every service image.
 #
 # Exists because no runtime mechanism can: Apple container has no --restart
@@ -7,7 +7,7 @@
 # three runtimes the same behavior: a crashed child restarts, a hung child is
 # probed and killed, a deterministic boot refusal fails fast instead of
 # looping, a child that keeps dying soon after it starts is said to be
-# crash-looping and waits longer each time, and `semiont stop` (TERM) is
+# crash-looping and waits longer each time, and `xynolog stop` (TERM) is
 # forwarded and never fought.
 #
 # TWO KINDS OF SHORT LIFE. A child that exits within RAPID_SECS of its start
@@ -35,7 +35,7 @@
 # (starts, exit codes, kills) also go to a small capped file on the state
 # mount, so the death record survives even a torn-down container: without
 # that file a death takes its own evidence with it. A service with no
-# writable /semiont-state (the browser) falls back to /tmp/<name>-supervisor
+# writable /xynolog-state (the browser) falls back to /tmp/<name>-supervisor
 # and keeps only the runtime log — restart without the durable record, by
 # design, not by accident.
 
@@ -46,16 +46,16 @@
 NAME="$SUPERVISE_NAME"
 PROBE_URL="$SUPERVISE_PROBE"
 
-# The child reads this back to report `semiont.process.restarts`, so the path
+# The child reads this back to report `xynolog.process.restarts`, so the path
 # is a contract between this script and the service's observability wiring.
-EVDIR="/semiont-state/${NAME}-supervisor"
+EVDIR="/xynolog-state/${NAME}-supervisor"
 mkdir -p "$EVDIR" 2>/dev/null || { EVDIR="/tmp/${NAME}-supervisor"; mkdir -p "$EVDIR"; }
 EVENTS="$EVDIR/events.log"
 
 # The child reads the count back out of this file to report
-# `semiont.process.restarts`. Export the RESOLVED path rather than letting the
+# `xynolog.process.restarts`. Export the RESOLVED path rather than letting the
 # reader rebuild it: the mkdir above can fall back to /tmp/<name>-supervisor (a service with no
-# writable /semiont-state — worker, smelter, weaver, browser), so the path is
+# writable /xynolog-state — worker, smelter, weaver, browser), so the path is
 # not derivable from the name alone. Two places computing it is one place
 # computing it wrong the day a mount changes.
 export SUPERVISE_EVENTS="$EVENTS"
@@ -106,7 +106,7 @@ backoff=0
 while [ -z "$stopping" ]; do
   started=$(date +%s)
   # "starting <name>" is the line the restart-count provider counts. Changing
-  # its shape breaks `semiont.process.restarts` in every service.
+  # its shape breaks `xynolog.process.restarts` in every service.
   note "starting $NAME (rapid failures so far: $rapid)"
   "$@" &
   child=$!

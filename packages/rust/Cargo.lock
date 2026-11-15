@@ -2161,7 +2161,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "semiont-archivist"
+name = "xynolog-archivist"
 version = "0.0.0"
 dependencies = [
  "axum",
@@ -2172,22 +2172,22 @@ dependencies = [
  "reqwest",
  "ring",
  "rustls",
- "semiont-archivist-record",
- "semiont-archivist-staging",
- "semiont-core",
- "semiont-http-service",
- "semiont-observability",
+ "xynolog-archivist-record",
+ "xynolog-archivist-staging",
+ "xynolog-core",
+ "xynolog-http-service",
+ "xynolog-observability",
  "serde_json",
  "tikv-jemallocator",
  "tokio",
  "uuid",
- "xynoplex",
- "xynoplex-http-transport",
- "xynoplex-telemetry",
+ "xynolog",
+ "xynolog-http-transport",
+ "xynolog-telemetry",
 ]
 
 [[package]]
-name = "semiont-archivist-record"
+name = "xynolog-archivist-record"
 version = "0.0.0"
 dependencies = [
  "chrono",
@@ -2198,37 +2198,37 @@ dependencies = [
  "serde_json",
  "unicode-normalization",
  "uuid",
- "xynoplex",
+ "xynolog",
 ]
 
 [[package]]
-name = "semiont-archivist-staging"
+name = "xynolog-archivist-staging"
 version = "0.0.0"
 dependencies = [
  "opentelemetry",
- "semiont-observability",
+ "xynolog-observability",
  "serde_json",
  "tokio",
 ]
 
 [[package]]
-name = "semiont-core"
+name = "xynolog-core"
 version = "0.0.0"
 dependencies = [
  "async-nats",
  "bytes",
  "futures",
  "jsonschema",
- "semiont-observability",
+ "xynolog-observability",
  "serde",
  "serde_json",
  "tokio",
- "xynoplex",
- "xynoplex-codegen",
+ "xynolog",
+ "xynolog-codegen",
 ]
 
 [[package]]
-name = "semiont-dispatcher"
+name = "xynolog-dispatcher"
 version = "0.0.0"
 dependencies = [
  "axum",
@@ -2236,50 +2236,50 @@ dependencies = [
  "opentelemetry",
  "reqwest",
  "rustls",
- "semiont-core",
- "semiont-dispatcher-handlers",
- "semiont-dispatcher-jetstream",
- "semiont-observability",
+ "xynolog-core",
+ "xynolog-dispatcher-handlers",
+ "xynolog-dispatcher-jetstream",
+ "xynolog-observability",
  "serde",
  "serde_json",
  "tikv-jemallocator",
  "tokio",
- "xynoplex",
- "xynoplex-http-transport",
- "xynoplex-telemetry",
+ "xynolog",
+ "xynolog-http-transport",
+ "xynolog-telemetry",
 ]
 
 [[package]]
-name = "semiont-dispatcher-handlers"
+name = "xynolog-dispatcher-handlers"
 version = "0.0.0"
 dependencies = [
  "chrono",
- "semiont-observability",
+ "xynolog-observability",
  "serde",
  "serde_json",
  "tokio",
  "uuid",
- "xynoplex",
+ "xynolog",
 ]
 
 [[package]]
-name = "semiont-dispatcher-jetstream"
+name = "xynolog-dispatcher-jetstream"
 version = "0.0.0"
 dependencies = [
  "async-nats",
  "bytes",
  "chrono",
  "futures",
- "semiont-core",
- "semiont-dispatcher-handlers",
- "semiont-observability",
+ "xynolog-core",
+ "xynolog-dispatcher-handlers",
+ "xynolog-observability",
  "serde_json",
  "tokio",
- "xynoplex",
+ "xynolog",
 ]
 
 [[package]]
-name = "semiont-gateway"
+name = "xynolog-gateway"
 version = "0.0.0"
 dependencies = [
  "async-nats",
@@ -2297,9 +2297,9 @@ dependencies = [
  "reqwest",
  "ring",
  "rustls",
- "semiont-core",
- "semiont-http-service",
- "semiont-observability",
+ "xynolog-core",
+ "xynolog-http-service",
+ "xynolog-observability",
  "serde",
  "serde_json",
  "socket2",
@@ -2307,13 +2307,13 @@ dependencies = [
  "tokio",
  "tower",
  "uuid",
- "xynoplex",
- "xynoplex-http-transport",
- "xynoplex-telemetry",
+ "xynolog",
+ "xynolog-http-transport",
+ "xynolog-telemetry",
 ]
 
 [[package]]
-name = "semiont-http-service"
+name = "xynolog-http-service"
 version = "0.0.0"
 dependencies = [
  "axum",
@@ -2328,7 +2328,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "semiont-observability"
+name = "xynolog-observability"
 version = "0.0.0"
 dependencies = [
  "chrono",
@@ -2339,8 +2339,8 @@ dependencies = [
  "serde_json",
  "tikv-jemalloc-ctl",
  "tokio",
- "xynoplex",
- "xynoplex-telemetry",
+ "xynolog",
+ "xynolog-telemetry",
 ]
 
 [[package]]
@@ -3292,7 +3292,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
 
 [[package]]
-name = "xynoplex"
+name = "xynolog"
 version = "0.7.3"
 dependencies = [
  "base64 0.23.1",
@@ -3310,18 +3310,18 @@ dependencies = [
  "tokio-stream",
  "uuid",
  "windows-sys 0.61.2",
- "xynoplex-codegen",
+ "xynolog-codegen",
 ]
 
 [[package]]
-name = "xynoplex-codegen"
+name = "xynolog-codegen"
 version = "0.7.3"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
-name = "xynoplex-http-transport"
+name = "xynolog-http-transport"
 version = "0.7.3"
 dependencies = [
  "base64 0.23.1",
@@ -3334,16 +3334,16 @@ dependencies = [
  "serde_json",
  "tokio",
  "uuid",
- "xynoplex",
- "xynoplex-telemetry",
+ "xynolog",
+ "xynolog-telemetry",
 ]
 
 [[package]]
-name = "xynoplex-telemetry"
+name = "xynolog-telemetry"
 version = "0.7.3"
 dependencies = [
  "opentelemetry",
- "xynoplex",
+ "xynolog",
 ]
 
 [[package]]

@@ -17,13 +17,13 @@ export async function openConfigureStep(page: Page, bus: BusLogCapture): Promise
   await expect(page.getByText(/loading resource/i)).toBeHidden({ timeout: 30_000 });
 
   await page.locator('button[data-panel="info"]').click();
-  const infoPanel = page.locator('.semiont-resource-info-panel');
+  const infoPanel = page.locator('.xynolog-resource-info-panel');
   await expect(infoPanel).toBeVisible({ timeout: 10_000 });
   // ✨ is literal in ResourceInfoPanel; the word "Generate" is translated and
   // also names the DelegateShell section header. See spec 16.
   await infoPanel.getByRole('button', { name: /✨.*generate/i }).click();
 
-  const modal = page.locator('.semiont-search-modal__panel--gather');
+  const modal = page.locator('.xynolog-search-modal__panel--gather');
   await expect(modal).toBeVisible({ timeout: 10_000 });
 
   bus.clear();

@@ -10,12 +10,12 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { XynoplexBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
-import { WebBrowserStorage, createShellStateUnit, type ToolbarPanelType } from '@xynoplex/react-ui';
+import { XynologBrowser, createHttpSessionFactory } from '@xynolog/sdk';
+import { WebBrowserStorage, createShellStateUnit, type ToolbarPanelType } from '@xynolog/react-ui';
 import { useKbPanelOnLogin } from '../useKbPanelOnLogin';
 
 function shellShowing(panel: ToolbarPanelType) {
-  const browser = new XynoplexBrowser({
+  const browser = new XynologBrowser({
     storage: new WebBrowserStorage(),
     sessionFactory: createHttpSessionFactory(),
   });

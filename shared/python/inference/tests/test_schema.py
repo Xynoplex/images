@@ -14,8 +14,8 @@ import pytest
 from pydantic import JsonValue
 from spec import PACKAGE, WORKER_SERVICE_SUITE, JsonObject, objects, read, text, thing
 
-from semiont_inference._schema import WRAPPER, Dialect, array_schema
-from semiont_inference.interface import StructuredReadError
+from xynolog_inference._schema import WRAPPER, Dialect, array_schema
+from xynolog_inference.interface import StructuredReadError
 
 TABLE = read(PACKAGE / "tests/schema-cases.json")
 CASES = objects(TABLE["cases"], "the cases")

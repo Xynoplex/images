@@ -19,10 +19,10 @@ import pytest
 from aio import run
 from spec import ROOT
 
-from semiont_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
-from semiont_smelter.pdf_reader import Pixels
-from semiont_smelter.pdfium import PdfiumReader
-from semiont_smelter.tesseract import TesseractEngine
+from xynolog_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
+from xynolog_smelter.pdf_reader import Pixels
+from xynolog_smelter.pdfium import PdfiumReader
+from xynolog_smelter.tesseract import TesseractEngine
 
 SCAN: Final = ROOT / "protocol/specs/src/smelter/fixtures/legible-scan.pdf"
 

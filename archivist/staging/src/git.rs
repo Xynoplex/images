@@ -19,7 +19,6 @@
 use crate::{Bounds, Done, Staging, StagingError, rename, unlink};
 use opentelemetry::KeyValue;
 use opentelemetry::metrics::{Counter, Histogram};
-use semiont_observability::{logging, telemetry};
 use serde_json::json;
 use std::collections::BTreeSet;
 use std::ffi::{OsStr, OsString};
@@ -29,6 +28,7 @@ use std::sync::{Arc, Mutex, MutexGuard, OnceLock};
 use std::time::Duration;
 use tokio::process::Command;
 use tokio::time::Instant;
+use xynolog_observability::{logging, telemetry};
 
 /// git has no wait for the index lock (its lock timeouts cover refs, not the
 /// index) and `git add` against a held lock fails in milliseconds. So the
@@ -148,7 +148,7 @@ fn args<const N: usize>(fixed: [&str; N], paths: &[&Path]) -> Vec<OsString> {
         .collect()
 }
 
-/// `semiont.git.duration`: every invocation, the failing ones too.
+/// `xynolog.git.duration`: every invocation, the failing ones too.
 fn record_command(subcommand: &str, started: std::time::Instant) {
     static DURATION: OnceLock<Histogram<f64>> = OnceLock::new();
     let Some(meter) = telemetry::meter() else {
@@ -157,7 +157,7 @@ fn record_command(subcommand: &str, started: std::time::Instant) {
     DURATION
         .get_or_init(|| {
             meter
-                .f64_histogram("semiont.git.duration")
+                .f64_histogram("xynolog.git.duration")
                 .with_description("Wall time of a git subprocess. Async — this is latency, not event-loop blockage. Staging is deduped, so the `add` count is far below the number of appended events.")
                 .with_unit("ms")
                 .build()
@@ -168,7 +168,7 @@ fn record_command(subcommand: &str, started: std::time::Instant) {
         );
 }
 
-/// `semiont.git.staging.failures`: what makes a stale index visible.
+/// `xynolog.git.staging.failures`: what makes a stale index visible.
 fn record_failure(reason: &'static str) {
     static FAILURES: OnceLock<Counter<u64>> = OnceLock::new();
     let Some(meter) = telemetry::meter() else {
@@ -177,7 +177,7 @@ fn record_failure(reason: &'static str) {
     FAILURES
         .get_or_init(|| {
             meter
-                .u64_counter("semiont.git.staging.failures")
+                .u64_counter("xynolog.git.staging.failures")
                 .with_description(
                     "Staging commands abandoned after retries; the index may be stale",
                 )

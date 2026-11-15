@@ -145,9 +145,9 @@ test.describe('manual reference', () => {
     const { referenceEntries, refsBefore } = await selectTextInReferenceMode(page, bus);
 
     // The ReferencesPanel inline prompt renders once a pendingAnnotation
-    // with motivation='linking' appears. Within it, `.semiont-tag-selector__item`
+    // with motivation='linking' appears. Within it, `.xynolog-tag-selector__item`
     // buttons are per-entity-type chips. Pick the first available type.
-    const tagChips = page.locator('.semiont-tag-selector__item');
+    const tagChips = page.locator('.xynolog-tag-selector__item');
     await expect(tagChips.first()).toBeVisible({ timeout: 10_000 });
     const firstChip = tagChips.first();
     await firstChip.click();
@@ -183,7 +183,7 @@ test.describe('manual reference', () => {
 
     // Wait for the prompt, then touch NOTHING. Entity types are optional and
     // this is the path that says so.
-    const tagChips = page.locator('.semiont-tag-selector__item');
+    const tagChips = page.locator('.xynolog-tag-selector__item');
     await expect(tagChips.first()).toBeVisible({ timeout: 10_000 });
     await expect(tagChips.first(), 'no type is pre-selected').toHaveAttribute('data-selected', 'false');
 

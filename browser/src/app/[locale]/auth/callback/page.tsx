@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from '@/i18n/routing';
-import { MainContent, useXynoplex, useToast } from '@xynoplex/react-ui';
-import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
+import { MainContent, useXynolog, useToast } from '@xynolog/react-ui';
+import { IdentityUnverifiableError, SignInError } from '@xynolog/sdk';
 
 /**
  * Where the issuer sends the user back. Completes the pending sign-in once
@@ -13,7 +13,7 @@ import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
  */
 export default function AuthCallback() {
   const { t } = useTranslation(undefined, { keyPrefix: 'KnowledgeBasePanel' });
-  const semiont = useXynoplex();
+  const xynolog = useXynolog();
   const router = useRouter();
   const { showWarning, showError } = useToast();
   const started = useRef(false);
@@ -21,7 +21,7 @@ export default function AuthCallback() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    void semiont.completeSignIn(window.location.href).then(
+    void xynolog.completeSignIn(window.location.href).then(
       ({ kb, expected }) => {
         if (expected && expected.did !== kb.did) {
           showWarning(t('connectedToOther', {
@@ -45,7 +45,7 @@ export default function AuthCallback() {
         router.replace(`/auth/error?error=${reason}`);
       },
     );
-  }, [semiont, router, showWarning, showError, t]);
+  }, [xynolog, router, showWarning, showError, t]);
 
   return (
     <MainContent>

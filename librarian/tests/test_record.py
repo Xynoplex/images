@@ -14,14 +14,14 @@ import pytest
 from aio import hurried, run
 from pydantic import JsonValue
 from rig import ADA_ID, LOVELACE, RECORDED, described, reference
-from xynoplex.bus import Bus, reply_channels_for
-from xynoplex.errors import BusRequestError
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.testing import DropReply, FaultAction, FaultyTransport, Refuse
+from xynolog.bus import Bus, reply_channels_for
+from xynolog.errors import BusRequestError
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.testing import DropReply, FaultAction, FaultyTransport, Refuse
 
-from semiont_librarian.reads import Described, ProfilesUnread
-from semiont_librarian.record import READ, BusProfiles, BusRecord
+from xynolog_librarian.reads import Described, ProfilesUnread
+from xynolog_librarian.record import READ, BusProfiles, BusRecord
 
 R1: Final = ResourceId("res-1")
 NOTE_ID: Final = AnnotationId("ann-1")

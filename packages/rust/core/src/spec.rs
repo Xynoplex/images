@@ -9,7 +9,7 @@ use std::collections::{BTreeSet, HashMap, HashSet};
 use std::sync::OnceLock;
 
 /// The release this build is: version.json's `version`.
-pub const VERSION: &str = env!("SEMIONT_VERSION");
+pub const VERSION: &str = env!("XYNOLOG_VERSION");
 
 const OPENAPI: &str = include_str!(concat!(env!("OUT_DIR"), "/openapi.json"));
 const ARCHIVIST_OPENAPI: &str = include_str!(concat!(env!("OUT_DIR"), "/archivist.openapi.json"));

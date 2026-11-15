@@ -3,17 +3,17 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-vectors"
+name = "xynolog-vectors"
 dynamic = ["version"]
-description = "The vector index Semiont's Python services write and search, and the embedding providers that make its vectors, each behind one interface"
+description = "The vector index Xynolog's Python services write and search, and the embedding providers that make its vectors, each behind one interface"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-keywords = ["semiont", "vectors", "embeddings", "qdrant", "ollama", "voyage"]
+keywords = ["xynolog", "vectors", "embeddings", "qdrant", "ollama", "voyage"]
 classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    # A library of Semiont's Python services, installed in their images: no index takes an upload that says this.
+    # A library of Xynolog's Python services, installed in their images: no index takes an upload that says this.
     "Private :: Do Not Upload",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -29,17 +29,17 @@ classifiers = [
 dependencies = [
     "httpx",
     "pydantic",
-    "xynoplex",
+    "xynolog",
 ]
 
 [project.urls]
-Homepage = "https://the-ai-alliance.github.io/semiont/"
-Repository = "https://github.com/Xynoplex/images"
-Issues = "https://github.com/Xynoplex/images/issues"
+Homepage = "https://github.com/xynolog/images"
+Repository = "https://github.com/xynolog/images"
+Issues = "https://github.com/xynolog/images/issues"
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -59,12 +59,12 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_vectors"]
+packages = ["src/xynolog_vectors"]
 
 # What the wheel is built from, and no more. The tests read the repository
 # around this package, which a source distribution does not hold.
 [tool.hatch.build.targets.sdist]
-only-include = ["src/xynoplex_vectors", "README.md"]
+only-include = ["src/xynolog_vectors", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -74,7 +74,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this package's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_vectors"]
+source = ["xynolog_vectors"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

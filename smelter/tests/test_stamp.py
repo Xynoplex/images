@@ -7,8 +7,8 @@ real ones here. What stamp a real one states is held by its own tests.
 
 from aio import run
 
-from semiont_smelter.scripted import ScriptedOcrEngine, ScriptedPdfReader
-from semiont_smelter.stamp import current_stamp
+from xynolog_smelter.scripted import ScriptedOcrEngine, ScriptedPdfReader
+from xynolog_smelter.stamp import current_stamp
 
 
 def test_the_stamp_is_the_readers_stamp_and_the_engines_and_names_no_version_of_the_smelter() -> None:

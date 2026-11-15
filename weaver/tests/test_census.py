@@ -24,10 +24,10 @@ from pathlib import Path
 from pydantic import JsonValue, TypeAdapter
 from spec import PROJECT, ROOT, SDK
 
-from semiont_weaver.config import SERVICE
-from semiont_weaver.recorded import FOLDED
+from xynolog_weaver.config import SERVICE
+from xynolog_weaver.recorded import FOLDED
 
-SRC = PROJECT / "src/semiont_weaver"
+SRC = PROJECT / "src/xynolog_weaver"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PROJECT / top).rglob("*.py"))
 GRAPH = ROOT / "shared/python/graph"
 SHARED = ROOT / "shared/python/service"
@@ -123,8 +123,8 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
 
 def test_what_the_manifest_requires_is_what_the_source_imports() -> None:
     requirements = listed(table(MANIFEST["project"], "project")["dependencies"], "dependencies")
-    assert {name_of(requirement) for requirement in requirements} == {"pydantic", "semiont", "semiont-graph", "semiont-service"}
-    for library in ("pydantic", "semiont", "semiont_graph", "semiont_service"):
+    assert {name_of(requirement) for requirement in requirements} == {"pydantic", "xynolog", "xynolog-graph", "xynolog-service"}
+    for library in ("pydantic", "xynolog", "xynolog_graph", "xynolog_service"):
         assert importing(library), f"{library} is required and nothing imports it"
     # It tells OpenTelemetry nothing of its own. What exports the spans the SDK makes is the shared package's to
     # require, at the versions its own manifest states, and to import.
@@ -141,18 +141,18 @@ def test_what_the_manifest_requires_is_what_the_source_imports() -> None:
 def test_the_sdk_the_graph_stores_and_the_service_package_are_the_ones_in_this_repository() -> None:
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
-        "semiont-graph": {"path": "../../shared/python/graph", "editable": True},
-        "semiont-service": {"path": "../../shared/python/service", "editable": True},
+        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"},
+        "xynolog-graph": {"path": "../../shared/python/graph", "editable": True},
+        "xynolog-service": {"path": "../../shared/python/service", "editable": True},
     }
     assert (PROJECT / "../../shared/python/graph/pyproject.toml").resolve() == GRAPH / "pyproject.toml"
     assert (PROJECT / "../../shared/python/service/pyproject.toml").resolve() == SHARED / "pyproject.toml"
 
 
 def test_the_distribution_is_named_for_the_service() -> None:
-    # Its telemetry is exported under its word for itself after `semiont-`, at the version of the distribution of
-    # that name (`semiont_service.observability`): the manifest's name is that, or an exporting service does not start.
-    assert table(MANIFEST["project"], "project")["name"] == f"semiont-{SERVICE}"
+    # Its telemetry is exported under its word for itself after `xynolog-`, at the version of the distribution of
+    # that name (`xynolog_service.observability`): the manifest's name is that, or an exporting service does not start.
+    assert table(MANIFEST["project"], "project")["name"] == f"xynolog-{SERVICE}"
 
 
 def test_it_is_a_service_s_code_and_no_library() -> None:
@@ -160,7 +160,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
     for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PROJECT:
-            assert "semiont-weaver" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Weaver"
+            assert "xynolog-weaver" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Weaver"
 
 
 def test_the_source_does_nothing_by_database() -> None:
@@ -170,11 +170,11 @@ def test_the_source_does_nothing_by_database() -> None:
         {
             found.group(1)
             for path in SRC.rglob("*.py")
-            for found in re.finditer(r"^\s*from semiont_graph\.(\w+) import ", path.read_text(encoding="utf-8"), re.MULTILINE)
+            for found in re.finditer(r"^\s*from xynolog_graph\.(\w+) import ", path.read_text(encoding="utf-8"), re.MULTILINE)
         }
     )
     assert graph_modules == ["codec", "factory", "interface"]
-    assert importing(r"semiont_graph\.factory") == ["service.py"]
+    assert importing(r"xynolog_graph\.factory") == ["service.py"]
     for client in ("neo4j", "gremlin_python"):
         assert importing(client) == []
 
@@ -183,9 +183,9 @@ def test_a_databases_client_is_an_extra_and_the_image_asks_for_every_one() -> No
     extras = table(table(MANIFEST["project"], "project")["optional-dependencies"], "extras")
     of_the_graph = table(table(toml(GRAPH / "pyproject.toml")["project"], "project")["optional-dependencies"], "its extras")
     # An extra for each of the graph package's, which brings that one and nothing else.
-    assert extras == {name: [f"semiont-graph[{name}]"] for name in of_the_graph}
+    assert extras == {name: [f"xynolog-graph[{name}]"] for name in of_the_graph}
     dev = listed(table(MANIFEST["dependency-groups"], "dependency-groups")["dev"], "dev")
-    assert f"semiont-weaver[{','.join(sorted(extras))}]" in dev
+    assert f"xynolog-weaver[{','.join(sorted(extras))}]" in dev
 
 
 def test_one_module_names_the_logger_and_one_reads_the_process_s_environment() -> None:
@@ -268,13 +268,13 @@ def test_the_variables_it_reads_by_name_are_the_ones_the_protocol_lists() -> Non
     texts = [re.sub(r"^__all__ = \[.*?\]$", "", path.read_text(encoding="utf-8"), flags=re.DOTALL | re.MULTILINE) for path in sources]
     read_here = {name for text in texts for name in re.findall(r'"([A-Z][A-Z0-9]*_[A-Z0-9_]+)"', text)}
     # The shared package reads the worker's key too: this service proves itself with its secret, and reads no key.
-    assert "SEMIONT_OIDC_CLIENT_KEY" in read_here
-    read_here -= {"SEMIONT_OIDC_CLIENT_KEY"}
+    assert "XYNOLOG_OIDC_CLIENT_KEY" in read_here
+    read_here -= {"XYNOLOG_OIDC_CLIENT_KEY"}
     assert read_here == listed_there
     # Its service account, and what says where its telemetry goes and under what name.
     assert read_here == {
-        "SEMIONT_OIDC_CLIENT_ID",
-        "SEMIONT_OIDC_CLIENT_SECRET",
+        "XYNOLOG_OIDC_CLIENT_ID",
+        "XYNOLOG_OIDC_CLIENT_SECRET",
         "OTEL_EXPORTER_OTLP_ENDPOINT",
         "OTEL_SERVICE_NAME",
         "OTEL_SDK_DISABLED",

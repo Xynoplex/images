@@ -5,7 +5,7 @@ from collections.abc import Generator
 
 import pytest
 
-from semiont_weaver.log import LOG
+from xynolog_weaver.log import LOG
 
 
 @pytest.fixture

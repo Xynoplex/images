@@ -46,9 +46,9 @@ import sys
 import tarfile
 
 directory = pathlib.Path(sys.argv[1])
-sdists = sorted(directory.glob("xynoplex-*.tar.gz"))
+sdists = sorted(directory.glob("xynolog-*.tar.gz"))
 if len(sdists) != 1:
-    raise SystemExit(f"Expected one Xynoplex Python source distribution in {directory}, found {len(sdists)}")
+    raise SystemExit(f"Expected one Xynolog Python source distribution in {directory}, found {len(sdists)}")
 with tarfile.open(sdists[0], "r:gz") as archive:
     manifests = [member for member in archive.getmembers() if member.isfile() and member.name.endswith("/pyproject.toml")]
     if len(manifests) != 1:

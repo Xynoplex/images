@@ -77,7 +77,7 @@ test.describe('delegated reference detection', () => {
     // Photosynthesis seed text — see docstring). Among the default types
     // only "Concept" matches /concept/i, so the filter is unambiguous.
     const conceptChip = page
-      .locator('.semiont-delegate-widget__chips .semiont-chip--selectable')
+      .locator('.xynolog-delegate-widget__chips .xynolog-chip--selectable')
       .filter({ hasText: /concept/i });
     await expect(conceptChip).toBeVisible({ timeout: 10_000 });
     await conceptChip.click();

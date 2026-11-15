@@ -19,23 +19,23 @@ import pytest
 from aio import pass_time, run, soon
 from provider import HOLD, Anthropic, Ollama, saying, window
 from pydantic import JsonValue
-from xynoplex import telemetry
-from xynoplex.bus import Bus
-from xynoplex.channel import Operation
-from xynoplex.errors import TransportError
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.operations import LIMITS_OPERATIONS
-from xynoplex.testing import FaultyTransport
-from xynoplex.transport import Frame, TraceContext
-from xynoplex.types import CommandError, InferenceLimitsRequest, InferenceLimitsResult
 from spec import SPEC, JsonObject, read, thing
+from xynolog import telemetry
+from xynolog.bus import Bus
+from xynolog.channel import Operation
+from xynolog.errors import TransportError
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.operations import LIMITS_OPERATIONS
+from xynolog.testing import FaultyTransport
+from xynolog.transport import Frame, TraceContext
+from xynolog.types import CommandError, InferenceLimitsRequest, InferenceLimitsResult
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.interface import InferenceClient, InferenceLimits
-from semiont_inference.limits_report import answer_limits_requests, report_limits
-from semiont_inference.mock import MockInferenceClient
-from semiont_inference.ollama import OllamaInferenceClient
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.interface import InferenceClient, InferenceLimits
+from xynolog_inference.limits_report import answer_limits_requests, report_limits
+from xynolog_inference.mock import MockInferenceClient
+from xynolog_inference.ollama import OllamaInferenceClient
 
 
 def mock(limits: InferenceLimits) -> MockInferenceClient:
@@ -142,7 +142,7 @@ def test_an_engine_that_cannot_be_learned_is_left_out_and_asked_about_again_at_t
             ]
             assert len(ollama.shows) == 2
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (left_out,) = [record for record in caplog.records if record.getMessage().startswith("Limits report")]
     assert (left_out.levelname, left_out.getMessage()) == ("DEBUG", "Limits report: consult failed — engine left out")
@@ -176,7 +176,7 @@ def test_a_provider_that_has_not_answered_in_a_second_and_a_half_is_left_out_and
             assert report == [{"engine": {"provider": "ollama", "model": "llama3"}, "limits": shared(8192)}, MOCK_ENGINE]
             assert len(ollama.shows) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     left_out = [record for record in caplog.records if record.getMessage().startswith("Limits report")]
     assert left_out, "nothing was said of the engine left out"
@@ -379,7 +379,7 @@ def test_an_answer_that_cannot_be_sent_is_said_on_the_failure_channel_and_in_the
         answering.cancel()
         await asyncio.gather(answering, return_exceptions=True)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (failed,) = [record for record in caplog.records if record.getMessage() == "Limits report failed"]
     assert failed.levelname == "ERROR"

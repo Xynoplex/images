@@ -11,7 +11,7 @@ from typing import Final, get_args
 
 import pytest
 from pydantic import JsonValue, ValidationError
-from xynoplex.types import (
+from xynolog.types import (
     AssessingJobParams,
     CommentingJobParams,
     GenerationJobParams,
@@ -23,7 +23,7 @@ from xynoplex.types import (
     TagSchema,
 )
 
-from semiont_worker.held_params import HeldTagging, held_generation, held_mark, motivation_of
+from xynolog_worker.held_params import HeldTagging, held_generation, held_mark, motivation_of
 
 SCHEMA: Final[dict[str, JsonValue]] = {"id": "irac", "name": "IRAC", "description": "Legal analysis", "domain": "legal", "tags": []}
 

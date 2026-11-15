@@ -1,8 +1,8 @@
-# semiont-service
+# xynolog-service
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-service)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=python-service)](https://app.codecov.io/gh/xynolog/images/components)
 
-What every Python service of [Semiont][semiont] does to be one: read its
+What every Python service of [Xynolog][xynolog] does to be one: read its
 configuration document, answer for its health, write its log, and export its
 telemetry. A service that follows the record also takes from it how it
 follows the record, the order it works in, and how it reads the catalog of
@@ -14,7 +14,7 @@ built on it.
 
 It is the services' own code and no library for anyone else: no index holds
 it, and each service's image builds it from this repository. A program that
-reads and writes a knowledge base needs the SDK, [`xynoplex`][sdk-python], and
+reads and writes a knowledge base needs the SDK, [`xynolog`][sdk-python], and
 not this package.
 
 It runs on asyncio and requires Python 3.12 or later. It is checked by
@@ -25,24 +25,24 @@ It runs on asyncio and requires Python 3.12 or later. It is checked by
 
 | Module | What it does | What the service hands it |
 | --- | --- | --- |
-| `semiont_service.archivist` | Reads a resource's bytes and its annotations from the Archivist's own routes, and the record by position, as the service's account, and says what kept each from being read | Its word for itself, the Archivist's address, and its account |
-| `semiont_service.catalog` | Reads the catalog of resources whole from the Archivist, a page at a time, and asks for a page again while the Archivist is not there to answer | Its bus, what tells it the service is stopping, and whether it wants the archived resources |
-| `semiont_service.config` | Finds the document `--config` names, reads it as a shape of the protocol and refuses what is not one, and reads the service's account from its environment | Its word for itself, the shape, its arguments and its environment |
-| `semiont_service.connect` | Waits for what a service connects to as it starts, one minute and no longer, and refuses the start saying what did not answer | What it connects to, in the words the refusal names it by, and the connecting it waits for |
-| `semiont_service.content` | Says what a reader of a resource's bytes is, what it answers and how it fails, so that what a service does with the bytes knows no address | Nothing: a service is handed a reader |
-| `semiont_service.follower` | Follows the record by one rule: a cursor for each log, moved by one, a delivered event taken as a hint, and a sweep at the start and at each reopening of the stream, the cursors kept in a file | The record's reader, how its projection takes a run of a log's events and forgets a log, which logs it follows, how a log with no cursor starts, and the cursors' file |
-| `semiont_service.health` | Answers `GET /health`, and nothing else, on the service's port | What the endpoint says, asked afresh for each request |
-| `semiont_service.knowledge_base` | Asks the knowledge base which it is (`browse:kb-requested`), again while the Archivist is not there to answer, and refuses the start where it answers as another than the one the document names or with a failure, and, apart, where it does not answer (`Unanswered`), which a service of several knowledge bases takes as trouble there; names the channels of the stream it asks on: the answer's replies, and nothing the service answers | Its bus, the domain its document names, and what tells it the service is stopping |
-| `semiont_service.lanes` | Does what is put on a lane one piece at a time, in the order it was put there, with the lanes working beside each other, and does one piece of work with no lane working | The lane of each piece of work, which is a resource's id for a service that follows the record |
-| `semiont_service.log` | Writes the process's log to stdout, an event a line, as JSON or plainly, from the level the document names | Its word for itself, and the names of the loggers that are its own |
-| `semiont_service.observability` | Exports spans and metrics as the environment says, under the service's name and version and the DID of the knowledge base it serves, or installs nothing; takes the readings every service takes of itself, and reports as a gauge a number a service reads of what it keeps | Its word for itself, the DID of the knowledge base it serves or that it names none, and its environment; for a gauge of its own, the gauge's name and what reads the number |
-| `semiont_service.until_answered` | Says how long a request over the bus is asked again while the Archivist is not there to answer, and which failure is its not being there | Nothing |
-| `semiont_service.white_space` | Says what white space is, which is Unicode's and not Python's own, and trims a text of it | The text |
+| `xynolog_service.archivist` | Reads a resource's bytes and its annotations from the Archivist's own routes, and the record by position, as the service's account, and says what kept each from being read | Its word for itself, the Archivist's address, and its account |
+| `xynolog_service.catalog` | Reads the catalog of resources whole from the Archivist, a page at a time, and asks for a page again while the Archivist is not there to answer | Its bus, what tells it the service is stopping, and whether it wants the archived resources |
+| `xynolog_service.config` | Finds the document `--config` names, reads it as a shape of the protocol and refuses what is not one, and reads the service's account from its environment | Its word for itself, the shape, its arguments and its environment |
+| `xynolog_service.connect` | Waits for what a service connects to as it starts, one minute and no longer, and refuses the start saying what did not answer | What it connects to, in the words the refusal names it by, and the connecting it waits for |
+| `xynolog_service.content` | Says what a reader of a resource's bytes is, what it answers and how it fails, so that what a service does with the bytes knows no address | Nothing: a service is handed a reader |
+| `xynolog_service.follower` | Follows the record by one rule: a cursor for each log, moved by one, a delivered event taken as a hint, and a sweep at the start and at each reopening of the stream, the cursors kept in a file | The record's reader, how its projection takes a run of a log's events and forgets a log, which logs it follows, how a log with no cursor starts, and the cursors' file |
+| `xynolog_service.health` | Answers `GET /health`, and nothing else, on the service's port | What the endpoint says, asked afresh for each request |
+| `xynolog_service.knowledge_base` | Asks the knowledge base which it is (`browse:kb-requested`), again while the Archivist is not there to answer, and refuses the start where it answers as another than the one the document names or with a failure, and, apart, where it does not answer (`Unanswered`), which a service of several knowledge bases takes as trouble there; names the channels of the stream it asks on: the answer's replies, and nothing the service answers | Its bus, the domain its document names, and what tells it the service is stopping |
+| `xynolog_service.lanes` | Does what is put on a lane one piece at a time, in the order it was put there, with the lanes working beside each other, and does one piece of work with no lane working | The lane of each piece of work, which is a resource's id for a service that follows the record |
+| `xynolog_service.log` | Writes the process's log to stdout, an event a line, as JSON or plainly, from the level the document names | Its word for itself, and the names of the loggers that are its own |
+| `xynolog_service.observability` | Exports spans and metrics as the environment says, under the service's name and version and the DID of the knowledge base it serves, or installs nothing; takes the readings every service takes of itself, and reports as a gauge a number a service reads of what it keeps | Its word for itself, the DID of the knowledge base it serves or that it names none, and its environment; for a gauge of its own, the gauge's name and what reads the number |
+| `xynolog_service.until_answered` | Says how long a request over the bus is asked again while the Archivist is not there to answer, and which failure is its not being there | Nothing |
+| `xynolog_service.white_space` | Says what white space is, which is Unicode's and not Python's own, and trims a text of it | The text |
 
 A service is known by one word in lower case, as its image and its container
 are named: `worker`, `weaver`. Its refusals and its log lines say that word,
 and its distribution, and the name its telemetry is exported under, is that
-word after `semiont-`.
+word after `xynolog-`.
 
 Nothing here reads the process's environment or its arguments. The service
 reads them, in one module, and hands them on.
@@ -72,9 +72,9 @@ uv sync --locked
 uv run pytest
 ```
 
-[semiont]: https://github.com/Xynoplex/images
+[xynolog]: https://github.com/xynolog/images
 [worker]: ../../../worker/README.md
 [weaver]: ../../../weaver/README.md
 [smelter]: ../../../smelter/README.md
-[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python/sdk
+[sdk-python]: https://github.com/xynolog/sdk/tree/main/python/sdk
 [telemetry]: ../../../protocol/specs/src/service-telemetry/telemetry.json

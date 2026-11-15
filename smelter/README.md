@@ -1,6 +1,6 @@
-# semiont-smelter
+# xynolog-smelter
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-smelter)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=image-smelter)](https://app.codecov.io/gh/xynolog/images/components)
 
 **The Smelter keeps a knowledge base's vector index in step with its record**, the knowledge
 base's event log: it gets the text of what changed, cuts it, and has it embedded. It is a Python
@@ -8,14 +8,14 @@ service, and the Librarian searches the index it keeps by meaning. It also
 derives a PDF's *anchored text*, its text with where each word is on its page, which the
 Archivist keeps. It serves `/health` on port 24101, and nothing else: everything it does is
 on the bus, in the index and in the anchored-text store. The launcher starts it on
-`semiont start`.
+`xynolog start`.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-smelter` |
+| Image | `ghcr.io/xynolog/xynolog-smelter` |
 | Port | 24101 (`/health`, and nothing else: everything it does is on the bus, in the index and in the anchored-text store) |
-| Command | `python -P -m semiont_smelter --config /etc/semiont/smelter.json` |
-| Code | Python, in this directory: [`src/semiont_smelter`](src/semiont_smelter) |
+| Command | `python -P -m xynolog_smelter --config /etc/xynolog/smelter.json` |
+| Code | Python, in this directory: [`src/xynolog_smelter`](src/xynolog_smelter) |
 | Specification | [protocol/contract/SMELTER.md](../../protocol/contract/SMELTER.md) |
 | Judged by | [protocol/conformance/smelter](../../protocol/conformance/smelter/README.md) |
 | Published | to no package index: the image only |
@@ -93,7 +93,7 @@ start and each time its stream of the record opens after a drop, which takes wha
 did not deliver.
 
 **A resource no cursor names at its start is started by a reconcile.** After a
-`semiont start`, which makes the container again, that is every resource. A reconcile
+`xynolog start`, which makes the container again, that is every resource. A reconcile
 compares what the index holds, what the catalog says the knowledge base holds, and which bytes
 the anchored-text store has an entry for, and does the work that brings them together. So an
 index that was cleared, and an anchored-text store that was cleared, are each mended by
@@ -122,7 +122,7 @@ minute ends the start.
 It reads one document, the protocol's
 [`SmelterConfig`](../protocol/specs/src/components/schemas/SmelterConfig.json), at the path
 `--config` names. The launcher writes it for the Smelter it starts, resolved, and mounts it at
-`/etc/semiont/smelter.json`. Whoever starts a Smelter another way writes the same document.
+`/etc/xynolog/smelter.json`. Whoever starts a Smelter another way writes the same document.
 
 | Member | |
 | --- | --- |
@@ -139,7 +139,7 @@ It reads one document, the protocol's
 | `logLevel`, `logFormat` | how it logs |
 
 Nothing the document leaves out is supplied. Its environment is its service account,
-**`SEMIONT_OIDC_CLIENT_ID`** and **`SEMIONT_OIDC_CLIENT_SECRET`**, and each variable its
+**`XYNOLOG_OIDC_CLIENT_ID`** and **`XYNOLOG_OIDC_CLIENT_SECRET`**, and each variable its
 document names: for a provider that takes a key, the one that holds it, and for a Qdrant,
 the one that holds its token. It signs in as itself, and the
 gateway names it by its account: `did:web:<the knowledge base's domain>:agents:<its subject at
@@ -149,12 +149,12 @@ the issuer>`. The model it embeds with is no part of who it is.
 scanned page held in pixels, beside the `tesseract` process reading it, is what fills the
 Smelter's memory, and the rest of what it does goes on beside them. The launcher writes the
 number the knowledge base's `KnowledgeIndex` stack document states (`spec.smelter.pdfsAtOnce`).
-`semiont init` writes one there for each 2 GB of memory it gives the Smelter's container, and
+`xynolog init` writes one there for each 2 GB of memory it gives the Smelter's container, and
 at least one.
 
-**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `semiont-smelter`, naming
-the knowledge base it serves by its DID (`semiont.kb`): what every service says of its own
-process, how many points its index holds (`semiont.vector.index.size`), and a span for each
+**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `xynolog-smelter`, naming
+the knowledge base it serves by its DID (`xynolog.kb`): what every service says of its own
+process, how many points its index holds (`xynolog.vector.index.size`), and a span for each
 frame it sends and receives on the bus
 ([SMELTER.md § Telemetry](../../protocol/contract/SMELTER.md#telemetry)). The launcher sets the
 endpoint for a stack it runs. Without it the Smelter exports nothing, unless
@@ -176,9 +176,9 @@ Qdrant it runs, and for one somebody else runs is handed it in the variable the 
 
 ## What the image carries
 
-The image, `ghcr.io/xynoplex/xynoplex-smelter`, carries the service and the three
+The image, `ghcr.io/xynolog/xynolog-smelter`, carries the service and the three
 Python packages of this repository it runs on: the SDK
-([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway; the vector
+([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway; the vector
 stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
 which ask a Qdrant and a provider over HTTP; and what every Python service is built on
 ([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
@@ -196,11 +196,11 @@ is written under names both engines' versions and not the Smelter's, so an entry
 other engines is derived again, and a release of the Smelter alone derives nothing again.
 
 It runs on the oldest Python the repository's Python packages support, on Alpine, as the
-user `semiont`. It carries no installer (`pip`, `uv`) and no Node.
+user `xynolog`. It carries no installer (`pip`, `uv`) and no Node.
 
 ## Working on it
 
-The code is in [`src/semiont_smelter`](src/semiont_smelter).
+The code is in [`src/xynolog_smelter`](src/xynolog_smelter).
 
 | Module | What it is |
 | --- | --- |
@@ -217,7 +217,7 @@ The code is in [`src/semiont_smelter`](src/semiont_smelter).
 
 How it follows the record, what reads a resource's bytes and its annotations, the reader that
 asks the Archivist for them and for the record by position, and what white space is are every
-Python service's, in [`semiont-service`](../../shared/python/service/README.md) (`follower`,
+Python service's, in [`xynolog-service`](../../shared/python/service/README.md) (`follower`,
 `content`, `archivist`, `white_space`).
 
 ```sh
@@ -234,7 +234,7 @@ After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
-  --file smelter/Dockerfile --tag ghcr.io/xynoplex/xynoplex-smelter:local .
+  --file smelter/Dockerfile --tag ghcr.io/xynolog/xynolog-smelter:local .
 ```
 
 [`make build`](../Makefile) builds it so with the other
@@ -247,7 +247,7 @@ checks what a built one promises.
 - [smelter conformance suite](../../protocol/conformance/smelter/README.md) — holds a Smelter to
   each rule, as a process behind a real gateway, a real Archivist and a real Qdrant, with an
   embedding provider the suite plays
-- [`semiont-vectors`](../../shared/python/vectors/) — the vector stores and the embedding
+- [`xynolog-vectors`](../../shared/python/vectors/) — the vector stores and the embedding
   providers, and what the index holds
 - [gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — serves the bytes, keeps the anchored-text store the Smelter

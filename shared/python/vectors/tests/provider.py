@@ -32,9 +32,9 @@ from aio import pass_time, settle, soon
 from pydantic import JsonValue, TypeAdapter
 from spec import JsonObject, strings
 
-from semiont_vectors.embedding import BatchPolicy, EmbeddingProvider, ProviderName
-from semiont_vectors.ollama import OLLAMA_BATCH_POLICY, OllamaEmbeddingProvider
-from semiont_vectors.voyage import VOYAGE_BATCH_POLICY, VoyageEmbeddingProvider
+from xynolog_vectors.embedding import BatchPolicy, EmbeddingProvider, ProviderName
+from xynolog_vectors.ollama import OLLAMA_BATCH_POLICY, OllamaEmbeddingProvider
+from xynolog_vectors.voyage import VOYAGE_BATCH_POLICY, VoyageEmbeddingProvider
 
 _OBJECT = TypeAdapter[JsonObject](JsonObject)
 _JSON = TypeAdapter[JsonValue](JsonValue)

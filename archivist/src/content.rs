@@ -2,10 +2,10 @@
 //! storage URI, `file://` and the file's path from the root.
 
 use ring::digest::{Context, SHA256};
-use semiont_archivist_staging::Staging;
 use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 use tokio::io::AsyncReadExt;
+use xynolog_archivist_staging::Staging;
 
 pub struct Content {
     root: PathBuf,

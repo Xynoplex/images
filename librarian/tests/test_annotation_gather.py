@@ -28,17 +28,17 @@ from rig import (
     tag,
     view,
 )
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation, GatherAnnotationOptions, GatherAnnotationRequest, GatheredContext, ResourceDescriptor, ResourceView
-from semiont_graph.interface import EntityTypeCount, GraphConnection
-from semiont_service.content import Content
-from semiont_vectors.store import CollectionAbsent, SearchFilter, SearchOptions, VectorSearchResult
 from spec import JsonObject, objects, thing
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation, GatherAnnotationOptions, GatherAnnotationRequest, GatheredContext, ResourceDescriptor, ResourceView
+from xynolog_graph.interface import EntityTypeCount, GraphConnection
+from xynolog_service.content import Content
+from xynolog_vectors.store import CollectionAbsent, SearchFilter, SearchOptions, VectorSearchResult
 
-from semiont_librarian.annotation_gather import Ungathered, gather
-from semiont_librarian.prompts import relationship_prompt, resource_summary_prompt
-from semiont_librarian.window import WindowRefused
+from xynolog_librarian.annotation_gather import Ungathered, gather
+from xynolog_librarian.prompts import relationship_prompt, resource_summary_prompt
+from xynolog_librarian.window import WindowRefused
 
 MYTHS: Final = ResourceId("res-myths")
 OLYMPUS: Final = ResourceId("res-olympus")

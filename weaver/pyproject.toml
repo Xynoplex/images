@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-weaver"
+name = "xynolog-weaver"
 dynamic = ["version"]
-description = "Semiont's Weaver service: it keeps a graph database in step with a knowledge base's record"
+description = "Xynolog's Weaver service: it keeps a graph database in step with a knowledge base's record"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 classifiers = [
@@ -20,12 +20,12 @@ classifiers = [
 # Pydantic is the SDK's dependency too, and the SDK states its versions: a
 # bound written here would be a second copy of its. What the service exports
 # its telemetry with, OpenTelemetry's SDK and its OTLP exporter, is required
-# by semiont-service, which installs it.
+# by xynolog-service, which installs it.
 dependencies = [
     "pydantic",
-    "xynoplex",
-    "semiont-graph",
-    "semiont-service",
+    "xynolog",
+    "xynolog-graph",
+    "xynolog-service",
 ]
 
 # A database's own client is not required: the service asks for a store by the
@@ -34,18 +34,18 @@ dependencies = [
 # it that client. The image asks for every one (`--all-extras`, in Dockerfile);
 # an image built for one database asks for that database's alone.
 [project.optional-dependencies]
-janusgraph = ["semiont-graph[janusgraph]"]
-neo4j = ["semiont-graph[neo4j]"]
-neptune = ["semiont-graph[neptune]"]
+janusgraph = ["xynolog-graph[janusgraph]"]
+neo4j = ["xynolog-graph[neo4j]"]
+neptune = ["xynolog-graph[neptune]"]
 
 # The SDK, the graph stores and what every Python service is built on are the
 # ones in this repository: the service is checked and tested against the types
 # the tree's spec generates. Each is named, because a source another package
 # states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
-semiont-graph = { path = "../shared/python/graph", editable = true }
-semiont-service = { path = "../shared/python/service", editable = true }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog-graph = { path = "../shared/python/graph", editable = true }
+xynolog-service = { path = "../shared/python/service", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -53,7 +53,7 @@ semiont-service = { path = "../shared/python/service", editable = true }
 [dependency-groups]
 dev = [
     # Every extra: the service is checked with every database's client, as its image has them.
-    "semiont-weaver[janusgraph,neo4j,neptune]",
+    "xynolog-weaver[janusgraph,neo4j,neptune]",
     # What makes the histories of tests/test_properties.py.
     "hypothesis>=6.130,<7",
     "mypy==2.4.1",
@@ -69,7 +69,7 @@ path = "../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_weaver"]
+packages = ["src/xynolog_weaver"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -79,7 +79,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this service's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_weaver"]
+source = ["xynolog_weaver"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

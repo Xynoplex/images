@@ -15,8 +15,8 @@ import pytest
 from aio import hurried, pass_time, run, settle, soon
 from provider import HANG_UP, HOLD, Answer, Ollama, Play, Voyage, always, told, unstarted, wait_out
 
-from semiont_vectors._slices import Batches
-from semiont_vectors.embedding import EMBED_ROUND_TRIP_SECONDS, BatchPolicy, EmbeddingProviderError, SliceRef, TextKind
+from xynolog_vectors._slices import Batches
+from xynolog_vectors.embedding import EMBED_ROUND_TRIP_SECONDS, BatchPolicy, EmbeddingProviderError, SliceRef, TextKind
 
 MODEL = "a-model"
 PROXIES = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy")

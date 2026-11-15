@@ -9,29 +9,29 @@ atomically. The Browser stores one JWT pair per KB in
 `GET /api/users/me` endpoint.
 
 There is no httpOnly cookie and no global session. Session state is owned by a
-single `SemiontBrowser` singleton that lives in `@xynoplex/sdk` and is exposed to
-React via the `SemiontProvider` + `useSemiont()` pair in `@xynoplex/react-ui`.
+single `XynologBrowser` singleton that lives in `@xynolog/sdk` and is exposed to
+React via the `XynologProvider` + `useXynolog()` pair in `@xynolog/react-ui`.
 
 For the class-level story (observables, lifetimes, invariants), see
-[SESSION.md in `@xynoplex/react-ui`](../../../docs/builder/react-ui/SESSION.md).
+[SESSION.md in `@xynolog/react-ui`](../../../docs/builder/react-ui/SESSION.md).
 This doc covers the **Browser-app** concerns: where providers mount,
 how route protection is expressed, how sign-in / sign-out flow, and
 how out-of-tree code signals the provider.
 
 ## Core pieces
 
-### `SemiontBrowser` (singleton)
+### `XynologBrowser` (singleton)
 
 App-level container owning the KB list, active selection, session,
 open-resources tab state, identity token, and the app-scoped event bus
-(each session's client owns the other). Lives in `@xynoplex/sdk` so CLI / MCP /
+(each session's client owns the other). Lives in `@xynolog/sdk` so CLI / MCP /
 workers can use it too.
 
 Key observables the UI reads:
 
 - `kbs$` — configured KB list
 - `activeKbId$` — the selected KB (set, even when signed out)
-- `activeSession$` — live `SemiontSession | null`
+- `activeSession$` — live `XynologSession | null`
 - `sessionActivating$` — true while `setActiveKb` / `signIn` is in
   flight awaiting `session.ready`. **The only valid loading
   indicator.** UIs that want a spinner during session construction
@@ -40,28 +40,28 @@ Key observables the UI reads:
 - `activeSignals$` — the active session's `SessionSignals` (what the auth modals read)
 - `openResources$`, `lastViewedResource$` (both per-KB projections of the active, connected KB), `identityToken$`, `error$`
 
-### `SemiontProvider` + `useSemiont()` (React surface)
+### `XynologProvider` + `useXynolog()` (React surface)
 
 The only React export that touches session state. Mount once at the
 app root — not only inside protected routes. The provider is cheap;
 zero-KB and signed-out are first-class states, not pre-app states.
 
 ```tsx
-import { SemiontProvider } from '@xynoplex/react-ui';
+import { XynologProvider } from '@xynolog/react-ui';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return <SemiontProvider>{children}</SemiontProvider>;
+  return <XynologProvider>{children}</XynologProvider>;
 }
 ```
 
 Inside components:
 
 ```tsx
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 function Whatever() {
-  const semiont = useSemiont();
-  const session = useObservable(semiont.activeSession$);
+  const xynolog = useXynolog();
+  const session = useObservable(xynolog.activeSession$);
   const user = useObservable(session?.user$);
 
   if (!user) return <p>Not signed in</p>;
@@ -69,16 +69,16 @@ function Whatever() {
 }
 ```
 
-`useSemiont()` throws if no `SemiontProvider` is mounted. There is no
+`useXynolog()` throws if no `XynologProvider` is mounted. There is no
 fallback — auth misuse must fail loudly.
 
 ### `KnowledgeBasePanel` (UI)
 
 User-facing UI for adding / switching / signing out of KBs. Calls
-`semiont.beginSignIn({ target, redirectUri })` to add or re-authenticate a KB,
-`semiont.setActiveKb(id)`, `semiont.removeKb(id)` and `semiont.signOut(id)`.
+`xynolog.beginSignIn({ target, redirectUri })` to add or re-authenticate a KB,
+`xynolog.setActiveKb(id)`, `xynolog.removeKb(id)` and `xynolog.signOut(id)`.
 Never writes to `localStorage` directly — all persistence goes through
-`SemiontBrowser`'s `SessionStorage` adapter (`SemiontProvider` defaults it to
+`XynologBrowser`'s `SessionStorage` adapter (`XynologProvider` defaults it to
 `WebBrowserStorage`).
 
 ## Route protection pattern
@@ -94,10 +94,10 @@ import { KnowledgeSidebarWrapper } from '@/components/knowledge/KnowledgeSidebar
 declare function UnauthenticatedKnowledgeLayout(): React.JSX.Element; // file-local: empty state + toolbar
 
 function KnowledgeLayoutBody() {
-  const semiont = useSemiont();
-  const activeKbId = useObservable(semiont.activeKbId$);
-  const session = useObservable(semiont.activeSession$);
-  const sessionActivating = useObservable(semiont.sessionActivating$);
+  const xynolog = useXynolog();
+  const activeKbId = useObservable(xynolog.activeKbId$);
+  const session = useObservable(xynolog.activeSession$);
+  const sessionActivating = useObservable(xynolog.sessionActivating$);
   const token = useObservable(session?.token$);
   const activeKnowledgeBase = session?.kb ?? null;
 
@@ -131,7 +131,7 @@ Calling `browser.signOut(id)` does three things:
 2. Revokes the refresh token at the issuer that issued it, when the stored
    session records a revocation endpoint — best-effort: an unreachable
    issuer does not keep the person signed in.
-3. If the KB is active: disposes the `SemiontSession` and its
+3. If the KB is active: disposes the `XynologSession` and its
    `SessionSignals`, and emits `null` on `activeSession$` and
    `activeSignals$`.
 
@@ -148,16 +148,16 @@ false) is how the layout knows to render the unauth view with a
 
 ```text
 1. User adds a KB via KnowledgeBasePanel
-   └── semiont.beginSignIn(...) discovers the issuer the KB trusts
+   └── xynolog.beginSignIn(...) discovers the issuer the KB trusts
        └── The person signs in at the issuer, which redirects to /:locale/auth/callback
-           └── semiont.completeSignIn(url) exchanges the code for access + refresh tokens
+           └── xynolog.completeSignIn(url) exchanges the code for access + refresh tokens
                └── Browser stores them, signs in the entry for the KB that answered,
-                   and constructs a SemiontSession
+                   and constructs a XynologSession
 
 2. Page mount with existing stored tokens (reload, new tab)
-   └── SemiontBrowser constructor reads activeKbId from storage
+   └── XynologBrowser constructor reads activeKbId from storage
        └── Kicks off setActiveKb(id), sessionActivating$ → true
-           └── SemiontSession constructs, validates token via /api/users/me
+           └── XynologSession constructs, validates token via /api/users/me
                ├── 200 → activeSession$.next(session), sessionActivating$ → false
                └── 401 → the token is renewed once at the issuer and asked about once more;
                          a session that cannot be renewed, or whose renewed token is
@@ -165,7 +165,7 @@ false) is how the layout knows to render the unauth view with a
                          onAuthFailed raises notifySessionEnded with why (see below)
 
 3. Out-of-band 401/403 from any HTTP / bus call
-   └── transport stamps unauthorized/forbidden → session.errors$ → SemiontBrowser
+   └── transport stamps unauthorized/forbidden → session.errors$ → XynologBrowser
        └── 401 → session.refresh(); a session that cannot be renewed raises notifySessionEnded
        └── 403 → the active session's SessionSignals (notifyPermissionDenied)
            └── Modal reads the flag via useObservable and surfaces
@@ -182,13 +182,13 @@ Sign-in happens at the issuer the knowledge base trusts — the Browser never
 takes a password. The flow:
 
 1. The person adds a KB in `KnowledgeBasePanel`, or re-authenticates one.
-2. `semiont.beginSignIn({ target, redirectUri })` discovers the KB's issuer
+2. `xynolog.beginSignIn({ target, redirectUri })` discovers the KB's issuer
    from its protected-resource metadata (RFC 9728), remembers the pending
    authorization, and returns the issuer URL; the panel assigns
    `window.location`.
 3. The issuer signs the person in and redirects to the Browser's callback
    page, `/:locale/auth/callback`.
-4. The callback page calls `semiont.completeSignIn(window.location.href)`,
+4. The callback page calls `xynolog.completeSignIn(window.location.href)`,
    which exchanges the authorization code (PKCE) for the access and refresh
    pair, asks the KB who it is, and signs in the entry for the KB that
    answered.
@@ -198,11 +198,11 @@ takes a password. The flow:
 Auth failures originate in the transport, which lives outside the React
 tree and cannot call hooks. The transport stamps each failure with a
 `TransportErrorCode` and republishes it on `session.errors$`. The
-`SemiontBrowser` singleton subscribes to the active session's error
+`XynologBrowser` singleton subscribes to the active session's error
 stream and routes failures to that session's `SessionSignals`:
 
 ```typescript
-// SemiontBrowser, on session activation (packages/typescript/sdk/src/session/semiont-browser.ts)
+// XynologBrowser, on session activation (packages/typescript/sdk/src/session/xynolog-browser.ts)
 declare const signals: SessionSignals; // the session's signals
 
 session.errors$.subscribe((err) => {
@@ -238,8 +238,8 @@ callback.
 
 ## Related
 
-- [SESSION.md (`@xynoplex/react-ui`)](../../../docs/builder/react-ui/SESSION.md)
+- [SESSION.md (`@xynolog/react-ui`)](../../../docs/builder/react-ui/SESSION.md)
   — class model, observables, invariants.
-- [EVENTS.md (`@xynoplex/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
+- [EVENTS.md (`@xynolog/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
   — bus architecture, channel routing.
 - [AUTHORIZATION.md](AUTHORIZATION.md) — permission model.

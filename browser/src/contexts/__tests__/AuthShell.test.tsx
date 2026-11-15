@@ -3,8 +3,8 @@
  *
  * AuthShell is the app's thin composition over the library's protected
  * error boundary and its three modals. The session state (KB list, active
- * KB, XynoplexSession) is owned by the module-scoped `XynoplexBrowser`
- * singleton and exposed via `<XynoplexProvider>` at the app root — AuthShell
+ * KB, XynologSession) is owned by the module-scoped `XynologBrowser`
+ * singleton and exposed via `<XynologProvider>` at the app root — AuthShell
  * mounts no session provider.
  *
  * Library mocks are passthroughs/markers — the goal is structure, not
@@ -17,8 +17,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
     ProtectedErrorBoundary: ({ children }: { children: React.ReactNode }) =>

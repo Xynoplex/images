@@ -24,13 +24,13 @@ from typing import Final, Self, final, override
 import pytest
 from aio import run
 from pydantic import JsonValue
-from xynoplex.errors import SemiontError, SignInError
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import GetAnnotationsResponse, StoredEventResponse
+from xynolog.errors import SignInError, XynologError
+from xynolog.identifiers import ResourceId
+from xynolog.types import GetAnnotationsResponse, StoredEventResponse
 
-from semiont_service.archivist import AnnotationsUnread, Archivist, Authorizes
-from semiont_service.content import Content, ContentUnread
-from semiont_service.follower import SYSTEM, RecordUnread
+from xynolog_service.archivist import AnnotationsUnread, Archivist, Authorizes
+from xynolog_service.content import Content, ContentUnread
+from xynolog_service.follower import SYSTEM, RecordUnread
 
 RESOURCE: Final = ResourceId("res-1")
 TOKEN: Final = "Bearer the-services-own-token"
@@ -108,7 +108,7 @@ class PlayedArchivist:
 class Account(Authorizes):
     """An account that signs in as a test said: with `TOKEN`, or not at all."""
 
-    def __init__(self, *, refused: SemiontError | None = None) -> None:
+    def __init__(self, *, refused: XynologError | None = None) -> None:
         self._refused: Final = refused
         self.asked = 0
 
@@ -225,7 +225,7 @@ def test_an_archivist_that_hangs_up_or_is_not_there_is_unread() -> None:
 @pytest.mark.parametrize("service", ["smelter", "librarian"])
 def test_an_account_that_cannot_sign_in_is_unread_names_the_service_and_the_archivist_is_asked_nothing(service: str) -> None:
     async def scenario() -> None:
-        refused = Account(refused=SignInError("exchange", f"Client-credentials grant for semiont-{service} failed (HTTP 401)"))
+        refused = Account(refused=SignInError("exchange", f"Client-credentials grant for xynolog-{service} failed (HTTP 401)"))
         async with (
             PlayedArchivist(Said()) as archivist,
             Archivist(service, host="127.0.0.1", port=archivist.port, account=refused) as content,
@@ -234,7 +234,7 @@ def test_an_account_that_cannot_sign_in_is_unread_names_the_service_and_the_arch
                 await content.read(RESOURCE)
             said = f"the bytes of res-1 were not asked for: the {service} could not sign in "
             assert str(failure.value).startswith(said)
-            assert f"Client-credentials grant for semiont-{service} failed (HTTP 401)" in str(failure.value)
+            assert f"Client-credentials grant for xynolog-{service} failed (HTTP 401)" in str(failure.value)
             assert archivist.asked == []
 
     run(scenario())
@@ -417,7 +417,7 @@ def test_a_record_the_archivist_does_not_answer_for_or_the_account_cannot_ask_fo
         assert unlisted.startswith("the Archivist did not answer for the streams of the record: ")
         unread_page = await record_unread(after_of(Said(hang_up=True), "res-1", 0))
         assert unread_page.startswith("the Archivist did not answer for the events of res-1: ")
-        refused = Account(refused=SignInError("exchange", "Client-credentials grant for semiont-weaver failed (HTTP 401)"))
+        refused = Account(refused=SignInError("exchange", "Client-credentials grant for xynolog-weaver failed (HTTP 401)"))
         async with (
             PlayedArchivist(Said()) as archivist,
             Archivist("weaver", host="127.0.0.1", port=archivist.port, account=refused) as record,

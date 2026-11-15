@@ -19,25 +19,25 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.http import SecretCredential, ServiceToken
-from xynoplex.identifiers import UserId
-from xynoplex.testing import FaultyTransport
-from xynoplex.types import GraphConfig, VectorsConfig
-from xynoplex.watched import Variable, Watched
-from semiont_graph.neo4j import Neo4jGraphReader
-from semiont_inference.ollama import OllamaInferenceClient
-from semiont_service.config import Refused
-from semiont_vectors.ollama import OllamaEmbeddingProvider
-from semiont_vectors.qdrant import QdrantVectorReader
-from semiont_vectors.voyage import VoyageEmbeddingProvider
 from test_config import DOCUMENT, ENGINE, VOYAGE, written
+from xynolog.http import SecretCredential, ServiceToken
+from xynolog.identifiers import UserId
+from xynolog.testing import FaultyTransport
+from xynolog.types import GraphConfig, VectorsConfig
+from xynolog.watched import Variable, Watched
+from xynolog_graph.neo4j import Neo4jGraphReader
+from xynolog_inference.ollama import OllamaInferenceClient
+from xynolog_service.config import Refused
+from xynolog_vectors.ollama import OllamaEmbeddingProvider
+from xynolog_vectors.qdrant import QdrantVectorReader
+from xynolog_vectors.voyage import VoyageEmbeddingProvider
 
-from semiont_librarian import service
-from semiont_librarian.service import CHANNELS, boot, health, main
+from xynolog_librarian import service
+from xynolog_librarian.service import CHANNELS, boot, health, main
 
 pytestmark = pytest.mark.usefixtures("the_log_as_it_was")
 
-ACCOUNT: Final = {"SEMIONT_OIDC_CLIENT_ID": "semiont-librarian", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+ACCOUNT: Final = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-librarian", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
 PASSWORD: Final = {"NEO4J_PASSWORD": "n30"}
 TOKEN: Final = {"QDRANT_TOKEN": "a-token"}
 STARTED: Final = {**ACCOUNT, **PASSWORD, **TOKEN}
@@ -67,7 +67,7 @@ def test_started_with_everything_it_boots_and_dials_nothing(tmp_path: Path) -> N
     started = boot(["--config", written(tmp_path)], STARTED)
     assert started.config.gateway_url == "http://127.0.0.1:1"
     assert started.credential == SecretCredential(
-        issuer="http://127.0.0.1:1/realms/semiont", client_id="semiont-librarian", client_secret="s3cret"
+        issuer="http://127.0.0.1:1/realms/xynolog", client_id="xynolog-librarian", client_secret="s3cret"
     )
     # The graph is reached by what only reads it, which is made and not connected: nothing at that address was asked anything.
     assert isinstance(started.graph, Neo4jGraphReader)
@@ -172,10 +172,10 @@ def test_the_document_is_settled_before_the_account_and_the_account_before_each_
     assert refusal(["--config", written(tmp_path, without("vectors"))], {}).endswith("  Missing required property: vectors")
     keyed = written(tmp_path, KEYED)
     assert refusal(["--config", keyed], {}) == (
-        "SEMIONT_OIDC_CLIENT_ID is not set in the librarian's environment: a librarian signs in as a service account"
+        "XYNOLOG_OIDC_CLIENT_ID is not set in the librarian's environment: a librarian signs in as a service account"
     )
-    assert refusal(["--config", keyed], {"SEMIONT_OIDC_CLIENT_ID": "semiont-librarian", "SEMIONT_OIDC_CLIENT_SECRET": ""}) == (
-        "SEMIONT_OIDC_CLIENT_SECRET is not set in the librarian's environment: a librarian signs in as a service account"
+    assert refusal(["--config", keyed], {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-librarian", "XYNOLOG_OIDC_CLIENT_SECRET": ""}) == (
+        "XYNOLOG_OIDC_CLIENT_SECRET is not set in the librarian's environment: a librarian signs in as a service account"
     )
     # Then the graph database's password, the embedding provider's key, the vector index's token, the Matcher's key and the Gatherer's.
     environment = dict(ACCOUNT)
@@ -240,7 +240,7 @@ def test_a_model_whose_facts_are_a_catalogue_s_is_refused_by_the_member_without_
 def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["semiont_librarian", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_librarian", "--config", written(tmp_path)])
     for name in ACCOUNT:
         monkeypatch.delenv(name, raising=False)
 
@@ -248,7 +248,7 @@ def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
 
     said = capsys.readouterr()
     assert said.out == ""
-    unset = "SEMIONT_OIDC_CLIENT_ID is not set in the librarian's environment"
+    unset = "XYNOLOG_OIDC_CLIENT_ID is not set in the librarian's environment"
     assert said.err == f"[fatal] {unset}: a librarian signs in as a service account\n"
 
 
@@ -291,7 +291,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     @final
     class SignedIn:
         def __init__(self, gateway: str, *, service: ServiceToken) -> None:
-            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:semiont-librarian")
+            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:xynolog-librarian")
             self.token: Final[Watched[str | None]] = Variable[str | None]("issued")
 
         async def refresh(self) -> str | None:
@@ -348,7 +348,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     monkeypatch.setattr(service, "HttpTransport", Stream)
     monkeypatch.setattr(service, "create_graph_reader", read_graph)
     monkeypatch.setattr(service, "create_vector_reader", read_index)
-    monkeypatch.setattr(sys, "argv", ["semiont_librarian", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_librarian", "--config", written(tmp_path)])
     for name, value in {**STARTED, "OTEL_SDK_DISABLED": "true"}.items():
         monkeypatch.setenv(name, value)
 

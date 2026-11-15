@@ -14,10 +14,10 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.types import WorkerConfig
-from semiont_service.config import Refused
+from xynolog.types import WorkerConfig
+from xynolog_service.config import Refused
 
-from semiont_worker.config import api_key_of, served_once
+from xynolog_worker.config import api_key_of, served_once
 
 DOCUMENT_ENGINE: Final[dict[str, JsonValue]] = {
     "engine": {"provider": "ollama", "model": "m"},
@@ -28,7 +28,7 @@ DOCUMENT_ENGINE: Final[dict[str, JsonValue]] = {
 FIRST: Final[dict[str, JsonValue]] = {
     "domain": "first.example",
     "gatewayUrl": "http://gateway:4000",
-    "identity": {"issuer": "http://issuer:8080/realms/semiont", "clientId": "semiont-worker"},
+    "identity": {"issuer": "http://issuer:8080/realms/xynolog", "clientId": "xynolog-worker"},
     "engines": [
         {
             "engine": {"provider": "anthropic", "model": "claude-test"},
@@ -56,7 +56,7 @@ SECOND: Final[dict[str, JsonValue]] = {
 
 DOCUMENT: Final[dict[str, JsonValue]] = {
     "knowledgeBases": [FIRST, SECOND],
-    "modelCatalogue": "/usr/share/semiont/model-catalogue.json",
+    "modelCatalogue": "/usr/share/xynolog/model-catalogue.json",
     "port": 24100,
     "logLevel": "info",
     "logFormat": "json",
@@ -76,7 +76,7 @@ def test_a_document_names_each_knowledge_base_with_its_gateway_its_account_and_t
         (each.domain, each.gateway_url, each.identity.issuer, each.identity.client_id, [entry.engine.model for entry in each.engines])
         for each in read.knowledge_bases
     ] == [
-        ("first.example", "http://gateway:4000", "http://issuer:8080/realms/semiont", "semiont-worker", ["claude-test", "m"]),
+        ("first.example", "http://gateway:4000", "http://issuer:8080/realms/xynolog", "xynolog-worker", ["claude-test", "m"]),
         ("second.example", "https://second.example", "https://second.example/oauth", "worker-of-a-participant", ["claude-other"]),
     ]
 

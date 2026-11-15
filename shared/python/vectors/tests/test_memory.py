@@ -14,11 +14,11 @@ from typing import final, override
 import pytest
 from aio import run
 from pydantic import JsonValue
-from xynoplex.identifiers import ResourceId
 from store_contract import StoreContract
+from xynolog.identifiers import ResourceId
 
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.store import EmbeddingChunk, SearchOptions, VectorSearchResult, VectorStore
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.store import EmbeddingChunk, SearchOptions, VectorSearchResult, VectorStore
 
 
 @final

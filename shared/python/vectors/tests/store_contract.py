@@ -24,10 +24,10 @@ from typing import Final
 import pytest
 from aio import run
 from pydantic import JsonValue
-from xynoplex.identifiers import AnnotationId, ResourceId
 from spec import SPEC, JsonObject, objects, read, strings, text, thing
+from xynolog.identifiers import AnnotationId, ResourceId
 
-from semiont_vectors.store import (
+from xynolog_vectors.store import (
     AnnotationPayload,
     AnnotationStamp,
     Declined,

@@ -36,7 +36,7 @@ This is **Tier 1 of the three-tier observability stack** —
 correlation-ID discipline at the transport contract layer. Tier 2
 (OpenTelemetry spans) and Tier 3 (metrics + log correlation) reuse the
 same choke points;
-[`@xynoplex/observability`](../../../packages/typescript/observability/README.md)
+[`@xynolog/observability`](../../../packages/typescript/observability/README.md)
 lists the three.
 
 ## Choke points
@@ -68,7 +68,7 @@ transports log at the same points, in the same form.
 Run-time toggle in DevTools or e2e init script:
 
 ```js
-window.__SEMIONT_BUS_LOG__ = true;
+window.__XYNOLOG_BUS_LOG__ = true;
 ```
 
 Clears on refresh.
@@ -80,7 +80,7 @@ Node at module load, in Rust and Python when the first line would be
 written):
 
 ```bash
-SEMIONT_BUS_LOG=1 <command>
+XYNOLOG_BUS_LOG=1 <command>
 ```
 
 Where the lines go depends on what the process is written in. A Node
@@ -91,7 +91,7 @@ stdout.
 
 The gateway runs in a container, so the variable has to reach the
 container — and the launcher passes a container only the variables its
-config references, so `SEMIONT_BUS_LOG=1 xynolog start` does not. The
+config references, so `XYNOLOG_BUS_LOG=1 xynolog start` does not. The
 launcher has no option to set it.
 
 ## A typical full-trace timeline

@@ -28,9 +28,10 @@ from rig import (
     sent,
     view,
 )
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.types import (
+from spec import JsonObject, objects, thing
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.types import (
     Annotation,
     GatheredContext,
     GatherResourceRequest,
@@ -38,17 +39,16 @@ from xynoplex.types import (
     ResourceDescriptor,
     ResourceView,
 )
-from semiont_graph.interface import GraphConnection
-from semiont_service.content import Content
-from semiont_vectors.store import CollectionAbsent, ResourceStamp, SearchFilter, SearchOptions, VectorSearchResult
-from spec import JsonObject, objects, thing
+from xynolog_graph.interface import GraphConnection
+from xynolog_service.content import Content
+from xynolog_vectors.store import CollectionAbsent, ResourceStamp, SearchFilter, SearchOptions, VectorSearchResult
 
-from semiont_librarian.annotation_gather import Ungathered
-from semiont_librarian.knowledge_graph import RESOURCE_CEILING, DepthRefused
-from semiont_librarian.prompts import reference_suggestions_prompt, resource_summary_prompt
-from semiont_librarian.reads import Settled
-from semiont_librarian.replies import SUGGESTION_ELEMENT
-from semiont_librarian.resource_gather import gather
+from xynolog_librarian.annotation_gather import Ungathered
+from xynolog_librarian.knowledge_graph import RESOURCE_CEILING, DepthRefused
+from xynolog_librarian.prompts import reference_suggestions_prompt, resource_summary_prompt
+from xynolog_librarian.reads import Settled
+from xynolog_librarian.replies import SUGGESTION_ELEMENT
+from xynolog_librarian.resource_gather import gather
 
 QUAY: Final = ResourceId("res-quay")
 FERRY: Final = ResourceId("res-ferry")
@@ -480,7 +480,7 @@ def test_an_index_that_does_not_settle_within_the_bound_is_logged_and_counted_an
         assert len(world.vectors.asked) == 1
         return context
 
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         context = run(scenario())
 
     assert "semanticContext" not in written(context)

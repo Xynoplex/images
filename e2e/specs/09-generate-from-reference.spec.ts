@@ -109,7 +109,7 @@ test.describe('generate from unresolved reference', () => {
       // unresolved render ❓ (clickable in annotate mode to open the
       // wizard).
       const candidate = page.getByRole('main')
-        .locator('button.semiont-reference-icon')
+        .locator('button.xynolog-reference-icon')
         .filter({ hasText: '❓' })
         .first();
 
@@ -137,9 +137,9 @@ test.describe('generate from unresolved reference', () => {
     // HeadlessUI's `Dialog` wrapper renders with `data-headlessui-state`
     // toggling between `closed`/`open`, but Playwright's `getByRole('dialog')`
     // visibility check trips on the transition state. Scope to the
-    // wizard's panel class (`semiont-search-modal__panel`) which only
+    // wizard's panel class (`xynolog-search-modal__panel`) which only
     // mounts when the dialog content is fully rendered.
-    const wizard = page.locator('.semiont-search-modal__panel');
+    const wizard = page.locator('.xynolog-search-modal__panel');
     await expect(wizard).toBeAttached({ timeout: 10_000 });
 
     // The gather step renders three options: "🔍 Search…", "✨ Generate…",

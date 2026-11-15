@@ -148,8 +148,8 @@ for (const service of SERVICES) {
   }
 
   // ── 2. provision ──────────────────────────────────────────────────────────
-  // A knowledge base's container is named semiont-<its did key>-<service>.
-  const named = new RegExp(`--name semiont-\\S+-${service.name} `);
+  // A knowledge base's container is named xynolog-<its did key>-<service>.
+  const named = new RegExp(`--name xynolog-\\S+-${service.name} `);
   const line = goldenLines.find((l) => named.test(l));
   if (!line) fail(`${BOOT_GOLDEN} has no line running the ${service.name}'s container`);
   // Passed either with its value (`--env NAME=value`) or, for a secret, by name alone: the value

@@ -64,7 +64,7 @@ fn sequence_of(event: &Object) -> Option<u64> {
 impl Log {
     pub fn new(root: &Path) -> Log {
         Log {
-            events_dir: root.join(".semiont").join("events"),
+            events_dir: root.join(".xynolog").join("events"),
             positions: HashMap::new(),
         }
     }
@@ -370,12 +370,12 @@ impl Log {
 #[cfg(test)]
 mod tests {
     use super::{Log, file_name};
-    use xynoplex::channels::{Channel, MarkArchived, MarkUnarchived};
     use serde_json::{Map, json};
+    use xynolog::channels::{Channel, MarkArchived, MarkUnarchived};
 
     #[test]
     fn a_line_is_an_event_only_when_it_states_its_type() {
-        let root = std::env::temp_dir().join(format!("semiont-log-{}", uuid::Uuid::new_v4()));
+        let root = std::env::temp_dir().join(format!("xynolog-log-{}", uuid::Uuid::new_v4()));
         let mut log = Log::new(&root);
         let stream = "a-stream";
         let dir = log.stream_dir(stream).expect("a stream is filed by its id");
@@ -415,7 +415,7 @@ mod tests {
 
     #[test]
     fn a_stream_is_read_from_a_sequence_across_its_files_and_stands_at_its_last_event() {
-        let root = std::env::temp_dir().join(format!("semiont-log-{}", uuid::Uuid::new_v4()));
+        let root = std::env::temp_dir().join(format!("xynolog-log-{}", uuid::Uuid::new_v4()));
         let log = Log::new(&root);
         let stream = "a-long-stream";
         let dir = log.stream_dir(stream).expect("a stream is filed by its id");

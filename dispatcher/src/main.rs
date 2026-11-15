@@ -13,30 +13,30 @@ use axum::response::IntoResponse;
 use axum::routing::any;
 use futures::StreamExt;
 use opentelemetry::KeyValue;
-use xynoplex::bus::{Bus, payload_of, reply_channels_for};
-use xynoplex::channels::{
-    BrowseEntityTypesRequested, BrowseTagSchemasRequested, Channel, JobQueued, Request,
-};
-use xynoplex::errors::relayed_failure_code;
-use xynoplex::identity::kb_did;
-use xynoplex::timing::BUS_REQUEST_TIMEOUT;
-use xynoplex::transport::{Envelope, Transport};
-use xynoplex::types::{BrowseEntityTypesRequest, BrowseTagSchemasRequest, BusFrame, TagSchema};
-use semiont_core::config::{self, Document};
-use semiont_core::types::{
-    DispatcherConfig, DispatcherHealth, DispatcherHealthQueue, DispatcherHealthStatus,
-};
-use semiont_dispatcher_handlers::admission::{Refusal, Vocabulary};
-use semiont_dispatcher_handlers::handlers::{COMMANDS, Handlers, Reply};
-use semiont_dispatcher_handlers::queue::{JobQueue, Stats};
-use semiont_dispatcher_jetstream::{JetStreamQueue, Settings};
-use xynoplex_http_transport::agent::AgentToken;
-use xynoplex_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
-use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
-use semiont_observability::{logging, telemetry};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
+use xynolog::bus::{Bus, payload_of, reply_channels_for};
+use xynolog::channels::{
+    BrowseEntityTypesRequested, BrowseTagSchemasRequested, Channel, JobQueued, Request,
+};
+use xynolog::errors::relayed_failure_code;
+use xynolog::identity::kb_did;
+use xynolog::timing::BUS_REQUEST_TIMEOUT;
+use xynolog::transport::{Envelope, Transport};
+use xynolog::types::{BrowseEntityTypesRequest, BrowseTagSchemasRequest, BusFrame, TagSchema};
+use xynolog_core::config::{self, Document};
+use xynolog_core::types::{
+    DispatcherConfig, DispatcherHealth, DispatcherHealthQueue, DispatcherHealthStatus,
+};
+use xynolog_dispatcher_handlers::admission::{Refusal, Vocabulary};
+use xynolog_dispatcher_handlers::handlers::{COMMANDS, Handlers, Reply};
+use xynolog_dispatcher_handlers::queue::{JobQueue, Stats};
+use xynolog_dispatcher_jetstream::{JetStreamQueue, Settings};
+use xynolog_http_transport::agent::AgentToken;
+use xynolog_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
+use xynolog_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynolog_observability::{logging, telemetry};
 
 #[global_allocator]
 static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
@@ -84,8 +84,8 @@ fn boot() -> Result<(), String> {
     };
     logging::initialize(document.log_level, document.log_format);
     telemetry::initialize(
-        "semiont-dispatcher",
-        semiont_core::spec::VERSION,
+        "xynolog-dispatcher",
+        xynolog_core::spec::VERSION,
         Some(&kb_did(&document.kb.domain)),
     )?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
@@ -213,7 +213,7 @@ async fn serve(
             // In the trace the frame arrived in, so the replies are too.
             tokio::spawn(async move {
                 let trace = frame.trace.clone();
-                xynoplex_telemetry::continuing(trace.as_ref(), async {
+                xynolog_telemetry::continuing(trace.as_ref(), async {
                     let command = BusFrame {
                         channel: frame.channel,
                         correlation_id: frame.correlation_id,
@@ -309,7 +309,7 @@ impl Vocabulary for BusReads {
     }
 }
 
-/// `semiont.job.queue.size`, one observation per status, when the process
+/// `xynolog.job.queue.size`, one observation per status, when the process
 /// exports. The export reads the last count, taken every tick.
 fn observe_queue_size(queue: Arc<JetStreamQueue>, every: Duration) {
     let Some(meter) = telemetry::meter() else {
@@ -318,7 +318,7 @@ fn observe_queue_size(queue: Arc<JetStreamQueue>, every: Duration) {
     let latest: Arc<Mutex<Option<Stats>>> = Arc::new(Mutex::new(None));
     let observed = latest.clone();
     meter
-        .u64_observable_gauge("semiont.job.queue.size")
+        .u64_observable_gauge("xynolog.job.queue.size")
         .with_description("Job queue size by status")
         .with_callback(move |observer| {
             let Some(stats) = *observed.lock().unwrap_or_else(|p| p.into_inner()) else {

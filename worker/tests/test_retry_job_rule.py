@@ -8,10 +8,10 @@ from typing import Final
 
 import pytest
 from pydantic import BaseModel
-from xynoplex.retry import RETRY_RULES, RetryFacts
 from spec import SPEC
+from xynolog.retry import RETRY_RULES, RetryFacts
 
-from semiont_worker.failure_class import JOB
+from xynolog_worker.failure_class import JOB
 
 
 class Row(BaseModel, frozen=True, extra="forbid", strict=True):

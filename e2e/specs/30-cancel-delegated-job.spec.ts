@@ -62,7 +62,7 @@ test.describe('cancelling a delegated job', () => {
     if ((await delegateToggle.getAttribute('aria-expanded')) !== 'true') await delegateToggle.click();
 
     const conceptChip = page
-      .locator('.semiont-delegate-widget__chips .semiont-chip--selectable')
+      .locator('.xynolog-delegate-widget__chips .xynolog-chip--selectable')
       .filter({ hasText: /concept/i });
     await expect(conceptChip).toBeVisible({ timeout: 10_000 });
     await conceptChip.click();
@@ -74,15 +74,15 @@ test.describe('cancelling a delegated job', () => {
     await submitBtn.click();
     await bus.expectRequestResponse('job:create', 'job:created', 30_000);
 
-    const control = page.locator('[data-testid="semiont-delegate-control"]');
-    const status = page.locator('[data-testid="semiont-delegate-status"]');
-    const fill = page.locator('.semiont-delegate-progress .semiont-progress-bar__fill');
+    const control = page.locator('[data-testid="xynolog-delegate-control"]');
+    const status = page.locator('[data-testid="xynolog-delegate-status"]');
+    const fill = page.locator('.xynolog-delegate-progress .xynolog-progress-bar__fill');
 
     // The control is there once the queue has named the job. The subject line
     // ("Entity type: Concept") comes with the job's first report: from then on
     // the job is running, on the first of many pieces.
     await expect(control).toHaveAccessibleName('Cancel', { timeout: 30_000 });
-    await expect(page.locator('[data-testid="semiont-delegate-subject"]')).toBeVisible({ timeout: 300_000 });
+    await expect(page.locator('[data-testid="xynolog-delegate-subject"]')).toBeVisible({ timeout: 300_000 });
 
     bus.clear();
     await control.click();

@@ -19,11 +19,11 @@ from opentelemetry import trace
 from opentelemetry.sdk.trace import ReadableSpan
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from opentelemetry.trace import SpanKind, StatusCode
-from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredResponse
-from semiont_inference.mock import MockInferenceClient
 from telemetry_rows import as_the_table_writes, worker_spans
+from xynolog_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredResponse
+from xynolog_inference.mock import MockInferenceClient
 
-from semiont_worker.inference_call import (
+from xynolog_worker.inference_call import (
     INFERENCE_HEARTBEAT_SECONDS,
     INFERENCE_TIMEOUT_SECONDS,
     InferenceTimeoutError,
@@ -106,7 +106,7 @@ BOTH: Final = pytest.mark.parametrize("bounded", [text, structured], ids=["text"
 
 
 def warnings_of(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.levelno == logging.WARNING]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno == logging.WARNING]
 
 
 # ── the answer ──────────────────────────────────────────────────────────
@@ -288,8 +288,8 @@ def test_each_call_is_a_span_the_table_lists_of_its_kind_and_with_its_attributes
     # The provider is asked inside the span: what a driver records of the request is a part of it.
     assert [client.asked_inside for client in clients] == [["inference:text"], ["inference:structured"]]
     assert [dict(span.attributes or {}) for span in spans] == [
-        {"semiont.kb": KB, "inference.provider": "ollama", "inference.model": "bound-model", "inference.max_tokens": 100},
-        {"semiont.kb": KB, "inference.provider": "ollama", "inference.model": "bound-model", "inference.max_tokens": 4242},
+        {"xynolog.kb": KB, "inference.provider": "ollama", "inference.model": "bound-model", "inference.max_tokens": 100},
+        {"xynolog.kb": KB, "inference.provider": "ollama", "inference.model": "bound-model", "inference.max_tokens": 4242},
     ]
     for span in spans:
         row = listed[span.name]
@@ -335,7 +335,7 @@ def test_the_bound_ending_a_call_is_logged_once_with_what_it_ended_and_its_bound
         with pytest.raises(InferenceTimeoutError):
             await call
 
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     run(scenario())
     (warned,) = warnings_of(caplog)
     assert warned.getMessage() == "Aborting in-flight inference call at the timeout bound"
@@ -357,6 +357,6 @@ def test_nothing_is_logged_of_a_call_answered_in_time_or_of_one_its_caller_cance
         call.cancel()
         await asyncio.gather(call, return_exceptions=True)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     run(scenario())
-    assert [record for record in caplog.records if record.name == "semiont_worker"] == []
+    assert [record for record in caplog.records if record.name == "xynolog_worker"] == []

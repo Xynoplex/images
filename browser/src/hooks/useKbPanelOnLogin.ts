@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import type { XynoplexBrowser } from '@xynoplex/sdk';
+import type { XynologBrowser } from '@xynolog/sdk';
 
 /**
  * A newly live session opens the Knowledge Base panel.
@@ -24,7 +24,7 @@ import type { XynoplexBrowser } from '@xynoplex/sdk';
  *
  * @emits panel:open - Open the knowledge-base panel on the transition to signed in. Payload: { panel: 'knowledge-base' }
  */
-export function useKbPanelOnLogin(signedIn: boolean, browser: XynoplexBrowser): void {
+export function useKbPanelOnLogin(signedIn: boolean, browser: XynologBrowser): void {
   const wasSignedIn = useRef(false);
   useEffect(() => {
     if (signedIn && !wasSignedIn.current) browser.emit('panel:open', { panel: 'knowledge-base' });

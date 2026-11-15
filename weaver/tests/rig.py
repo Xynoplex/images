@@ -17,20 +17,20 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.testing import FaultyTransport
-from xynoplex.transport import Frame
-from xynoplex.types import GetAnnotationsResponse, StoredEventResponse
-from semiont_graph.interface import ResourceQuery
-from semiont_graph.memory import MemoryGraphDatabase
-from semiont_service.archivist import AnnotationReads
-from semiont_service.follower import Cursors, Record, RecordUnread
 from spec import JsonObject
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.testing import FaultyTransport
+from xynolog.transport import Frame
+from xynolog.types import GetAnnotationsResponse, StoredEventResponse
+from xynolog_graph.interface import ResourceQuery
+from xynolog_graph.memory import MemoryGraphDatabase
+from xynolog_service.archivist import AnnotationReads
+from xynolog_service.follower import Cursors, Record, RecordUnread
 
-from semiont_weaver.fold import apply
-from semiont_weaver.service import CHANNELS
-from semiont_weaver.weaver import Weaver
+from xynolog_weaver.fold import apply
+from xynolog_weaver.service import CHANNELS
+from xynolog_weaver.weaver import Weaver
 
 
 def event(kind: str, resource: str | None, sequence: int, payload: JsonObject, *, at: str = "2020-03-04T05:06:07.000Z") -> JsonObject:

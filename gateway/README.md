@@ -1,17 +1,17 @@
-# semiont-gateway
+# xynolog-gateway
 
-**The HTTP entry point to a Semiont knowledge base**: the one address clients and sidecar
+**The HTTP entry point to a Xynolog knowledge base**: the one address clients and sidecar
 services dial. It is a Rust binary built against [`protocol/specs/`](../protocol/specs/src/openapi.json),
 which is compiled into it, and it serves on port 4000. The launcher starts it, as the
-`semiont-<kb>-gateway` container, with the rest of the stack (`semiont start`). `<kb>` is the
+`xynolog-<kb>-gateway` container, with the rest of the stack (`xynolog start`). `<kb>` is the
 knowledge base's did:web domain made safe for a name
 ([the launcher's names](../../docs/operator/services/OVERVIEW.md#the-launchers-names)).
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-gateway` |
+| Image | `ghcr.io/xynolog/xynolog-gateway` |
 | Port | 4000 |
-| Command | `/usr/local/bin/semiont-gateway --config /etc/semiont/gateway.json` |
+| Command | `/usr/local/bin/xynolog-gateway --config /etc/xynolog/gateway.json` |
 | Code | Rust, in this directory: [src](src) |
 | Specification | the OpenAPI spec, [protocol/specs/src/openapi.json](../protocol/specs/src/openapi.json) |
 | Judged by | [protocol/conformance/gateway](../protocol/conformance/gateway/README.md) |
@@ -75,26 +75,26 @@ downstream.
 
 ## When it starts
 
-For the gateway, `semiont start` resolves to roughly this:
+For the gateway, `xynolog start` resolves to roughly this:
 
 ```
-container run -d --name semiont-<kb>-gateway \
+container run -d --name xynolog-<kb>-gateway \
   --publish 4000:4000 \
   --memory <limit> \
-  --volume <config-stage>/gateway.json:/etc/semiont/gateway.json:ro \
-  --volume <state>:/semiont-state \
-  --env SEMIONT_OIDC_CLIENT_ID=semiont-gateway \
-  --env SEMIONT_OIDC_CLIENT_SECRET=<secret> \
+  --volume <config-stage>/gateway.json:/etc/xynolog/gateway.json:ro \
+  --volume <state>:/xynolog-state \
+  --env XYNOLOG_OIDC_CLIENT_ID=xynolog-gateway \
+  --env XYNOLOG_OIDC_CLIENT_SECRET=<secret> \
   --env JWT_SECRET=<key> \
-  --env SEMIONT_SUPERVISE=1 \
-  ghcr.io/xynoplex/xynoplex-gateway:latest
+  --env XYNOLOG_SUPERVISE=1 \
+  ghcr.io/xynolog/xynolog-gateway:latest
 ```
 
 The state volume holds only the supervisor's events log; the gateway itself writes nothing to
 disk. There is no KB volume.
 
 `tini` is PID 1 and execs the shared `boot.sh`, which execs the image CMD,
-`/usr/local/bin/semiont-gateway`: directly when `SEMIONT_SUPERVISE` is unset, so the container
+`/usr/local/bin/xynolog-gateway`: directly when `XYNOLOG_SUPERVISE` is unset, so the container
 exits when the server dies; under the shared supervisor when the launcher sets it, for local
 runs. `tini` forwards `SIGTERM` either way.
 
@@ -118,7 +118,7 @@ frames reach the broker, export what telemetry is buffered, and exit.
 One document: a JSON `GatewayConfig`
 ([schema](../protocol/specs/src/components/schemas/GatewayConfig.json)) at the path its `--config`
 flag names, bind-mounted read-only. Without `--config`, the gateway refuses to start; the
-image passes `/etc/semiont/gateway.json`, where the launcher mounts the document. The
+image passes `/etc/xynolog/gateway.json`, where the launcher mounts the document. The
 launcher writes it from the knowledge base's stack documents and its committed identity:
 
 - every address in it is a literal;
@@ -134,7 +134,7 @@ failing field by its JSON pointer.
   "kb": { "name": "My KB", "domain": "example.github.io:my-kb" },
   "port": 4000,
   "publicUrl": "http://localhost:4000",
-  "identity": { "issuer": "http://keycloak:8080/realms/semiont", "subjectClaim": "sub" },
+  "identity": { "issuer": "http://keycloak:8080/realms/xynolog", "subjectClaim": "sub" },
   "archivist": { "host": "archivist", "port": 24103 },
   "signal": { "type": "nats", "servers": "nats:4222" },
   "logLevel": "info",
@@ -152,7 +152,7 @@ connection.
 **Secrets are never in it.** The gateway's own are environment variables, each required:
 
 - `JWT_SECRET`, its token-signing key, at least 32 characters
-- `SEMIONT_OIDC_CLIENT_ID` and `SEMIONT_OIDC_CLIENT_SECRET`, its own service account at the
+- `XYNOLOG_OIDC_CLIENT_ID` and `XYNOLOG_OIDC_CLIENT_SECRET`, its own service account at the
   knowledge base's issuer
 
 A broker credential is named by the variable holding it (`signal.userEnv`,
@@ -166,7 +166,7 @@ runtime would otherwise read.
 
 ## What the image carries
 
-The binary, at `/usr/local/bin/semiont-gateway`, with the spec compiled into it; `tini`; and
+The binary, at `/usr/local/bin/xynolog-gateway`, with the spec compiled into it; `tini`; and
 the shared `boot.sh` and supervisor. It carries no source, and nothing is built, installed or
 fetched at start.
 
@@ -181,7 +181,7 @@ The gateway is a member of the repository's Rust workspace, whose root is `packa
 cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace                 # every crate's tests, the gateway's among them
-cargo build --release -p semiont-gateway   # target/release/semiont-gateway
+cargo build --release -p xynolog-gateway   # target/release/xynolog-gateway
 ```
 
 The gateway's behavioural contract is the black-box
@@ -197,7 +197,7 @@ From the repository root, with the toolchain
 
 ```bash
 docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.sh) \
-  --file gateway/Dockerfile --tag ghcr.io/xynoplex/xynoplex-gateway:local .
+  --file gateway/Dockerfile --tag ghcr.io/xynolog/xynolog-gateway:local .
 ```
 
 [`make build`](../Makefile) and the publish workflow pass

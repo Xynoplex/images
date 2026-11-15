@@ -21,7 +21,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import type { LinkComponentProps } from '@xynoplex/react-ui';
+import type { LinkComponentProps } from '@xynolog/react-ui';
 
 let mockedParamsId: string | undefined = 'A';
 
@@ -82,14 +82,14 @@ const harness = vi.hoisted(() => {
   return { session$, makeSession, browser: { activeSession$: session$ } };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>(
-    '@xynoplex/react-ui',
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>(
+    '@xynolog/react-ui',
   );
   const { of } = await vi.importActual<typeof import('rxjs')>('rxjs');
   return {
     ...actual,
-    useXynoplex: () => harness.browser,
+    useXynolog: () => harness.browser,
     createResourceLoaderStateUnit: (session: ReturnType<typeof harness.makeSession> | null, rId: string) => {
       vmFactoryCalls.push(rId);
       vmFactoryClients.push(session?.client?.tag ?? 'none');

@@ -1,5 +1,5 @@
 //! What a knowledge base says of itself: its committed project file,
-//! `.semiont/config.yaml`, held to `protocol/specs/src/kb-identity/ProjectConfig.json`.
+//! `.xynolog/config.yaml`, held to `protocol/specs/src/kb-identity/ProjectConfig.json`.
 
 use serde_json::Value;
 use std::path::Path;
@@ -25,7 +25,7 @@ pub struct Committed {
 /// its schema is refused, each place named; a tree without one is named by its
 /// directory, and declares no identity.
 pub fn committed(root: &Path) -> Result<Committed, String> {
-    let yaml = root.join(".semiont").join("config.yaml");
+    let yaml = root.join(".xynolog").join("config.yaml");
     match std::fs::read_to_string(&yaml) {
         Ok(text) => from_yaml(&yaml, &text),
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Committed {
@@ -89,9 +89,9 @@ mod tests {
         let root = std::env::temp_dir()
             .join(format!("kb-{}", uuid::Uuid::new_v4()))
             .join(dir);
-        std::fs::create_dir_all(root.join(".semiont")).unwrap();
+        std::fs::create_dir_all(root.join(".xynolog")).unwrap();
         if let Some(text) = config {
-            std::fs::write(root.join(".semiont").join("config.yaml"), text).unwrap();
+            std::fs::write(root.join(".xynolog").join("config.yaml"), text).unwrap();
         }
         root
     }

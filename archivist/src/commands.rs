@@ -4,7 +4,8 @@
 use crate::archivist::{
     Archivist, CloneToken, Refusal, event, locked, primary_representation, text,
 };
-use xynoplex::channels::{
+use serde_json::{Value, json};
+use xynolog::channels::{
     Channel, FrameAddEntityType, FrameAddTagSchema, FrameEntityTypeAdded, FrameTagSchemaAdded,
     JobAssign, JobAssigned, JobComplete, JobCompleted, JobFailed, JobStart, JobStarted, MarkAdded,
     MarkArchive, MarkArchived, MarkBodyUpdated, MarkCommit, MarkCreateRequest, MarkDelete,
@@ -13,11 +14,10 @@ use xynoplex::channels::{
     YieldClonePersist, YieldCloneResourceRequested, YieldCloneTokenRequested, YieldCloned,
     YieldCreate, YieldCreated, YieldUpdate, YieldUpdated,
 };
-use xynoplex::media_types::{AnchoringModel, capabilities_of};
-use xynoplex::roles::WORKER_ROLE;
-use semiont_archivist_record::agents::{Attribution, attribution};
-use semiont_archivist_record::{Object, ids, log};
-use serde_json::{Value, json};
+use xynolog::media_types::{AnchoringModel, capabilities_of};
+use xynolog::roles::WORKER_ROLE;
+use xynolog_archivist_record::agents::{Attribution, attribution};
+use xynolog_archivist_record::{Object, ids, log};
 
 type Answered = Result<Value, Refusal>;
 
@@ -242,7 +242,7 @@ pub async fn yield_create(archivist: &Archivist, command: &Object, resource_id: 
         if let Err(refusal) =
             archivist.append(event(MarkBodyUpdated::NAME, Some(resource), user, link))
         {
-            semiont_observability::logging::warn(
+            xynolog_observability::logging::warn(
                 "A generated resource was not linked from its annotation",
                 json!({ "component": "archivist", "resourceId": resource_id, "annotationId": annotation, "error": refusal.message }),
             );
@@ -656,7 +656,7 @@ pub async fn job(archivist: &Archivist, channel: &str, command: &Object) -> Answ
         && let Some(recorded) = recorded_verb(archivist, resource_id, job_id)?
         && command.get("jobType") != Some(&recorded)
     {
-        semiont_observability::logging::warn(
+        xynolog_observability::logging::warn(
             "job:complete of another verb than the job's",
             json!({
                 "component": "stower",

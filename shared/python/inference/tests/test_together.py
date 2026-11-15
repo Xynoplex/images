@@ -37,7 +37,7 @@ from provider_together import Completed, Together, choice, completed, counted, l
 from pydantic import JsonValue, TypeAdapter
 from spec import PACKAGE, SPEC, JsonObject, objects, read, strings, text, thing
 
-from semiont_inference.catalogue import (
+from xynolog_inference.catalogue import (
     BudgetTokensOption,
     CatalogueFacts,
     CatalogueLimit,
@@ -48,7 +48,7 @@ from semiont_inference.catalogue import (
     catalogue_facts,
     read_catalogue,
 )
-from semiont_inference.interface import (
+from xynolog_inference.interface import (
     InferenceClient,
     InferenceLimits,
     InferenceResponse,
@@ -58,7 +58,7 @@ from semiont_inference.interface import (
     StructuredUnsupportedError,
     TokenUsage,
 )
-from semiont_inference.together import TogetherInferenceClient
+from xynolog_inference.together import TogetherInferenceClient
 
 KEY = "key-played"
 MODEL = "acme/Model-X"
@@ -150,7 +150,7 @@ async def generation(client: TogetherInferenceClient, structured: bool) -> Infer
 
 
 def ours(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference"]
+    return [record for record in caplog.records if record.name == "xynolog_inference"]
 
 
 def at(level: int, caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
@@ -183,7 +183,7 @@ def test_it_learns_the_models_window_from_the_model_list_once_and_keeps_it(caplo
             # The whole list, which is the one thing the API can be asked: there is no request for one model.
             assert [f"{asked.method} {asked.path}" for asked in played.asked] == ["GET /v1/models"]
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     assert ours(caplog) == []
 
@@ -264,7 +264,7 @@ def test_where_the_list_states_no_context_length_the_window_is_the_catalogues_an
             assert await client.limits() == ceilings(131_072, 16_384)
             assert len(played.lists) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (warned,) = ours(caplog)
     assert (warned.levelname, warned.getMessage()) == (
@@ -970,7 +970,7 @@ def test_a_reply_with_no_text_is_a_failure_that_carries_the_stop_reason(
                 f"Structured response could not be read: response is empty (stop_reason: {stop_reason})",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = at(logging.ERROR, caplog)
     assert error.getMessage() == "Empty response from Together"
@@ -997,7 +997,7 @@ def test_a_reply_of_more_than_one_choice_is_a_failure_and_none_of_them_is_chosen
                 "Structured response could not be read: the reply holds 2 choices, not one (stop_reason: unknown)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = at(logging.ERROR, caplog)
     assert (error.getMessage(), vars(error)["model"], vars(error)["choices"]) == ("More than one choice from Together", MODEL, 2)
@@ -1022,7 +1022,7 @@ def test_thinking_by_a_model_told_not_to_is_warned_of_once_for_the_call_with_its
             )
             await driver(played, HYBRID).generate_structured("p", 1000, 0, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (warned,) = at(logging.WARNING, caplog)
     assert warned.getMessage() == "Model produced hidden thinking despite reasoning.enabled:false"
@@ -1036,7 +1036,7 @@ def test_thinking_by_a_model_that_was_not_told_not_to_is_not_warned_of(facts: Ca
             played.script(Completed(choices=[choice("ok", reasoning="x" * 500)], usage=counted(10, 500)))
             await driver(played, facts).generate_text("p", 1000, 0)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     assert at(logging.WARNING, caplog) == []
 
@@ -1141,7 +1141,7 @@ def test_a_call_logs_what_the_other_drivers_do_at_the_same_levels(caplog: pytest
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0.2, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     records = ours(caplog)
     assert [(record.levelname, record.getMessage()) for record in records] == [
@@ -1369,34 +1369,34 @@ FACTS = """CatalogueFacts(
 
 ASKING_FOR_ANOTHER = f"""
 import sys
-import semiont_inference
-from semiont_inference.factory import create_inference_client
+import xynolog_inference
+from xynolog_inference.factory import create_inference_client
 
 ollama = create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None)
-print(ollama.provider, {LOADED}, "semiont_inference.together" in sys.modules)
+print(ollama.provider, {LOADED}, "xynolog_inference.together" in sys.modules)
 """
 
 # The driver is asked for by its own module here: what importing it loads is what is held, and the factory imports it the same way.
 ASKING_FOR_TOGETHER = f"""
 import sys
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
 
 facts = {FACTS}
 before = {LOADED}
-from semiont_inference.together import TogetherInferenceClient
+from xynolog_inference.together import TogetherInferenceClient
 
 client = TogetherInferenceClient(api_key="k", model="m", base_url="http://127.0.0.1:1/v1", facts=facts)
-print(before, client.provider, "together" in sys.modules, "semiont_inference.together" in sys.modules)
+print(before, client.provider, "together" in sys.modules, "xynolog_inference.together" in sys.modules)
 """
 
 WITHOUT_TOGETHERS_LIBRARY = """
 import sys
 
 sys.modules["together"] = None  # as an interpreter has it where the library is not installed
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 try:
-    import semiont_inference.together
+    import xynolog_inference.together
 except ModuleNotFoundError as missing:
     print(type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None).provider)
@@ -1421,7 +1421,7 @@ def test_asking_for_the_together_driver_is_what_imports_togethers_library_and_st
 def test_without_togethers_library_its_driver_fails_naming_the_extra_and_an_ollama_client_is_made() -> None:
     said = (
         "The Together driver needs Together's `together` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[together]`."
+        "It comes with the extra: install `xynolog-inference[together]`."
     )
     assert program(WITHOUT_TOGETHERS_LIBRARY).splitlines() == [f"ModuleNotFoundError | together | ModuleNotFoundError | {said}", "ollama"]
 
@@ -1430,7 +1430,7 @@ def test_without_togethers_library_its_driver_fails_naming_the_extra_and_an_olla
 
 # A model no other test names.
 TELEMETRY_MODEL = "telemetry/Model-X"
-PREFIX = "semiont.inference."
+PREFIX = "xynolog.inference."
 
 
 async def recorded_alone() -> JsonValue:

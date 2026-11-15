@@ -20,27 +20,27 @@ from types import TracebackType
 from typing import Final, Self, final, override
 
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.identifiers import ResourceId
-from xynoplex.testing import FaultyTransport
-from xynoplex.transport import Frame
-from xynoplex.types import ExtractionOutcome, GetAnnotationsResponse, StoredEventResponse
-from semiont_service.archivist import AnnotationReads, AnnotationsUnread
-from semiont_service.content import Content, ContentReads, ContentUnread
-from semiont_service.follower import Cursors, Record
-from semiont_vectors.embedding import EmbeddingProvider, EmbeddingProviderError
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.mock import MockEmbeddingProvider, deterministic_vector
-from semiont_vectors.store import Declined, ResourceStamp, SearchFilter, SearchOptions
 from spec import JsonObject
+from xynolog.identifiers import ResourceId
+from xynolog.testing import FaultyTransport
+from xynolog.transport import Frame
+from xynolog.types import ExtractionOutcome, GetAnnotationsResponse, StoredEventResponse
+from xynolog_service.archivist import AnnotationReads, AnnotationsUnread
+from xynolog_service.content import Content, ContentReads, ContentUnread
+from xynolog_service.follower import Cursors, Record
+from xynolog_vectors.embedding import EmbeddingProvider, EmbeddingProviderError
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.mock import MockEmbeddingProvider, deterministic_vector
+from xynolog_vectors.store import Declined, ResourceStamp, SearchFilter, SearchOptions
 
-from semiont_smelter.anchored_text_store import AnchoredTexts, StoreFailed
-from semiont_smelter.chunking import Chunking
-from semiont_smelter.extraction import PdfExtractor
-from semiont_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
-from semiont_smelter.pdf_reader import Matrix, PdfEncrypted, PdfUnreadable, Pixels, Run
-from semiont_smelter.scripted import ScriptedDocument, ScriptedImage, ScriptedOcrEngine, ScriptedPage, ScriptedPdfReader
-from semiont_smelter.service import CHANNELS
-from semiont_smelter.smelter import Smelter
+from xynolog_smelter.anchored_text_store import AnchoredTexts, StoreFailed
+from xynolog_smelter.chunking import Chunking
+from xynolog_smelter.extraction import PdfExtractor
+from xynolog_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
+from xynolog_smelter.pdf_reader import Matrix, PdfEncrypted, PdfUnreadable, Pixels, Run
+from xynolog_smelter.scripted import ScriptedDocument, ScriptedImage, ScriptedOcrEngine, ScriptedPage, ScriptedPdfReader
+from xynolog_smelter.service import CHANNELS
+from xynolog_smelter.smelter import Smelter
 
 ADA: Final[JsonObject] = {"@type": "Person", "@id": "did:web:example.org:users:ada"}
 

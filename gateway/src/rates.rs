@@ -1,5 +1,5 @@
 //! Emits per principal: a token bucket per DID in this process, sized by the
-//! principal's roles (`x-semiont-limits.emitsPerPrincipal`). Whether the DID
+//! principal's roles (`x-xynolog-limits.emitsPerPrincipal`). Whether the DID
 //! names a person or an agent makes no difference; a role whose coefficient is
 //! unlimited means no bucket at all. The spec states the rate per gateway
 //! process: counting across replicas would put a broker round trip on every emit.

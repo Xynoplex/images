@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-On-demand "what just happened" snapshot for the live Semiont stack.
+On-demand "what just happened" snapshot for the live Xynolog stack.
 
 Companion to ``log-filter.py``: where the filter streams interesting
 events as they happen, ``snapshot.py`` rewinds the last N seconds across
@@ -120,7 +120,7 @@ for name in names:
 
 # Jaeger traces in window
 print(f'\n--- Jaeger traces ({args.jaeger_url}) ---')
-services = ['semiont-gateway', 'semiont-worker', 'semiont-smelter']
+services = ['xynolog-gateway', 'xynolog-worker', 'xynolog-smelter']
 total = 0
 all_traces = []
 for svc in services:

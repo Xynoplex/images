@@ -24,9 +24,10 @@ from urllib.parse import parse_qs, urlsplit
 import pytest
 from aio import run
 from pydantic import JsonValue, TypeAdapter, ValidationError
-from xynoplex.errors import SemiontError, SignInError
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import (
+from spec import JsonObject, objects, text, thing
+from xynolog.errors import SignInError, XynologError
+from xynolog.identifiers import ResourceId
+from xynolog.types import (
     AnchoredTextEntry,
     ExtractedText,
     ExtractedTextOcrConfidence,
@@ -34,10 +35,9 @@ from xynoplex.types import (
     ExtractionOutcome,
     PdfTextItem,
 )
-from semiont_service.archivist import Authorizes
-from spec import JsonObject, objects, text, thing
+from xynolog_service.archivist import Authorizes
 
-from semiont_smelter.anchored_text_store import AnchoredTextStore, StoreFailed
+from xynolog_smelter.anchored_text_store import AnchoredTextStore, StoreFailed
 
 STAMP: Final = "reader-1+engine-1"
 OTHER_STAMP: Final = "reader-2+engine-1"
@@ -232,7 +232,7 @@ class PlayedArchivist:
 class Account(Authorizes):
     """An account that signs in as a test said: with `TOKEN`, or not at all."""
 
-    def __init__(self, *, refused: SemiontError | None = None) -> None:
+    def __init__(self, *, refused: XynologError | None = None) -> None:
         self._refused: Final = refused
 
     @override
@@ -470,9 +470,9 @@ def test_an_answer_that_is_no_entry_is_a_miss_and_is_not_said(said: Said, caplog
             archivist.says["GET /resources/"] = said
             assert await store.read(RESOURCE, KEY) is None
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         run(scenario())
-    assert [record for record in caplog.records if record.name.startswith("semiont_smelter")] == []
+    assert [record for record in caplog.records if record.name.startswith("xynolog_smelter")] == []
 
 
 @pytest.mark.parametrize("said", [Said(), Said(hang_up=True)], ids=["a failure of its own", "no answer"])
@@ -482,9 +482,9 @@ def test_a_read_the_archivist_could_not_answer_is_a_miss_and_is_said(said: Said,
             archivist.says["GET /resources/"] = said
             assert await store.read(RESOURCE, KEY) is None
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         run(scenario())
-    (said_so,) = [record for record in caplog.records if record.name.startswith("semiont_smelter")]
+    (said_so,) = [record for record in caplog.records if record.name.startswith("xynolog_smelter")]
     assert said_so.getMessage() == "An anchored-text entry was not read back, and is derived again"
 
 
@@ -534,7 +534,7 @@ def test_a_listing_the_archivist_did_not_answer_fails(said: Said) -> None:
 
 
 def test_an_account_that_could_not_sign_in_fails_a_write_and_misses_a_read() -> None:
-    refused = Account(refused=SignInError("exchange", "Client-credentials grant for semiont-smelter failed (HTTP 401)"))
+    refused = Account(refused=SignInError("exchange", "Client-credentials grant for xynolog-smelter failed (HTTP 401)"))
 
     async def scenario() -> None:
         async with PlayedArchivist() as archivist, store_of(archivist, account=refused) as store:

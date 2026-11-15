@@ -45,9 +45,9 @@ const { lastViewedResource$, activeSession$, sessionActivating$, mockBrowser } =
   };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
-  return { ...actual, useXynoplex: () => mockBrowser };
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
+  return { ...actual, useXynolog: () => mockBrowser };
 });
 
 import KnowledgePage from '../page';

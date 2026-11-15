@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Minimal static file server for the Semiont Browser SPA.
+ * Minimal static file server for the Xynolog Browser SPA.
  * Serves the Vite-built dist/ directory with SPA fallback (all routes → index.html),
  * plus the launcher's KB discovery document under /discovery/* — served or 404,
  * NEVER the SPA fallback (a 200 index.html would be indistinguishable from data).
@@ -139,7 +139,7 @@ if (require.main === module) {
   }));
 
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Semiont Browser listening on port ${PORT}`);
+    console.log(`Xynolog Browser listening on port ${PORT}`);
   });
 
   server.on('error', (err) => {

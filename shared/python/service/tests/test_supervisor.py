@@ -2,7 +2,7 @@
 
 Every image runs its service under that one script when the launcher asks it
 to. It is tested here because this package reads what the script writes (the
-lives of `semiont.process.restarts`, `lives_less_one`), and because nothing
+lives of `xynolog.process.restarts`, `lives_less_one`), and because nothing
 else runs it. What it is held to: a child that dies within ten seconds of its
 start, five times in a row, refused to boot, and the supervisor gives up; a
 child that lives longer and still dies within a minute is crash-looping, is

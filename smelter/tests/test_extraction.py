@@ -16,13 +16,13 @@ from typing import Final, final, override
 
 import pytest
 from aio import run
-from xynoplex.types import ExtractedText, ExtractedTextOcrConfidence, ExtractionDeclined, ExtractionOutcome, PdfTextItem
+from xynolog.types import ExtractedText, ExtractedTextOcrConfidence, ExtractionDeclined, ExtractionOutcome, PdfTextItem
 
-from semiont_smelter.anchoring import anchor_runs
-from semiont_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor
-from semiont_smelter.ocr_engine import Box, OcrEngine, OcrLine, OcrParagraph, OcrRead, OcrWord
-from semiont_smelter.pdf_reader import FormField, Matrix, PdfDocument, PdfEncrypted, PdfReader, PdfUnreadable, Pixels, Run
-from semiont_smelter.scripted import ScriptedDocument, ScriptedImage, ScriptedOcrEngine, ScriptedPage, ScriptedPdfReader
+from xynolog_smelter.anchoring import anchor_runs
+from xynolog_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor
+from xynolog_smelter.ocr_engine import Box, OcrEngine, OcrLine, OcrParagraph, OcrRead, OcrWord
+from xynolog_smelter.pdf_reader import FormField, Matrix, PdfDocument, PdfEncrypted, PdfReader, PdfUnreadable, Pixels, Run
+from xynolog_smelter.scripted import ScriptedDocument, ScriptedImage, ScriptedOcrEngine, ScriptedPage, ScriptedPdfReader
 
 CONTENT = b"%PDF the bytes of the document a test states"
 

@@ -11,7 +11,7 @@ from typing import Annotated, Final
 from pydantic import BaseModel, Field
 from spec import SPEC
 
-from semiont_worker.media_types import GENERATABLE_MEDIA_TYPES
+from xynolog_worker.media_types import GENERATABLE_MEDIA_TYPES
 
 
 class Row(BaseModel, frozen=True):

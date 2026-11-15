@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MainContent, XynoplexBranding, buttonStyles, useXynoplex, useObservable } from '@xynoplex/react-ui';
+import { MainContent, XynologBranding, buttonStyles, useXynolog, useObservable } from '@xynolog/react-ui';
 import { useRouter } from '@/i18n/routing';
 
 const AUTO_TRANSITION_MS = 5000;
@@ -9,8 +9,8 @@ export default function Home() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Home' });
   const router = useRouter();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const semiont = useXynoplex();
-  const session = useObservable(semiont.activeSession$);
+  const xynolog = useXynolog();
+  const session = useObservable(xynolog.activeSession$);
 
   // The splash is the FIRST-CONTACT screen, not a toll booth. Every exit goes
   // to /know — never /know/discover — because /know owns "where was I": it
@@ -51,7 +51,7 @@ export default function Home() {
         gap: '2rem',
       }}
     >
-      <XynoplexBranding t={t} size="xl" animated={true} />
+      <XynologBranding t={t} size="xl" animated={true} />
       <button onClick={goToWorkspace} className={buttonStyles.primary.base}>
         {t('begin')}
       </button>

@@ -106,11 +106,11 @@ async function main() {
     process.exit(1);
   }
 
-  const eventsRoot = join(kbRoot, '.semiont', 'events');
+  const eventsRoot = join(kbRoot, '.xynolog', 'events');
   try {
     await fs.access(eventsRoot);
   } catch {
-    console.error(`No .semiont/events directory at ${eventsRoot}`);
+    console.error(`No .xynolog/events directory at ${eventsRoot}`);
     process.exit(1);
   }
 

@@ -3,13 +3,13 @@
 use crate::agents::attribution;
 use crate::shard::shard_path;
 use crate::{Object, RecordError, ids, indented, read_object, write_whole};
-use xynoplex::channels::{
+use serde_json::{Value, json};
+use std::path::{Path, PathBuf};
+use xynolog::channels::{
     Channel, MarkAdded, MarkArchived, MarkBodyUpdated, MarkEntityTagAdded, MarkEntityTagRemoved,
     MarkRemoved, MarkUnarchived, YieldCloned, YieldCreated, YieldMoved, YieldRepresentationAdded,
     YieldRepresentationRemoved, YieldUpdated,
 };
-use serde_json::{Value, json};
-use std::path::{Path, PathBuf};
 
 /// The views of a knowledge base: one file per resource.
 pub struct Views {

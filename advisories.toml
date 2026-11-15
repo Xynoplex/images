@@ -12,7 +12,7 @@ reason = "paste is unmaintained. It is a procedural macro tikv-jemalloc-ctl uses
 
 [[ignore]]
 id = "RUSTSEC-2026-0387"
-reason = "crypto-bigint 0.5 (operations meant to be constant-time that branch on secret values) leaks what it computes on secret integers. It arrives only through elliptic-curve, for the p256 and p384 that jsonwebtoken's rust_crypto backend links for ES256 and ES384. Nothing here uses either: the gateway signs and verifies its own tokens with HS256, and semiont-http-service verifies the issuer's with RS256, refusing every other algorithm before any key is used. No fixed 0.5 release exists, and jsonwebtoken 11.1.0, its newest, depends on p256 0.13."
+reason = "crypto-bigint 0.5 (operations meant to be constant-time that branch on secret values) leaks what it computes on secret integers. It arrives only through elliptic-curve, for the p256 and p384 that jsonwebtoken's rust_crypto backend links for ES256 and ES384. Nothing here uses either: the gateway signs and verifies its own tokens with HS256, and xynolog-http-service verifies the issuer's with RS256, refusing every other algorithm before any key is used. No fixed 0.5 release exists, and jsonwebtoken 11.1.0, its newest, depends on p256 0.13."
 
 [[ignore]]
 id = "GHSA-rj75-hqrm-r3gf"

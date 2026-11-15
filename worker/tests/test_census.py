@@ -25,9 +25,9 @@ from pathlib import Path
 from pydantic import JsonValue, TypeAdapter
 from spec import PROJECT, ROOT, SDK
 
-from semiont_worker.config import SERVICE
+from xynolog_worker.config import SERVICE
 
-SRC = PROJECT / "src/semiont_worker"
+SRC = PROJECT / "src/xynolog_worker"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PROJECT / top).rglob("*.py"))
 INFERENCE = ROOT / "shared/python/inference"
 SHARED = ROOT / "shared/python/service"
@@ -118,7 +118,7 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
     ours, theirs = toml(PROJECT / "pyproject.toml"), toml(SDK / "pyproject.toml")
 
     checkers = ("mypy", "pyright", "pytest", "pytest-cov", "ruff")
-    assert set(tools(ours, "dev")) == {*checkers, "semiont-worker"}
+    assert set(tools(ours, "dev")) == {*checkers, "xynolog-worker"}
     assert {name: tools(ours, "dev")[name] for name in checkers} == {name: tools(theirs, "dev")[name] for name in checkers}
 
     # What each reads is its own project's; everything else is the same.
@@ -147,8 +147,8 @@ def test_what_the_manifest_requires_is_what_the_source_imports() -> None:
     everything = imported(sorted(SRC.rglob("*.py")))
     roots = {module.split(".")[0] for module in everything}
     # Every module imported from outside the standard library is declared, and nothing declared goes unused.
-    assert roots - set(sys.stdlib_module_names) - {"semiont_worker"} == declared
-    assert declared == {"opentelemetry", "pydantic", "semiont", "semiont_inference", "semiont_service"}
+    assert roots - set(sys.stdlib_module_names) - {"xynolog_worker"} == declared
+    assert declared == {"opentelemetry", "pydantic", "xynolog", "xynolog_inference", "xynolog_service"}
     # Of OpenTelemetry the service takes the API alone. What exports, its SDK and its exporter, is the shared
     # package's to require, at the versions its own manifest states, and to import.
     assert not names & {"opentelemetry-sdk", "opentelemetry-exporter-otlp-proto-http"}
@@ -171,9 +171,9 @@ def test_the_sdk_the_inference_drivers_and_the_service_package_are_the_ones_in_t
     # that package is the project, so without the SDK's own line here the SDK would come from an index.
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
-        "semiont-inference": {"path": "../../shared/python/inference", "editable": True},
-        "semiont-service": {"path": "../../shared/python/service", "editable": True},
+        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"},
+        "xynolog-inference": {"path": "../../shared/python/inference", "editable": True},
+        "xynolog-service": {"path": "../../shared/python/service", "editable": True},
     }
     assert (PROJECT / "../../shared/python/inference").resolve() == INFERENCE.resolve()
     assert (PROJECT / "../../shared/python/service").resolve() == SHARED.resolve()
@@ -181,16 +181,16 @@ def test_the_sdk_the_inference_drivers_and_the_service_package_are_the_ones_in_t
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
-    assert taken_from["xynoplex"] == {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"}
-    assert taken_from["semiont-inference"] == {"editable": "../../shared/python/inference"}
-    assert taken_from["semiont-service"] == {"editable": "../../shared/python/service"}
-    assert taken_from["semiont-worker"] == {"editable": "."}
+    assert taken_from["xynolog"] == {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"}
+    assert taken_from["xynolog-inference"] == {"editable": "../../shared/python/inference"}
+    assert taken_from["xynolog-service"] == {"editable": "../../shared/python/service"}
+    assert taken_from["xynolog-worker"] == {"editable": "."}
 
 
 def test_the_distribution_is_named_for_the_service() -> None:
-    # Its telemetry is exported under its word for itself after `semiont-`, at the version of the distribution of
-    # that name (`semiont_service.observability`): the manifest's name is that, or an exporting service does not start.
-    assert table(toml(PROJECT / "pyproject.toml")["project"], "project")["name"] == f"semiont-{SERVICE}"
+    # Its telemetry is exported under its word for itself after `xynolog-`, at the version of the distribution of
+    # that name (`xynolog_service.observability`): the manifest's name is that, or an exporting service does not start.
+    assert table(toml(PROJECT / "pyproject.toml")["project"], "project")["name"] == f"xynolog-{SERVICE}"
 
 
 def test_it_is_a_service_s_code_and_no_library() -> None:
@@ -202,7 +202,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     assert "Private :: Do Not Upload" in texts(project["classifiers"], "classifiers")
     # And no other Python package of the repository requires it.
     for package in (SDK, INFERENCE, SHARED):
-        assert "semiont-worker" not in {name_of(requirement) for requirement in required(toml(package / "pyproject.toml"))}, package.name
+        assert "xynolog-worker" not in {name_of(requirement) for requirement in required(toml(package / "pyproject.toml"))}, package.name
 
 
 def test_the_source_does_nothing_by_provider() -> None:
@@ -210,17 +210,17 @@ def test_the_source_does_nothing_by_provider() -> None:
     # what a client is, what it answers and how it fails, and names no driver.
     beyond_what_a_client_is = {
         # The module that boots the service makes each agent's client, from what the configuration document names.
-        "service.py": {"semiont_inference.factory"},
+        "service.py": {"xynolog_inference.factory"},
         # The module that is one agent answers a request for the limits of the service's models.
-        "agent.py": {"semiont_inference.limits_report"},
+        "agent.py": {"xynolog_inference.limits_report"},
     }
     for path in sorted(SRC.rglob("*.py")):
-        of_inference = {module for module in imported([path]) if module.split(".")[0] == "semiont_inference"}
+        of_inference = {module for module in imported([path]) if module.split(".")[0] == "xynolog_inference"}
         allowed = beyond_what_a_client_is.get(str(path.relative_to(SRC)), set())
-        assert of_inference - {"semiont_inference.interface"} == allowed, path.name
+        assert of_inference - {"xynolog_inference.interface"} == allowed, path.name
     # Each of the two exists, and imports what it is allowed.
-    assert modules({"semiont_inference.factory"}) == ["service.py"]
-    assert modules({"semiont_inference.limits_report"}) == ["agent.py"]
+    assert modules({"xynolog_inference.factory"}) == ["service.py"]
+    assert modules({"xynolog_inference.limits_report"}) == ["agent.py"]
 
 
 def test_one_module_names_opentelemetry_and_one_names_the_logger() -> None:
@@ -229,7 +229,7 @@ def test_one_module_names_opentelemetry_and_one_names_the_logger() -> None:
     assert modules({"opentelemetry"}) == ["telemetry.py"]
     sources = sorted(SRC.rglob("*.py"))
     assert sorted(str(path.relative_to(SRC)) for path in sources if "getLogger(" in path.read_text(encoding="utf-8")) == ["log.py"]
-    assert (SRC / "log.py").read_text(encoding="utf-8").count('getLogger("semiont_worker")') == 1
+    assert (SRC / "log.py").read_text(encoding="utf-8").count('getLogger("xynolog_worker")') == 1
 
 
 def test_one_module_reads_the_process_s_environment_and_the_variables_read_are_the_ones_the_protocol_lists() -> None:
@@ -257,13 +257,13 @@ def test_one_module_reads_the_process_s_environment_and_the_variables_read_are_t
         # Read by OpenTelemetry's SDK, and not by the service's own code (E8).
         "OTEL_BSP_SCHEDULE_DELAY",
         # Read by the SDK, whose transport writes the bus log, and not by the service's own code (E9).
-        "SEMIONT_BUS_LOG",
+        "XYNOLOG_BUS_LOG",
     }
     assert not_read_here <= listed
     # The shared package reads a secret account too, a client id and its secret, for the services that prove
     # themselves with one. The worker proves itself with its key (B3), and each knowledge base's entry names the
     # client it is there: it never asks for that account.
-    secret_account = {"SEMIONT_OIDC_CLIENT_ID", "SEMIONT_OIDC_CLIENT_SECRET"}
+    secret_account = {"XYNOLOG_OIDC_CLIENT_ID", "XYNOLOG_OIDC_CLIENT_SECRET"}
     assert secret_account <= named
     assert not any("service_account_of" in source for source in sources.values())
     assert named - secret_account == listed - not_read_here
@@ -272,16 +272,16 @@ def test_one_module_reads_the_process_s_environment_and_the_variables_read_are_t
 def test_a_providers_library_is_an_extra_and_the_image_asks_for_every_one() -> None:
     manifest = toml(PROJECT / "pyproject.toml")
     # The service requires the drivers, and no provider's library with them.
-    assert "semiont-inference" in required(manifest)
+    assert "xynolog-inference" in required(manifest)
     # An extra for each of the drivers' extras, of the same name, which brings that one and nothing else.
     of_the_drivers = table(table(toml(INFERENCE / "pyproject.toml")["project"], "project")["optional-dependencies"], "the drivers' extras")
     extras = table(table(manifest["project"], "project")["optional-dependencies"], "optional-dependencies")
     assert {extra: texts(brought, f"the extra {extra}") for extra, brought in extras.items()} == {
-        extra: [f"semiont-inference[{extra}]"] for extra in of_the_drivers
+        extra: [f"xynolog-inference[{extra}]"] for extra in of_the_drivers
     }
     # The image asks for every one, and so does the environment the checkers and the tests run in.
     syncs = [line.split() for line in (PROJECT / "Dockerfile").read_text(encoding="utf-8").splitlines() if line.startswith("RUN uv sync ")]
     assert len(syncs) == 1
     assert "--all-extras" in syncs[0]
     dev = texts(table(manifest["dependency-groups"], "dependency-groups")["dev"], "the dev group")
-    assert f"semiont-worker[{','.join(sorted(extras))}]" in dev
+    assert f"xynolog-worker[{','.join(sorted(extras))}]" in dev

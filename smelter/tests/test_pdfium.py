@@ -22,8 +22,8 @@ import pytest
 from aio import run
 from spec import ROOT
 
-from semiont_smelter.pdf_reader import Matrix, PdfDocument, PdfEncrypted, PdfUnreadable, Pixels, PlacedImage, Run
-from semiont_smelter.pdfium import PdfiumReader
+from xynolog_smelter.pdf_reader import Matrix, PdfDocument, PdfEncrypted, PdfUnreadable, Pixels, PlacedImage, Run
+from xynolog_smelter.pdfium import PdfiumReader
 
 FIXTURES: Final = ROOT / "protocol/specs/src/smelter/fixtures"
 

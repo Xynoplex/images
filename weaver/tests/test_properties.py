@@ -30,8 +30,8 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from pydantic import JsonValue
 from rig import Rig, added, archived, body_updated, created, event, link, removed, tag, tagged
-from semiont_graph.interface import GraphDatabase, ResourceQuery
 from spec import JsonObject
+from xynolog_graph.interface import GraphDatabase, ResourceQuery
 
 RESOURCES: Final = ("res-a", "res-b", "res-c")
 ENTITY_TYPES: Final = ("Place", "County", "River")

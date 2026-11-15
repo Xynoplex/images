@@ -1,4 +1,4 @@
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 
 async def ask(base_url: str) -> str:

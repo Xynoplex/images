@@ -10,7 +10,7 @@ only in secure contexts, so on container/LAN IPs (e.g.
 `http://192.168.64.60:3000`) it is `undefined`.
 
 Every id made in the browser — correlationIds and KB ids — comes from
-`@xynoplex/core`'s `uuidV4()`, built on `crypto.getRandomValues()`,
+`@xynolog/core`'s `uuidV4()`, built on `crypto.getRandomValues()`,
 which is available in every context. So the suite needs no polyfill and
 none exists.
 
@@ -46,7 +46,7 @@ startup. See [containers.md](containers.md).
 
 ## Stale browser tabs poison gateway logs
 
-If `container logs semiont-<kb>-gateway` is a firehose of `Invalid token
+If `container logs xynolog-<kb>-gateway` is a firehose of `Invalid token
 signature` or `401` entries when no test is running, a lingering tab
 from an earlier dev session is still holding an SSE connection with
 an expired token and retrying. It won't break the tests directly, but
@@ -72,10 +72,10 @@ does not change. See [containers.md § IP refresh](containers.md#ip-refresh).
 
 ## Naming the `:local` images is load-bearing
 
-`make build` builds every Semiont image as a local-only `:local`
+`make build` builds every Xynolog image as a local-only `:local`
 tag — but the KB stack runs them only when its documents name them:
-`ghcr.io/xynoplex/xynoplex-<service>:local` for each `image` in
-`.semiont/stack/*.yaml`, and the Browser's and the worker's in their own
+`ghcr.io/xynolog/xynolog-<service>:local` for each `image` in
+`.xynolog/stack/*.yaml`, and the Browser's and the worker's in their own
 documents, the files `xynolog settings browser --path` and `xynolog settings
 worker --path` print. An image
 still named `:latest` is pulled as **published**, and your local code

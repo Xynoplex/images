@@ -3,7 +3,7 @@
  * import, so the web SDK stays out of the bundle unless a collector is
  * configured — and calls `initObservabilityWeb` once.
  *
- * It lives here, not in `@xynoplex/observability`, because the Browser is its
+ * It lives here, not in `@xynolog/observability`, because the Browser is its
  * one user: in that package it made every server that traces carry a browser
  * tracing SDK it never loads.
  *
@@ -36,7 +36,7 @@ import {
 } from '@opentelemetry/semantic-conventions';
 
 export interface WebObservabilityConfig {
-  /** Service identity (e.g. `semiont-browser`). */
+  /** Service identity (e.g. `xynolog-browser`). */
   serviceName: string;
   /** Service version: the Browser's own, as its package names it. */
   serviceVersion: string;

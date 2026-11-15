@@ -8,8 +8,8 @@ import type { Page } from '@playwright/test';
  * Line Numbers, Theme, Language, Hover Delay. Each one is a fire-and-
  * forget bus emit from `SettingsPanel`:
  *
- *   button click → `semiont.emit('settings:<x>', …)` on the app-scoped
- *   `SemiontBrowser` bus → a `useEventSubscriptions(...)` handler →
+ *   button click → `xynolog.emit('settings:<x>', …)` on the app-scoped
+ *   `XynologBrowser` bus → a `useEventSubscriptions(...)` handler →
  *   the actual state mutation (ThemeContext / useLineNumbers / router).
  *
  * Because the emit and the subscription live in *different* components
@@ -30,7 +30,7 @@ import type { Page } from '@playwright/test';
 /** Open the ⚙️ Settings panel from the right toolbar and wait for it. */
 async function openSettings(page: Page) {
   await page.locator('[data-panel="settings"]').click();
-  const panel = page.locator('.semiont-settings-panel');
+  const panel = page.locator('.xynolog-settings-panel');
   await expect(panel).toBeVisible();
   return panel;
 }
@@ -164,7 +164,7 @@ test.describe('settings panel — signed out', () => {
  *     `settings:theme-changed` / `settings:line-numbers-toggled` itself.
  *   - The resource route does NOT — `know/resource/[id]/page.tsx`
  *     delegates *all* events to `ResourceViewerPage`, which lives in the
- *     **built** `@xynoplex/react-ui` package. Only Language is handled by
+ *     **built** `@xynolog/react-ui` package. Only Language is handled by
  *     the app-source `ToolbarPanels`.
  *
  * So on this route Theme/Line Numbers ride entirely on react-ui's dist

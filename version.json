@@ -1,7 +1,7 @@
 {
   "version": "0.7.3",
   "packages": {
-    "semiont-browser": {
+    "xynolog-browser": {
       "dir": "browser",
       "stage": ".npm-stage/browser",
       "version": "0.7.3",

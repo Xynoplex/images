@@ -4,16 +4,16 @@ import {
   useTheme,
   useShellStateUnit,
   useObservable,
-  useXynoplex,
+  useXynolog,
   useSessionStateUnit,
   EntityTagsPage,
-} from '@xynoplex/react-ui';
-import { createEntityTagsStateUnit } from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
+import { createEntityTagsStateUnit } from '@xynolog/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 
 export default function EntityTagsPageWrapper() {
   const { t } = useTranslation(undefined, { keyPrefix: 'ModerateEntityTags' });
-  const session = useObservable(useXynoplex().activeSession$) ?? undefined;
+  const session = useObservable(useXynolog().activeSession$) ?? undefined;
 
   const browseStateUnit = useShellStateUnit();
   const stateUnit = useSessionStateUnit(session, (s) => createEntityTagsStateUnit(s, browseStateUnit));
@@ -34,7 +34,7 @@ export default function EntityTagsPageWrapper() {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20">
         <p className="text-gray-600 dark:text-gray-300">{t('loadFailed')}</p>
-        <button type="button" onClick={stateUnit?.entityTypes.retry} className="semiont-button" data-variant="secondary">
+        <button type="button" onClick={stateUnit?.entityTypes.retry} className="xynolog-button" data-variant="secondary">
           {t('retry')}
         </button>
       </div>

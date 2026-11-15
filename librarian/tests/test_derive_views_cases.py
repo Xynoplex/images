@@ -16,10 +16,10 @@ from typing import Final, final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.types import KnowledgeGraph
 from spec import SPEC, JsonObject, objects, read, text, thing
+from xynolog.types import KnowledgeGraph
 
-from semiont_librarian.views import GraphViews, derive_views
+from xynolog_librarian.views import GraphViews, derive_views
 
 PLACES: Final = frozenset({"why", "graph", "resource", "annotation", "views"})
 """The members a case may have."""

@@ -12,9 +12,9 @@ from typing import Final, final
 
 import pytest
 from aio import run
-from xynoplex.annotations import SpanRefusedError, TextSpan, target_selector
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import (
+from xynolog.annotations import SpanRefusedError, TextSpan, target_selector
+from xynolog.identifiers import ResourceId
+from xynolog.types import (
     Agent,
     AgentSoftware,
     AnchoredTextAbsent,
@@ -31,10 +31,10 @@ from xynoplex.types import (
     TextQuoteSelector,
 )
 
-from semiont_worker.detection.prepare_detection import DetectionDecline, DetectionSource, prepare_detection
+from xynolog_worker.detection.prepare_detection import DetectionDecline, DetectionSource, prepare_detection
 
 RESOURCE: Final = ResourceId("res-prep")
-GENERATOR: Final[Agent] = AgentSoftware(type="Software", id="did:web:test.local:agents:semiont-worker", provider="test", model="test")
+GENERATOR: Final[Agent] = AgentSoftware(type="Software", id="did:web:test.local:agents:xynolog-worker", provider="test", model="test")
 
 PDF_TEXT: Final = "alpha beta\ngamma delta"
 PDF_ITEMS: Final = [

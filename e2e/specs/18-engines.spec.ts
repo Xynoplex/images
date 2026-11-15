@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { MARK_MOTIVATIONS, type EngineWithLimits, type JobFilter } from '@xynoplex/core';
+import { MARK_MOTIVATIONS, type EngineWithLimits, type JobFilter } from '@xynolog/core';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**

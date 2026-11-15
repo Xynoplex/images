@@ -6,12 +6,12 @@
 //! whatever version control thinks of the file — and only the staging is
 //! best-effort.
 
-use semiont_archivist_staging::{Bounds, Staging, staging_for};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
+use xynolog_archivist_staging::{Bounds, Staging, staging_for};
 
 const QUICK: Bounds = Bounds {
     flush: Duration::from_millis(20),
@@ -39,7 +39,7 @@ impl Tree {
     fn new() -> Self {
         static NEXT: AtomicU64 = AtomicU64::new(0);
         let root = std::env::temp_dir().join(format!(
-            "semiont-staging-{}-{}",
+            "xynolog-staging-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
