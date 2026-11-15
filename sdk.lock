@@ -1,7 +1,4 @@
 {
-  "schema": "xynoplex-sdk-pin/v1",
-  "tag": "sdk-2881a61c7c5d80d5890c4962605c74a0b5bef667",
-  "commit": "2881a61c7c5d80d5890c4962605c74a0b5bef667",
-  "protocol": "1c2b6d8fca33b7d728dd7abb162b8547382e3fc7",
-  "sha256": "5c830f8b3b6531d2a9783b24be118331962c655eb8763661a323233802b5e5dd"
+  "schema": "xynoplex-sdk-pin/v2",
+  "commit": "04814b2f9216c47077cf6a897937bdcb86b6db6f"
 }
