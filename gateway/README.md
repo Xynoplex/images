@@ -1,7 +1,5 @@
 # semiont-gateway
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-gateway)](https://app.codecov.io/gh/Xynoplex/images/components)
-
 **The HTTP entry point to a Semiont knowledge base**: the one address clients and sidecar
 services dial. It is a Rust binary built against [`protocol/specs/`](../protocol/specs/src/openapi.json),
 which is compiled into it, and it serves on port 4000. The launcher starts it, as the
@@ -16,7 +14,7 @@ knowledge base's did:web domain made safe for a name
 | Command | `/usr/local/bin/semiont-gateway --config /etc/semiont/gateway.json` |
 | Code | Rust, in this directory: [src](src) |
 | Specification | the OpenAPI spec, [protocol/specs/src/openapi.json](../protocol/specs/src/openapi.json) |
-| Judged by | [protocol/conformance/gateway](../../protocol/conformance/gateway/README.md) |
+| Judged by | [protocol/conformance/gateway](../protocol/conformance/gateway/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -52,7 +50,7 @@ container mounts the KB, and it is the Archivist.
 The OpenAPI document in [protocol/specs/src](../protocol/specs/src/openapi.json) is the contract:
 every route, every status each can answer and its body, the headers, the bus
 stream's messages and id formats, the limits, and the claims a token must carry.
-[TRANSPORT-HTTP.md](../../protocol/contract/TRANSPORT-HTTP.md) states the semantics a
+[TRANSPORT-HTTP.md](../protocol/contract/TRANSPORT-HTTP.md) states the semantics a
 schema cannot hold.
 
 | Route | Serves |
@@ -187,7 +185,7 @@ cargo build --release -p semiont-gateway   # target/release/semiont-gateway
 ```
 
 The gateway's behavioural contract is the black-box
-[conformance suite](../../protocol/conformance/gateway/README.md), run against the built binary
+[conformance suite](../protocol/conformance/gateway/README.md), run against the built binary
 on both signal planes; see [TESTING.md](docs/TESTING.md). To run one by hand, write a
 `GatewayConfig` to a file, pass its path to `--config`, and set the three variables under
 [Configuration](#configuration).

@@ -1,7 +1,5 @@
 # semiont-archivist
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-archivist)](https://app.codecov.io/gh/Xynoplex/images/components)
-
 **The Archivist keeps Semiont's system of record**: the event log, of which everything else — views,
 graph, vectors — is a projection. It appends to that record, serves it, and is **the only process
 that touches the knowledge base tree**; every other service reaches it over the wire. It is a Rust
@@ -13,8 +11,8 @@ service that serves HTTP on port 24103, and the launcher starts it with `semiont
 | Port | 24103 |
 | Command | `/usr/local/bin/semiont-archivist --config /etc/semiont/archivist.json` |
 | Code | Rust, in this directory: [src](src), and its crates [record](record) and [staging](staging) |
-| Specification | [protocol/contract/ARCHIVIST.md](../../protocol/contract/ARCHIVIST.md) |
-| Judged by | [protocol/conformance/archivist](../../protocol/conformance/archivist/README.md) |
+| Specification | [protocol/contract/ARCHIVIST.md](../protocol/contract/ARCHIVIST.md) |
+| Judged by | [protocol/conformance/archivist](../protocol/conformance/archivist/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -63,7 +61,7 @@ with `POST /bus/subscribe` (SSE) and publishes with `POST /bus/emit`. Every comm
 (creating resources and annotations among them) and every `browse:*` read it answers passes
 through the gateway, whether the gateway's bus runs in-process or on NATS. The Archivist never
 connects to NATS. It publishes each persisted event the same way, as an ordinary event: once
-globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](../../protocol/contract/EVENT-BUS.md).
+globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](../protocol/contract/EVENT-BUS.md).
 
 **HTTP, for bytes and a few reads of the record.**
 
@@ -161,10 +159,8 @@ Its three crates, `semiont-archivist`, `semiont-archivist-record` and
 cargo test -p semiont-archivist -p semiont-archivist-record -p semiont-archivist-staging
 ```
 
-runs their tests, which CI's Rust Tests job runs with the rest of the workspace, under
-`cargo llvm-cov`. The [conformance suite](../../protocol/conformance/archivist/README.md) holds a
-built Archivist to [ARCHIVIST.md](../../protocol/contract/ARCHIVIST.md), and in CI that Archivist is
-built instrumented, so its coverage counts what the suite runs too.
+runs their tests. The [conformance suite](../protocol/conformance/archivist/README.md) holds a
+built Archivist to [ARCHIVIST.md](../protocol/contract/ARCHIVIST.md).
 
 ## Building it
 

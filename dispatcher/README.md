@@ -1,11 +1,9 @@
 # semiont-dispatcher
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-dispatcher)](https://app.codecov.io/gh/Xynoplex/images/components)
-
 **Where a worker asks what to do and reports back.** The dispatcher owns a knowledge base's job
 queue: a [worker](../worker) claims each job here and reports its progress and outcome here. It
 is a Rust service. It serves `/health` on port 24105 and nothing else; all its real traffic is
-the gateway's [bus](../../protocol/contract/EVENT-BUS.md). The launcher (`semiont start`) starts it.
+the gateway's [bus](../protocol/contract/EVENT-BUS.md). The launcher (`semiont start`) starts it.
 
 | | |
 | --- | --- |
@@ -13,8 +11,8 @@ the gateway's [bus](../../protocol/contract/EVENT-BUS.md). The launcher (`semion
 | Port | 24105 (`/health`, and nothing else: everything it answers is on the bus) |
 | Command | `/usr/local/bin/semiont-dispatcher --config /etc/semiont/dispatcher.json` |
 | Code | Rust, in this directory: [src](src), and its crates [handlers](handlers) and [jetstream](jetstream) |
-| Specification | [protocol/contract/JOBS.md](../../protocol/contract/JOBS.md) |
-| Judged by | [protocol/conformance/dispatcher](../../protocol/conformance/dispatcher/README.md) |
+| Specification | [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) |
+| Judged by | [protocol/conformance/dispatcher](../protocol/conformance/dispatcher/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -39,7 +37,7 @@ Three crates of the repository's Rust workspace, split so the broker stays behin
 
 | Crate | Path | What |
 | --- | --- | --- |
-| `semiont-dispatcher-handlers` | [`handlers/`](handlers) | The `JobQueue` trait and the nine handlers, generic over the queue. No NATS in its dependencies — CI's crate-tree check holds it. |
+| `semiont-dispatcher-handlers` | [`handlers/`](handlers) | The `JobQueue` trait and the nine handlers, generic over the queue. No NATS in its dependencies: `scripts/check-broker-boundary.mjs` checks it. |
 | `semiont-dispatcher-jetstream` | [`jetstream/`](jetstream) | The queue on JetStream: the one implementation of the trait, and the only code here that names the broker (`lint:broker-boundary`). |
 | `semiont-dispatcher` | [`src/`](src) | The binary: reads its document, signs in, opens the queue, and answers the bus through the SDK's bus client (`semiont`) over its HTTP transport (`semiont-http-transport`), with `semiont-observability`'s telemetry and logs. |
 
@@ -123,7 +121,7 @@ installs or fetches nothing at start.
 ## Working on it
 
 The judge of all three crates is the black-box suite in
-[`protocol/conformance/dispatcher`](../../protocol/conformance/dispatcher), which drives the binary as
+[`protocol/conformance/dispatcher`](../protocol/conformance/dispatcher), which drives the binary as
 a process on the wire.
 
 The suite reaches the dispatcher through a gateway, which refuses a payload that is not its
@@ -152,8 +150,8 @@ that names the document it cannot read.
 
 ## Related
 
-- [protocol/contract/JOBS.md](../../protocol/contract/JOBS.md) — what it does, channel by channel
-- [protocol/contract/WORKER-CONTRACT.md](../../protocol/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
+- [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) — what it does, channel by channel
+- [protocol/contract/WORKER-CONTRACT.md](../protocol/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
 - [semiont-worker](../worker) — the executor, and a client of this service
 - [semiont-archivist](../archivist) — keeps the record: the bytes a worker reads through the gateway, and the annotations it commits
 - [Container Topology](../../docs/operator/CONTAINER-TOPOLOGY.md) — where it sits in the fleet
