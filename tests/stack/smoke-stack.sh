@@ -133,7 +133,7 @@ if [ "$COMMAND" = run ]; then
 fi
 
 REPO_ROOT="$(cd "$(dirname "$SELF")/../.." && pwd)"
-source "$REPO_ROOT/scripts/container-runtime.sh"
+source "$REPO_ROOT/build-tools/container-runtime.sh"
 RUNTIME=$(detect_container_runtime) || exit 2
 E2E_NETWORK=(--network host --ipc host)
 if [[ "$RUNTIME" == container ]]; then E2E_NETWORK=(); fi

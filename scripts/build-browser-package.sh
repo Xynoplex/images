@@ -9,7 +9,7 @@ SDK_BUNDLE_DIR="${1:?Usage: build-browser-package.sh <verified-sdk-bundle-direct
 }
 mkdir -p "$ROOT/.local/browser-package"
 
-source "$ROOT/scripts/container-runtime.sh"
+source "$ROOT/build-tools/container-runtime.sh"
 RUNTIME="$(detect_container_runtime)"
 "$RUNTIME" run --rm \
   --volume "$ROOT:/source" \

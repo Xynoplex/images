@@ -10,8 +10,8 @@ An image is affected when a changed path is one of its inputs:
   language;
 - what scripts/build-session.sh stages into .local/ for it, by where that is
   built from;
-- what every build reads: the Makefile, scripts/, sdk.lock, .dockerignore and
-  this workflow.
+- what every build reads: the Makefile, scripts/, build-tools/, sdk.lock,
+  .dockerignore and this workflow.
 
 With no base (a new branch, or a base this clone does not have), every image
 is affected. A Dockerfile that copies a path which neither exists nor is
@@ -31,7 +31,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-EVERY_BUILD = ["Makefile", "scripts", "sdk.lock", ".dockerignore", ".github/workflows/ci.yml"]
+EVERY_BUILD = ["Makefile", "scripts", "build-tools", "sdk.lock", ".dockerignore", ".github/workflows/ci.yml"]
 
 SHARED_ROOT = {
     "RUST_IMAGES": ["packages/rust"],

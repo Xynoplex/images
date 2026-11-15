@@ -86,10 +86,10 @@ class SmokeStackTest(unittest.TestCase):
         script = self.root / "tests/stack/smoke-stack.sh"
         script.parent.mkdir(parents=True)
         shutil.copyfile(SOURCE, script)
-        runtime_helper = self.root / "scripts/container-runtime.sh"
+        runtime_helper = self.root / "build-tools/container-runtime.sh"
         runtime_helper.parent.mkdir(parents=True)
         shutil.copyfile(
-            SOURCE.parents[2] / "scripts/container-runtime.sh", runtime_helper
+            SOURCE.parents[2] / "build-tools/container-runtime.sh", runtime_helper
         )
         e2e_package = self.root / "e2e/package.json"
         e2e_package.parent.mkdir(parents=True)

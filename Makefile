@@ -10,7 +10,7 @@ IMAGE_NAMES := $(RUST_IMAGES) $(TYPESCRIPT_IMAGES) $(PYTHON_IMAGES)
 
 .PHONY: help build shared clean $(IMAGE_NAMES) stack-up e2e stack-down smoke
 
-# `make help` prints the `##` lines below, in order (scripts/make-help.awk).
+# `make help` prints the `##` lines below, in order (build-tools/make-help.awk).
 ##@ Xynoplex Images: make [target] [VARIABLE=value ...]
 ##@ Variables
 ## CONTAINER_RUNTIME=name: container|docker|podman; else the first to respond
@@ -32,7 +32,7 @@ XYNOLOG ?=
 export CONTAINER_RUNTIME SDK_REPO XYNOLOG
 
 help:
-	@awk -v list="$(IMAGE_NAMES)" -f scripts/make-help.awk Makefile Makefile
+	@awk -v list="$(IMAGE_NAMES)" -f build-tools/make-help.awk Makefile Makefile
 
 ##@ Build locally (images are not pushed)
 ## build: Every image
