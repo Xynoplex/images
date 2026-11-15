@@ -238,7 +238,7 @@ docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk
   --file worker/Dockerfile --tag ghcr.io/xynoplex/xynoplex-worker:local .
 ```
 
-[`make local`](../Makefile) builds it so with the other
+[`make build`](../Makefile) builds it so with the other
 images, and [`scripts/check-python-image.sh`](../scripts/check-python-image.sh)
 checks what a built one promises.
 

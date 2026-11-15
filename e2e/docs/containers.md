@@ -8,9 +8,9 @@ the test stack from this repository.
 
 | Container | What's inside | Where it comes from |
 |---|---|---|
-| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make local` |
-| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make local` |
-| `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make local` |
+| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make build` |
+| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make build` |
+| `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make build` |
 | plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynaut start` |
 
 A knowledge base's containers are named `semiont-<kb>-<product>`, where
@@ -20,9 +20,9 @@ worker, Ollama and Jaeger are shared by every knowledge base, and keep
 `semiont-<name>`. See
 [the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names).
 
-**Key fact:** `make local` builds all eight images from this checkout and tags
+**Key fact:** `make build` builds all eight images from this checkout and tags
 them `ghcr.io/xynoplex/xynoplex-<service>:local`. It does not publish npm
-packages or push container images. `make image NAME=<service>` rebuilds one
+packages or push container images. `make <service>` rebuilds one
 image. The knowledge base must be configured to use a `:local` image for that
 image to run; an image still named `:latest` is pulled as published.
 
@@ -30,9 +30,9 @@ So the "full rebuild" flow depends on what changed:
 
 | Change in | Rebuild | Restart |
 |---|---|---|
-| `browser` | `make image NAME=browser` | browser |
-| `gateway`, `archivist`, `dispatcher`, `librarian`, `smelter`, `weaver`, or `worker` | `make image NAME=<service>` | the stack: `xynaut start` |
-| Several images or shared image inputs | `make local` | the affected services |
+| `browser` | `make browser` | browser |
+| `gateway`, `archivist`, `dispatcher`, `librarian`, `smelter`, `weaver`, or `worker` | `make <service>` | the stack: `xynaut start` |
+| Several images or shared image inputs | `make build` | the affected services |
 
 ## Apple container CLI primer
 
@@ -76,9 +76,9 @@ container ls | grep -E 'semiont-(browser|.+-gateway)'    # inspection only
 ## Building the `:local` images
 
 ```sh
-make local                      # build all eight images
-make image NAME=browser         # build one image
-make image NAME=gateway
+make build                      # build all eight images
+make browser                    # build one image
+make gateway
 ```
 
 The script:

@@ -24,6 +24,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Make help lists every public target
+        run: python3 scripts/test_make_help.py
+
       - name: Read immutable SDK artifact pin
         id: sdk-pin
         run: node -e 'const p = JSON.parse(require("node:fs").readFileSync("sdk.lock", "utf8")); for (const [k, v] of Object.entries(p)) console.log(`${k}=${v}`)' >> "$GITHUB_OUTPUT"

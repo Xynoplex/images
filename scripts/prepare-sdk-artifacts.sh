@@ -20,7 +20,10 @@ if [[ -n "${SDK_ARTIFACTS:-}" ]]; then
     --protocol-commit "$expected_protocol" "${verify_args[@]}" >/dev/null
   cd "$SDK_ARTIFACTS" && pwd -P
 else
-  SDK_REPO="${SDK_REPO:-../sdk}"
+  [[ -n "${SDK_REPO:-}" ]] || {
+    echo "Set SDK_REPO to an SDK checkout, or SDK_ARTIFACTS to an artifact bundle." >&2
+    exit 2
+  }
   [[ -d "$SDK_REPO/scripts" ]] || {
     echo "SDK checkout not found at $SDK_REPO; set SDK_REPO or SDK_ARTIFACTS." >&2
     exit 2

@@ -4,13 +4,13 @@ The root [Makefile](Makefile) is the supported build interface:
 
 ```sh
 make help
-make local
+make build
 make shared
-make image NAME=worker
+make worker
 make clean
 ```
 
-`make local` builds the eight images from their Dockerfiles using Docker, Podman, or Apple Container. It detects an available runtime, preferring Apple Container, then Docker, then Podman. Set `CONTAINER_RUNTIME` to select one explicitly.
+`make build` (the default) builds the eight images from their Dockerfiles using Docker, Podman, or Apple Container. It detects an available runtime, preferring Apple Container, then Docker, then Podman. Set `CONTAINER_RUNTIME` to select one explicitly.
 
 `make shared` builds the four Python distributions in `shared/python/` (graph, vectors, inference, and service) with uv 0.13.7 in a Python 3.12 container. It writes the wheel and source archive files to `${XDG_CACHE_HOME:-~/.cache}/xynoplex-images/local/python/packages/` without building any container images.
 
