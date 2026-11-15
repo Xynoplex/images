@@ -10,13 +10,13 @@ from collections.abc import Mapping
 
 import pytest
 from pydantic import JsonValue, ValidationError
-from xynoplex.annotations import body_source, entity_types
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation, ResourceDescriptor
 from spec import SPEC, JsonObject, objects, read, strings, text, thing
+from xynolog.annotations import body_source, entity_types
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation, ResourceDescriptor
 
-from semiont_graph.codec import (
+from xynolog_graph.codec import (
     decode_annotation,
     decode_resource,
     encode_annotation,

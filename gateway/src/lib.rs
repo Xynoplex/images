@@ -1,4 +1,4 @@
-//! The Semiont gateway: it authenticates, validates frames against the spec,
+//! The Xynolog gateway: it authenticates, validates frames against the spec,
 //! stamps who sent them, relays them over the signal plane, keeps the reply
 //! records, replays missed events from the Archivist, and pipes bytes to and
 //! from it. Everything it serves is what protocol/specs/ declares.

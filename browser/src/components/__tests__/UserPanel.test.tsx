@@ -22,7 +22,7 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 // Mock react-ui. The UserPanel reads user info and kb off
-// `useXynoplex().activeSession$`, and signs out via `semiont.signOut(kb.id)`.
+// `useXynolog().activeSession$`, and signs out via `xynolog.signOut(kb.id)`.
 // The mock browser exposes controllable subjects so tests can flip the shape
 // the panel sees.
 const { mockSignOut, mockUseSessionExpiry, mockFormatTime, mockSanitizeImageURL, mockBrowser, mockClient, user$, activeSession$ } = vi.hoisted(() => {
@@ -67,14 +67,14 @@ const { mockSignOut, mockUseSessionExpiry, mockFormatTime, mockSanitizeImageURL,
   };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
     useSessionExpiry: () => mockUseSessionExpiry(),
     formatTime: (time: number) => mockFormatTime(time),
     sanitizeImageURL: (url: string) => mockSanitizeImageURL(url),
-    useXynoplex: () => mockBrowser,
+    useXynolog: () => mockBrowser,
   };
 });
 
@@ -290,7 +290,7 @@ describe('UserPanel Component', () => {
     it('should have proper styling for sign out button', () => {
       render(<UserPanel />);
       const signOutButton = screen.getByRole('button', { name: 'Sign Out' });
-      expect(signOutButton).toHaveClass('semiont-signout-button');
+      expect(signOutButton).toHaveClass('xynolog-signout-button');
     });
   });
 

@@ -17,11 +17,11 @@ from typing import Final, final
 
 import pytest
 from aio import hurried, run, soon
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import SmeltSettledOutcome
+from xynolog.identifiers import ResourceId
+from xynolog.types import SmeltSettledOutcome
 
-from semiont_librarian.progress import SmeltProgress, WeaveProgress
-from semiont_librarian.reads import SmeltWaitTimedOut, WeaveWaitTimedOut
+from xynolog_librarian.progress import SmeltProgress, WeaveProgress
+from xynolog_librarian.reads import SmeltWaitTimedOut, WeaveWaitTimedOut
 
 R1: Final = ResourceId("res-1")
 R2: Final = ResourceId("res-2")

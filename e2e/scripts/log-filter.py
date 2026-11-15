@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Compact filter for the structured JSON logs of long-running Semiont
+Compact filter for the structured JSON logs of long-running Xynolog
 containers (gateway, worker, smelter: each writes one JSON object per
 line). Reads JSON lines on stdin and emits only the
 interesting ones, prefixed with a ``--source`` label.
@@ -8,11 +8,11 @@ interesting ones, prefixed with a ``--source`` label.
 Designed for the **live monitoring** workflow described in
 ``e2e/docs/live-monitoring.md`` — start one tail per container::
 
-    container logs --follow semiont-<kb>-gateway 2>&1 \\
+    container logs --follow xynolog-<kb>-gateway 2>&1 \\
       | python3 e2e/scripts/log-filter.py --source gateway &
-    container logs --follow semiont-worker 2>&1 \\
+    container logs --follow xynolog-worker 2>&1 \\
       | python3 e2e/scripts/log-filter.py --source worker &
-    container logs --follow semiont-<kb>-smelter 2>&1 \\
+    container logs --follow xynolog-<kb>-smelter 2>&1 \\
       | python3 e2e/scripts/log-filter.py --source smelter &
 
 Each background tail surfaces only:

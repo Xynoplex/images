@@ -5,7 +5,7 @@ from collections.abc import Generator
 
 import pytest
 
-from semiont_librarian.log import LOG
+from xynolog_librarian.log import LOG
 
 
 @pytest.fixture

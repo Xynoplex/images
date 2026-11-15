@@ -1,6 +1,6 @@
 //! The job queue the handlers drive, as a contract any broker can keep.
 //!
-//! A queue holds one record per job (`xynoplex::types::Job`) and moves it
+//! A queue holds one record per job (`xynolog::types::Job`) and moves it
 //! through the states protocol/contract/JOBS.md gives it. What a queue must
 //! provide, whatever holds it:
 //!
@@ -22,13 +22,13 @@
 //! schedules its clocks. Nothing here names a broker, and the handlers see
 //! nothing else.
 
-use xynoplex::types::{
-    FailureClass, Job, JobFilter, JobId, JobPending, JobRunning, JobStoredProgress,
-    JobStoredResult, UnitCursor,
-};
 use std::collections::BTreeMap;
 use std::fmt;
 use std::future::Future;
+use xynolog::types::{
+    FailureClass, Job, JobFilter, JobId, JobPending, JobRunning, JobStoredProgress,
+    JobStoredResult, UnitCursor,
+};
 
 /// A queue operation that failed: the queue's own message, which a refusal carries.
 #[derive(Debug)]
@@ -100,7 +100,7 @@ pub trait JobQueue: Send + Sync + 'static {
     ) -> impl Future<Output = Result<bool, QueueError>> + Send;
 
     /// A running job's attempt failed: its checkpoint merged, then retried or
-    /// failed by the retry rule (`xynoplex::claims::will_retry_after`), which
+    /// failed by the retry rule (`xynolog::claims::will_retry_after`), which
     /// reads the failure's class; `None` when it was not running.
     fn fail_job(
         &self,

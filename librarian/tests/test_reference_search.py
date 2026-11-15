@@ -18,18 +18,18 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, FakeEmbedding, FakeGraph, FakeInference, FakeProfiles, FakeRecord, FakeVectors, described, tag, view
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import written
-from xynoplex.types import MatchSearchRequest, MatchSearchResult, ResourceDescriptor
-from semiont_graph.interface import ResourceListing, ResourceQuery
-from semiont_vectors.store import CollectionAbsent, VectorSearchResult
 from spec import JsonObject, objects
+from xynolog.identifiers import ResourceId
+from xynolog.model import written
+from xynolog.types import MatchSearchRequest, MatchSearchResult, ResourceDescriptor
+from xynolog_graph.interface import ResourceListing, ResourceQuery
+from xynolog_vectors.store import CollectionAbsent, VectorSearchResult
 
-from semiont_librarian.limit import LimitRefused
-from semiont_librarian.reference_search import search
-from semiont_librarian.replies import SCORE_ELEMENT
-from semiont_librarian.score import rounded, score_of
-from semiont_librarian.views import GraphViews
+from xynolog_librarian.limit import LimitRefused
+from xynolog_librarian.reference_search import search
+from xynolog_librarian.replies import SCORE_ELEMENT
+from xynolog_librarian.score import rounded, score_of
+from xynolog_librarian.views import GraphViews
 
 NOW: Final = datetime(2026, 3, 31, tzinfo=UTC)
 """The moment every search here is made at."""
@@ -134,7 +134,7 @@ def graph_lag(caplog: pytest.LogCaptureFixture) -> list[tuple[str, object]]:
     return [
         (record.getMessage(), vars(record)["count"])
         for record in caplog.records
-        if record.name == "semiont_librarian" and record.levelno == logging.INFO and record.getMessage().startswith("[graph lag]")
+        if record.name == "xynolog_librarian" and record.levelno == logging.INFO and record.getMessage().startswith("[graph lag]")
     ]
 
 
@@ -259,7 +259,7 @@ def test_a_neighbour_described_from_its_view_is_logged_with_how_many_were(caplog
     world.graph.resources[FORT] = None
     world.record.held[FORT] = view(described(FORT, dateCreated=MADE))
 
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         reply = run(world.search(request(neighbours=(ROCK, FORT))))
 
     assert answered(reply) == [(ROCK, 10.0, "connected"), (FORT, 10.0, "connected")]
@@ -274,7 +274,7 @@ def test_a_vector_hit_described_from_its_view_is_logged_with_how_many_were(caplo
     world.record.held[FORT] = view(described(FORT, dateCreated=MADE))
     world.vectors.stated["search_resources"] = [hit(ROCK, 0.8), hit(FORT, 0.6)]
 
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         reply = run(world.search(request()))
 
     assert answered(reply) == [(ROCK, 20.0, "semantic similarity"), (FORT, 15.0, "semantic similarity")]
@@ -301,7 +301,7 @@ def test_nothing_is_logged_of_the_graph_being_behind_when_it_holds_every_candida
     world.graph.resources[FORT] = described(FORT, dateCreated=MADE)
     world.vectors.stated["search_resources"] = [hit(FORT, 0.6)]
 
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         run(world.search(request(neighbours=(ROCK,))))
 
     assert graph_lag(caplog) == []

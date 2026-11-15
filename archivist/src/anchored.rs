@@ -3,8 +3,6 @@
 //! stated, and the wait for the Smelter to settle content not yet in it.
 
 use crate::archivist::{Archivist, Refusal, locked, primary_representation};
-use xynoplex::media_types::yields_geometry_of;
-use semiont_archivist_record::{Object, RecordError, anchored_text};
 use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::path::Path;
@@ -12,6 +10,8 @@ use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 use tokio::sync::oneshot;
+use xynolog::media_types::yields_geometry_of;
+use xynolog_archivist_record::{Object, RecordError, anchored_text};
 
 /// How long the last settlement of a resource is remembered.
 const REMEMBERED: Duration = Duration::from_secs(5 * 60);
@@ -151,7 +151,7 @@ fn absent(kind: &str) -> Object {
 /// `not-yet`, however it was settled. Every outcome of deriving a text is
 /// stored, a decline too, so the entry was lost, and the Smelter derives it
 /// again when it next starts. Content not yet settled is waited for up to
-/// `settle_wait` (the operation's `x-semiont-limits.settleWaitSeconds`).
+/// `settle_wait` (the operation's `x-xynolog-limits.settleWaitSeconds`).
 pub async fn anchored_text(
     archivist: &Archivist,
     resource_id: &str,

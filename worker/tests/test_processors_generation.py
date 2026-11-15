@@ -15,17 +15,17 @@ from typing import Annotated, Final
 import pytest
 from aio import run
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.identifiers import ResourceId
-from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from xynoplex.types import GenerationJobParams
 from spec import SPEC
 from standing_in import AskedToGenerate, Handed, compiler_stood_in, generation_stood_in, landing_stood_in, report
+from xynolog.identifiers import ResourceId
+from xynolog.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynolog.types import GenerationJobParams
 
-from semiont_worker.failure_class import DeterministicJobError, classify_failure
-from semiont_worker.generation.citations import GenerationCitation
-from semiont_worker.generation.resource_generation import GeneratedDocument, Repair
-from semiont_worker.generation.typst import MAX_COMPILE_REPAIRS, Compiled, Landed, LandedCompile, NotCompiled
-from semiont_worker.processors import (
+from xynolog_worker.failure_class import DeterministicJobError, classify_failure
+from xynolog_worker.generation.citations import GenerationCitation
+from xynolog_worker.generation.resource_generation import GeneratedDocument, Repair
+from xynolog_worker.generation.typst import MAX_COMPILE_REPAIRS, Compiled, Landed, LandedCompile, NotCompiled
+from xynolog_worker.processors import (
     MAX_OUTPUT_BYTES,
     Cancelled,
     GeneratedArtifact,
@@ -186,13 +186,13 @@ def test_with_cite_a_bare_mark_becomes_the_name_the_context_gave_its_source_and_
 def test_a_mark_whose_id_the_context_did_not_show_is_taken_out_makes_no_citation_and_is_warned_of_once(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     answering(monkeypatch, whole("A bold claim. [[not-in-context]]"))
 
     artifact = made(generate(Handed(1), job({"cite": True})))
 
     assert (artifact.content, artifact.citations) == (b"A bold claim.", [])
-    warned = [record for record in caplog.records if record.name == "semiont_worker" and record.levelno == logging.WARNING]
+    warned = [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno == logging.WARNING]
     assert [vars(record)["resourceId"] for record in warned] == ["not-in-context"]
 
 
@@ -269,7 +269,7 @@ def test_a_source_cut_off_where_it_does_not_compile_fails_at_once_naming_the_len
 def test_a_source_that_does_not_compile_is_handed_back_to_the_model_with_what_the_compiler_said(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     asked = answering(monkeypatch, whole("#let broken = [unclosed"), whole("= Fixed\nBody."))
     compiled = compiler_stood_in(monkeypatch, [UNCLOSED, PDF])
     handed = Handed(1)
@@ -292,7 +292,7 @@ def test_a_source_that_does_not_compile_is_handed_back_to_the_model_with_what_th
 def test_what_the_compiler_said_is_logged_cut_at_five_hundred_code_points(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     # A character outside the Basic Multilingual Plane is one code point of the five hundred.
     long = "\U0001f600" + "e" * 600
     asked = answering(monkeypatch, whole("#broken"), whole("= Fixed"))
@@ -394,7 +394,7 @@ def test_a_marked_source_the_compiler_refuses_keeps_the_pdf_and_drops_its_citati
     answering(monkeypatch, whole(CITED_SOURCE))
     compiler_stood_in(monkeypatch, [PDF])
     landing_stood_in(monkeypatch, NotCompiled(error="error: a mark in the wrong place"))
-    caplog.set_level(logging.WARNING, logger="semiont_worker")
+    caplog.set_level(logging.WARNING, logger="xynolog_worker")
 
     artifact = made(generate(Handed(1), job({**AS_PDF, "cite": True})))
 
@@ -409,7 +409,7 @@ def test_a_citation_the_compiler_gives_no_landing_is_dropped_saying_so_and_the_o
     answering(monkeypatch, whole("= Answer\n[[ctx-9: Tea is hot]]. [[src-1: Ice is cold]]."))
     compiler_stood_in(monkeypatch, [PDF])
     landing_stood_in(monkeypatch, LandedCompile(pdf=MARKED.pdf, landed=[None, LANDED]))
-    caplog.set_level(logging.WARNING, logger="semiont_worker")
+    caplog.set_level(logging.WARNING, logger="xynolog_worker")
 
     artifact = made(generate(Handed(1), job({**AS_PDF, "cite": True})))
 
@@ -423,7 +423,7 @@ def test_the_budget_is_held_to_the_pdf_that_is_made_which_is_the_marked_one(monk
     answering(monkeypatch, whole(CITED_SOURCE))
     compiler_stood_in(monkeypatch, [Compiled(pdf=b"x" * 8)])
     landing_stood_in(monkeypatch, LandedCompile(pdf=b"x" * 9, landed=[LANDED]))
-    monkeypatch.setattr("semiont_worker.processors.MAX_OUTPUT_BYTES", 8)
+    monkeypatch.setattr("xynolog_worker.processors.MAX_OUTPUT_BYTES", 8)
 
     with pytest.raises(RuntimeError, match="output byte budget: 9 bytes > 8"):
         generate(Handed(1), job({**AS_PDF, "cite": True}))
@@ -493,7 +493,7 @@ def test_the_most_a_generated_artifact_may_weigh_is_the_most_the_smelter_reads()
 def test_an_artifact_over_the_budget_is_refused_before_anything_says_it_is_being_created(monkeypatch: pytest.MonkeyPatch) -> None:
     answering(monkeypatch, whole("= Title"))
     compiler_stood_in(monkeypatch, [Compiled(pdf=b"x" * 9)])
-    monkeypatch.setattr("semiont_worker.processors.MAX_OUTPUT_BYTES", 8)
+    monkeypatch.setattr("xynolog_worker.processors.MAX_OUTPUT_BYTES", 8)
     handed = Handed(1)
 
     with pytest.raises(RuntimeError, match="output byte budget: 9 bytes > 8"):
@@ -505,7 +505,7 @@ def test_an_artifact_over_the_budget_is_refused_before_anything_says_it_is_being
 def test_a_text_over_the_budget_is_refused_by_its_weight_in_bytes_once_it_is_made(monkeypatch: pytest.MonkeyPatch) -> None:
     # Eight characters, which the budget would take, and nine bytes of UTF-8, which it does not.
     answering(monkeypatch, whole("Caf\N{LATIN SMALL LETTER E WITH ACUTE} bar"))
-    monkeypatch.setattr("semiont_worker.processors.MAX_OUTPUT_BYTES", 8)
+    monkeypatch.setattr("xynolog_worker.processors.MAX_OUTPUT_BYTES", 8)
     handed = Handed(1)
 
     with pytest.raises(RuntimeError, match="output byte budget: 9 bytes > 8"):

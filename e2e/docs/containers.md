@@ -8,20 +8,20 @@ the test stack from this repository.
 
 | Container | What's inside | Where it comes from |
 |---|---|---|
-| `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make build` |
-| `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make build` |
-| `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make build` |
-| plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynolog start` |
+| `xynolog-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make build` |
+| `xynolog-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make build` |
+| `xynolog-<kb>-archivist`, `xynolog-<kb>-librarian`, `xynolog-<kb>-dispatcher`, `xynolog-worker`, `xynolog-<kb>-smelter`, `xynolog-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make build` |
+| plus: `xynolog-<kb>-neo4j`, `xynolog-qdrant`, `xynolog-ollama`, `xynolog-postgres`, `xynolog-<kb>-nats`, `xynolog-keycloak`, `xynolog-jaeger` | Storage, inference, messaging, identity, traces | started by `xynolog start` |
 
-A knowledge base's containers are named `semiont-<kb>-<product>`, where
+A knowledge base's containers are named `xynolog-<kb>-<product>`, where
 `<kb>` is its did:web domain made safe for a name: `did:web:example.org:my-kb`
-runs its gateway as `semiont-example.org-my-kb-gateway`. The Browser, the
+runs its gateway as `xynolog-example.org-my-kb-gateway`. The Browser, the
 worker, Ollama and Jaeger are shared by every knowledge base, and keep
-`semiont-<name>`. See
+`xynolog-<name>`. See
 [the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names).
 
 **Key fact:** `make build` builds all eight images from this checkout and tags
-them `ghcr.io/xynoplex/xynoplex-<service>:local`. It does not publish npm
+them `ghcr.io/xynolog/xynolog-<service>:local`. It does not publish npm
 packages or push container images. `make <service>` rebuilds one
 image. The knowledge base must be configured to use a `:local` image for that
 image to run; an image still named `:latest` is pulled as published.
@@ -41,7 +41,7 @@ bridge. No compose, no swarm.
 
 ```sh
 container ls                              # list running
-container ls | grep semiont-              # list the dev stack
+container ls | grep xynolog-              # list the dev stack
 container stop <name>                     # graceful stop
 container logs <name>                     # tail logs (add -f to follow)
 container exec <name> <cmd>               # run a command inside
@@ -49,7 +49,7 @@ container image ls                        # list local images
 container inspect <name>                  # JSON dump — mounts, env, IP, etc.
 ```
 
-Use `container logs --follow semiont-<kb>-gateway` when diagnosing a failing test
+Use `container logs --follow xynolog-<kb>-gateway` when diagnosing a failing test
 — the gateway's structured logs often reveal whether a bus handler
 actually ran. (`xynolog logs`, from the KB directory, follows all
 services at once with `[svc]` prefixes.)
@@ -65,7 +65,7 @@ Symptom: every request in your first test times out because the
 browser is dialing a dead address.
 
 ```sh
-container ls | grep -E 'semiont-(browser|.+-gateway)'    # inspection only
+container ls | grep -E 'xynolog-(browser|.+-gateway)'    # inspection only
 ```
 
 > Useful for *seeing* what is running. Do **not** feed these IPs to the e2e
@@ -85,7 +85,7 @@ The script:
 
 1. Detects the available container runtime, or uses `CONTAINER_RUNTIME` if set.
 2. Builds the selected image or all eight images from their Dockerfiles.
-3. Tags the images `ghcr.io/xynoplex/xynoplex-<service>:local` in that runtime.
+3. Tags the images `ghcr.io/xynolog/xynolog-<service>:local` in that runtime.
 
 Images remain local and are not pushed.
 
@@ -96,13 +96,13 @@ template KB:
 
 ```sh
 cd /path/to/semiont-template-kb
-# The documents in .semiont/stack/ name the :local images, and the
+# The documents in .xynolog/stack/ name the :local images, and the
 # Browser's and the worker's own documents name theirs (once):
-perl -pi -e 's#(semiont-browser):\S+#$1:local#' "$(semiont settings browser --path)"
-perl -pi -e 's#(semiont-worker):\S+#$1:local#' "$(semiont settings worker --path)"
+perl -pi -e 's#(xynolog-browser):\S+#$1:local#' "$(xynolog settings browser --path)"
+perl -pi -e 's#(xynolog-worker):\S+#$1:local#' "$(xynolog settings worker --path)"
 # xynolog start reads ANTHROPIC_API_KEY from env when --config anthropic.
 # Source your secrets first if it's not already exported.
-semiont start --config anthropic
+xynolog start --config anthropic
 echo password | xynolog useradd --email admin@example.com
 ```
 

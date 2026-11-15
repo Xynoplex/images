@@ -44,13 +44,13 @@ import pytest
 from aio import SteppedLoop, hurried, pass_time, run
 from pydantic import JsonValue
 from rig import FakeDegraded, FakeGraph, FakeRecord, FakeWeave, described, view
-from xynoplex.identifiers import ResourceId
-from xynoplex.model import WireModel
-from xynoplex.types import Annotation, GraphResourceNode, KnowledgeGraph, Motivation, ResourceDescriptor, ResourceView
-from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
 from spec import SPEC, JsonObject, objects, read, text, thing, whole
+from xynolog.identifiers import ResourceId
+from xynolog.model import WireModel
+from xynolog.types import Annotation, GraphResourceNode, KnowledgeGraph, Motivation, ResourceDescriptor, ResourceView
+from xynolog_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
 
-from semiont_librarian.knowledge_graph import (
+from xynolog_librarian.knowledge_graph import (
     GRAPH_WAIT_BUDGET,
     LARGEST_DEPTH,
     LEAST_DEPTH,
@@ -60,8 +60,8 @@ from semiont_librarian.knowledge_graph import (
     ResourceUnknown,
     build_knowledge_graph,
 )
-from semiont_librarian.progress import WeaveProgress
-from semiont_librarian.reads import GraphReads
+from xynolog_librarian.progress import WeaveProgress
+from xynolog_librarian.reads import GraphReads
 
 type Failure = Literal["unknown", "behind"]
 
@@ -488,9 +488,9 @@ def test_a_graph_that_stays_behind_is_counted_once_and_logged_once_as_a_warning(
         assert len(graph.asked_of("get_resource")) == 1 + len(PAUSES)
         assert degraded.noted == ["graph"]
 
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         run(scenario())
-    (said,) = [vars(record) for record in caplog.records if record.name == "semiont_librarian" and record.levelno == logging.WARNING]
+    (said,) = [vars(record) for record in caplog.records if record.name == "xynolog_librarian" and record.levelno == logging.WARNING]
     assert said["resourceId"] == MAIN
     assert said["lastSequence"] == 3
 
@@ -505,9 +505,9 @@ def test_a_resource_no_one_holds_is_logged_and_counted_as_nothing(caplog: pytest
         assert weave.asked == []
         assert degraded.noted == []
 
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         run(scenario())
-    assert [record for record in caplog.records if record.name == "semiont_librarian"] == []
+    assert [record for record in caplog.records if record.name == "xynolog_librarian"] == []
 
 
 # ── Depth, and the ceiling ────────────────────────────────────────────

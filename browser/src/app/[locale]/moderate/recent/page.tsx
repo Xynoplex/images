@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Toolbar } from '@xynoplex/react-ui';
+import { Toolbar } from '@xynolog/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
-import { useTheme, useShellStateUnit, useObservable } from '@xynoplex/react-ui';
-import { RecentDocumentsPage } from '@xynoplex/react-ui';
+import { useTheme, useShellStateUnit, useObservable } from '@xynolog/react-ui';
+import { RecentDocumentsPage } from '@xynolog/react-ui';
 
 export default function RecentDocumentsPageWrapper() {
   const { t } = useTranslation(undefined, { keyPrefix: 'ModerateRecent' });

@@ -31,8 +31,8 @@ vi.mock('react-i18next', () => ({
 
 const discoveryHolder = vi.hoisted(() => ({
   current: { state: null, kbs: [] } as {
-    state: import('@xynoplex/sdk').DiscoveryState | null;
-    kbs: import('@xynoplex/core').DiscoveredKB[];
+    state: import('@xynolog/sdk').DiscoveryState | null;
+    kbs: import('@xynolog/core').DiscoveredKB[];
   },
 }));
 
@@ -49,11 +49,11 @@ const { kbs$, activeSession$, mockBrowser } = vi.hoisted(() => {
   return { kbs$, activeSession$, mockBrowser };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => mockBrowser,
+    useXynolog: () => mockBrowser,
     useKBDiscovery: () => discoveryHolder.current,
   };
 });
@@ -63,7 +63,7 @@ const DISCOVERED = {
   host: 'localhost',
   port: 4001,
   placement: 'local' as const,
-  managedBy: 'semiont-launcher',
+  managedBy: 'xynolog-launcher',
   siteName: 'Local KB',
 };
 

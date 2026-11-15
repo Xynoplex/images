@@ -1,12 +1,12 @@
 name: Publish Browser Container Image
 
-run-name: "Browser Image: @xynoplex/browser@${{ inputs.version }}"
+run-name: "Browser Image: @xynolog/browser@${{ inputs.version }}"
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: '@xynoplex/browser version (e.g. 0.4.15, 0.4.15-build.42, latest)'
+        description: '@xynolog/browser version (e.g. 0.4.15, 0.4.15-build.42, latest)'
         required: true
         type: string
       dry_run:
@@ -50,10 +50,10 @@ jobs:
         id: tags
         run: |
           COMMIT_SHA=$(git rev-parse --short HEAD)
-          TAGS="ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }}"
-          TAGS="$TAGS,ghcr.io/xynoplex/xynoplex-browser:sha-$COMMIT_SHA"
+          TAGS="ghcr.io/xynolog/xynolog-browser:${{ inputs.version }}"
+          TAGS="$TAGS,ghcr.io/xynolog/xynolog-browser:sha-$COMMIT_SHA"
           if [ "${{ inputs.tag_latest }}" = "true" ]; then
-            TAGS="$TAGS,ghcr.io/xynoplex/xynoplex-browser:latest"
+            TAGS="$TAGS,ghcr.io/xynolog/xynolog-browser:latest"
           fi
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
           echo "sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
@@ -69,16 +69,16 @@ jobs:
           file: ./browser/Dockerfile
           platforms: linux/amd64
           load: true
-          tags: xynoplex-browser:scan
+          tags: xynolog-browser:scan
           build-args: |
-            SEMIONT_BROWSER_VERSION=${{ inputs.version }}
+            XYNOLOG_BROWSER_VERSION=${{ inputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: xynoplex-browser:scan
+          image-ref: xynolog-browser:scan
           severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true
@@ -94,17 +94,17 @@ jobs:
       - name: Generate SBOM with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: xynoplex-browser:scan
+          image-ref: xynolog-browser:scan
           format: spdx-json
           output: sbom.spdx.json
 
       # License-policy gate, matching publish-service-images.yml.
       #
-      # Scope note, so this is not read as more than it is: @xynoplex/browser
+      # Scope note, so this is not read as more than it is: @xynolog/browser
       # ships a PRE-BUILT SPA, so its third-party dependencies are bundled into
       # the output before the package is published and never appear as npm
       # packages in the image. This inspects the npm packages the SBOM lists:
-      # @xynoplex/browser itself and the installer-stage scaffold.
+      # @xynolog/browser itself and the installer-stage scaffold.
       # It is here for symmetry and to catch drift if this image ever gains a
       # real runtime dependency tree -- NOT as assurance about the bundle.
       - name: License policy gate
@@ -121,7 +121,7 @@ jobs:
       - name: Boot smoke (module load)
         run: |
           set +e
-          out=$(timeout 10 docker run --rm xynoplex-browser:scan 2>&1)
+          out=$(timeout 10 docker run --rm xynolog-browser:scan 2>&1)
           rc=$?
           set -e
           echo "$out"
@@ -151,7 +151,7 @@ jobs:
           push: ${{ !inputs.dry_run }}
           tags: ${{ steps.tags.outputs.tags }}
           build-args: |
-            SEMIONT_BROWSER_VERSION=${{ inputs.version }}
+            XYNOLOG_BROWSER_VERSION=${{ inputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -163,7 +163,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/attest-build-provenance@v4.2.2
         with:
-          subject-name: ghcr.io/xynoplex/xynoplex-browser
+          subject-name: ghcr.io/xynolog/xynolog-browser
           subject-digest: ${{ steps.build-push.outputs.digest }}
           push-to-registry: true
 
@@ -171,7 +171,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/attest-sbom@v4
         with:
-          subject-name: ghcr.io/xynoplex/xynoplex-browser
+          subject-name: ghcr.io/xynolog/xynolog-browser
           subject-digest: ${{ steps.build-push.outputs.digest }}
           sbom-path: sbom.spdx.json
           push-to-registry: true
@@ -180,18 +180,18 @@ jobs:
         run: |
           echo "## Browser Container Image" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**@xynoplex/browser version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**@xynolog/browser version:** ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ steps.tags.outputs.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "**Dry run:** ${{ inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Pull with:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ghcr.io/xynolog/xynolog-browser:${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Verify supply-chain attestations:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "gh attestation verify oci://ghcr.io/xynoplex/xynoplex-browser:${{ inputs.version }} \\" >> $GITHUB_STEP_SUMMARY
+          echo "gh attestation verify oci://ghcr.io/xynolog/xynolog-browser:${{ inputs.version }} \\" >> $GITHUB_STEP_SUMMARY
           echo "  --repo $GITHUB_REPOSITORY \\" >> $GITHUB_STEP_SUMMARY
           echo "  --cert-identity https://github.com/${GITHUB_WORKFLOW_REF%@*}@refs/tags/v${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

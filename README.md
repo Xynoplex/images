@@ -1,19 +1,19 @@
-# Xynoplex Images
+# Xynolog Images
 
-This repository builds and publishes the Xynoplex service and Browser container images for macOS, Linux, and Windows container hosts.
+This repository builds and publishes the Xynolog service and Browser container images for macOS, Linux, and Windows container hosts.
 
 ## Images
 
 | Image | Source | Default port | Purpose |
 | --- | --- | ---: | --- |
-| `ghcr.io/xynoplex/xynoplex-gateway` | [gateway](gateway/) | 4000 | Authenticated API and content gateway |
-| `ghcr.io/xynoplex/xynoplex-archivist` | [archivist](archivist/) | 24103 | Record storage and browse operations |
-| `ghcr.io/xynoplex/xynoplex-dispatcher` | [dispatcher](dispatcher/) | 24105 | Job queue and lifecycle operations |
-| `ghcr.io/xynoplex/xynoplex-librarian` | [librarian](librarian/) | 24104 | Search and context assembly |
-| `ghcr.io/xynoplex/xynoplex-smelter` | [smelter](smelter/) | 24101 | Content extraction and embedding |
-| `ghcr.io/xynoplex/xynoplex-weaver` | [weaver](weaver/) | 24102 | Knowledge graph projection |
-| `ghcr.io/xynoplex/xynoplex-worker` | [worker](worker/) | 24100 | Asynchronous detection, generation, and inference |
-| `ghcr.io/xynoplex/xynoplex-browser` | [browser](browser/) | 3000 | Browser user interface |
+| `ghcr.io/xynolog/xynolog-gateway` | [gateway](gateway/) | 4000 | Authenticated API and content gateway |
+| `ghcr.io/xynolog/xynolog-archivist` | [archivist](archivist/) | 24103 | Record storage and browse operations |
+| `ghcr.io/xynolog/xynolog-dispatcher` | [dispatcher](dispatcher/) | 24105 | Job queue and lifecycle operations |
+| `ghcr.io/xynolog/xynolog-librarian` | [librarian](librarian/) | 24104 | Search and context assembly |
+| `ghcr.io/xynolog/xynolog-smelter` | [smelter](smelter/) | 24101 | Content extraction and embedding |
+| `ghcr.io/xynolog/xynolog-weaver` | [weaver](weaver/) | 24102 | Knowledge graph projection |
+| `ghcr.io/xynolog/xynolog-worker` | [worker](worker/) | 24100 | Asynchronous detection, generation, and inference |
+| `ghcr.io/xynolog/xynolog-browser` | [browser](browser/) | 3000 | Browser user interface |
 
 ## Build locally
 
@@ -27,7 +27,7 @@ make gateway
 make clean
 ```
 
-`make shared` builds the four private Python distributions in `shared/python/` (`graph`, `vectors`, `inference`, and `service`) into `${XDG_CACHE_HOME:-~/.cache}/xynoplex-images/local/python/packages/`. Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make build`.
+`make shared` builds the four private Python distributions in `shared/python/` (`graph`, `vectors`, `inference`, and `service`) into `${XDG_CACHE_HOME:-~/.cache}/xynolog-images/local/python/packages/`. Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make build`.
 
 ## Repository layout
 
@@ -37,4 +37,4 @@ Each top-level service directory contains its image source and Dockerfile. `shar
 
 ## Publishing
 
-Images are published to GitHub Container Registry by the workflows in `.github/workflows/`. Service images and the Browser image have separate release workflows. Published images are multi-architecture OCI images and use the `xynoplex-*` image names.
+Images are published to GitHub Container Registry by the workflows in `.github/workflows/`. Service images and the Browser image have separate release workflows. Published images are multi-architecture OCI images and use the `xynolog-*` image names.

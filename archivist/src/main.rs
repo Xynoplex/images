@@ -17,26 +17,26 @@ mod naming;
 mod surface;
 
 use archivist::Archivist;
-use xynoplex::bus::{Bus, reply_channels_for};
-use xynoplex::channels::{Channel, FrameEntityTypeAdded};
-use xynoplex::identity::{kb_did, kb_resource};
-use xynoplex::transport::{GatewayOperations, Transport};
-use semiont_archivist_record::record::Record;
-use semiont_archivist_record::{Object, kb};
-use semiont_archivist_staging::{Bounds, staging_for};
-use semiont_core::config::{self, Document};
-use semiont_core::types::ArchivistConfig;
-use semiont_http_service::{IssuerVerifier, KeyTimings};
-use xynoplex_http_transport::agent::AgentToken;
-use xynoplex_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
-use xynoplex_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
-use semiont_observability::{logging, telemetry};
 use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 use tokio::sync::watch;
+use xynolog::bus::{Bus, reply_channels_for};
+use xynolog::channels::{Channel, FrameEntityTypeAdded};
+use xynolog::identity::{kb_did, kb_resource};
+use xynolog::transport::{GatewayOperations, Transport};
+use xynolog_archivist_record::record::Record;
+use xynolog_archivist_record::{Object, kb};
+use xynolog_archivist_staging::{Bounds, staging_for};
+use xynolog_core::config::{self, Document};
+use xynolog_core::types::ArchivistConfig;
+use xynolog_http_service::{IssuerVerifier, KeyTimings};
+use xynolog_http_transport::agent::AgentToken;
+use xynolog_http_transport::service_account::{Credential, SecretCredential, ServiceToken};
+use xynolog_http_transport::transport::{HttpTransport, HttpTransportConfig, Timing};
+use xynolog_observability::{logging, telemetry};
 
 #[global_allocator]
 static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
@@ -88,11 +88,11 @@ fn boot() -> Result<(), String> {
     let root = PathBuf::from(&document.root);
     let committed = kb::committed(&root)?;
     let Some(domain) = committed.domain.clone() else {
-        return Err("The knowledge base commits no .semiont/config.yaml, so declares no site.domain: it is the identity this knowledge base acts under, and the audience it accepts tokens for".to_owned());
+        return Err("The knowledge base commits no .xynolog/config.yaml, so declares no site.domain: it is the identity this knowledge base acts under, and the audience it accepts tokens for".to_owned());
     };
     telemetry::initialize(
-        "semiont-archivist",
-        semiont_core::spec::VERSION,
+        "xynolog-archivist",
+        xynolog_core::spec::VERSION,
         Some(&kb_did(&domain)),
     )?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
@@ -174,7 +174,7 @@ async fn serve(
     let (facts, published) = tokio::sync::mpsc::unbounded_channel::<Object>();
     let port = document.port;
     let issuer = document.identity.issuer.clone();
-    let largest_bus_message = bus::largest_message(&semiont_core::spec::spec().document)?;
+    let largest_bus_message = bus::largest_message(&xynolog_core::spec::spec().document)?;
     let archivist = Arc::new(Archivist::new(
         document,
         root,
@@ -258,7 +258,7 @@ async fn serve(
     let surface = Arc::new(surface::Surface {
         archivist: archivist.clone(),
         verifier: IssuerVerifier::new(issuer, kb_resource(&domain), KEY_TIMINGS, http),
-        limits: surface::Limits::of(&semiont_core::spec::spec().archivist)?,
+        limits: surface::Limits::of(&xynolog_core::spec::spec().archivist)?,
         uploads: surface::UploadLocks::default(),
     });
     let listener = tokio::net::TcpListener::bind(("0.0.0.0", port))
@@ -329,7 +329,7 @@ async fn confirm_gateway(
     Ok(())
 }
 
-/// `semiont.archivist.fact_pump.depth`: events appended and not yet
+/// `xynolog.archivist.fact_pump.depth`: events appended and not yet
 /// published, when the process exports.
 fn observe_unpublished(archivist: Arc<Archivist>) {
     let Some(meter) = telemetry::meter() else {
@@ -337,7 +337,7 @@ fn observe_unpublished(archivist: Arc<Archivist>) {
     };
     let unpublished = archivist.unpublished.clone();
     meter
-        .i64_observable_gauge("semiont.archivist.fact_pump.depth")
+        .i64_observable_gauge("xynolog.archivist.fact_pump.depth")
         .with_description("Events appended and not yet published on the bus")
         .with_callback(move |observer| observer.observe(unpublished.load(Ordering::SeqCst), &[]))
         .build();
@@ -361,10 +361,10 @@ mod tests {
     use axum::Router;
     use axum::http::header;
     use axum::routing::get;
-    use xynoplex::types::{
+    use std::path::Path;
+    use xynolog::types::{
         ProtectedResourceMetadata, ProtectedResourceMetadataBearerMethodsSupportedItem,
     };
-    use std::path::Path;
 
     /// A gateway on a port of its own, answering what `app` routes; its origin.
     async fn gateway(app: Router) -> String {

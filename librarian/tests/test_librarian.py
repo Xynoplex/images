@@ -37,19 +37,19 @@ from rig import (
     reference,
     view,
 )
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.testing import FaultyTransport
-from xynoplex.transport import Frame
-from xynoplex.types import Annotation, EngineProvider, ResourceView
-from semiont_graph.interface import ResourceListing
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
-from semiont_service.content import Content
 from spec import JsonObject, objects, thing
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.testing import FaultyTransport
+from xynolog.transport import Frame
+from xynolog.types import Annotation, EngineProvider, ResourceView
+from xynolog_graph.interface import ResourceListing
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
+from xynolog_service.content import Content
 
-from semiont_librarian.librarian import Librarian
-from semiont_librarian.progress import SmeltProgress, WeaveProgress
-from semiont_librarian.reads import Described, Record
-from semiont_librarian.service import CHANNELS
+from xynolog_librarian.librarian import Librarian
+from xynolog_librarian.progress import SmeltProgress, WeaveProgress
+from xynolog_librarian.reads import Described, Record
+from xynolog_librarian.service import CHANNELS
 
 QUAY: Final = ResourceId("res-quay")
 FERRY: Final = ResourceId("res-ferry")
@@ -472,7 +472,7 @@ def test_a_request_that_is_not_its_channels_is_logged_and_failed_where_it_states
             assert world.answered("gather:summary-failed") == []
             assert world.answered("gather:complete") == []
 
-    with caplog.at_level(logging.ERROR, logger="semiont_librarian"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_librarian"):
         run(scenario())
     assert [record.getMessage() for record in caplog.records].count(UNREAD) == 5
 
@@ -489,7 +489,7 @@ def test_a_signal_that_is_not_its_channels_is_logged_and_passed_by(caplog: pytes
             await soon(world.weave.when_applied(QUAY, 4, LONG))
             assert await soon(world.smelt.when_settled(QUAY, "sum", LONG)) == "indexed"
 
-    with caplog.at_level(logging.ERROR, logger="semiont_librarian"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_librarian"):
         run(scenario())
     assert [record.getMessage() for record in caplog.records].count("A signal that is not its channel's was passed by") == 2
 

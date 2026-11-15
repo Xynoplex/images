@@ -36,7 +36,7 @@ async fn connect() -> (TcpStream, QuickClock) {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap();
     let router = Router::new().route("/", get(|| async { "ok" }));
-    tokio::spawn(semiont_http_service::serve(
+    tokio::spawn(xynolog_http_service::serve(
         listener,
         router,
         8,

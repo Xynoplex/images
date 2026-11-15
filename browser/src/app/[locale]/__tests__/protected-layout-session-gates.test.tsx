@@ -4,13 +4,13 @@
  * null, and the page is remounted when a session is replaced.
  *
  * The API enforces what this gate guards — state-unit factories take a
- * `XynoplexSession` and construction goes through `useSessionStateUnit`, which
+ * `XynologSession` and construction goes through `useSessionStateUnit`, which
  * builds nothing without a session — so the gate is defense in depth and UX
  * (loading order), not the safety mechanism.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
-import type { LinkComponentProps } from '@xynoplex/react-ui';
+import type { LinkComponentProps } from '@xynolog/react-ui';
 import type { ReactNode } from 'react';
 
 vi.mock('react-i18next', () => ({
@@ -60,11 +60,11 @@ const harness = vi.hoisted(() => {
   return { makeSession, activeSession$, browser: { activeSession$ } };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => harness.browser,
+    useXynolog: () => harness.browser,
     LeftSidebar: ({ children }: { children: ReactNode | ((isCollapsed: boolean, toggleCollapsed: () => void, navigationMenu: null) => ReactNode) }) =>
       typeof children === 'function' ? children(false, () => {}, null) : children,
   };

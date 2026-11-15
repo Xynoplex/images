@@ -2,10 +2,10 @@
 //! § Checkpoints): finished units by union, and one cursor for each unit,
 //! finished or not, replaced whole and only by one that got further.
 
-use xynoplex::types::{JobMetadata, UnitCursor};
-use semiont_dispatcher_handlers::checkpoint::{checkpointed, failed_with};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
+use xynolog::types::{JobMetadata, UnitCursor};
+use xynolog_dispatcher_handlers::checkpoint::{checkpointed, failed_with};
 
 /// A cursor at `next` whose other members say which cursor it is.
 fn cursor(next: u64, mark: u64) -> Value {

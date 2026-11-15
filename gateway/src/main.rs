@@ -6,5 +6,5 @@
 static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
 fn main() {
-    std::process::exit(semiont_gateway::app::main());
+    std::process::exit(xynolog_gateway::app::main());
 }

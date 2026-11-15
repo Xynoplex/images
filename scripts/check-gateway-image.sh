@@ -73,13 +73,13 @@ set +e
 ms=$("$RT" run --rm --entrypoint /bin/sh \
   -v "$STAGE/gateway.json:$DOCUMENT:ro" \
   -e JWT_SECRET=image-check-image-check-image-check-image-check \
-  -e SEMIONT_OIDC_CLIENT_ID=semiont-gateway \
-  -e SEMIONT_OIDC_CLIENT_SECRET=image-check \
+  -e XYNOLOG_OIDC_CLIENT_ID=xynolog-gateway \
+  -e XYNOLOG_OIDC_CLIENT_SECRET=image-check \
   -e HEALTHCHECK="$HEALTHCHECK" \
   -e DOCUMENT="$DOCUMENT" \
   "$IMAGE" -c '
   read spawned _ < /proc/uptime
-  /usr/local/bin/boot.sh /usr/local/bin/semiont-gateway --config "$DOCUMENT" >/tmp/gateway.log 2>&1 &
+  /usr/local/bin/boot.sh /usr/local/bin/xynolog-gateway --config "$DOCUMENT" >/tmp/gateway.log 2>&1 &
   tries=0
   until wget -q -O /dev/null http://127.0.0.1:4000/api/health 2>/dev/null; do
     tries=$((tries + 1))

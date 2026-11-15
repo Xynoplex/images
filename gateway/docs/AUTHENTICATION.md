@@ -32,8 +32,8 @@ first; the `bearerAuth` and `mediaToken` schemes in
 | Which token it is, and the principal it names | [src/principal.rs](../src/principal.rs) |
 | The issuer's keys: discovery, the key set, when it is fetched | [issuer.rs](../../packages/rust/http-service/src/issuer.rs), in the crate the Rust services that serve HTTP share |
 | The key ring and media tokens | [src/tokens.rs](../src/tokens.rs) |
-| How a person and an agent are named | the Rust SDK's [identity.rs](https://github.com/Xynoplex/sdk/blob/main/rust/sdk/src/identity.rs), held to [protocol/specs/src/principals/cases.json](../../protocol/specs/src/principals/cases.json) |
-| The role names, and the claim that marks an agent's account | the Rust SDK's [roles.rs](https://github.com/Xynoplex/sdk/blob/main/rust/sdk/src/roles.rs), held to the launcher's by `npm run lint:service-role` |
+| How a person and an agent are named | the Rust SDK's [identity.rs](https://github.com/xynolog/sdk/blob/main/rust/sdk/src/identity.rs), held to [protocol/specs/src/principals/cases.json](../../protocol/specs/src/principals/cases.json) |
+| The role names, and the claim that marks an agent's account | the Rust SDK's [roles.rs](https://github.com/xynolog/sdk/blob/main/rust/sdk/src/roles.rs), held to the launcher's by `npm run lint:service-role` |
 
 A protected handler takes `Authenticated` (or `MediaOrBearer`), which runs
 before its body is read, so an unauthenticated request never reaches a parser.
@@ -62,7 +62,7 @@ challenge; the reason goes to the log (`auth_failed`), never to the caller.
 ## The issuer's keys
 
 The gateway holds the key set the issuer publishes, and fetches it on three
-occasions. Their timings are the `bearerAuth` scheme's `x-semiont-limits` in
+occasions. Their timings are the `bearerAuth` scheme's `x-xynolog-limits` in
 [protocol/specs/src/openapi.json](../../protocol/specs/src/openapi.json):
 
 - **None is held**, or the one held is `keySetMaxAgeSeconds` old.
@@ -88,7 +88,7 @@ than the one.
 A request answered 401 is read as far as its `Authorization` header and no
 further: no body, no call to the Archivist, nothing published. It is logged
 ([LOGGING.md](LOGGING.md#authentication-failures-warn)) and counted in
-`semiont.gateway.unauthenticated` by its `reason`. A token costs a signature
+`xynolog.gateway.unauthenticated` by its `reason`. A token costs a signature
 check against the keys held.
 
 A refused request is counted against the holder its token names, read without
@@ -97,9 +97,9 @@ of a token naming the trusted issuer. A request with no token, or with one that
 names another issuer or no holder, is counted in one count shared by all such
 requests. Each holder may have
 `refusalBurst` requests refused at once and `refusalsPerSecond` after, per
-process (the bearer scheme's `x-semiont-limits`); past that, a refused request
+process (the bearer scheme's `x-xynolog-limits`); past that, a refused request
 is answered 429 `refusal-rate` with a `Retry-After`, in place of its 401, and
-counted in `semiont.gateway.refused`. A token that verifies is never counted or
+counted in `xynolog.gateway.refused`. A token that verifies is never counted or
 limited, so a forged token naming someone else cannot lock them out. The
 gateway counts at most `refusalHolders` holders and drops the one it began
 counting first. A caller that varies the holder its tokens name is bounded by
@@ -123,7 +123,7 @@ access token in hand lapses minutes later.
 
 - **Every 401 is logged** at `warn` with `type: "auth_failed"`, a `reason`
   (`missing_token`, `invalid_token`, `invalid_media_token`) and the verifier's
-  error, and counted by that reason in `semiont.gateway.unauthenticated`;
+  error, and counted by that reason in `xynolog.gateway.unauthenticated`;
   `logLevel: debug` also logs each success with the DID it resolved.
 - **`JWT_SECRET` is a ring**: the first key signs, every key verifies, and each
   must be 32 characters or more — check them one by one:

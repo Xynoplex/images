@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { getTargetSource, getTargetSelector, getBodySource } from '@xynoplex/core';
+import { getTargetSource, getTargetSelector, getBodySource } from '@xynolog/core';
 import { signInSession } from '../fixtures/sdk-session';
 
 /**
@@ -17,7 +17,7 @@ import { signInSession } from '../fixtures/sdk-session';
  * `source` and nothing else), so the `mark.annotation` below is accepted: a
  * successful create + serve IS the verification that whole-resource targets
  * are first-class. (The deterministic check of the SDK's side lives in
- * `@xynoplex/sdk`'s `mark-annotation-target.test.ts`; this is the system-level
+ * `@xynolog/sdk`'s `mark-annotation-target.test.ts`; this is the system-level
  * guard against the live stack.)
  *
  * Self-seeding: creates its own two resources, so it doesn't depend on the

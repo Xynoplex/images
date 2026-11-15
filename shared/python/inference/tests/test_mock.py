@@ -6,8 +6,8 @@ import pytest
 from aio import run
 from spec import JsonObject
 
-from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredReadError, StructuredResponse
-from semiont_inference.mock import MockInferenceClient
+from xynolog_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredReadError, StructuredResponse
+from xynolog_inference.mock import MockInferenceClient
 
 LIMITS = InferenceLimits(context_tokens=100, max_output_tokens=50, output_tokens_per_hour=None, accepts_temperature=None)
 

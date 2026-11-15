@@ -17,9 +17,9 @@ the error.
 The active session's `user$` emits exactly what `GET /api/users/me` returns:
 
 ```typescript
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
-const session = useObservable(useSemiont().activeSession$);
+const session = useObservable(useXynolog().activeSession$);
 const user = useObservable(session?.user$);
 // { did, email, name, image, domain } — and nothing else
 ```
@@ -32,7 +32,7 @@ gates on a role flag is gating on `undefined`.
 
 ```tsx
 function MyComponent() {
-  const session = useObservable(useSemiont().activeSession$);
+  const session = useObservable(useXynolog().activeSession$);
   const me = useObservable(session?.user$);
 
   // Recognise this viewer's own work in the data.
@@ -50,18 +50,18 @@ dormant: it is where a refusal would arrive if a knowledge base ever made one.
 ```mermaid
 flowchart TD
     A[A call is answered 403] --> C[APIError, code forbidden, on session.errors$]
-    C --> D[SemiontBrowser observes it]
+    C --> D[XynologBrowser observes it]
     D --> E[signals.notifyPermissionDenied]
     E --> G[PermissionDeniedModal shows]
 ```
 
-1. **The transport** (`@xynoplex/http-transport`) throws an `APIError` with status 403 and code
+1. **The transport** (`@xynolog/http-transport`) throws an `APIError` with status 403 and code
    `forbidden`, and republishes it on the session's `errors$`.
-2. **`SemiontBrowser`** (`@xynoplex/sdk`) observes the active session's errors and raises the
+2. **`XynologBrowser`** (`@xynolog/sdk`) observes the active session's errors and raises the
    signal:
 
    ```typescript
-   // inside SemiontBrowser, observing the session's transport errors
+   // inside XynologBrowser, observing the session's transport errors
    declare const signals: SessionSignals; // the session's signals
 
    session.errors$.subscribe((err) => {
@@ -73,7 +73,7 @@ flowchart TD
    });
    ```
 
-3. **`PermissionDeniedModal`** (`@xynoplex/react-ui`), mounted in `AuthShell` beside
+3. **`PermissionDeniedModal`** (`@xynolog/react-ui`), mounted in `AuthShell` beside
    `SessionEndedModal`, reads `permissionDenied$` from `activeSignals$` and shows. Its own copy
    is in the person's language; beneath it is the refusal's message, unaltered and marked as the
    knowledge base's. It offers going back, going home, and signing in as someone else, and
@@ -86,7 +86,7 @@ A call that is refused still rejects where it was made:
 
 ```typescript
 try {
-  await semiont.mark.delete(resourceId, annotationId);
+  await xynolog.mark.delete(resourceId, annotationId);
 } catch (error) {
   if (error instanceof APIError && error.status === 403) {
     // Already routed to SessionSignals: the modal is showing.
@@ -104,7 +104,7 @@ Raise the signal on a test browser and render the modal against it. This is the 
 replaces `@headlessui/react`'s `Dialog` and `Transition` with plain elements:
 
 ```tsx
-import { renderWithProviders, createTestBrowserWithSignals, screen } from '@xynoplex/react-ui/test-utils';
+import { renderWithProviders, createTestBrowserWithSignals, screen } from '@xynolog/react-ui/test-utils';
 
 const SAID = 'Archiving needs the curator role.';
 
@@ -121,7 +121,7 @@ describe('Authorization', () => {
 
 ## When the modal does not appear
 
-- **Was there a 403?** Against a Semiont gateway there is not: every refusal is a 401, and the
+- **Was there a 403?** Against a Xynolog gateway there is not: every refusal is a 401, and the
   modal is expected never to show.
 - **Is the page inside the protected layout?** `AuthShell` mounts only around `know/` and
   `moderate/`. Outside it the modal is not mounted.

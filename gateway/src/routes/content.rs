@@ -14,15 +14,15 @@ use axum::response::Response;
 use futures::StreamExt;
 use opentelemetry::KeyValue;
 use opentelemetry::trace::SpanKind;
-use xynoplex::bus_log::bus_log;
-use xynoplex::types::{CreateResourceResponse, ResourceId};
-use semiont_observability::logging;
 use serde_json::json;
 use std::sync::Arc;
+use xynolog::bus_log::bus_log;
+use xynolog::types::{CreateResourceResponse, ResourceId};
+use xynolog_observability::logging;
 
 fn caller_trace(headers: &HeaderMap) -> opentelemetry::Context {
     let get = |name: &str| headers.get(name).and_then(|v| v.to_str().ok());
-    xynoplex_telemetry::continued(get("traceparent"), get("tracestate"))
+    xynolog_telemetry::continued(get("traceparent"), get("tracestate"))
 }
 
 /// `POST /resources`: the multipart body goes to the Archivist untouched,
@@ -45,7 +45,7 @@ pub async fn upload(
         .unwrap_or_default()
         .to_owned();
     let roles = principal.roles.clone().unwrap_or_default();
-    let resource_id = xynoplex_telemetry::in_span(
+    let resource_id = xynolog_telemetry::in_span(
         "content.put.server".to_owned(),
         SpanKind::Server,
         Vec::new(),
@@ -84,7 +84,7 @@ async fn bytes_of(
     cache_control: &'static str,
 ) -> Result<Response, ApiError> {
     bus_log("GET", "content", &json!({ "resourceId": id }), None, None);
-    let (body, media_type) = xynoplex_telemetry::in_span(
+    let (body, media_type) = xynolog_telemetry::in_span(
         "content.get.server".to_owned(),
         SpanKind::Server,
         vec![KeyValue::new("resource.id", id.to_string())],

@@ -51,7 +51,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # wheels, so the environment is whole without this stage's tree.
 #
 # --all-extras is every graph database's client and every provider's library:
-# each extra of semiont-librarian brings the extra of the same name of the
+# each extra of xynolog-librarian brings the extra of the same name of the
 # graph stores or of the inference drivers, and with it the client that
 # database is asked through or the library that provider is asked through. An
 # image for one database and one provider names those two extras in its place
@@ -60,17 +60,17 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
 # vector index and the embedding providers are asked over HTTP, with what
 # every install has too.
 RUN uv sync --project librarian --locked --no-dev --no-editable --all-extras \
-      --no-install-package xynoplex \
-      --no-install-package semiont-graph \
-      --no-install-package semiont-inference \
-      --no-install-package semiont-service \
-      --no-install-package semiont-vectors && \
+      --no-install-package xynolog \
+      --no-install-package xynolog-graph \
+      --no-install-package xynolog-inference \
+      --no-install-package xynolog-service \
+      --no-install-package xynolog-vectors && \
     uv pip install --python /opt/venv/bin/python --no-deps \
-      .local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl \
-      .local/shared-python-packages/semiont_graph-*.whl \
-      .local/shared-python-packages/semiont_inference-*.whl \
-      .local/shared-python-packages/semiont_service-*.whl \
-      .local/shared-python-packages/semiont_vectors-*.whl
+      .local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl \
+      .local/shared-python-packages/xynolog_graph-*.whl \
+      .local/shared-python-packages/xynolog_inference-*.whl \
+      .local/shared-python-packages/xynolog_service-*.whl \
+      .local/shared-python-packages/xynolog_vectors-*.whl
 
 FROM python:${PYTHON_FLOOR}-alpine
 # Patch base-image OS packages so Alpine's security fixes apply even when the
@@ -83,12 +83,12 @@ RUN pip uninstall --yes --root-user-action=ignore pip
 # The uid every service image runs as. The Librarian mounts nothing: what it
 # reads of the record and of its principals' profiles it asks the Archivist
 # on the bus.
-RUN addgroup --system --gid 1001 semiont && \
-    adduser --system --uid 1001 --ingroup semiont --home /home/semiont semiont
+RUN addgroup --system --gid 1001 xynolog && \
+    adduser --system --uid 1001 --ingroup xynolog --home /home/xynolog xynolog
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY LICENSE librarian/NOTICE /home/semiont/
+COPY LICENSE librarian/NOTICE /home/xynolog/
 
 # The model catalogue: what models.dev says each model of Google, OpenAI and
 # Together can take, which those providers' own APIs do not say. A model of one
@@ -97,15 +97,15 @@ COPY LICENSE librarian/NOTICE /home/semiont/
 # shared/python/inference/scripts/generate-model-catalogue.mjs from the npm package
 # shared/python/inference/package.json pins, and held to that pin by CI's drift job. Nothing is fetched
 # to build it here. Its licence notice goes with it.
-COPY shared/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
-COPY shared/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE
+COPY shared/python/inference/tests/catalogue/model-catalogue.json /usr/share/xynolog/model-catalogue.json
+COPY shared/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/xynolog/model-catalogue.LICENSE
 COPY shared/supervise.sh /usr/local/bin/supervise.sh
 COPY shared/boot.sh /usr/local/bin/boot.sh
 
 WORKDIR /kb
-RUN chown semiont:semiont /kb
+RUN chown xynolog:xynolog /kb
 
-USER semiont
+USER xynolog
 
 # `python` is the environment's.
 ENV PATH=/opt/venv/bin:$PATH
@@ -121,4 +121,4 @@ ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/boot.sh"]
 # launcher's census (TestConfigDocumentsAreWhereTheImagesLook) reads it here.
 # `-P` keeps the working directory off the import path: a file in /kb is never
 # a module the service imports.
-CMD ["python", "-P", "-m", "semiont_librarian", "--config", "/etc/semiont/librarian.json"]
+CMD ["python", "-P", "-m", "xynolog_librarian", "--config", "/etc/xynolog/librarian.json"]

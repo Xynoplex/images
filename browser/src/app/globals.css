@@ -1,4 +1,4 @@
-@import '@xynoplex/react-ui/styles';
+@import '@xynolog/react-ui/styles';
 @import "tailwindcss";
 
 /* Load Tailwind config */
@@ -10,7 +10,7 @@
 /* Scan the Browser's source for Tailwind classes */
 @source "../../src";
 
-/* Scan @xynoplex/react-ui for Tailwind classes */
+/* Scan @xynolog/react-ui for Tailwind classes */
 @source "../../../../packages/typescript/react-ui/src";
 
 /* Light mode (default) */
@@ -40,11 +40,11 @@ body {
 }
 
 /* Knowledge layout background that respects data-theme */
-.semiont-knowledge-layout {
+.xynolog-knowledge-layout {
   background-color: #f9fafb; /* gray-50 */
 }
 
-[data-theme="dark"] .semiont-knowledge-layout {
+[data-theme="dark"] .xynolog-knowledge-layout {
   background-color: #111827; /* gray-900 */
 }
 

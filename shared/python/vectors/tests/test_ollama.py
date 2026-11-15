@@ -11,8 +11,8 @@ import pytest
 from aio import run, soon
 from provider import NOT_FETCHED, Answer, Ollama, always, saying, wait_out
 
-from semiont_vectors.embedding import BatchPolicy, EmbeddingProviderError, SliceRef
-from semiont_vectors.ollama import OLLAMA_BATCH_POLICY, OllamaEmbeddingProvider
+from xynolog_vectors.embedding import BatchPolicy, EmbeddingProviderError, SliceRef
+from xynolog_vectors.ollama import OLLAMA_BATCH_POLICY, OllamaEmbeddingProvider
 
 MODEL = "nomic-embed-text"
 

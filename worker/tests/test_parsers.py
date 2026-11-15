@@ -13,9 +13,9 @@ import pytest
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from xynoplex.annotations import TextSpan
+from xynolog.annotations import TextSpan
 
-from semiont_worker.detection.parsers import (
+from xynolog_worker.detection.parsers import (
     Anchored,
     AssessmentMatch,
     CommentMatch,
@@ -50,11 +50,11 @@ EVERY_KIND: Final = pytest.mark.parametrize(("read", "required", "label", "of"),
 
 def anchors(reader: InMemoryMetricReader) -> Counter[tuple[object, ...]]:
     """How many anchors have been counted so far, by what was anchored and how."""
-    return counted(reader, "semiont.detection.anchors", "detection.label", "anchor.method")
+    return counted(reader, "xynolog.detection.anchors", "detection.label", "anchor.method")
 
 
 def said(caplog: pytest.LogCaptureFixture, level: int) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.levelno == level]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno == level]
 
 
 @EVERY_KIND
@@ -89,7 +89,7 @@ def test_every_span_found_is_counted_by_its_kind_and_by_how_it_was_found(
 def test_a_proposal_the_text_does_not_hold_is_warned_of_as_what_it_was_of(
     read: Read, required: dict[str, JsonValue], label: str, of: dict[str, str], caplog: pytest.LogCaptureFixture
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     read([{"exact": "Lovelace was never here at all.", **required}, {"exact": "Babbage", **required}], TEXT)
     (warned,) = said(caplog, logging.WARNING)
     assert warned.getMessage() == "Proposal dropped — text not found in source"
@@ -102,7 +102,7 @@ def test_a_proposal_the_text_does_not_hold_is_warned_of_as_what_it_was_of(
 def test_a_span_found_where_the_model_did_not_say_which_is_warned_of_with_the_words_as_the_model_quoted_them(
     read: Read, required: dict[str, JsonValue], label: str, of: dict[str, str], caplog: pytest.LogCaptureFixture
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     read([{"exact": "babbage", **required}], TEXT)
     (warned,) = said(caplog, logging.WARNING)
     assert warned.getMessage() == "Annotation anchored via degraded method"
@@ -114,7 +114,7 @@ def test_a_span_found_where_the_model_did_not_say_which_is_warned_of_with_the_wo
 
 
 def test_a_commenting_and_a_tagging_reply_say_how_many_of_their_elements_were_proposals(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     elements: list[JsonValue] = [{"exact": "Babbage", "comment": "Said."}, {"exact": "Ada"}, None, 7]
     read_comments(elements, TEXT)
     read_tags(elements, TEXT, "Place")
@@ -126,12 +126,12 @@ def test_a_commenting_and_a_tagging_reply_say_how_many_of_their_elements_were_pr
 
 
 def test_a_reply_that_is_read_whole_says_nothing_above_a_whisper(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     read_highlights([{"exact": "Babbage"}], TEXT)
     read_comments([{"exact": "Babbage", "comment": "Said."}], TEXT)
     read_assessments([{"exact": "Babbage", "assessment": "Judged."}], TEXT)
     read_tags([{"exact": "Babbage"}], TEXT, "Place")
-    assert [record for record in caplog.records if record.name == "semiont_worker" and record.levelno > logging.DEBUG] == []
+    assert [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno > logging.DEBUG] == []
 
 
 @pytest.mark.parametrize(("member", "read"), [("comment", read_comments), ("assessment", read_assessments)])

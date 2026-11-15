@@ -17,17 +17,17 @@ import pytest
 from aio import pass_time, run, turns
 from gateways import KnowledgeBaseStoodIn, stand_in
 from holding import DOMAIN, EVERY_JOB, SOURCE, Parties, answering, job
-from xynoplex.errors import SemiontError, SignInError, TransportError
-from xynoplex.http import SecretCredential, ServiceToken
-from xynoplex.identifiers import UserId
-from xynoplex.model import written
-from xynoplex.operations import OPERATIONS
-from xynoplex.types import WorkerEngineConfig, WorkerKnowledgeBaseConfig
-from semiont_service.knowledge_base import CONFIRMING_CHANNELS
 from standing_in import GENERATOR
+from xynolog.errors import SignInError, TransportError, XynologError
+from xynolog.http import SecretCredential, ServiceToken
+from xynolog.identifiers import UserId
+from xynolog.model import written
+from xynolog.operations import OPERATIONS
+from xynolog.types import WorkerEngineConfig, WorkerKnowledgeBaseConfig
+from xynolog_service.knowledge_base import CONFIRMING_CHANNELS
 
-from semiont_worker import agent
-from semiont_worker.agent import (
+from xynolog_worker import agent
+from xynolog_worker.agent import (
     WORKER_CHANNELS,
     AgentWorker,
     EngineAtWork,
@@ -37,7 +37,7 @@ from semiont_worker.agent import (
     watch_for_a_stall,
 )
 
-AGENT: Final = UserId("did:web:test.local:agents:semiont-worker")
+AGENT: Final = UserId("did:web:test.local:agents:xynolog-worker")
 
 
 def entry(provider: str, model: str, motivation: str) -> WorkerEngineConfig:
@@ -52,7 +52,7 @@ def entry(provider: str, model: str, motivation: str) -> WorkerEngineConfig:
 
 
 def logged(caplog: pytest.LogCaptureFixture, message: str) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.getMessage().startswith(message)]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.getMessage().startswith(message)]
 
 
 def test_the_agent_s_stream_names_the_replies_of_what_a_worker_awaits_the_two_broadcasts_it_reads_and_the_request_it_answers() -> None:
@@ -101,10 +101,10 @@ def test_a_claim_refused_as_unauthorized_refuses_the_knowledge_base_and_leaves_t
             assert parties.claims == 1
         await parties.transport.close()
 
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(scenario())
     # The refusal is said once, by what supervises the knowledge base, and the dispatcher's words are not repeated.
-    assert [record for record in caplog.records if record.name == "semiont_worker" and record.levelno >= logging.WARNING] == []
+    assert [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno >= logging.WARNING] == []
 
 
 def test_a_claim_refused_for_any_other_reason_is_said_in_the_log_and_the_engine_claims_again_when_it_is_woken(
@@ -144,7 +144,7 @@ def test_a_claim_refused_for_any_other_reason_is_said_in_the_log_and_the_engine_
             await asyncio.wait_for(working, 5)
         await parties.transport.close()
 
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     run(scenario())
     (declined,) = logged(caplog, "Claim declined; parked until the next wake-up")
     assert (declined.levelname, vars(declined)["domain"], vars(declined)["code"], vars(declined)["refusal"]) == (
@@ -266,8 +266,8 @@ def test_engines_on_one_stream_each_claim_with_their_own_filters_and_one_whose_c
 
 
 GATEWAY: Final = "http://gateway.test"
-SERVICE: Final = ServiceToken(SecretCredential(issuer="http://issuer.test", client_id="semiont-worker", client_secret="unused"))
-CLIENT_ID: Final = "semiont-worker-of-test-local"
+SERVICE: Final = ServiceToken(SecretCredential(issuer="http://issuer.test", client_id="xynolog-worker", client_secret="unused"))
+CLIENT_ID: Final = "xynolog-worker-of-test-local"
 
 
 def knowledge_base(*engines: WorkerEngineConfig) -> WorkerKnowledgeBaseConfig:
@@ -446,18 +446,18 @@ def test_an_agent_told_to_stop_while_it_asks_which_knowledge_base_it_is_opens_no
 @pytest.mark.parametrize(
     ("failure", "refused"),
     [
-        (SignInError("exchange", "Client-credentials grant for semiont-worker at http://issuer.test failed (HTTP 401)", status=401), True),
+        (SignInError("exchange", "Client-credentials grant for xynolog-worker at http://issuer.test failed (HTTP 401)", status=401), True),
         (SignInError("discovery", "OIDC discovery for http://issuer.test failed: HTTP 404", status=404), True),
         (TransportError.of_status("the gateway did not name the agent (HTTP 403)", 403, None), True),
-        (SignInError("exchange", "Client-credentials grant for semiont-worker at http://issuer.test got no answer"), False),
-        (SignInError("exchange", "Client-credentials grant for semiont-worker at http://issuer.test failed (HTTP 503)", status=503), False),
+        (SignInError("exchange", "Client-credentials grant for xynolog-worker at http://issuer.test got no answer"), False),
+        (SignInError("exchange", "Client-credentials grant for xynolog-worker at http://issuer.test failed (HTTP 503)", status=503), False),
         (TransportError.of_status("the gateway did not name the agent (HTTP 429)", 429, None), False),
         (TransportError.without_response("http://gateway.test/api/users/me got no answer"), False),
     ],
     ids=["grant refused", "no discovery", "not named", "no answer", "issuer down", "not now", "gateway unanswered"],
 )
 def test_a_sign_in_the_refresh_rule_would_not_try_again_is_a_refusal_and_any_other_is_trouble(
-    monkeypatch: pytest.MonkeyPatch, failure: SemiontError, refused: bool
+    monkeypatch: pytest.MonkeyPatch, failure: XynologError, refused: bool
 ) -> None:
     there = KnowledgeBaseStoodIn(GATEWAY, DOMAIN, AGENT, each_life=nothing_to_script)
     there.refusing.append(failure)

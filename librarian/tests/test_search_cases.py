@@ -30,9 +30,10 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, FakeContent, FakeEmbedding, FakeGraph, FakeProfiles, FakeRecord, FakeVectors, described, view
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import (
+from spec import ROOT, JsonObject, number, objects, only, read, strings, text, thing, whole, why
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import (
     Annotation,
     MatchResourcesRequest,
     MatchResourcesResult,
@@ -40,15 +41,14 @@ from xynoplex.types import (
     ResourceDescriptor,
     ResourceView,
 )
-from semiont_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
-from semiont_service.content import Content
-from semiont_vectors.embedding import EmbeddingProvider
-from semiont_vectors.store import CollectionAbsent, SearchFilter, SearchOptions, VectorSearchResult
-from spec import ROOT, JsonObject, number, objects, only, read, strings, text, thing, whole, why
+from xynolog_graph.interface import EntityTypeCount, GraphConnection, ResourceListing, ResourceQuery
+from xynolog_service.content import Content
+from xynolog_vectors.embedding import EmbeddingProvider
+from xynolog_vectors.store import CollectionAbsent, SearchFilter, SearchOptions, VectorSearchResult
 
-from semiont_librarian.limit import LimitRefused
-from semiont_librarian.reads import Described, GraphReads, ProfilesUnread, Record
-from semiont_librarian.text_search import Page, answer, search_resources, with_previews
+from xynolog_librarian.limit import LimitRefused
+from xynolog_librarian.reads import Described, GraphReads, ProfilesUnread, Record
+from xynolog_librarian.text_search import Page, answer, search_resources, with_previews
 
 TABLE = read(ROOT / "protocol/specs/src/librarian/search-cases.json")
 CASES = objects(TABLE["cases"], "cases")
@@ -407,7 +407,7 @@ def reply_to(request: MatchResourcesRequest, at: Stores) -> MatchResourcesResult
 
 def lines(caplog: pytest.LogCaptureFixture, level: int) -> list[dict[str, object]]:
     """What the Librarian logged at one level, each line with its facts."""
-    return [dict(vars(record)) for record in caplog.records if record.name == "semiont_librarian" and record.levelno == level]
+    return [dict(vars(record)) for record in caplog.records if record.name == "xynolog_librarian" and record.levelno == level]
 
 
 def test_the_reply_to_a_lexical_search_has_previews_the_offset_and_the_limit_and_its_persons_named() -> None:
@@ -479,7 +479,7 @@ def test_the_reply_to_a_semantic_search_keeps_each_passage_and_reads_no_bytes_an
 def test_a_reply_is_sent_with_no_one_named_where_its_profiles_cannot_be_read(caplog: pytest.LogCaptureFixture) -> None:
     at = stores(lists=ResourceListing(resources=[described(R1, wasAttributedTo=[ADA])], total=1))
     at.profiles.failing = ProfilesUnread("the Archivist did not answer")
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         response = reply_to(MatchResourcesRequest(search="hawk"), at).response
     (resource,) = in_wire_words(response.resources)
     assert resource["wasAttributedTo"] == [ADA]
@@ -537,7 +537,7 @@ def test_a_search_answered_by_meaning_logs_how_the_scores_fell_about_the_floor(c
         VectorSearchResult(score=0.75, resource_id=R1, text="another chunk of a"),
         VectorSearchResult(score=0.25, resource_id=R2, text="the only chunk of b"),
     ]
-    with caplog.at_level(logging.DEBUG, logger="semiont_librarian"):
+    with caplog.at_level(logging.DEBUG, logger="xynolog_librarian"):
         page = page_of(MatchResourcesRequest(search="ouranos"), at)
     assert (page.total, page.match_kind) == (1, "semantic")
     (said,) = [line for line in lines(caplog, logging.DEBUG) if line["msg"] == DISTRIBUTION]
@@ -557,7 +557,7 @@ def test_a_search_answered_by_meaning_logs_how_the_scores_fell_about_the_floor(c
 def test_a_search_that_could_not_be_answered_by_meaning_says_why_in_a_warning(caplog: pytest.LogCaptureFixture) -> None:
     at = stores(lists=nothing_listed())
     at.embedding.failing = Fails("the provider is away")
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         page = page_of(MatchResourcesRequest(search="ouranos"), at)
     assert page == Page(resources=[], total=0, match_kind="lexical")
     (said,) = lines(caplog, logging.WARNING)
@@ -571,7 +571,7 @@ def test_a_resource_read_from_its_view_is_on_the_page_as_the_view_holds_it_and_h
     at = stores(view(described(R1, name="As the view holds it")), lists=nothing_listed())
     at.graph.resources[R1] = None
     at.vectors.stated["search_resources"] = [VectorSearchResult(score=0.75, resource_id=R1, text="a passage of a")]
-    with caplog.at_level(logging.INFO, logger="semiont_librarian"):
+    with caplog.at_level(logging.INFO, logger="xynolog_librarian"):
         (resource,) = in_wire_words(page_of(MatchResourcesRequest(search="ouranos"), at).resources)
     assert (resource["name"], resource["content"]) == ("As the view holds it", "a passage of a")
     assert at.record.asked == [R1]

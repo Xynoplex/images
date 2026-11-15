@@ -2,9 +2,9 @@
 //! tag schemas, and what its principals are called.
 
 use crate::{Object, RecordError, dictionary_order, indented, read_object};
-use xynoplex::channels::{Channel, FrameEntityTypeAdded, FrameTagSchemaAdded, PrincipalProfiled};
 use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
+use xynolog::channels::{Channel, FrameEntityTypeAdded, FrameTagSchemaAdded, PrincipalProfiled};
 
 pub struct Projections {
     dir: PathBuf,

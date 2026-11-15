@@ -1,7 +1,7 @@
 """What a point of the index is, held to `protocol/specs/src/vectors/payload-cases.json` with no store.
 
 The table is the one every implementation of the stores runs. Here
-`semiont_vectors.payload` alone is held to all of it: the id a point is kept
+`xynolog_vectors.payload` alone is held to all of it: the id a point is kept
 under and its payload, whole, for each point a stored case states, in the
 chunks' order; the stamp read from a payload, a resource's and an
 annotation's; and the result read from one. Of the point that remembers a
@@ -40,7 +40,7 @@ from store_contract import (
     written_stamp,
 )
 
-from semiont_vectors.payload import (
+from xynolog_vectors.payload import (
     ANNOTATION_STAMP_MEMBERS,
     annotation_key,
     annotation_of,
@@ -53,7 +53,7 @@ from semiont_vectors.payload import (
     result_of,
     stamp_of,
 )
-from semiont_vectors.store import AnnotationStamp
+from xynolog_vectors.store import AnnotationStamp
 
 TABLE = read(SPEC / "vectors/payload-cases.json")
 COLLECTIONS = thing(TABLE["collections"], "collections")

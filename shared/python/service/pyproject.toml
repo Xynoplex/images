@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-service"
+name = "xynolog-service"
 dynamic = ["version"]
-description = "What every Python service of Semiont does to be one: read its configuration document, answer for its health, write its log, and export its telemetry"
+description = "What every Python service of Xynolog does to be one: read its configuration document, answer for its health, write its log, and export its telemetry"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 classifiers = [
@@ -31,12 +31,12 @@ dependencies = [
     "opentelemetry-exporter-otlp-proto-http>=1.30,<2",
     "opentelemetry-sdk>=1.30,<2",
     "pydantic",
-    "xynoplex",
+    "xynolog",
 ]
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -56,7 +56,7 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_service"]
+packages = ["src/xynolog_service"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -66,7 +66,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this package's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_service"]
+source = ["xynolog_service"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

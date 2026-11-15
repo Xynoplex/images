@@ -13,10 +13,10 @@ from typing import Final
 import pytest
 from aio import run
 from rig import FakeGraph, FakeRecord, described, view
-from xynoplex.identifiers import ResourceId
+from xynolog.identifiers import ResourceId
 
-from semiont_librarian.grace import Graced, described_if_readable, resource_with_view_grace
-from semiont_librarian.reads import Described
+from xynolog_librarian.grace import Graced, described_if_readable, resource_with_view_grace
+from xynolog_librarian.reads import Described
 
 R1: Final = ResourceId("res-1")
 
@@ -78,7 +78,7 @@ def unread_views(caplog: pytest.LogCaptureFixture) -> list[tuple[object, object]
     return [
         (vars(record)["resourceId"], vars(record)["error"])
         for record in caplog.records
-        if record.name == "semiont_librarian" and record.levelno == logging.WARNING and "view could not be read" in record.getMessage()
+        if record.name == "xynolog_librarian" and record.levelno == logging.WARNING and "view could not be read" in record.getMessage()
     ]
 
 
@@ -90,7 +90,7 @@ def test_a_record_that_cannot_be_read_is_a_resource_that_is_not_read_and_a_warni
 
         assert await resource_with_view_grace(graph, record, R1) == Graced(resource=None, lagged_behind_view=False)
 
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         run(scenario())
 
     assert unread_views(caplog) == [(R1, "the Archivist did not answer")]
@@ -109,7 +109,7 @@ def test_a_view_that_only_adds_to_an_answer_is_read_or_is_none_and_one_that_is_n
         unread.unread.add(R1)
         assert await described_if_readable(unread, R1) is None
 
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         run(scenario())
 
     assert unread_views(caplog) == [(R1, f"{R1} could not be read of the record")]

@@ -14,8 +14,8 @@ from provider import Answer
 from provider_chat_completions import ChatCompletions, alone, completed, listing, llamacpp_entry, llamacpp_error
 from spec import JsonObject
 
-from semiont_inference.interface import InferenceClient, InferenceLimits, ProviderStatusError
-from semiont_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.interface import InferenceClient, InferenceLimits, ProviderStatusError
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
 
 ELEMENT: JsonObject = {"type": "object", "properties": {"exact": {"type": "string"}}, "required": ["exact"], "additionalProperties": False}
 
@@ -232,24 +232,24 @@ LOADED = 'sorted(name for name in sys.modules if name.split(".")[0] in ("httpx2"
 
 ASKING_FOR_LLAMACPP = f"""
 import sys
-import semiont_inference
-from semiont_inference.interface import InferenceLimits
+import xynolog_inference
+from xynolog_inference.interface import InferenceLimits
 
 before = {LOADED}
-from semiont_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
 
 client = LlamaCppInferenceClient(model="served", base_url="http://127.0.0.1:1/v1", api_key=None)
-print(before, client.provider, "openai" in sys.modules, "httpx2" in sys.modules, "semiont_inference.llamacpp" in sys.modules)
+print(before, client.provider, "openai" in sys.modules, "httpx2" in sys.modules, "xynolog_inference.llamacpp" in sys.modules)
 """
 
 WITHOUT_OPENAIS_LIBRARY = """
 import sys
 
 sys.modules["openai"] = None  # as an interpreter has it where the library is not installed
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 try:
-    import semiont_inference.llamacpp
+    import xynolog_inference.llamacpp
 except ModuleNotFoundError as missing:
     print(type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None).provider)
@@ -261,9 +261,9 @@ import sys
 sys.modules["httpx2"] = None  # the library is installed, and something it imports is not
 
 try:
-    import semiont_inference.llamacpp
+    import xynolog_inference.llamacpp
 except ModuleNotFoundError as missing:
-    print(type(missing).__name__, "|", missing.name, "|", "semiont-inference" in str(missing))
+    print(type(missing).__name__, "|", missing.name, "|", "xynolog-inference" in str(missing))
 """
 
 
@@ -274,7 +274,7 @@ def test_asking_for_the_llamacpp_driver_is_what_imports_openais_library() -> Non
 def test_without_openais_library_the_llamacpp_driver_fails_naming_its_extra_and_an_ollama_client_is_made() -> None:
     said = (
         "The llama.cpp driver needs OpenAI's `openai` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[llamacpp]`."
+        "It comes with the extra: install `xynolog-inference[llamacpp]`."
     )
     assert alone(WITHOUT_OPENAIS_LIBRARY).splitlines() == [f"ModuleNotFoundError | openai | ModuleNotFoundError | {said}", "ollama"]
 

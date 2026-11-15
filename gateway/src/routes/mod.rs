@@ -12,8 +12,8 @@ use crate::app::App;
 use crate::http::{edge, not_found};
 use axum::Router;
 use axum::routing::{MethodRouter, get, post};
-use semiont_core::spec::{self, spec};
 use std::sync::Arc;
+use xynolog_core::spec::{self, spec};
 
 type Route = (&'static str, &'static str, fn() -> MethodRouter<Arc<App>>);
 

@@ -1,7 +1,7 @@
 # Archive and Clone
 
 Two lifecycle actions on a resource. Both live in the **Resource Info** panel
-(`ResourceInfoPanel`, `@xynoplex/react-ui`) and both go through the SDK.
+(`ResourceInfoPanel`, `@xynolog/react-ui`) and both go through the SDK.
 
 ## Archive
 

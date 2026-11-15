@@ -48,15 +48,15 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: ${{ runner.temp }}/sdk-artifacts
-          key: xynoplex-sdk-${{ steps.pin.outputs.commit }}-${{ env.SDK_LANGUAGES }}
+          key: xynolog-sdk-${{ steps.pin.outputs.commit }}-${{ env.SDK_LANGUAGES }}
 
       - name: Check out the pinned SDK
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v7.0.1
         with:
-          repository: Xynoplex/sdk
+          repository: xynolog/sdk
           ref: ${{ steps.pin.outputs.commit }}
-          path: .xynoplex-sdk
+          path: .xynolog-sdk
           submodules: recursive
 
       - name: Build the bundle
@@ -64,7 +64,7 @@ jobs:
         env:
           BUNDLE: ${{ runner.temp }}/sdk-artifacts
         run: |
-          built="$(bash .xynoplex-sdk/scripts/resolve-artifact-bundle.sh $SDK_LANGUAGES)"
+          built="$(bash .xynolog-sdk/scripts/resolve-artifact-bundle.sh $SDK_LANGUAGES)"
           cp -a "$built" "$BUNDLE"
 
       - name: Verify the bundle against the SDK and Protocol pins

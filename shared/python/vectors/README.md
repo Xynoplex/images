@@ -1,13 +1,13 @@
-# semiont-vectors
+# xynolog-vectors
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-vectors)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=python-vectors)](https://app.codecov.io/gh/xynolog/images/components)
 
-The vector index [Semiont][semiont]'s Python services write and search, and
+The vector index [Xynolog][xynolog]'s Python services write and search, and
 the embedding providers that make its vectors, each behind one interface.
 
-It is for whoever writes a Semiont service in Python that keeps the index or
+It is for whoever writes a Xynolog service in Python that keeps the index or
 searches it: the Smelter writes it, and the Librarian searches it. A program that only reads and writes a
-knowledge base needs the SDK, [`semiont`][sdk-python], and not this package.
+knowledge base needs the SDK, [`xynolog`][sdk-python], and not this package.
 
 It runs on asyncio and requires Python 3.12 or later. It is checked by
 `mypy --strict` and by `pyright` in strict mode, and ships its types
@@ -17,7 +17,7 @@ It runs on asyncio and requires Python 3.12 or later. It is checked by
 
 All of it. Qdrant and both providers are asked over HTTP, with `httpx`, so
 no database's client and no provider's library is installed, and there is no
-extra. Its dependencies are `semiont`, `pydantic` and `httpx`.
+extra. Its dependencies are `xynolog`, `pydantic` and `httpx`.
 
 | Store | What it is | Run against a server |
 | --- | --- | --- |
@@ -38,9 +38,9 @@ text is for: `embed_documents` for the texts that are put in an index, and
 `embed_query` for a text an index is searched by.
 
 ```python
-from xynoplex.identifiers import ResourceId
-from semiont_vectors.embedding import EmbeddingProvider
-from semiont_vectors.store import EmbeddingChunk, SearchOptions, VectorSearchResult, VectorStore
+from xynolog.identifiers import ResourceId
+from xynolog_vectors.embedding import EmbeddingProvider
+from xynolog_vectors.store import EmbeddingChunk, SearchOptions, VectorSearchResult, VectorStore
 
 
 async def index_and_ask(
@@ -78,10 +78,10 @@ read its knowledge base's three collections.
 ```python
 import os
 
-from xynoplex.identity import kb_did
+from xynolog.identity import kb_did
 
-from semiont_vectors.ollama import OllamaEmbeddingProvider
-from semiont_vectors.qdrant import QdrantVectorStore
+from xynolog_vectors.ollama import OllamaEmbeddingProvider
+from xynolog_vectors.qdrant import QdrantVectorStore
 
 
 async def connected() -> QdrantVectorStore:
@@ -102,10 +102,10 @@ collection is not there.
 ```python
 import os
 
-from xynoplex.identity import kb_did
+from xynolog.identity import kb_did
 
-from semiont_vectors.qdrant import QdrantVectorReader
-from semiont_vectors.store import SearchOptions, VectorReader, VectorSearchResult
+from xynolog_vectors.qdrant import QdrantVectorReader
+from xynolog_vectors.store import SearchOptions, VectorReader, VectorSearchResult
 
 
 async def reading() -> VectorReader:
@@ -123,7 +123,7 @@ async def nearest(reader: VectorReader, vector: list[float]) -> list[VectorSearc
 Every name is imported from the module that has it. The package's root
 exports nothing.
 
-- `semiont_vectors.store`: `VectorReader`, the protocol every reader is
+- `xynolog_vectors.store`: `VectorReader`, the protocol every reader is
   (`connect`, `disconnect`, `search_resources`, `search_annotations`,
   `search_by_resource`, `get_resource_stamp`); `VectorStore`, the protocol
   every store is, which is a reader's members, the writes and the listings
@@ -133,23 +133,23 @@ exports nothing.
   `make_anew`, which empties the index and has it state an `IndexStamp`;
   among the listings, `list_declined`, which answers a `Declined` for each
   such resource, and `index_stamp`.
-- `semiont_vectors.payload`: what a point of the index is, and how a
+- `xynolog_vectors.payload`: what a point of the index is, and how a
   resource's stamp, an annotation's stamp and a search result are read
   from one.
-- `semiont_vectors.merge`: `merge_by_resource`, which folds the chunks a
+- `xynolog_vectors.merge`: `merge_by_resource`, which folds the chunks a
   search found to one entry for each resource.
-- `semiont_vectors.memory`: `MemoryVectorStore`, a store, and so a reader
+- `xynolog_vectors.memory`: `MemoryVectorStore`, a store, and so a reader
   too.
-- `semiont_vectors.qdrant`: `QdrantVectorStore`, which makes its knowledge
+- `xynolog_vectors.qdrant`: `QdrantVectorStore`, which makes its knowledge
   base's collections and their payload indexes when it connects, and again
   when it makes the index anew, and `QdrantVectorReader`, which makes
   nothing.
-- `semiont_vectors.embedding`: `EmbeddingProvider`, the protocol every
+- `xynolog_vectors.embedding`: `EmbeddingProvider`, the protocol every
   provider is (`embed_query`, `embed_documents`, `dimensions`), and
   `EmbeddingProviderError`, the failure one raises.
-- `semiont_vectors.ollama`, `semiont_vectors.voyage`, `semiont_vectors.mock`:
+- `xynolog_vectors.ollama`, `xynolog_vectors.voyage`, `xynolog_vectors.mock`:
   one provider each.
-- `semiont_vectors.factory`: `create_vector_store`, `create_vector_reader`
+- `xynolog_vectors.factory`: `create_vector_store`, `create_vector_reader`
   and `create_embedding_provider`, which make the store and the reader of the
   knowledge base whose DID they are handed, and the provider, that a
   service's configuration document names
@@ -231,10 +231,10 @@ does, and holds what the Qdrant allows each and refuses it. It deletes every
 collection of that Qdrant before each case, and fails, and is not skipped,
 without either variable.
 
-[semiont]: https://github.com/Xynoplex/images
-[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python
-[payload-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/payload-cases.json
-[store-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/store-cases.json
-[token-cases]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/vectors/token-cases.json
-[vectors-config]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/components/schemas/VectorsConfig.json
-[embedding-config]: https://github.com/Xynoplex/images/blob/main/protocol/specs/src/components/schemas/EmbeddingConfig.json
+[xynolog]: https://github.com/xynolog/images
+[sdk-python]: https://github.com/xynolog/sdk/tree/main/python
+[payload-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/payload-cases.json
+[store-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/store-cases.json
+[token-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/token-cases.json
+[vectors-config]: https://github.com/xynolog/images/blob/main/protocol/specs/src/components/schemas/VectorsConfig.json
+[embedding-config]: https://github.com/xynolog/images/blob/main/protocol/specs/src/components/schemas/EmbeddingConfig.json

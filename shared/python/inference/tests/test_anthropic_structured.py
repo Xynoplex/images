@@ -14,8 +14,8 @@ from aio import run
 from provider import Anthropic, model_info, reply
 from spec import JsonObject
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.interface import StructuredReadError, StructuredResponse, StructuredUnsupportedError, TokenUsage
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.interface import StructuredReadError, StructuredResponse, StructuredUnsupportedError, TokenUsage
 
 PERSON: JsonObject = {
     "type": "object",

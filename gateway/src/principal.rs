@@ -2,11 +2,11 @@
 //! with no row behind it. The DID is the identity; everything downstream keys
 //! on it.
 
-use xynoplex::identity;
-use xynoplex::roles::{is_agent, roles_of};
-use xynoplex::types::UserId;
-use semiont_http_service::IssuerVerifier;
 use serde_json::Value;
+use xynolog::identity;
+use xynolog::roles::{is_agent, roles_of};
+use xynolog::types::UserId;
+use xynolog_http_service::IssuerVerifier;
 
 #[derive(Debug, Clone)]
 pub struct Principal {

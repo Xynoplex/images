@@ -16,12 +16,12 @@ function runtime() {
 
 const engine = runtime();
 if (command === 'list') {
-  const result = spawnSync(engine, ['images', '--filter', 'reference=ghcr.io/xynoplex/xynoplex-*'], { stdio: 'inherit' });
+  const result = spawnSync(engine, ['images', '--filter', 'reference=ghcr.io/xynolog/xynolog-*'], { stdio: 'inherit' });
   process.exit(result.status ?? 1);
 }
 if (command === 'clean') {
   for (const name of names) {
-    const tag = `ghcr.io/xynoplex/xynoplex-${name}:local`;
+    const tag = `ghcr.io/xynolog/xynolog-${name}:local`;
     const result = spawnSync(engine, ['image', 'rm', tag], { stdio: 'ignore' });
     if (!result.error && result.status === 0) console.log(`Removed ${tag}`);
   }

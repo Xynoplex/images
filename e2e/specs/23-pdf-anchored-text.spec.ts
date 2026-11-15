@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import type { Page } from '@playwright/test';
-import { resourceId as ridBrand } from '@xynoplex/sdk';
+import { resourceId as ridBrand } from '@xynolog/sdk';
 
 import { openResourceByName } from '../fixtures/discover';
 import { signInSession } from '../fixtures/sdk-session';
@@ -30,10 +30,10 @@ import { signInSession } from '../fixtures/sdk-session';
  * reads.
  */
 
-const IMG = '.semiont-pdf-annotation-canvas__image';
-const SVG = '.semiont-pdf-annotation-canvas__svg';
-const CONTAINER = '.semiont-pdf-annotation-canvas__container';
-const CANVAS = '.semiont-pdf-annotation-canvas';
+const IMG = '.xynolog-pdf-annotation-canvas__image';
+const SVG = '.xynolog-pdf-annotation-canvas__svg';
+const CONTAINER = '.xynolog-pdf-annotation-canvas__container';
+const CANVAS = '.xynolog-pdf-annotation-canvas';
 
 /**
  * What the Smelter's OCR returns for the Legible Scan fixture. Asserted as two
@@ -184,9 +184,9 @@ test.describe('scanned PDF annotations quote the server-derived map', () => {
     }
 
     // And the same text reaches the reader.
-    await expect(page.locator('.semiont-unified-panel')).toBeVisible();
+    await expect(page.locator('.xynolog-unified-panel')).toBeVisible();
     await expect
-      .poll(async () => (await page.locator('.semiont-unified-panel').innerText()).toUpperCase().includes('PIXELS'),
+      .poll(async () => (await page.locator('.xynolog-unified-panel').innerText()).toUpperCase().includes('PIXELS'),
         { timeout: 30_000 })
       .toBe(true);
   });

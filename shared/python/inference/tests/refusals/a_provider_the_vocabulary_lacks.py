@@ -1,7 +1,7 @@
 """A provider the protocol does not name is not one a client can be made for."""
 
-from semiont_inference.factory import create_inference_client
-from semiont_inference.interface import InferenceClient
+from xynolog_inference.factory import create_inference_client
+from xynolog_inference.interface import InferenceClient
 
 
 def an_unknown_provider(base_url: str) -> InferenceClient:

@@ -16,10 +16,10 @@ After the table's cases comes what no case of it rests on.
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.types import Annotation
 from spec import ROOT, JsonObject, objects, only, read, text, thing, whole, why
+from xynolog.types import Annotation
 
-from semiont_librarian.window import (
+from xynolog_librarian.window import (
     LARGEST_WINDOW,
     LEAST_WINDOW,
     Unplaced,

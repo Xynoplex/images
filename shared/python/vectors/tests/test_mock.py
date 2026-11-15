@@ -6,7 +6,7 @@ import math
 import pytest
 from aio import run
 
-from semiont_vectors.mock import MockEmbeddingProvider, deterministic_vector
+from xynolog_vectors.mock import MockEmbeddingProvider, deterministic_vector
 
 
 def length(vector: list[float]) -> float:

@@ -18,7 +18,7 @@ RUNTIME="$(detect_container_runtime)"
   node:26-bookworm bash -euc '
     mkdir -p /tmp/browser /tmp/browser-publish
     mkdir -p /packages/typescript/react-ui
-    tar -xzf /sdk-bundle/typescript/xynoplex-react-ui-*.tgz \
+    tar -xzf /sdk-bundle/typescript/xynolog-react-ui-*.tgz \
       -C /packages/typescript/react-ui --strip-components=1 package/translations
     cp -a /source/browser/. /tmp/browser/
     python3 /source/build-tools/prepare-sdk-package.py /sdk-bundle /tmp/browser/package.json

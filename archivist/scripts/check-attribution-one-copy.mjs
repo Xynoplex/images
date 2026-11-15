@@ -57,7 +57,7 @@ import { repositoryFiles } from '../../../.github/scripts/checks/repository-file
 const ROOT = fileURLToPath(new URL('../../..', import.meta.url));
 const ALLOWED = 'archivist/record/src/agents.rs';
 /** Where a principal acquires a name in TypeScript or Python — the Librarian's read-side resolver, and only it. */
-const NAMES_A_PRINCIPAL = 'librarian/src/semiont_librarian/naming.py';
+const NAMES_A_PRINCIPAL = 'librarian/src/xynolog_librarian/naming.py';
 /**
  * Assigning `name` onto something already known to be a principal. Matches
  * the resolver's own shape and a hand-rolled equivalent; reading a name is not

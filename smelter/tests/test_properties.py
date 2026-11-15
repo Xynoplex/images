@@ -47,10 +47,10 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from pydantic import JsonValue
 from rig import Held, Rig, World, drawn
-from semiont_vectors.memory import MemoryVectorStore
 from spec import JsonObject, text, thing
+from xynolog_vectors.memory import MemoryVectorStore
 
-from semiont_smelter.reconcile import ReconcileSummary
+from xynolog_smelter.reconcile import ReconcileSummary
 
 RESOURCES: Final = ("res-a", "res-b", "res-c")
 ENTITY_TYPES: Final = ("Person", "Place", "Treaty")

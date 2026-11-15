@@ -24,8 +24,8 @@ from neo4j import AsyncGraphDatabase
 from pydantic import JsonValue, TypeAdapter
 from spec import strings, text
 
-from semiont_graph.interface import GraphDatabase, ResourceQuery
-from semiont_graph.neo4j import Neo4jGraphDatabase, Neo4jGraphReader
+from xynolog_graph.interface import GraphDatabase, ResourceQuery
+from xynolog_graph.neo4j import Neo4jGraphDatabase, Neo4jGraphReader
 
 
 def told() -> tuple[str, str]:

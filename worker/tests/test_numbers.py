@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from semiont_worker.numbers import as_javascript_writes
+from xynolog_worker.numbers import as_javascript_writes
 
 
 @pytest.mark.parametrize(

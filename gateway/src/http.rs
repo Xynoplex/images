@@ -12,16 +12,16 @@ use axum::http::{HeaderMap, HeaderValue, Method, StatusCode, header};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use futures::StreamExt;
-use xynoplex::errors::TransportErrorCode;
-use xynoplex::types::{ErrorResponse, LimitRefusal, LimitRefusalCode, ResourceId};
-use semiont_http_service::bearer_token;
-use semiont_observability::logging;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::{Value, json};
 use std::ops::RangeInclusive;
 use std::sync::Arc;
 use std::time::Instant;
+use xynolog::errors::TransportErrorCode;
+use xynolog::types::{ErrorResponse, LimitRefusal, LimitRefusalCode, ResourceId};
+use xynolog_http_service::bearer_token;
+use xynolog_observability::logging;
 
 pub const PROTECTED_RESOURCE_METADATA_PATH: &str = "/.well-known/oauth-protected-resource";
 
@@ -299,7 +299,7 @@ pub async fn json_body(body: Body, operation: &str) -> Result<Value, ApiError> {
 /// A JSON body held to its operation's schema, 400 when it does not match,
 /// then read as its type: once it validates, it cannot fail to decode.
 pub fn conforming<T: DeserializeOwned>(value: Value, operation: &str) -> Result<T, ApiError> {
-    if let Some(problems) = semiont_core::spec::problems(&declared_body(operation)?.schema, &value)
+    if let Some(problems) = xynolog_core::spec::problems(&declared_body(operation)?.schema, &value)
     {
         return Err(ApiError::bad_request(problems));
     }

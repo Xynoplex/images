@@ -28,12 +28,12 @@ from typing import Annotated, Final, assert_never
 
 import pytest
 from pydantic import BaseModel, Field
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.types import Annotation, ResourceDescriptor
-from semiont_vectors.store import Declined, ResourceStamp
 from spec import ROOT, SPEC
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.types import Annotation, ResourceDescriptor
+from xynolog_vectors.store import Declined, ResourceStamp
 
-from semiont_smelter.reconcile import (
+from xynolog_smelter.reconcile import (
     Embed,
     EmbedAnnotation,
     Purge,

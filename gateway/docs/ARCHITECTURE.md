@@ -11,19 +11,19 @@ The gateway is a member of the repository's Rust workspace
 
 | Crate | Directory | What the gateway takes from it |
 |---|---|---|
-| `semiont-gateway` | `gateway` | Everything particular to the gateway: the routes, the ledger, the signal plane, token minting, principals and limits |
-| `semiont-core` | [packages/rust/core](../../packages/rust/core) | What every Rust service shares and no client needs: the embedded spec, reading the configuration document and the other service-only types generated from the spec, and (its `nats` feature) reaching the broker |
-| `xynoplex` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/sdk) | What a client needs too: the protocol's types, generated from the spec, which type every body the gateway reads and writes; naming the knowledge base and its principals; the realm's roles; and the bus log |
-| `xynoplex-telemetry` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
-| `semiont-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
-| `semiont-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
-| `xynoplex-http-transport` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/http-transport) | Signing in as a service account, to reach the Archivist |
-| `xynoplex-codegen` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
+| `xynolog-gateway` | `gateway` | Everything particular to the gateway: the routes, the ledger, the signal plane, token minting, principals and limits |
+| `xynolog-core` | [packages/rust/core](../../packages/rust/core) | What every Rust service shares and no client needs: the embedded spec, reading the configuration document and the other service-only types generated from the spec, and (its `nats` feature) reaching the broker |
+| `xynolog` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/sdk) | What a client needs too: the protocol's types, generated from the spec, which type every body the gateway reads and writes; naming the knowledge base and its principals; the realm's roles; and the bus log |
+| `xynolog-telemetry` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
+| `xynolog-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
+| `xynolog-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
+| `xynolog-http-transport` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/http-transport) | Signing in as a service account, to reach the Archivist |
+| `xynolog-codegen` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
 
 ## Built against the spec
 
 The spec is compiled into the binary.
-[semiont-core's build.rs](../../packages/rust/core/build.rs) reads
+[xynolog-core's build.rs](../../packages/rust/core/build.rs) reads
 `protocol/specs/src` — the bundles in `protocol/specs/` are gitignored build output — and writes
 three documents the binary embeds: the protocol's OpenAPI document, the
 Archivist's, and the component schemas as JSON Schema draft 7 (OpenAPI 3.0's
@@ -33,10 +33,10 @@ Rust types of the configuration documents from their schemas. The binary also
 embeds the bus registry and
 [bus-classification.json](../../packages/rust/core/src/bus-classification.json),
 which `packages/codegen/bus/generate-ts.mjs` derives from the registry beside core's
-TypeScript table. `semiont_core::spec` reads them: validators by schema name,
+TypeScript table. `xynolog_core::spec` reads them: validators by schema name,
 each channel's schema, the registry's operations, and which channels are
 replies and which write. [src/limits.rs](../src/limits.rs) reads what the
-gateway alone enforces: the limits (`x-semiont-limits`, `maxItems`), and, for
+gateway alone enforces: the limits (`x-xynolog-limits`, `maxItems`), and, for
 an operation that takes JSON, its body's schema and `maxBodyBytes`, which
 [src/http.rs](../src/http.rs)'s `json_body` holds a body to: one its
 Content-Length already puts over the limit is refused with 413 unread, and one
@@ -48,11 +48,11 @@ without a length once it passes the limit.
 step — the process exits non-zero, saying what is missing and never a secret:
 
 1. **The document** — the JSON file `--config` names
-   (`/etc/semiont/gateway.json` in the image), validated against `GatewayConfig`
-   ([src/config.rs](../src/config.rs), reading with `semiont_core::config`); a
+   (`/etc/xynolog/gateway.json` in the image), validated against `GatewayConfig`
+   ([src/config.rs](../src/config.rs), reading with `xynolog_core::config`); a
    failing field is named by its JSON pointer.
 2. **The key ring** (`JWT_SECRET`) and **the service account**
-   (`SEMIONT_OIDC_CLIENT_ID`, `SEMIONT_OIDC_CLIENT_SECRET`).
+   (`XYNOLOG_OIDC_CLIENT_ID`, `XYNOLOG_OIDC_CLIENT_SECRET`).
 3. **Logging and telemetry**, as the document and the environment say.
 4. **The Archivist's operations it calls** must be in the Archivist's spec.
 5. **The signal plane** — `in-process`, or NATS with the credentials the
@@ -120,7 +120,7 @@ lost; the client reconnects on its own.
 **Where the interface stands.** It is the boundary to the broker, and it is
 held: `npm run lint:broker-boundary` fails when the `async_nats` crate is named
 outside `nats.rs`, the dispatcher's JetStream queue (whose `JobQueue` interface
-is the same boundary on its side) and `semiont-core`'s broker helpers; when the
+is the same boundary on its side) and `xynolog-core`'s broker helpers; when the
 NATS plane is named outside `app.rs` (where the plane is chosen); or when any
 TypeScript imports a NATS client. The subjects, the bucket names and the round trip
 that confirms a subscription are private to `nats.rs`. Another broker would take an implementation of
@@ -181,7 +181,7 @@ What one principal may take and what one process can hold
 Nothing here asks whether a principal is a person or an agent: a limit's
 coefficient comes from the principal's roles ([src/limits.rs](../src/limits.rs)
 `PrincipalLimit`) — the baseline when it holds none the limit names, and
-unlimited for `semiont-service` and `semiont-worker`.
+unlimited for `xynolog-service` and `xynolog-worker`.
 
 - **Emits** ([src/rates.rs](../src/rates.rs)): a token bucket per DID in this
   process, checked before the body is read and before any correlation claim, so
@@ -198,18 +198,18 @@ unlimited for `semiont-service` and `semiont-worker`.
   unanswered.
 
 Every refusal names its limit in `code`, carries `Retry-After`, and counts in
-`semiont.gateway.refused`.
+`xynolog.gateway.refused`.
 
 ## Calls to the Archivist
 
 The Archivist holds the knowledge base's bytes and event log;
 [src/archivist.rs](../src/archivist.rs) is how the gateway reaches it, as itself
-— its service account's token (`semiont_http_transport::service_account`), from the issuer's
+— its service account's token (`xynolog_http_transport::service_account`), from the issuer's
 client-credentials grant, kept until shortly before it expires:
 
 | Client calls the gateway | The gateway calls the Archivist |
 |---|---|
-| `POST /resources` | `POST /resources`, the multipart body streamed unchanged, naming the caller in `Semiont-Principal` and `Semiont-Roles`, with the upload's `Idempotency-Key`; the Archivist's 422 comes back as `unprocessable` |
+| `POST /resources` | `POST /resources`, the multipart body streamed unchanged, naming the caller in `Xynolog-Principal` and `Xynolog-Roles`, with the upload's `Idempotency-Key`; the Archivist's 422 comes back as `unprocessable` |
 | `GET /resources/{id}`, `GET /api/resources/{id}` | `GET /resources/{id}/content`, streamed back unchanged |
 | `GET /resources/{id}/jsonld` | `GET /resources/{id}/jsonld` |
 | `GET /resources/{id}/annotations` | `GET /resources/{id}/annotations`, streamed back unread |
@@ -217,7 +217,7 @@ client-credentials grant, kept until shortly before it expires:
 | `POST /bus/subscribe` with a watermark | `GET /events/{resourceId}?fromSequence=N`, held to `ArchivistEventsResponse`, an answer at a time until the stream's `lastSequence` |
 
 The gateway waits for the Archivist as the Archivist's document states (its
-`x-semiont-limits`): `connectSeconds` for a connection, and `readSeconds` for
+`x-xynolog-limits`): `connectSeconds` for a connection, and `readSeconds` for
 each part of an answer. A read's answer begins within `connectSeconds` and
 `readSeconds` together of the read's first send, its retry included, and each
 next part of one that streams within `readSeconds` of being asked for. No
@@ -253,13 +253,13 @@ relays. The gateway makes no bus request of its own.
 
 ## Telemetry
 
-`semiont_observability::telemetry` exports over OTLP/HTTP (protobuf) the spans and
+`xynolog_observability::telemetry` exports over OTLP/HTTP (protobuf) the spans and
 metrics [protocol/specs/src/service-telemetry/telemetry.json](../../protocol/specs/src/service-telemetry/telemetry.json)
 lists for the gateway, and nothing else, under the resource the table lists for
-it: its name, its version and `semiont.kb`, the DID of the knowledge base its
+it: its name, its version and `xynolog.kb`, the DID of the knowledge base its
 document's `kb` names. They are the process's own readings, the gateway's
 instruments ([src/metrics.rs](../src/metrics.rs)) made on its meter, and the spans the
-routes state over `semiont_telemetry`, which reports to what it registered. It reads
+routes state over `xynolog_telemetry`, which reports to what it registered. It reads
 its variables itself and configures the SDK from them; nothing lets a library
 read the environment on its own behalf.
 

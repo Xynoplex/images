@@ -4,7 +4,7 @@
  * Exercises the full chain end-to-end (in jsdom):
  *
  *   localStorage seeded with a KB + token
- *     → fresh XynoplexBrowser constructs XynoplexSession for the active KB
+ *     → fresh XynologBrowser constructs XynologSession for the active KB
  *     → session asks the gateway who the stored token is
  *     → on 401: session clears token + raises sessionEnded$
  *     → SessionEndedModal (mounted by AuthShell) reads sessionEnded$
@@ -13,7 +13,7 @@
  * If any link in this chain breaks, the user sees an empty page instead of
  * the modal. This is the integration the unit tests miss.
  *
- * Nothing inside `@xynoplex/sdk` is mocked: the gateway and the issuer are a
+ * Nothing inside `@xynolog/sdk` is mocked: the gateway and the issuer are a
  * `fetch` stub. Asking who a token is is one request to `/api/users/me`
  * (`whoIs`). Refresh is the refresh grant at the issuer the stored session
  * names, keyed on that endpoint — every other fetch (the transport's event
@@ -25,10 +25,10 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
-import { XynoplexProvider, TranslationProvider, WebBrowserStorage } from '@xynoplex/react-ui';
-import { englishTranslationManager } from '@xynoplex/react-ui/test-utils';
-import { XynoplexBrowser, createHttpSessionFactory } from '@xynoplex/sdk';
-import en from '@xynoplex/react-ui/translations/en';
+import { XynologProvider, TranslationProvider, WebBrowserStorage } from '@xynolog/react-ui';
+import { englishTranslationManager } from '@xynolog/react-ui/test-utils';
+import { XynologBrowser, createHttpSessionFactory } from '@xynolog/sdk';
+import en from '@xynolog/react-ui/translations/en';
 
 // The shell is mounted under react-ui's own English, and the copy is read
 // from there, never retyped.
@@ -40,7 +40,7 @@ const alice = async (): Promise<Response> =>
   Response.json({ did: 'did:web:example.org:users:alice', email: 'alice@example.com', name: 'Alice', image: null, domain: 'example.org' });
 const refused = async (): Promise<Response> => new Response(null, { status: 401 });
 
-const TOKEN_ENDPOINT = 'https://issuer.test/realms/semiont/protocol/openid-connect/token';
+const TOKEN_ENDPOINT = 'https://issuer.test/realms/xynolog/protocol/openid-connect/token';
 const issuerReply = (json: unknown, status = 200): Response =>
   ({ ok: status < 300, status, json: async () => json }) as unknown as Response;
 const refreshCalls = () => fetchMock.mock.calls.filter(([url]) => url === TOKEN_ENDPOINT);
@@ -85,13 +85,13 @@ import { AuthShell } from '../AuthShell';
 
 function seedSession(access: string, refresh: string) {
   localStorage.setItem(
-    `semiont.session.${KB_ID}`,
-    JSON.stringify({ access, refresh, clientId: 'semiont-browser', tokenEndpoint: TOKEN_ENDPOINT }),
+    `xynolog.session.${KB_ID}`,
+    JSON.stringify({ access, refresh, clientId: 'xynolog-browser', tokenEndpoint: TOKEN_ENDPOINT }),
   );
 }
 
 function renderShell(children: React.ReactNode) {
-  const browser = new XynoplexBrowser({
+  const browser = new XynologBrowser({
     storage: new WebBrowserStorage(),
     sessionFactory: createHttpSessionFactory(),
   });
@@ -100,9 +100,9 @@ function renderShell(children: React.ReactNode) {
     ...render(
       <MemoryRouter>
         <TranslationProvider translationManager={englishTranslationManager}>
-          <XynoplexProvider browser={browser}>
+          <XynologProvider browser={browser}>
             <AuthShell>{children}</AuthShell>
-          </XynoplexProvider>
+          </XynologProvider>
         </TranslationProvider>
       </MemoryRouter>
     ),
@@ -112,8 +112,8 @@ function renderShell(children: React.ReactNode) {
 describe('AuthShell integration — KB session validation → modal', () => {
   beforeEach(() => {
     localStorage.clear();
-    localStorage.setItem('semiont.knowledgeBases', JSON.stringify([KB]));
-    localStorage.setItem('semiont.activeKnowledgeBaseId', KB_ID);
+    localStorage.setItem('xynolog.knowledgeBases', JSON.stringify([KB]));
+    localStorage.setItem('xynolog.activeKnowledgeBaseId', KB_ID);
     seedSession(makeFakeJwt(), makeFakeJwt());
 
     whoIs.mockReset();
@@ -143,7 +143,7 @@ describe('AuthShell integration — KB session validation → modal', () => {
 
     expect(screen.getByTestId('protected-content')).toBeInTheDocument();
     expect(screen.queryByText(copy.title)).not.toBeInTheDocument();
-    expect(localStorage.getItem(`semiont.session.${KB_ID}`)).not.toBeNull();
+    expect(localStorage.getItem(`xynolog.session.${KB_ID}`)).not.toBeNull();
 
     await browser.dispose();
   });
@@ -162,7 +162,7 @@ describe('AuthShell integration — KB session validation → modal', () => {
 
     expect(screen.getByText(copy.expired)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: copy.signInAgain })).toBeInTheDocument();
-    expect(localStorage.getItem(`semiont.session.${KB_ID}`)).toBeNull();
+    expect(localStorage.getItem(`xynolog.session.${KB_ID}`)).toBeNull();
     expect(screen.getByTestId('protected-content')).toBeInTheDocument();
 
     await browser.dispose();
@@ -188,7 +188,7 @@ describe('AuthShell integration — KB session validation → modal', () => {
     expect(screen.getByText(copy.title)).toBeInTheDocument();
     expect(screen.queryByText(copy.expired)).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: copy.signInAgain })).toBeInTheDocument();
-    expect(localStorage.getItem(`semiont.session.${KB_ID}`)).toBeNull();
+    expect(localStorage.getItem(`xynolog.session.${KB_ID}`)).toBeNull();
 
     await browser.dispose();
   });
@@ -205,7 +205,7 @@ describe('AuthShell integration — KB session validation → modal', () => {
     });
 
     expect(screen.queryByText(copy.title)).not.toBeInTheDocument();
-    expect(localStorage.getItem(`semiont.session.${KB_ID}`)).not.toBeNull();
+    expect(localStorage.getItem(`xynolog.session.${KB_ID}`)).not.toBeNull();
     expect(refreshCalls()).toHaveLength(0);
 
     await browser.dispose();
@@ -224,7 +224,7 @@ describe('AuthShell integration — KB session validation → modal', () => {
     await waitFor(() => expect(whoIs).toHaveBeenCalledTimes(2));
     expect(refreshCalls()).toHaveLength(1);
     expect(screen.queryByText(copy.title)).not.toBeInTheDocument();
-    const stored = JSON.parse(localStorage.getItem(`semiont.session.${KB_ID}`)!);
+    const stored = JSON.parse(localStorage.getItem(`xynolog.session.${KB_ID}`)!);
     expect(stored.access).toBe(newAccess);
 
     await browser.dispose();

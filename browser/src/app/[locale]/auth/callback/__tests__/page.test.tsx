@@ -7,7 +7,7 @@ import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { IdentityUnverifiableError, SignInError } from '@xynoplex/sdk';
+import { IdentityUnverifiableError, SignInError } from '@xynolog/sdk';
 
 const { mockReplace, mockCompleteSignIn, mockShowWarning, mockShowError } = vi.hoisted(() => ({
   mockReplace: vi.fn(),
@@ -35,11 +35,11 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => ({ completeSignIn: mockCompleteSignIn }),
+    useXynolog: () => ({ completeSignIn: mockCompleteSignIn }),
     useToast: () => ({ showWarning: mockShowWarning, showError: mockShowError }),
   };
 });

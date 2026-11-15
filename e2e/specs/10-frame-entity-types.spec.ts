@@ -50,15 +50,15 @@ test.describe('frame entity-type vocabulary', () => {
       'Person', 'Organization', 'Location', 'Event', 'Concept',
       'Product', 'Technology', 'Date', 'Author',
     ];
-    const tagList = page.locator('.semiont-tags');
+    const tagList = page.locator('.xynolog-tags');
     await expect(tagList).toBeVisible({ timeout: 15_000 });
 
     for (const type of DEFAULT_ENTITY_TYPES) {
-      // Each tag renders as a `.semiont-tag` span containing the literal
+      // Each tag renders as a `.xynolog-tag` span containing the literal
       // text. Use a strict text match scoped to the tag list so we don't
       // false-positive on the input placeholder or elsewhere.
       await expect(
-        tagList.locator('.semiont-tag', { hasText: new RegExp(`^${type}$`) }),
+        tagList.locator('.xynolog-tag', { hasText: new RegExp(`^${type}$`) }),
       ).toBeVisible({ timeout: 10_000 });
     }
 
@@ -74,7 +74,7 @@ test.describe('frame entity-type vocabulary', () => {
     // The page's input is the only top-level text input in the tags
     // section. Lock to a more specific selector to avoid grabbing
     // toolbar inputs when the layout grows.
-    const tagInput = page.locator('.semiont-entity-tags__input');
+    const tagInput = page.locator('.xynolog-entity-tags__input');
     await expect(tagInput).toBeVisible();
     await tagInput.fill(newTag);
 
@@ -98,7 +98,7 @@ test.describe('frame entity-type vocabulary', () => {
     // value. If this fails but the bus assertions passed, the bridge
     // is fine but the cache invalidation handler is broken.
     await expect(
-      tagList.locator('.semiont-tag', { hasText: new RegExp(`^${newTag}$`) }),
+      tagList.locator('.xynolog-tag', { hasText: new RegExp(`^${newTag}$`) }),
     ).toBeVisible({ timeout: 10_000 });
   });
 });

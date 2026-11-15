@@ -9,7 +9,7 @@ import sys
 import unicodedata
 from collections.abc import Iterator
 
-from semiont_service.white_space import WHITE_SPACE, trimmed
+from xynolog_service.white_space import WHITE_SPACE, trimmed
 
 
 def every_character() -> Iterator[str]:

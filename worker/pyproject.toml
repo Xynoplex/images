@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-worker"
+name = "xynolog-worker"
 dynamic = ["version"]
-description = "Semiont's Worker service: it claims annotation and generation jobs and runs them against a model"
+description = "Xynolog's Worker service: it claims annotation and generation jobs and runs them against a model"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 classifiers = [
@@ -20,13 +20,13 @@ classifiers = [
 # OpenTelemetry's API and pydantic are the SDK's dependencies too, and the SDK
 # states their versions: a bound written here would be a second copy of its.
 # What the service exports its telemetry with, OpenTelemetry's SDK and its
-# OTLP exporter, is required by semiont-service, which installs it.
+# OTLP exporter, is required by xynolog-service, which installs it.
 dependencies = [
     "opentelemetry-api",
     "pydantic",
-    "xynoplex",
-    "semiont-inference",
-    "semiont-service",
+    "xynolog",
+    "xynolog-inference",
+    "xynolog-service",
 ]
 
 # A provider's own library is not required: the service asks for a client by
@@ -35,21 +35,21 @@ dependencies = [
 # and with it that library. The image asks for every one (`--all-extras`, in
 # Dockerfile); an image built for one provider asks for that provider's alone.
 [project.optional-dependencies]
-anthropic = ["semiont-inference[anthropic]"]
-google = ["semiont-inference[google]"]
-llamacpp = ["semiont-inference[llamacpp]"]
-openai = ["semiont-inference[openai]"]
-together = ["semiont-inference[together]"]
-vllm = ["semiont-inference[vllm]"]
+anthropic = ["xynolog-inference[anthropic]"]
+google = ["xynolog-inference[google]"]
+llamacpp = ["xynolog-inference[llamacpp]"]
+openai = ["xynolog-inference[openai]"]
+together = ["xynolog-inference[together]"]
+vllm = ["xynolog-inference[vllm]"]
 
 # The SDK, the inference drivers and what every Python service is built on
 # are the ones in this repository: the service is checked and tested against
 # the types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
-semiont-inference = { path = "../shared/python/inference", editable = true }
-semiont-service = { path = "../shared/python/service", editable = true }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog-inference = { path = "../shared/python/inference", editable = true }
+xynolog-service = { path = "../shared/python/service", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -57,7 +57,7 @@ semiont-service = { path = "../shared/python/service", editable = true }
 [dependency-groups]
 dev = [
     # Every extra: the tests run the service with every provider's library, as its image has them.
-    "semiont-worker[anthropic,google,llamacpp,openai,together,vllm]",
+    "xynolog-worker[anthropic,google,llamacpp,openai,together,vllm]",
     "mypy==2.4.1",
     "pyright==1.1.414",
     "pytest>=9.1,<10",
@@ -71,7 +71,7 @@ path = "../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_worker"]
+packages = ["src/xynolog_worker"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -81,7 +81,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this service's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_worker"]
+source = ["xynolog_worker"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

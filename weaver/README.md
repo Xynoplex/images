@@ -1,20 +1,20 @@
-# semiont-weaver
+# xynolog-weaver
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-weaver)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=image-weaver)](https://app.codecov.io/gh/xynolog/images/components)
 
 **The Weaver keeps the graph in step with the record.** The record is a knowledge base's event
 log, which the [Archivist](../archivist) keeps; the graph is a graph database, Neo4j where the
 [launcher](../../apps/launcher/) runs it. The Weaver follows the recorded events that change
 what the graph holds, applies each to the graph, and says how far it has got. It is a Python
 service that answers `/health` on port 24102, and the launcher starts it with a knowledge base's
-other services (`semiont start`).
+other services (`xynolog start`).
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-weaver` |
+| Image | `ghcr.io/xynolog/xynolog-weaver` |
 | Port | 24102 (`/health`, and nothing else: everything it does is on the bus and in the graph) |
-| Command | `python -P -m semiont_weaver --config /etc/semiont/weaver.json` |
-| Code | Python, in this directory: [`src/semiont_weaver`](src/semiont_weaver) |
+| Command | `python -P -m xynolog_weaver --config /etc/xynolog/weaver.json` |
+| Code | Python, in this directory: [`src/xynolog_weaver`](src/xynolog_weaver) |
 | Specification | [protocol/contract/WEAVER.md](../../protocol/contract/WEAVER.md) |
 | Judged by | [protocol/conformance/weaver](../../protocol/conformance/weaver/README.md) |
 | Published | to no package index: the image only |
@@ -96,7 +96,7 @@ Those log lines are the signal that the graph may be behind.
 
 **An orphaned view is reported, not healed.** A resource the Archivist's catalog lists and the
 record holds no events for cannot be rebuilt, so reconcile counts it as `orphaned`. It means
-history was rewritten without the views being made again; `semiont clean --store state` clears
+history was rewritten without the views being made again; `xynolog clean --store state` clears
 them.
 
 ## Configuration
@@ -104,7 +104,7 @@ them.
 It reads one document, the protocol's
 [`WeaverConfig`](../protocol/specs/src/components/schemas/WeaverConfig.json), at the path `--config`
 names. The launcher writes it for the Weaver it starts, resolved, and mounts it at
-`/etc/semiont/weaver.json`. Whoever starts a Weaver another way writes the same document.
+`/etc/xynolog/weaver.json`. Whoever starts a Weaver another way writes the same document.
 
 | Member | |
 | --- | --- |
@@ -117,14 +117,14 @@ names. The launcher writes it for the Weaver it starts, resolved, and mounts it 
 | `port` | the port `/health` answers on |
 | `logLevel`, `logFormat` | how it logs |
 
-Its environment holds its service account, `SEMIONT_OIDC_CLIENT_ID` and
-`SEMIONT_OIDC_CLIENT_SECRET`, and the one variable its document names for the graph database's
+Its environment holds its service account, `XYNOLOG_OIDC_CLIENT_ID` and
+`XYNOLOG_OIDC_CLIENT_SECRET`, and the one variable its document names for the graph database's
 password (`NEO4J_PASSWORD`, for a Neo4j the launcher runs). It signs in as itself, and the
 gateway names it by its account: `did:web:<the knowledge base's domain>:agents:<its subject at
 the issuer>`.
 
-**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `semiont-weaver`, naming the
-knowledge base it serves by its DID (`semiont.kb`): what every service says of its own process,
+**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `xynolog-weaver`, naming the
+knowledge base it serves by its DID (`xynolog.kb`): what every service says of its own process,
 and a span for each frame it sends and receives on the bus
 ([WEAVER.md § Telemetry](../../protocol/contract/WEAVER.md#telemetry)). The launcher sets the
 endpoint for a stack it runs. Without it the Weaver exports nothing, unless
@@ -143,7 +143,7 @@ does. A Weaver that finds none takes the whole record again and ends with the sa
 
 The service, and the three Python packages of this repository it runs on:
 
-- the SDK ([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway
+- the SDK ([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway
 - the graph stores ([`shared/python/graph`](../../shared/python/graph/)), which ask a graph
   database
 - what every Python service is built on ([`shared/python/service`](../../shared/python/service/)),
@@ -163,12 +163,12 @@ the stores have been run against. The JanusGraph and Neptune stores have never r
 server.
 
 It runs on the oldest Python the repository's Python packages support, on Alpine, as the user
-`semiont`. It carries no installer (`pip`, `uv`) and no Node.
+`xynolog`. It carries no installer (`pip`, `uv`) and no Node.
 
 ### A slimmer image
 
 The one line that decides which databases' clients an image has is the builder stage's `uv sync`
-in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of `semiont-weaver`, each
+in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of `xynolog-weaver`, each
 of which brings the stores' extra of the same name. An image for one database names that
 database's in its place:
 
@@ -199,7 +199,7 @@ After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
-  --file weaver/Dockerfile --tag ghcr.io/xynoplex/xynoplex-weaver:local .
+  --file weaver/Dockerfile --tag ghcr.io/xynolog/xynolog-weaver:local .
 ```
 
 [`make build`](../Makefile) builds it the same way, with the
@@ -209,7 +209,7 @@ checks what a built one promises.
 ## Related
 
 - [WEAVER.md](../../protocol/contract/WEAVER.md) — what a Weaver does, rule by rule
-- [`semiont-graph`](../../shared/python/graph/) — the graph stores, and what the graph holds
+- [`xynolog-graph`](../../shared/python/graph/) — the graph stores, and what the graph holds
 - [Gateway](../gateway) — the bus it rides
 - [Librarian](../librarian) — the reader whose barrier waits on its signals
 - [Archivist](../archivist) — the record it reads, by position, and a resource's annotations

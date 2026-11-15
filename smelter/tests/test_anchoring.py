@@ -4,10 +4,10 @@ The words are stated here as a reader hands them over: one run for each
 word, the last word of a line saying that it ends one.
 """
 
-from xynoplex.types import AnchoredText, PdfTextItem
+from xynolog.types import AnchoredText, PdfTextItem
 
-from semiont_smelter.anchoring import anchor_runs, apply
-from semiont_smelter.pdf_reader import Run
+from xynolog_smelter.anchoring import anchor_runs, apply
+from xynolog_smelter.pdf_reader import Run
 
 
 def word(text: str, *, x: float = 72.0, ends_line: bool = False) -> Run:

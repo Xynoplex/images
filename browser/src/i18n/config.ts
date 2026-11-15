@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
-import { LOCALE_CODES, type LocaleCode } from '@xynoplex/core';
+import { LOCALE_CODES, type LocaleCode } from '@xynolog/core';
 
 export function isSupportedLocale(locale: string): locale is LocaleCode {
   return (LOCALE_CODES as readonly string[]).includes(locale);

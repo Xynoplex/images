@@ -5,8 +5,8 @@
 
 mod support;
 
-use xynoplex::types::Job;
 use serde_json::{Value, json};
+use xynolog::types::Job;
 
 /// The job `job-1`, in `status`, with what that status states of it.
 fn job(status: &str, more: Value) -> Job {

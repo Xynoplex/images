@@ -20,25 +20,6 @@ from aio import run, turns
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from xynoplex.annotations import QuotedText, SpanRefusedError, TextSpan, target_selector, target_source, text_quote_selector
-from xynoplex.model import written
-from xynoplex.types import (
-    AnchoredText,
-    Annotation,
-    AssessingJobParams,
-    CommentingJobParams,
-    FragmentSelector,
-    HighlightingJobParams,
-    LinkingJobParams,
-    MarkJobDone,
-    PdfTextItem,
-    Selector,
-    TagCategory,
-    TaggingJobParams,
-    TagSchema,
-    TextPositionSelector,
-    UnitCursor,
-)
 from spec import PROJECT
 from standing_in import (
     GENERATOR,
@@ -62,14 +43,33 @@ from standing_in import (
     tags_stood_in,
     text_build,
 )
+from xynolog.annotations import QuotedText, SpanRefusedError, TextSpan, target_selector, target_source, text_quote_selector
+from xynolog.model import written
+from xynolog.types import (
+    AnchoredText,
+    Annotation,
+    AssessingJobParams,
+    CommentingJobParams,
+    FragmentSelector,
+    HighlightingJobParams,
+    LinkingJobParams,
+    MarkJobDone,
+    PdfTextItem,
+    Selector,
+    TagCategory,
+    TaggingJobParams,
+    TagSchema,
+    TextPositionSelector,
+    UnitCursor,
+)
 
-from semiont_worker import processors
-from semiont_worker.detection import annotation_detection, entity_extractor
-from semiont_worker.detection.chunk_plan import ChunkCursor, UnderReportedPiece
-from semiont_worker.detection.entity_extractor import Mention
-from semiont_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch, read_comments, read_highlights, read_tags
-from semiont_worker.generation import resource_generation, typst
-from semiont_worker.processors import (
+from xynolog_worker import processors
+from xynolog_worker.detection import annotation_detection, entity_extractor
+from xynolog_worker.detection.chunk_plan import ChunkCursor, UnderReportedPiece
+from xynolog_worker.detection.entity_extractor import Mention
+from xynolog_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch, read_comments, read_highlights, read_tags
+from xynolog_worker.generation import resource_generation, typst
+from xynolog_worker.processors import (
     BuildAnnotation,
     Cancelled,
     UnitCheckpoint,
@@ -675,13 +675,13 @@ def test_two_comments_on_one_passage_that_say_different_things_are_two_annotatio
 
 def test_one_mechanism_decides_what_is_a_repeat() -> None:
     # A second decider beside the first would let repeats through on one path, which no test of one path notices.
-    source = (PROJECT / "src/semiont_worker/processors.py").read_text(encoding="utf-8")
+    source = (PROJECT / "src/xynolog_worker/processors.py").read_text(encoding="utf-8")
     # One for the job of one unit, one for each entity type, one for a tagging job.
     assert source.count("= _repeats_removed()") == 3
     assert source.count("_repeats_removed(") == 4
     assert source.count("set[AnnotationId]") == 1
     for module in ("detection/annotation_detection.py", "detection/entity_extractor.py"):
-        assert "_repeats_removed" not in (PROJECT / "src/semiont_worker" / module).read_text(encoding="utf-8")
+        assert "_repeats_removed" not in (PROJECT / "src/xynolog_worker" / module).read_text(encoding="utf-8")
 
 
 # ── D17: what a job of one unit reports ─────────────────────────────────
@@ -1177,7 +1177,7 @@ def test_a_mention_the_text_does_not_have_makes_no_annotation_and_is_counted_and
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
     # D8 and D15.
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     text = "Alice went to Paris."
     mentions_stood_in(monkeypatch, one_piece([mention("Alice", "Person"), mention("NoSuchPerson", "Person")]))
     handed = Handed(1)
@@ -1196,17 +1196,17 @@ def test_how_each_reference_was_anchored_is_counted_as_a_reference_s_and_a_doubt
     monkeypatch: pytest.MonkeyPatch, metric_reader: InMemoryMetricReader, caplog: pytest.LogCaptureFixture
 ) -> None:
     # A mention is anchored where its annotation is made, which for a linking job is here: so here is where it is noted.
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     text = "Paris, and Rome, and then Paris again."
     mentions_stood_in(monkeypatch, one_piece([mention("Rome", "Location"), mention("Paris", "Location")]))
     handed = Handed(1)
-    before = counted(metric_reader, "semiont.detection.anchors", "detection.label", "anchor.method")
+    before = counted(metric_reader, "xynolog.detection.anchors", "detection.label", "anchor.method")
 
     ran(link(text, handed, linking("Location"), NOT_RESUMED, NONE_FINISHED))
 
     # The text has `Rome` once. It has `Paris` twice, and nothing the model said chose: the first was taken.
     assert [position(annotation) for annotation in handed.committed.annotations()] == [(11, 15), (0, 5)]
-    assert counted(metric_reader, "semiont.detection.anchors", "detection.label", "anchor.method") - before == Counter(
+    assert counted(metric_reader, "xynolog.detection.anchors", "detection.label", "anchor.method") - before == Counter(
         {("reference", "unique-match"): 1, ("reference", "first-of-many"): 1}
     )
     (warned,) = [record for record in caplog.records if record.getMessage() == "Annotation anchored via degraded method"]

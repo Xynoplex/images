@@ -27,12 +27,12 @@ import {
   BROWSER_CLIENT_ID,
   InMemorySessionStorage,
   MemorySignIn,
-  SemiontSession,
+  XynologSession,
   type OpenedSession,
   beginAuthorization,
   completeAuthorization,
   httpKb,
-} from '@xynoplex/sdk';
+} from '@xynolog/sdk';
 
 /** Registered for every Browser origin at the issuer; nothing needs to answer here. */
 const CALLBACK = 'http://localhost:3000/en/auth/callback';
@@ -62,7 +62,7 @@ export async function sessionFor(opts: {
     const returned = page.waitForRequest((request) => request.url().startsWith(CALLBACK));
     await page.goto(authorizationUrl);
     // The issuer's login page. These are the ids of the launcher-run
-    // Keycloak's default theme — the e2e stack's issuer, not a Semiont surface.
+    // Keycloak's default theme — the e2e stack's issuer, not a Xynolog surface.
     await page.fill('#username', opts.email);
     await page.fill('#password', opts.password);
     await page.click('#kc-login');
@@ -97,7 +97,7 @@ export async function sessionFor(opts: {
     tokenEndpoint: pending.issuer.token,
     ...(pending.issuer.revocation ? { revocationEndpoint: pending.issuer.revocation } : {}),
   });
-  return SemiontSession.fromKept({
+  return XynologSession.fromKept({
     kb: httpKb({
       id: opts.id ?? 'e2e',
       label: 'E2E',

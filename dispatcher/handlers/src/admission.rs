@@ -10,15 +10,15 @@
 //! the job needs no registry. An announcement carries the description alone,
 //! without the job's input.
 
-use xynoplex::types::{
-    CommandErrorCode, GatheredContextFocus, GenerationJobParams, JobCreateCommand, JobId,
-    JobMetadata, JobParams, JobPending, JobPendingStatus, JobQueuedEvent, JobType, MarkJobParams,
-    MarkJobQueuedEvent, TagSchema, YieldJobQueuedEvent,
-};
 use serde::Deserialize;
 use serde::de::value::MapDeserializer;
 use serde_json::{Map, Value};
 use std::future::Future;
+use xynolog::types::{
+    CommandErrorCode, GatheredContextFocus, GenerationJobParams, JobCreateCommand, JobId,
+    JobMetadata, JobParams, JobPending, JobPendingStatus, JobQueuedEvent, JobType, MarkJobParams,
+    MarkJobQueuedEvent, TagSchema, YieldJobQueuedEvent,
+};
 
 /// A `job:create` refused: its message, and a code when the reason has one.
 #[derive(Debug, Clone, PartialEq)]

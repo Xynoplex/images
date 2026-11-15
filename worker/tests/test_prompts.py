@@ -12,10 +12,10 @@ from dataclasses import dataclass
 from typing import Final, final
 
 import pytest
-from xynoplex.types import TagCategory, TagSchema
 from spec import ROOT
+from xynolog.types import TagCategory, TagSchema
 
-from semiont_worker.detection.prompts import assessment_prompt, comment_prompt, count_prompt, highlight_prompt, mention_prompt, tag_prompt
+from xynolog_worker.detection.prompts import assessment_prompt, comment_prompt, count_prompt, highlight_prompt, mention_prompt, tag_prompt
 
 PROMPTS: Final = ROOT / "protocol/conformance/worker-service/prompts"
 

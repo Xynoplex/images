@@ -1,12 +1,12 @@
-# semiont-http-service
+# xynolog-http-service
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=rust-http-service)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=rust-http-service)](https://app.codecov.io/gh/xynolog/images/components)
 
-What Semiont's Rust services that serve HTTP share.
+What Xynolog's Rust services that serve HTTP share.
 
 **Not published.** It is a crate of this workspace, built into the
-[gateway](../../../gateway/README.md). To use Xynoplex from Rust, the crate
-you want is [`xynoplex`](https://github.com/Xynoplex/sdk/tree/main/rust/sdk).
+[gateway](../../../gateway/README.md). To use Xynolog from Rust, the crate
+you want is [`xynolog`](https://github.com/xynolog/sdk/tree/main/rust/sdk).
 
 | Item | What it is |
 |---|---|

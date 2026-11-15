@@ -24,7 +24,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
-from semiont_worker.telemetry import serving
+from xynolog_worker.telemetry import serving
 
 
 @pytest.fixture(scope="session")
@@ -57,7 +57,7 @@ def unconfigured() -> Generator[None]:
     """Put the process's logging back as it was once the test is over."""
     root = logging.getLogger()
     handlers, level = list(root.handlers), root.level
-    own = ("semiont_worker", "semiont_inference", "semiont")
+    own = ("xynolog_worker", "xynolog_inference", "xynolog")
     levels = {name: logging.getLogger(name).level for name in own}
     try:
         yield

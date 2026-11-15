@@ -1,17 +1,17 @@
 # Browser Container Image
 
-[![ghcr](https://img.shields.io/badge/ghcr-latest-blue)](https://github.com/Xynoplex/images/pkgs/container/xynoplex-browser)
+[![ghcr](https://img.shields.io/badge/ghcr-latest-blue)](https://github.com/xynolog/images/pkgs/container/xynolog-browser)
 
-`ghcr.io/xynoplex/xynoplex-browser`: the Semiont Browser's built files and a small static
+`ghcr.io/xynolog/xynolog-browser`: the Xynolog Browser's built files and a small static
 file server, for `linux/amd64` and `linux/arm64`. How it is run, by the launcher or on your own
-platform, is [Deployment](DEPLOYMENT.md). How every Semiont image is tagged and verified is
+platform, is [Deployment](DEPLOYMENT.md). How every Xynolog image is tagged and verified is
 the operator's [Container Images](../../../docs/operator/administration/IMAGES.md).
 
 ## Run it
 
 ```bash
-docker run -d -p 3000:3000 --name semiont-browser \
-  ghcr.io/xynoplex/xynoplex-browser:latest
+docker run -d -p 3000:3000 --name xynolog-browser \
+  ghcr.io/xynolog/xynolog-browser:latest
 ```
 
 Open <http://localhost:3000> and add a knowledge base in the Knowledge Bases panel: its
@@ -54,15 +54,15 @@ One runtime variable:
 | `PORT` | run time | The port the static server listens on. Default `3000` |
 | `/discovery` | run time | A read-only mount the launcher uses to tell the app which knowledge bases are running on the machine. Optional |
 
-There are no `SEMIONT_*` variables. The bundle is built when the `@xynoplex/browser` npm package
+There are no `XYNOLOG_*` variables. The bundle is built when the `@xynolog/browser` npm package
 is published, and the server does no templating.
 
 ## What is in it
 
 - **Base image:** Node 26 on Alpine, as the [Dockerfile](../Dockerfile)'s `FROM` names it.
-- **Contents:** the published `@xynoplex/browser` npm package, installed at the image's version.
+- **Contents:** the published `@xynolog/browser` npm package, installed at the image's version.
   The image does not build from source.
-- **Entrypoint:** `tini`, then `node node_modules/@xynoplex/browser/server.js`.
+- **Entrypoint:** `tini`, then `node node_modules/@xynolog/browser/server.js`.
 - **Health check:** built in. It requests `/` every 30 seconds.
 - **Logs:** one line when the server starts listening, and any server error. It does not log
   requests.
@@ -72,7 +72,7 @@ file, and serves `/discovery/*` from its mount: a file or a 404, never the app.
 
 ## Tags
 
-- **The version**: the `@xynoplex/browser` package version in the image.
+- **The version**: the `@xynolog/browser` package version in the image.
 - **`sha-<commit>`**: the commit the image was published from.
 - **`latest`**: moved to a release when it is promoted. It is what the launcher names in the
   Browser's document when it writes one; the document's `spec.image` decides what runs.
@@ -88,14 +88,14 @@ package version to install and the registry to install it from:
 ```bash
 # From the repository root
 docker build \
-  --build-arg SEMIONT_BROWSER_VERSION=<version> \
-  -t ghcr.io/xynoplex/xynoplex-browser:custom \
+  --build-arg XYNOLOG_BROWSER_VERSION=<version> \
+  -t ghcr.io/xynolog/xynolog-browser:custom \
   -f browser/Dockerfile .
 ```
 
 | Build argument | Default | |
 |---|---|---|
-| `SEMIONT_BROWSER_VERSION` | `latest` | The `@xynoplex/browser` version to install |
+| `XYNOLOG_BROWSER_VERSION` | `latest` | The `@xynolog/browser` version to install |
 | `NPM_REGISTRY` | `https://registry.npmjs.org` | The registry to install it from |
 
 To run a change that is not published, build every image from your working tree with
@@ -114,7 +114,7 @@ account are the gateway's ([Secrets](../../../docs/operator/services/SECRETS.md)
 **A knowledge base cannot be added: a network error.** Its gateway must be reachable from the
 person's web browser, not from this container. For a knowledge base running on this computer that is `localhost:4000`, the
 port published to the host. A container's name on the container network, such as
-`semiont-example.org-my-kb-gateway`, does not resolve in a web browser.
+`xynolog-example.org-my-kb-gateway`, does not resolve in a web browser.
 
 **Requests are blocked as mixed content.** The app was loaded over `https` and the knowledge
 base was added with `http`. Serve the gateway over HTTPS and choose `https` when adding it.

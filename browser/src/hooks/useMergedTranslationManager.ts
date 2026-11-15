@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { interpolateTranslation, type TranslationManager } from '@xynoplex/react-ui';
+import { interpolateTranslation, type TranslationManager } from '@xynolog/react-ui';
 
 type Messages = Record<string, Record<string, string>>;
 

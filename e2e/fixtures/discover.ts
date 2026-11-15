@@ -39,7 +39,7 @@ export async function openResourceByName(page: Page, name: string): Promise<void
 
   // The input is labelled from an i18n string, so it is reached by its class —
   // stable across locales, and this suite only ever runs under /en/ anyway.
-  const search = page.locator('.semiont-card__search-input');
+  const search = page.locator('.xynolog-card__search-input');
   await expect(search).toBeVisible({ timeout: 15_000 });
   await search.fill(name);
 

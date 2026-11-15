@@ -20,11 +20,11 @@ import pytest
 from aio import run
 from pydantic import JsonValue
 from rig import ADA, ADA_ID, LOVELACE, RECORDED, FakeProfiles
-from xynoplex.types import Profile, ProfilesProjection
 from spec import ROOT, JsonObject, objects, only, read, why
+from xynolog.types import Profile, ProfilesProjection
 
-from semiont_librarian.naming import name, named
-from semiont_librarian.reads import ProfilesUnread
+from xynolog_librarian.naming import name, named
+from xynolog_librarian.reads import ProfilesUnread
 
 TABLE = read(ROOT / "protocol/specs/src/principals/naming-cases.json")
 CASES = objects(TABLE["cases"], "cases")
@@ -39,7 +39,7 @@ def profiles_of(case: JsonObject) -> Mapping[str, Profile]:
 
 
 def warnings(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_librarian" and record.levelno == logging.WARNING]
+    return [record for record in caplog.records if record.name == "xynolog_librarian" and record.levelno == logging.WARNING]
 
 
 # ── The table's cases ─────────────────────────────────────────────────
@@ -124,7 +124,7 @@ def test_a_reply_asks_once_after_the_principals_it_mentions_each_once_in_the_ord
 def test_a_reply_that_mentions_no_one_asks_after_no_one_and_nothing_is_logged(caplog: pytest.LogCaptureFixture) -> None:
     profiles = FakeProfiles(LOVELACE)
     reply: JsonObject = {"items": [{"@type": "Resource", "@id": "res-1"}], "total": 1}
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         assert run(name(reply, profiles)) == reply
     assert profiles.asked == []
     assert warnings(caplog) == []
@@ -132,7 +132,7 @@ def test_a_reply_that_mentions_no_one_asks_after_no_one_and_nothing_is_logged(ca
 
 def test_a_person_with_no_profile_is_named_by_no_one_and_nothing_is_logged(caplog: pytest.LogCaptureFixture) -> None:
     reply: JsonObject = {"creator": ADA}
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         assert run(name(reply, FakeProfiles())) == reply
     assert warnings(caplog) == []
 
@@ -141,7 +141,7 @@ def test_profiles_that_cannot_be_read_are_logged_as_a_warning_and_the_reply_goes
     profiles = FakeProfiles(LOVELACE)
     profiles.failing = ProfilesUnread("the Archivist did not answer")
     reply: JsonObject = {"creator": ADA}
-    with caplog.at_level(logging.WARNING, logger="semiont_librarian"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_librarian"):
         assert run(name(reply, profiles)) == reply
     (said,) = warnings(caplog)
     assert said.getMessage() == "Profiles projection unreadable: this reply names no one"

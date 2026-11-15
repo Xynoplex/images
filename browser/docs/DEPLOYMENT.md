@@ -1,15 +1,15 @@
 # Browser Deployment
 
-How the Semiont Browser is shipped and run.
+How the Xynolog Browser is shipped and run.
 
-> **No Semiont command deploys the Browser.** It ships as a published container image; running it
+> **No Xynolog command deploys the Browser.** It ships as a published container image; running it
 > anywhere beyond the supported path below is **an exercise for the reader**.
 
 ## What ships
 
-`ghcr.io/xynoplex/xynoplex-browser`, built by CI from
+`ghcr.io/xynolog/xynolog-browser`, built by CI from
 [browser/Dockerfile](../Dockerfile) and tagged per release plus `latest`. The container serves
-on **port 3000** and its entrypoint is a plain `node node_modules/@xynoplex/browser/server.js` — no
+on **port 3000** and its entrypoint is a plain `node node_modules/@xynolog/browser/server.js` — no
 CLI involved.
 
 Image build and publication: [administration/IMAGES.md](../../../docs/operator/administration/IMAGES.md).
@@ -17,18 +17,18 @@ Image build and publication: [administration/IMAGES.md](../../../docs/operator/a
 ## Running it
 
 The Browser is the viewer of every KB rather than a member of any one stack: the
-host-installed launcher ensures it on every start, and `semiont stop` stops it with the stack:
+host-installed launcher ensures it on every start, and `xynolog stop` stops it with the stack:
 
 ```bash
-semiont start                       # from a KB directory; ensures the Browser its document describes
-semiont stop                        # the stack and the Browser
-semiont stop --service browser      # the Browser alone
+xynolog start                       # from a KB directory; ensures the Browser its document describes
+xynolog stop                        # the stack and the Browser
+xynolog stop --service browser      # the Browser alone
 ```
 
 The Browser runs what its document says: `stack/browser.yaml` in the launcher's state home,
-which the first start writes with `ghcr.io/xynoplex/xynoplex-browser:latest`, 1G and port
-3000. Pin a version by writing it into the document's `spec.image`; `semiont settings browser`
-shows the document, and `semiont settings browser --path` prints where it is. See
+which the first start writes with `ghcr.io/xynolog/xynolog-browser:latest`, 1G and port
+3000. Pin a version by writing it into the document's `spec.image`; `xynolog settings browser`
+shows the document, and `xynolog settings browser --path` prints where it is. See
 [Configuration](../../../docs/operator/administration/CONFIGURATION.md#the-browser),
 [apps/launcher](../../../apps/launcher/README.md) and
 [administration/DEPLOYMENT.md](../../../docs/operator/administration/DEPLOYMENT.md).
@@ -52,7 +52,7 @@ machine with Docker. Nothing here does it for you. Browser-specific consideratio
   and a person's tokens are held in their web browser. Run as many replicas as you like, with
   no sticky sessions. Its task or pod needs no environment beyond `PORT`.
 
-The full list of what a platform provides: [Deploying Semiont](../../../docs/operator/administration/DEPLOYMENT.md#your-own-platform).
+The full list of what a platform provides: [Deploying Xynolog](../../../docs/operator/administration/DEPLOYMENT.md#your-own-platform).
 
 ## Related Documentation
 

@@ -1,7 +1,7 @@
 """What stands in for the knowledge bases a worker serves: at each, its sign-in, the agent it names, which it is, and a stream each life.
 
 The agent signs in with the SDK's `AgentToken`, opens its streams with its
-`HttpTransport`, and holds a `SemiontClient` over its own. Each is stood in
+`HttpTransport`, and holds a `XynologClient` over its own. Each is stood in
 for in the agent's module by one that answers as the test scripts the
 knowledge base at the gateway's address: a sign-in there succeeds, naming the
 agent by the knowledge base's DID, or raises what the test has it raise; the
@@ -21,15 +21,15 @@ from typing import Final, Self, final
 import pytest
 from holding import Parties
 from pydantic import JsonValue
-from xynoplex.client import SemiontClient
-from xynoplex.errors import SemiontError
-from xynoplex.http import ServiceToken
-from xynoplex.identifiers import UserId
-from xynoplex.testing import FaultyTransport, InMemoryContent
-from xynoplex.watched import Variable, Watched
-from semiont_service.knowledge_base import CONFIRMING_CHANNELS
+from xynolog.client import XynologClient
+from xynolog.errors import XynologError
+from xynolog.http import ServiceToken
+from xynolog.identifiers import UserId
+from xynolog.testing import FaultyTransport, InMemoryContent
+from xynolog.watched import Variable, Watched
+from xynolog_service.knowledge_base import CONFIRMING_CHANNELS
 
-from semiont_worker import agent
+from xynolog_worker import agent
 
 
 @final
@@ -53,7 +53,7 @@ class KnowledgeBaseStoodIn:
         """How many times it was asked which it is."""
         self.did: Final = UserId(did)
         self._each_life: Final = each_life
-        self.refusing: Final[deque[SemiontError]] = deque()
+        self.refusing: Final[deque[XynologError]] = deque()
         """What the next sign-ins there raise, one each. Once there is none, a sign-in succeeds."""
         self.sign_ins: int = 0
         """How many times the agent signed in there."""
@@ -103,7 +103,7 @@ class _Opened:
     """A stream stood in for: what the agent reads content through, and the client the agent then holds over it."""
 
     content: InMemoryContent
-    client: SemiontClient[FaultyTransport]
+    client: XynologClient[FaultyTransport]
 
 
 def stand_in(monkeypatch: pytest.MonkeyPatch, *knowledge_bases: KnowledgeBaseStoodIn) -> None:
@@ -153,9 +153,9 @@ def stand_in(monkeypatch: pytest.MonkeyPatch, *knowledge_bases: KnowledgeBaseSto
             await self._transport.close()
             self._at.streams.append(("closed", self._channels))
 
-    def client(transport: _Opened, content: object, operations: object) -> SemiontClient[FaultyTransport]:
+    def client(transport: _Opened, content: object, operations: object) -> XynologClient[FaultyTransport]:
         return transport.client
 
     monkeypatch.setattr(agent, "AgentToken", SignedIn)
     monkeypatch.setattr(agent, "HttpTransport", Stream)
-    monkeypatch.setattr(agent, "SemiontClient", client)
+    monkeypatch.setattr(agent, "XynologClient", client)

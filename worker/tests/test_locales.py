@@ -1,4 +1,4 @@
-"""What a model is told a language is called, held to the registry of the languages Semiont supports
+"""What a model is told a language is called, held to the registry of the languages Xynolog supports
 (`protocol/specs/src/locales/registry.json`)."""
 
 from typing import Annotated, Final
@@ -6,7 +6,7 @@ from typing import Annotated, Final
 from pydantic import BaseModel, Field
 from spec import SPEC
 
-from semiont_worker.locales import ENGLISH_NAMES, language_name
+from xynolog_worker.locales import ENGLISH_NAMES, language_name
 
 
 class Language(BaseModel, frozen=True, extra="forbid", strict=True):

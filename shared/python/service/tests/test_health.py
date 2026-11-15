@@ -13,7 +13,7 @@ import pytest
 from aio import pass_time, run, turns
 from pydantic import JsonValue
 
-from semiont_service.health import Health, bind_health
+from xynolog_service.health import Health, bind_health
 
 SAID: JsonValue = {
     "status": "ok",

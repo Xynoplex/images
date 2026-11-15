@@ -1,5 +1,5 @@
 [package]
-name = "semiont-archivist-staging"
+name = "xynolog-archivist-staging"
 workspace = "../../packages/rust"
 edition = "2024"
 publish = false
@@ -8,7 +8,7 @@ description = "The Archivist's staging, as protocol/contract/ARCHIVIST.md states
 
 [dependencies]
 opentelemetry = { workspace = true, features = ["metrics"] }
-semiont-observability.workspace = true
+xynolog-observability.workspace = true
 serde_json.workspace = true
 tokio = { workspace = true, features = ["process", "fs", "sync", "time", "rt", "macros"] }
 

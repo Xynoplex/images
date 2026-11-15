@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { CheckIcon, PlusIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { defaultProtocol, isValidHostname, type KbRead, type KbReadVerdict, type KnowledgeBase, type KbSessionStatus } from '@xynoplex/sdk';
+import { defaultProtocol, isValidHostname, type KbRead, type KbReadVerdict, type KnowledgeBase, type KbSessionStatus } from '@xynolog/sdk';
 import { usePathname } from '@/i18n/routing';
-import type { DiscoveredKB } from '@xynoplex/core';
+import type { DiscoveredKB } from '@xynolog/core';
 import {
-  useXynoplex,
+  useXynolog,
   useObservable,
   useKBDiscovery,
-} from '@xynoplex/react-ui';
+} from '@xynolog/react-ui';
 
 type T = TFunction<'translation', 'KnowledgeBasePanel'>;
 
 const STATUS_COLORS: Record<KbSessionStatus, string> = {
-  authenticated: 'var(--semiont-color-success-500, #22c55e)',
-  expired: 'var(--semiont-color-warning-500, #eab308)',
-  'signed-out': 'var(--semiont-color-neutral-400, #9ca3af)',
+  authenticated: 'var(--xynolog-color-success-500, #22c55e)',
+  expired: 'var(--xynolog-color-warning-500, #eab308)',
+  'signed-out': 'var(--xynolog-color-neutral-400, #9ca3af)',
 };
 
 const STATUS_KEYS: Record<KbSessionStatus, string> = {
@@ -60,8 +60,8 @@ function PlacementBadge({ placement, t }: { placement: DiscoveredKB['placement']
         fontSize: '0.65rem',
         padding: '0 0.375rem',
         borderRadius: '9999px',
-        border: '1px solid var(--semiont-color-primary-500, #3b82f6)',
-        color: 'var(--semiont-color-primary-500, #3b82f6)',
+        border: '1px solid var(--xynolog-color-primary-500, #3b82f6)',
+        color: 'var(--xynolog-color-primary-500, #3b82f6)',
         flexShrink: 0,
       }}
     >
@@ -114,32 +114,32 @@ function ConnectForm({ t, title, onSubmit, onCancel, error, isSubmitting, autoFo
 
   return (
     <div
-      className={pulsing ? 'semiont-panel__login-form--pulsing' : ''}
+      className={pulsing ? 'xynolog-panel__login-form--pulsing' : ''}
       style={{
         margin: '0.5rem',
         padding: '0.75rem',
-        border: '1px solid var(--semiont-color-neutral-200, #e5e7eb)',
-        borderRadius: 'var(--semiont-panel-border-radius, 0.5rem)',
-        background: 'var(--semiont-bg-secondary, transparent)',
+        border: '1px solid var(--xynolog-color-neutral-200, #e5e7eb)',
+        borderRadius: 'var(--xynolog-panel-border-radius, 0.5rem)',
+        background: 'var(--xynolog-bg-secondary, transparent)',
       }}
     >
       <h3 style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>{title ?? t('connectTitle')}</h3>
       <form onSubmit={(e) => { e.preventDefault(); if (isValidHostname(host)) onSubmit(host, parseInt(port, 10) || 4000, protocol); }} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <select value={protocol} onChange={e => setProtocol(e.target.value as 'http' | 'https')} className="semiont-input" aria-label={t('protocol')}>
+        <select value={protocol} onChange={e => setProtocol(e.target.value as 'http' | 'https')} className="xynolog-input" aria-label={t('protocol')}>
           <option value="http">HTTP</option>
           <option value="https">HTTPS</option>
         </select>
-        <input type="text" value={host} onChange={e => handleHostChange(e.target.value)} placeholder="Host" className="semiont-input" autoFocus={autoFocus} />
-        <input type="number" value={port} onChange={e => setPort(e.target.value)} placeholder="Port" className="semiont-input" />
+        <input type="text" value={host} onChange={e => handleHostChange(e.target.value)} placeholder="Host" className="xynolog-input" autoFocus={autoFocus} />
+        <input type="number" value={port} onChange={e => setPort(e.target.value)} placeholder="Port" className="xynolog-input" />
         {host && !isValidHostname(host) && (
-          <div style={{ color: 'var(--semiont-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{t('invalidHost')}</div>
+          <div style={{ color: 'var(--xynolog-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{t('invalidHost')}</div>
         )}
-        {error && <div style={{ color: 'var(--semiont-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{error}</div>}
+        {error && <div style={{ color: 'var(--xynolog-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{error}</div>}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button type="submit" className="semiont-button semiont-button--primary" style={{ flex: 1 }} disabled={isSubmitting || !isValidHostname(host)}>
+          <button type="submit" className="xynolog-button xynolog-button--primary" style={{ flex: 1 }} disabled={isSubmitting || !isValidHostname(host)}>
             {isSubmitting ? t('connecting') : t('connect')}
           </button>
-          <button type="button" className="semiont-button" onClick={onCancel} aria-label={t('cancel')}>
+          <button type="button" className="xynolog-button" onClick={onCancel} aria-label={t('cancel')}>
             <XMarkIcon style={{ width: '1rem', height: '1rem' }} aria-hidden="true" />
           </button>
         </div>
@@ -158,12 +158,12 @@ function ReauthPrompt({ t, onSubmit, onCancel, error, isSubmitting }: {
 }) {
   return (
     <div style={{ padding: '0.5rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-      {error && <div style={{ color: 'var(--semiont-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{error}</div>}
+      {error && <div style={{ color: 'var(--xynolog-color-error-500, #ef4444)', fontSize: '0.75rem' }}>{error}</div>}
       <div style={{ display: 'flex', gap: '0.375rem' }}>
-        <button type="button" className="semiont-button semiont-button--primary" style={{ flex: 1, fontSize: '0.8rem' }} disabled={isSubmitting} onClick={() => { void onSubmit(); }}>
+        <button type="button" className="xynolog-button xynolog-button--primary" style={{ flex: 1, fontSize: '0.8rem' }} disabled={isSubmitting} onClick={() => { void onSubmit(); }}>
           {isSubmitting ? t('signingIn') : t('signIn')}
         </button>
-        <button type="button" className="semiont-button" onClick={onCancel} style={{ fontSize: '0.8rem' }}>
+        <button type="button" className="xynolog-button" onClick={onCancel} style={{ fontSize: '0.8rem' }}>
           {t('cancel')}
         </button>
       </div>
@@ -177,9 +177,9 @@ function ReauthPrompt({ t, onSubmit, onCancel, error, isSubmitting }: {
 export function KnowledgeBasePanel() {
   const pathname = usePathname();
   const { t, i18n } = useTranslation(undefined, { keyPrefix: 'KnowledgeBasePanel' });
-  const semiont = useXynoplex();
-  const knowledgeBases = useObservable(semiont.kbs$) ?? [];
-  const activeKnowledgeBase = useObservable(semiont.activeSession$)?.kb ?? null;
+  const xynolog = useXynolog();
+  const knowledgeBases = useObservable(xynolog.kbs$) ?? [];
+  const activeKnowledgeBase = useObservable(xynolog.activeSession$)?.kb ?? null;
   const setActiveKnowledgeBase = (id: string) => {
     // Leave a resource route BEFORE switching. The URL carries the CURRENT
     // KB's resource id, which identifies nothing in the KB we're moving to —
@@ -192,12 +192,12 @@ export function KnowledgeBasePanel() {
     // and remounts fresh against the new KB — from its own point of view no
     // switch ever happened.
     if (pathname.startsWith('/know/resource/')) {
-      semiont.emit('nav:push', { path: '/know', reason: 'kb-switch' });
+      xynolog.emit('nav:push', { path: '/know', reason: 'kb-switch' });
     }
-    void semiont.setActiveKb(id);
+    void xynolog.setActiveKb(id);
   };
-  const removeKnowledgeBase = semiont.removeKb.bind(semiont);
-  const signOut = (id: string) => { void semiont.signOut(id); };
+  const removeKnowledgeBase = xynolog.removeKb.bind(xynolog);
+  const signOut = (id: string) => { void xynolog.signOut(id); };
   // The issuer sends the user back here; the callback page completes the
   // sign-in. The redirect is registered per origin at the issuer, so it is
   // this Browser's own address, not the knowledge base's.
@@ -292,11 +292,11 @@ export function KnowledgeBasePanel() {
   const activeKbId = activeKnowledgeBase?.id ?? null;
   useEffect(() => {
     let open = true;
-    void semiont.readActiveKb().then((verdict) => {
+    void xynolog.readActiveKb().then((verdict) => {
       if (open) setActiveRead({ kbId: activeKbId, verdict });
     });
     return () => { open = false; };
-  }, [semiont, activeKbId]);
+  }, [xynolog, activeKbId]);
 
   useEffect(() => {
     const interval = setInterval(() => setTick(t => t + 1), 30_000);
@@ -318,7 +318,7 @@ export function KnowledgeBasePanel() {
     setAddError(null);
     setAddSubmitting(true);
     try {
-      const url = await semiont.beginSignIn({
+      const url = await xynolog.beginSignIn({
         target: { kind: 'http', host, port, protocol },
         redirectUri: redirectUri(),
         ...(addForm?.expectedDid ? { expectedDid: addForm.expectedDid } : {}),
@@ -342,7 +342,7 @@ export function KnowledgeBasePanel() {
       return;
     }
     try {
-      const url = await semiont.beginSignIn({ target: kb.endpoint, redirectUri: redirectUri(), kbId });
+      const url = await xynolog.beginSignIn({ target: kb.endpoint, redirectUri: redirectUri(), kbId });
       window.location.assign(url);
     } catch (err) {
       setReauthError(err instanceof Error ? err.message : String(err));
@@ -351,7 +351,7 @@ export function KnowledgeBasePanel() {
   };
 
   const handleKbClick = (kb: KnowledgeBase) => {
-    const status = semiont.getKbSessionStatus(kb.id);
+    const status = xynolog.getKbSessionStatus(kb.id);
     if (status === 'authenticated') {
       setActiveKnowledgeBase(kb.id);
     } else {
@@ -362,17 +362,17 @@ export function KnowledgeBasePanel() {
   };
 
   return (
-    <div className="semiont-panel">
-      <div className="semiont-panel-header">
-        <h2 className="semiont-panel-header__title">
-          <span className="semiont-panel-header__text">{t('title')}</span>
-          <span className="semiont-panel-header__count">({knowledgeBases.length})</span>
+    <div className="xynolog-panel">
+      <div className="xynolog-panel-header">
+        <h2 className="xynolog-panel-header__title">
+          <span className="xynolog-panel-header__text">{t('title')}</span>
+          <span className="xynolog-panel-header__count">({knowledgeBases.length})</span>
         </h2>
       </div>
-      <div className="semiont-panel__content">
-        <div className="semiont-panel__list">
+      <div className="xynolog-panel__content">
+        <div className="xynolog-panel__list">
           {knowledgeBases.map((kb: KnowledgeBase) => {
-            const status = semiont.getKbSessionStatus(kb.id);
+            const status = xynolog.getKbSessionStatus(kb.id);
             const isActive = kb.id === activeKnowledgeBase?.id;
             const isReauthing = reauthKbId === kb.id;
             const managed = managedFor(kb);
@@ -381,7 +381,7 @@ export function KnowledgeBasePanel() {
             return (
               <div key={kb.id}>
                 <div
-                  className={`semiont-panel-item semiont-panel-item--clickable${isActive ? ' semiont-panel-item--selected' : ''}`}
+                  className={`xynolog-panel-item xynolog-panel-item--clickable${isActive ? ' xynolog-panel-item--selected' : ''}`}
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', cursor: 'pointer', padding: '0.5rem 0.75rem' }}
                   onClick={() => handleKbClick(kb)}
                 >
@@ -389,16 +389,16 @@ export function KnowledgeBasePanel() {
                     <StatusDot status={status} t={t} />
                     {/* An unnamed KB reads "Unknown" — a state, not a blank —
                         while the address stays on the address line below. */}
-                    <span className="semiont-panel-text" style={{ flex: 1, fontWeight: 500 }}>{kb.label || t('unknownName')}</span>
+                    <span className="xynolog-panel-text" style={{ flex: 1, fontWeight: 500 }}>{kb.label || t('unknownName')}</span>
                     {managed && <PlacementBadge placement={managed.placement} t={t} />}
                     {isActive && (
-                      <CheckIcon style={{ width: '1rem', height: '1rem', color: 'var(--semiont-color-primary-500)', flexShrink: 0 }} />
+                      <CheckIcon style={{ width: '1rem', height: '1rem', color: 'var(--xynolog-color-primary-500)', flexShrink: 0 }} />
                     )}
                     {status === 'authenticated' && (
                       <button
                         onClick={(e) => { e.stopPropagation(); signOut(kb.id); }}
                         title={t('signOut')}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.125rem', color: 'var(--semiont-color-neutral-400)' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.125rem', color: 'var(--xynolog-color-neutral-400)' }}
                       >
                         <ArrowRightStartOnRectangleIcon style={{ width: '0.875rem', height: '0.875rem' }} />
                       </button>
@@ -406,12 +406,12 @@ export function KnowledgeBasePanel() {
                     <button
                       onClick={(e) => { e.stopPropagation(); setConfirmRemoveKbId(kb.id); }}
                       title={t('remove')}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.125rem', color: 'var(--semiont-color-neutral-400)' }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.125rem', color: 'var(--xynolog-color-neutral-400)' }}
                     >
                       <TrashIcon style={{ width: '0.875rem', height: '0.875rem' }} />
                     </button>
                   </div>
-                  <span className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem' }}>
+                  <span className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem' }}>
                     {kb.endpoint.kind === 'http'
                       ? (
                         <>
@@ -426,8 +426,8 @@ export function KnowledgeBasePanel() {
                     // The KB that answered is named by what it said of itself,
                     // never by this entry's label.
                     <span
-                      className="semiont-panel-text-secondary"
-                      style={{ fontSize: '0.7rem', paddingLeft: '1rem', color: 'var(--semiont-color-warning-500, #eab308)', whiteSpace: 'normal' }}
+                      className="xynolog-panel-text-secondary"
+                      style={{ fontSize: '0.7rem', paddingLeft: '1rem', color: 'var(--xynolog-color-warning-500, #eab308)', whiteSpace: 'normal' }}
                       title={read.observedDid}
                     >
                       ⚠ {t('answeringInstead', { name: read.observedName || t('unknownName') })}
@@ -436,7 +436,7 @@ export function KnowledgeBasePanel() {
                   {managed && (
                     // The repo gets its own line — vertical space over width;
                     // wrap instead of the class's nowrap-ellipsis.
-                    <span className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
+                    <span className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                       {managed.repo ?? MISSING}
                     </span>
                   )}
@@ -448,20 +448,20 @@ export function KnowledgeBasePanel() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    background: 'var(--semiont-bg-secondary, #f9fafb)',
-                    borderBottom: '1px solid var(--semiont-color-neutral-200, #e5e7eb)',
+                    background: 'var(--xynolog-bg-secondary, #f9fafb)',
+                    borderBottom: '1px solid var(--xynolog-color-neutral-200, #e5e7eb)',
                   }}>
-                    <span style={{ flex: 1, color: 'var(--semiont-color-neutral-500)' }}>{t('removeConfirm', { label: kb.label })}</span>
+                    <span style={{ flex: 1, color: 'var(--xynolog-color-neutral-500)' }}>{t('removeConfirm', { label: kb.label })}</span>
                     <button
                       onClick={() => { removeKnowledgeBase(kb.id); setConfirmRemoveKbId(null); }}
-                      className="semiont-button"
-                      style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', color: 'var(--semiont-color-error-500, #ef4444)' }}
+                      className="xynolog-button"
+                      style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', color: 'var(--xynolog-color-error-500, #ef4444)' }}
                     >
                       {t('remove')}
                     </button>
                     <button
                       onClick={() => setConfirmRemoveKbId(null)}
-                      className="semiont-button"
+                      className="xynolog-button"
                       style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
                     >
                       {t('cancel')}
@@ -483,15 +483,15 @@ export function KnowledgeBasePanel() {
         </div>
 
         {unregisteredDiscovered.length > 0 && (
-          <div className="semiont-panel__list">
-            <h3 className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.5rem 0.75rem 0.25rem' }}>
+          <div className="xynolog-panel__list">
+            <h3 className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.5rem 0.75rem 0.25rem' }}>
               {t('discoveredTitle')}
             </h3>
             {conflictedAddresses.map(({ address, count }) => (
               <div
                 key={`conflict-${address}`}
-                className="semiont-panel-text-secondary"
-                style={{ fontSize: '0.7rem', padding: '0 0.75rem 0.375rem', color: 'var(--semiont-color-warning-500, #eab308)', whiteSpace: 'normal' }}
+                className="xynolog-panel-text-secondary"
+                style={{ fontSize: '0.7rem', padding: '0 0.75rem 0.375rem', color: 'var(--xynolog-color-warning-500, #eab308)', whiteSpace: 'normal' }}
               >
                 ⚠ {t('addressConflict', { count, address })}
               </div>
@@ -503,7 +503,7 @@ export function KnowledgeBasePanel() {
                    claimants — and this list deliberately renders both. Only
                    did+address is unique. */
                 key={`${d.did}@${endpointKey(d.host, d.port)}`}
-                className="semiont-panel-item semiont-panel-item--clickable"
+                className="xynolog-panel-item xynolog-panel-item--clickable"
                 style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', cursor: 'pointer', padding: '0.5rem 0.75rem' }}
                 onClick={() => openAddForm({
                   host: d.host,
@@ -516,17 +516,17 @@ export function KnowledgeBasePanel() {
                 {...(d.did !== undefined ? { title: d.did } : {})}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span className="semiont-panel-text" style={{ flex: 1, fontWeight: 500 }}>{d.siteName ?? MISSING}</span>
+                  <span className="xynolog-panel-text" style={{ flex: 1, fontWeight: 500 }}>{d.siteName ?? MISSING}</span>
                   <PlacementBadge placement={d.placement} t={t} />
                 </div>
-                <span className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem' }}>
+                <span className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem' }}>
                   {endpointKey(d.host, d.port)}
                 </span>
-                <span className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
+                <span className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                   {d.repo ?? MISSING}
                 </span>
                 {isAnotherCopy(d) && (
-                  <span className="semiont-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', fontStyle: 'italic', whiteSpace: 'normal' }}>
+                  <span className="xynolog-panel-text-secondary" style={{ fontSize: '0.7rem', paddingLeft: '1rem', fontStyle: 'italic', whiteSpace: 'normal' }}>
                     ↳ {t('anotherCopy')}
                   </span>
                 )}
@@ -555,14 +555,14 @@ export function KnowledgeBasePanel() {
       </div>
 
       {addForm === null && (
-        <div className="semiont-panel-footer">
+        <div className="xynolog-panel-footer">
           <button
             onClick={() => openAddForm()}
-            className="semiont-panel-item semiont-panel-item--clickable"
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--semiont-color-primary-600)' }}
+            className="xynolog-panel-item xynolog-panel-item--clickable"
+            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--xynolog-color-primary-600)' }}
           >
             <PlusIcon style={{ width: '1rem', height: '1rem', flexShrink: 0 }} />
-            <span className="semiont-panel-text" style={{ color: 'inherit' }}>{t('addKnowledgeBase')}</span>
+            <span className="xynolog-panel-text" style={{ color: 'inherit' }}>{t('addKnowledgeBase')}</span>
           </button>
         </div>
       )}

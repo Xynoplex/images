@@ -1,9 +1,9 @@
 [package]
-name = "semiont-http-service"
+name = "xynolog-http-service"
 edition = "2024"
 publish = false
 license = "Apache-2.0"
-description = "What Semiont's Rust services that serve HTTP share: connections a service can close from its side, the bearer credential, and the verifier of tokens from the knowledge base's trusted issuer."
+description = "What Xynolog's Rust services that serve HTTP share: connections a service can close from its side, the bearer credential, and the verifier of tokens from the knowledge base's trusted issuer."
 
 [dependencies]
 axum.workspace = true

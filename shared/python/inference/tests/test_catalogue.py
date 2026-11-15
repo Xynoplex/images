@@ -1,4 +1,4 @@
-"""A model catalogue file, and what reads one: `semiont_inference.catalogue`.
+"""A model catalogue file, and what reads one: `xynolog_inference.catalogue`.
 
 The package carries no catalogue. It reads a file it is pointed to, which an
 image's build makes with `shared/python/inference/scripts/generate-model-catalogue.mjs`
@@ -24,7 +24,7 @@ from pydantic import JsonValue
 from refusals.a_provider_the_catalogue_lacks import facts_under_an_unknown_provider
 from spec import PACKAGE, JsonObject, read, text, thing
 
-from semiont_inference.catalogue import (
+from xynolog_inference.catalogue import (
     BudgetTokensOption,
     CatalogueFacts,
     CatalogueProvider,
@@ -371,7 +371,7 @@ def test_the_readme_says_what_a_catalogue_file_is_whose_it_is_and_that_the_packa
     for said in (
         "models.dev",
         f"`{NPM_PACKAGE}`",
-        "`semiont_inference.catalogue`",
+        "`xynolog_inference.catalogue`",
         "`read_catalogue`",
         "`catalogue_facts`",
         "`model-catalogue.json`",
@@ -397,11 +397,11 @@ def test_neither_a_wheel_nor_a_source_distribution_holds_any_of_the_catalogue(tm
         in_the_sdist = held.getnames()
 
     # The reader is in both, and it is all of the catalogue that is.
-    assert "semiont_inference/catalogue.py" in in_the_wheel
-    assert any(name.endswith("/src/semiont_inference/catalogue.py") for name in in_the_sdist)
+    assert "xynolog_inference/catalogue.py" in in_the_wheel
+    assert any(name.endswith("/src/xynolog_inference/catalogue.py") for name in in_the_sdist)
     for names in (in_the_wheel, in_the_sdist):
         assert [name for name in names if "model-catalogue" in name or name.endswith((".json", ".LICENSE"))] == []
         assert [name for name in names if "/tests/" in name or name.startswith("tests/")] == []
     # What a wheel holds of the package beside its modules is the marker that says it is typed.
-    beside = [name for name in in_the_wheel if name.startswith("semiont_inference/") and not name.endswith(".py")]
-    assert beside == ["semiont_inference/py.typed"]
+    beside = [name for name in in_the_wheel if name.startswith("xynolog_inference/") and not name.endswith(".py")]
+    assert beside == ["xynolog_inference/py.typed"]

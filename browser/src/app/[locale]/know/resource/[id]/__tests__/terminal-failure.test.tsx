@@ -13,7 +13,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import type { LinkComponentProps } from '@xynoplex/react-ui';
+import type { LinkComponentProps } from '@xynolog/react-ui';
 import { Subject } from 'rxjs';
 
 vi.mock('react-router', async () => {
@@ -58,11 +58,11 @@ const harness = vi.hoisted(() => {
   };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => harness.browser,
+    useXynolog: () => harness.browser,
     ResourceViewerPage: () => <div data-testid="viewer" />,
   };
 });

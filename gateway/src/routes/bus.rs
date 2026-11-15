@@ -14,15 +14,15 @@ use axum::extract::State;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
 use opentelemetry::trace::SpanKind;
-use xynoplex::bus_log::bus_log;
-use xynoplex::channels::{Channel, PrincipalProfile};
-use xynoplex::transport::TraceCarrier;
-use xynoplex::types::{BusEmitAccepted, BusEmitRequest, CommandErrorCode, LimitRefusalCode};
-use semiont_core::spec::spec;
-use semiont_observability::logging;
-use semiont_observability::telemetry;
 use serde_json::{Map, Value, json};
 use std::sync::Arc;
+use xynolog::bus_log::bus_log;
+use xynolog::channels::{Channel, PrincipalProfile};
+use xynolog::transport::TraceCarrier;
+use xynolog::types::{BusEmitAccepted, BusEmitRequest, CommandErrorCode, LimitRefusalCode};
+use xynolog_core::spec::spec;
+use xynolog_observability::logging;
+use xynolog_observability::telemetry;
 
 const OPERATION: &str = "POST /bus/emit";
 
@@ -39,7 +39,7 @@ pub fn envelope(correlation_id: Option<&str>) -> Option<Meta> {
     if let Some(TraceCarrier {
         traceparent,
         tracestate,
-    }) = xynoplex_telemetry::active_trace()
+    }) = xynolog_telemetry::active_trace()
     {
         meta.insert("traceparent".to_owned(), traceparent);
         if let Some(state) = tracestate {
@@ -91,7 +91,7 @@ pub async fn emit(
     let key = idempotency_key(&headers, &limits::limits().emit_key_length)?;
     let request = json_body(body, OPERATION).await?;
     let get = |name: &str| headers.get(name).and_then(|v| v.to_str().ok());
-    let parent = xynoplex_telemetry::continued(get("traceparent"), get("tracestate"));
+    let parent = xynolog_telemetry::continued(get("traceparent"), get("tracestate"));
     // The emit runs as a task of its own once its key is in hand: it owns what it reads.
     let (owner, emitter) = (app.clone(), principal.clone());
     Ok(app
@@ -126,7 +126,7 @@ async fn carry_out(
     };
     if let Some(schema) = schema {
         let candidate = Value::Object(payload.clone());
-        if let Some(problems) = semiont_core::spec::problems(schema, &candidate) {
+        if let Some(problems) = xynolog_core::spec::problems(schema, &candidate) {
             logging::warn(
                 "Bus emit validation failed",
                 bus(
@@ -194,8 +194,8 @@ async fn carry_out(
         }
     }
 
-    let attributes = xynoplex_telemetry::on_the_bus(&channel, scope.as_deref());
-    let dispatched = xynoplex_telemetry::in_span(format!("bus.dispatch:{channel}"), SpanKind::Server, attributes, parent, async {
+    let attributes = xynolog_telemetry::on_the_bus(&channel, scope.as_deref());
+    let dispatched = xynolog_telemetry::in_span(format!("bus.dispatch:{channel}"), SpanKind::Server, attributes, parent, async {
         let payload = Value::Object(payload);
         let echo = payload.clone();
         bus_log("EMIT", &channel, &payload, scope.as_deref(), correlation_id.as_deref());
@@ -298,11 +298,11 @@ mod tests {
     use crate::signal::{ClientSubscription, IngestReceipt, SharedTable, Subscription};
     use futures::FutureExt;
     use futures::future::BoxFuture;
-    use xynoplex::identity::person_did;
-    use xynoplex::types::UserId;
     use std::sync::Mutex;
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::time::Duration;
+    use xynolog::identity::person_did;
+    use xynolog::types::UserId;
 
     /// The in-process plane, which refuses its next publish as a plane whose
     /// broker went away does.

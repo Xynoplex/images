@@ -1,13 +1,13 @@
 [package]
-name = "semiont-dispatcher"
+name = "xynolog-dispatcher"
 workspace = "../packages/rust"
 edition = "2024"
 publish = false
 license = "Apache-2.0"
-description = "The Semiont dispatcher: the knowledge base's job control plane, as protocol/contract/JOBS.md states it."
+description = "The Xynolog dispatcher: the knowledge base's job control plane, as protocol/contract/JOBS.md states it."
 
 [[bin]]
-name = "semiont-dispatcher"
+name = "xynolog-dispatcher"
 path = "src/main.rs"
 
 [dependencies]
@@ -16,13 +16,13 @@ futures.workspace = true
 opentelemetry = { workspace = true, features = ["metrics"] }
 reqwest = { workspace = true, features = ["rustls-no-provider"] }
 rustls = { workspace = true, features = ["ring", "std"] }
-xynoplex.workspace = true
-semiont-core.workspace = true
-semiont-dispatcher-handlers.workspace = true
-semiont-dispatcher-jetstream.workspace = true
-xynoplex-http-transport.workspace = true
-semiont-observability.workspace = true
-xynoplex-telemetry.workspace = true
+xynolog.workspace = true
+xynolog-core.workspace = true
+xynolog-dispatcher-handlers.workspace = true
+xynolog-dispatcher-jetstream.workspace = true
+xynolog-http-transport.workspace = true
+xynolog-observability.workspace = true
+xynolog-telemetry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tikv-jemallocator.workspace = true

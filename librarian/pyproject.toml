@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-librarian"
+name = "xynolog-librarian"
 dynamic = ["version"]
-description = "Semiont's Librarian service: it answers what a knowledge base holds from its graph, its vector index and a model, and records nothing"
+description = "Xynolog's Librarian service: it answers what a knowledge base holds from its graph, its vector index and a model, and records nothing"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 classifiers = [
@@ -20,19 +20,19 @@ classifiers = [
 # OpenTelemetry's API and pydantic are the SDK's dependencies too, and the SDK
 # states their versions: a bound written here would be a second copy of its.
 # What the service exports its telemetry with, OpenTelemetry's SDK and its
-# OTLP exporter, is required by semiont-service, which installs it. What every
-# Python service is built on is semiont-service, which also reads a resource's
-# bytes from the Archivist. The graph the Librarian reads is semiont-graph's,
+# OTLP exporter, is required by xynolog-service, which installs it. What every
+# Python service is built on is xynolog-service, which also reads a resource's
+# bytes from the Archivist. The graph the Librarian reads is xynolog-graph's,
 # the index it searches and the provider it asks for a query's vector are
-# semiont-vectors', and the models it asks are semiont-inference's.
+# xynolog-vectors', and the models it asks are xynolog-inference's.
 dependencies = [
     "opentelemetry-api",
     "pydantic",
-    "xynoplex",
-    "semiont-graph",
-    "semiont-inference",
-    "semiont-service",
-    "semiont-vectors",
+    "xynolog",
+    "xynolog-graph",
+    "xynolog-inference",
+    "xynolog-service",
+    "xynolog-vectors",
 ]
 
 # A database's own client and a provider's own library are not required: the
@@ -43,15 +43,15 @@ dependencies = [
 # The image asks for every one (`--all-extras`, in Dockerfile); an image built
 # for one database and one provider asks for those two alone.
 [project.optional-dependencies]
-anthropic = ["semiont-inference[anthropic]"]
-google = ["semiont-inference[google]"]
-janusgraph = ["semiont-graph[janusgraph]"]
-llamacpp = ["semiont-inference[llamacpp]"]
-neo4j = ["semiont-graph[neo4j]"]
-neptune = ["semiont-graph[neptune]"]
-openai = ["semiont-inference[openai]"]
-together = ["semiont-inference[together]"]
-vllm = ["semiont-inference[vllm]"]
+anthropic = ["xynolog-inference[anthropic]"]
+google = ["xynolog-inference[google]"]
+janusgraph = ["xynolog-graph[janusgraph]"]
+llamacpp = ["xynolog-inference[llamacpp]"]
+neo4j = ["xynolog-graph[neo4j]"]
+neptune = ["xynolog-graph[neptune]"]
+openai = ["xynolog-inference[openai]"]
+together = ["xynolog-inference[together]"]
+vllm = ["xynolog-inference[vllm]"]
 
 # The SDK, the graph stores, the inference drivers, what every Python service
 # is built on and the vector stores are the ones in this repository: the
@@ -59,11 +59,11 @@ vllm = ["semiont-inference[vllm]"]
 # Each is named, because a source another package states for the SDK is read
 # only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
-semiont-graph = { path = "../shared/python/graph", editable = true }
-semiont-inference = { path = "../shared/python/inference", editable = true }
-semiont-service = { path = "../shared/python/service", editable = true }
-semiont-vectors = { path = "../shared/python/vectors", editable = true }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog-graph = { path = "../shared/python/graph", editable = true }
+xynolog-inference = { path = "../shared/python/inference", editable = true }
+xynolog-service = { path = "../shared/python/service", editable = true }
+xynolog-vectors = { path = "../shared/python/vectors", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -71,7 +71,7 @@ semiont-vectors = { path = "../shared/python/vectors", editable = true }
 [dependency-groups]
 dev = [
     # Every extra: the service is checked with every database's client and every provider's library, as its image has them.
-    "semiont-librarian[anthropic,google,janusgraph,llamacpp,neo4j,neptune,openai,together,vllm]",
+    "xynolog-librarian[anthropic,google,janusgraph,llamacpp,neo4j,neptune,openai,together,vllm]",
     # What makes the histories of a property test.
     "hypothesis>=6.130,<7",
     "mypy==2.4.1",
@@ -87,7 +87,7 @@ path = "../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_librarian"]
+packages = ["src/xynolog_librarian"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -97,7 +97,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this service's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_librarian"]
+source = ["xynolog_librarian"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

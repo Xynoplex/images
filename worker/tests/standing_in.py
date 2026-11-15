@@ -16,10 +16,10 @@ from typing import Final, Protocol, final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.annotations import TextSpan, annotation_of_span
-from xynoplex.identifiers import JobId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import (
+from xynolog.annotations import TextSpan, annotation_of_span
+from xynolog.identifiers import JobId, ResourceId
+from xynolog.model import written
+from xynolog.types import (
     Agent,
     AgentSoftware,
     AnchoredText,
@@ -35,21 +35,21 @@ from xynoplex.types import (
     TagSchema,
     UnitCursor,
 )
-from xynoplex.watched import Variable, Watched
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
+from xynolog.watched import Variable, Watched
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 
-from semiont_worker import processors
-from semiont_worker.detection.annotation_detection import OnActivity, OnChunkResults
-from semiont_worker.detection.chunk_plan import ChunkCursor, UnderReportedPiece
-from semiont_worker.detection.entity_extractor import Mention
-from semiont_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
-from semiont_worker.generation.resource_generation import GeneratedDocument, Repair
-from semiont_worker.generation.typst import Compiled, LandedCompile, NotCompiled
-from semiont_worker.processors import BuildAnnotation, OnChunkComplete, UnitCheckpoint
+from xynolog_worker import processors
+from xynolog_worker.detection.annotation_detection import OnActivity, OnChunkResults
+from xynolog_worker.detection.chunk_plan import ChunkCursor, UnderReportedPiece
+from xynolog_worker.detection.entity_extractor import Mention
+from xynolog_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
+from xynolog_worker.generation.resource_generation import GeneratedDocument, Repair
+from xynolog_worker.generation.typst import Compiled, LandedCompile, NotCompiled
+from xynolog_worker.processors import BuildAnnotation, OnChunkComplete, UnitCheckpoint
 
 RESOURCE: Final = ResourceId("res-test")
 JOB: Final = JobId("job-test")
-GENERATOR: Final[Agent] = AgentSoftware(type="Software", id="did:web:test.local:agents:semiont-worker", provider="test", model="test")
+GENERATOR: Final[Agent] = AgentSoftware(type="Software", id="did:web:test.local:agents:xynolog-worker", provider="test", model="test")
 
 
 def text_build(text: str) -> BuildAnnotation:

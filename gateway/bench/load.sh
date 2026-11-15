@@ -3,7 +3,7 @@
 # after another, on Alpine as the image is. From the repository root:
 #
 #   container run --rm -c 12 -m 8g -v "$PWD":/work -w /work alpine:3.24 \
-#     sh gateway/bench/load.sh now=packages/rust/target/release/semiont-gateway
+#     sh gateway/bench/load.sh now=packages/rust/target/release/xynolog-gateway
 #
 # The gateway gets CPUs 0-7 (so eight workers) and wrk the next four, so the
 # two never share a core. Each scenario runs once to warm up and then RUNS
@@ -132,7 +132,7 @@ STREAM_LINES=""
 for pair in "$@"; do
   label=${pair%%=*}
   binary=${pair#*=}
-  JWT_SECRET="$JWT_SECRET" SEMIONT_OIDC_CLIENT_ID=load SEMIONT_OIDC_CLIENT_SECRET=load \
+  JWT_SECRET="$JWT_SECRET" XYNOLOG_OIDC_CLIENT_ID=load XYNOLOG_OIDC_CLIENT_SECRET=load \
     taskset -c "$GATEWAY_CPUS" "$binary" --config "$WORK/gateway.json" >"$WORK/$label.log" 2>&1 &
   GATEWAY=$!
   tries=0

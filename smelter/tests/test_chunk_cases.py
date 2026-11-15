@@ -10,7 +10,7 @@ import pytest
 from pydantic import BaseModel, Field
 from spec import SPEC
 
-from semiont_smelter.chunking import Chunking, Cut, chunk_text, cut_chunk, estimate_tokens
+from xynolog_smelter.chunking import Chunking, Cut, chunk_text, cut_chunk, estimate_tokens
 
 
 class StatedChunking(BaseModel, frozen=True, extra="forbid", strict=True):

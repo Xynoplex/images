@@ -1,12 +1,12 @@
 //! The gateway's own instruments, made on the service's meter: the metrics
 //! protocol/specs/src/service-telemetry/telemetry.json lists for it beside the process's and
-//! its count of the emits it accepted (`semiont.bus.emit`, observability's).
+//! its count of the emits it accepted (`xynolog.bus.emit`, observability's).
 
 use crate::http::Unauthenticated;
 use opentelemetry::KeyValue;
 use opentelemetry::metrics::{Counter, UpDownCounter};
-use semiont_observability::telemetry;
 use std::sync::OnceLock;
+use xynolog_observability::telemetry;
 
 struct Instruments {
     replies_suppressed: Counter<u64>,
@@ -26,29 +26,29 @@ fn instruments() -> Option<&'static Instruments> {
             let meter = telemetry::meter()?;
             Some(Instruments {
                 replies_suppressed: meter
-                    .u64_counter("semiont.bus.reply.suppressed")
+                    .u64_counter("xynolog.bus.reply.suppressed")
                     .with_description("Correlated replies withheld from a non-owning subscriber")
                     .build(),
                 resume_gaps: meter
-                    .u64_counter("semiont.bus.resume_gap")
+                    .u64_counter("xynolog.bus.resume_gap")
                     .with_description("SSE resumes that degraded to a gap because replay was unavailable")
                     .build(),
                 unanswerable: meter
-                    .u64_counter("semiont.bus.unanswerable")
+                    .u64_counter("xynolog.bus.unanswerable")
                     .with_description(
                         "Request emits that reached zero subscribers and were failed at the gateway",
                     )
                     .build(),
                 refusals: meter
-                    .u64_counter("semiont.gateway.refused")
+                    .u64_counter("xynolog.gateway.refused")
                     .with_description("Requests a limit refused, and connections closed at the cap")
                     .build(),
                 unauthenticated: meter
-                    .u64_counter("semiont.gateway.unauthenticated")
+                    .u64_counter("xynolog.gateway.unauthenticated")
                     .with_description("Requests answered 401")
                     .build(),
                 subscribers: meter
-                    .i64_up_down_counter("semiont.sse.subscribers")
+                    .i64_up_down_counter("xynolog.sse.subscribers")
                     .with_description("Active SSE subscribers")
                     .build(),
             })
@@ -108,13 +108,13 @@ pub fn subscriber_disconnected() {
     }
 }
 
-/// `semiont.bus.correlation.size`: the claims this replica's ledger holds, and their cap.
+/// `xynolog.bus.correlation.size`: the claims this replica's ledger holds, and their cap.
 pub fn register_correlation_size(occupancy: impl Fn() -> (u64, u64) + Send + Sync + 'static) {
     let Some(meter) = telemetry::meter() else {
         return;
     };
     meter
-        .u64_observable_gauge("semiont.bus.correlation.size")
+        .u64_observable_gauge("xynolog.bus.correlation.size")
         .with_description("Correlation registry occupancy: live claims")
         .with_callback(move |observer| {
             let (claims, claims_max) = occupancy();

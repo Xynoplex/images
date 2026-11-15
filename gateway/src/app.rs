@@ -13,12 +13,6 @@ use crate::signal::in_process::InProcessPlane;
 use crate::signal::nats::NatsPlane;
 use crate::tokens::{KeyRing, require_jwt_secret};
 use crate::{archivist, metrics, routes};
-use xynoplex::identity;
-use semiont_core::config;
-use semiont_core::types::GatewayConfig;
-use semiont_http_service::{IssuerVerifier, KeyTimings};
-use xynoplex_http_transport::service_account::{Credential, SecretCredential};
-use semiont_observability::{logging, telemetry};
 use serde_json::json;
 use socket2::{Domain, Protocol, Socket, Type};
 use std::future::Future;
@@ -27,6 +21,12 @@ use std::num::NonZeroUsize;
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use std::time::Duration;
+use xynolog::identity;
+use xynolog_core::config;
+use xynolog_core::types::GatewayConfig;
+use xynolog_http_service::{IssuerVerifier, KeyTimings};
+use xynolog_http_transport::service_account::{Credential, SecretCredential};
+use xynolog_observability::{logging, telemetry};
 
 /// What the routes share.
 pub struct App {
@@ -80,8 +80,8 @@ fn boot() -> Result<i32, String> {
         config::service_account(&crate::config::DOCUMENT).map_err(|e| e.to_string())?;
     logging::initialize(config.log_level, config.log_format);
     telemetry::initialize(
-        "semiont-gateway",
-        semiont_core::spec::VERSION,
+        "xynolog-gateway",
+        xynolog_core::spec::VERSION,
         Some(&identity::kb_did(&config.kb.domain)),
     )?;
     // One worker per CPU the process may use (its cgroup quota and affinity),
@@ -196,7 +196,7 @@ async fn run(
     });
     let listener = listen(port).map_err(|e| format!("cannot listen on port {port}: {e}"))?;
     logging::info(
-        "Semiont Gateway ready",
+        "Xynolog Gateway ready",
         json!({
             "url": format!("http://localhost:{port}/api"),
             "capacity": {
@@ -215,7 +215,7 @@ async fn run(
         let _ = tx.send(stop_signal().await);
     });
     let mut received = "";
-    semiont_http_service::serve(
+    xynolog_http_service::serve(
         listener,
         routes::router(app.clone()),
         app.config.capacity.connections as usize,

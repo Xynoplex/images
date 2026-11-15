@@ -11,19 +11,19 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.types import GatheredContext, SupportedMediaType
 from spec import SPEC
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.types import GatheredContext, SupportedMediaType
 
-from semiont_worker.generation.citations import (
+from xynolog_worker.generation.citations import (
     CitableIds,
     GenerationCitation,
     ResolvedCitations,
     collect_citable_ids,
     resolve_citation_tokens,
 )
-from semiont_worker.log import LOG
-from semiont_worker.media_types import GENERATABLE_MEDIA_TYPES
+from xynolog_worker.log import LOG
+from xynolog_worker.media_types import GENERATABLE_MEDIA_TYPES
 
 
 class Stated(BaseModel, frozen=True, extra="forbid", strict=True):
@@ -134,7 +134,7 @@ R1: Final = CitableIds(resource_ids=frozenset({"r1"}), annotation_ids=frozenset(
 
 def names_given(name: str) -> Mapping[str, str]:
     """The names a context gives where its focus, `res-1`, is named `name`."""
-    resource: JsonValue = {"@context": "https://semiont.dev/context/v1", "@id": "res-1", "name": name, "representations": []}
+    resource: JsonValue = {"@context": "https://xynolog.dev/context/v1", "@id": "res-1", "name": name, "representations": []}
     context = GatheredContext.model_validate(
         {"focus": {"kind": "resource", "resource": resource}, "graph": {"nodes": [], "edges": []}, "metadata": {}}
     )

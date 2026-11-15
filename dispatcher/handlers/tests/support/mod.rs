@@ -2,17 +2,17 @@
 //! it was asked and holds at most one job, a knowledge base with no
 //! vocabulary, and a frame handled over them.
 
-use xynoplex::types::{
+use serde_json::{Value, json};
+use std::sync::{Arc, Mutex};
+use xynolog::types::{
     BusFrame, FailureClass, Job, JobFilter, JobId, JobPending, JobStoredProgress, JobStoredResult,
     TagSchema,
 };
-use semiont_dispatcher_handlers::admission::{Refusal, Vocabulary};
-use semiont_dispatcher_handlers::handlers::{Handlers, Reply};
-use semiont_dispatcher_handlers::queue::{
+use xynolog_dispatcher_handlers::admission::{Refusal, Vocabulary};
+use xynolog_dispatcher_handlers::handlers::{Handlers, Reply};
+use xynolog_dispatcher_handlers::queue::{
     Checkpoint, Claim, FailOutcome, JobQueue, QueueError, Stats,
 };
-use serde_json::{Value, json};
-use std::sync::{Arc, Mutex};
 
 /// A queue that records what it was asked. It answers a read with the job it
 /// holds, when it holds one, and changes nothing.

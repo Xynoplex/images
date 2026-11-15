@@ -4,10 +4,10 @@
 //! `<timestamp> [<LEVEL>] <message>` followed by any fields as JSON.
 
 use opentelemetry::trace::TraceContextExt;
-use xynoplex::types::{LogFormat, LogLevel};
 use serde_json::{Map, Value, json};
 use std::io::Write;
 use std::sync::OnceLock;
+use xynolog::types::{LogFormat, LogLevel};
 
 struct Logger {
     level: LogLevel,

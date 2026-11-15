@@ -20,23 +20,6 @@ from typing import Final, final
 import pytest
 from aio import run, turns, under_way
 from pydantic import JsonValue
-from xynoplex.annotations import QuotedText, TextSpan
-from xynoplex.types import (
-    Annotation,
-    AssessingJobParams,
-    CommentingJobParams,
-    GenerationJobParams,
-    HighlightingJobParams,
-    JobProgress,
-    LinkingJobParams,
-    MarkJobDone,
-    TagCategory,
-    TaggingJobParams,
-    TagSchema,
-    UnitCursor,
-)
-from xynoplex.watched import Variable, Watched
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 from standing_in import (
     AskedToGenerate,
     Handed,
@@ -51,23 +34,40 @@ from standing_in import (
     tags_stood_in,
     text_build,
 )
+from xynolog.annotations import QuotedText, TextSpan
+from xynolog.types import (
+    Annotation,
+    AssessingJobParams,
+    CommentingJobParams,
+    GenerationJobParams,
+    HighlightingJobParams,
+    JobProgress,
+    LinkingJobParams,
+    MarkJobDone,
+    TagCategory,
+    TaggingJobParams,
+    TagSchema,
+    UnitCursor,
+)
+from xynolog.watched import Variable, Watched
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
 
-from semiont_worker.chunking import Chunking, cut_chunk, estimate_tokens
-from semiont_worker.detection.annotation_detection import (
+from xynolog_worker.chunking import Chunking, cut_chunk, estimate_tokens
+from xynolog_worker.detection.annotation_detection import (
     OnActivity,
     detect_assessments,
     detect_comments,
     detect_highlights,
     detect_tags,
 )
-from semiont_worker.detection.chunk_plan import AdaptiveChunk, ChunkCursor, DetectionBudget, derive_detection_budget, run_adaptive_chunks
-from semiont_worker.detection.chunk_size import CallOutcome
-from semiont_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, Mention, extract_entities
-from semiont_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
-from semiont_worker.detection.prompts import assessment_prompt, comment_prompt, highlight_prompt, mention_prompt, tag_prompt
-from semiont_worker.generation.resource_generation import GeneratedDocument
-from semiont_worker.generation.typst import Compiled, NotCompiled
-from semiont_worker.processors import (
+from xynolog_worker.detection.chunk_plan import AdaptiveChunk, ChunkCursor, DetectionBudget, derive_detection_budget, run_adaptive_chunks
+from xynolog_worker.detection.chunk_size import CallOutcome
+from xynolog_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, Mention, extract_entities
+from xynolog_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
+from xynolog_worker.detection.prompts import assessment_prompt, comment_prompt, highlight_prompt, mention_prompt, tag_prompt
+from xynolog_worker.generation.resource_generation import GeneratedDocument
+from xynolog_worker.generation.typst import Compiled, NotCompiled
+from xynolog_worker.processors import (
     Cancelled,
     GeneratedArtifact,
     GeneratedText,

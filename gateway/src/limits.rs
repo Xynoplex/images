@@ -1,25 +1,25 @@
 //! What the gateway reads from the spec for itself: the limits its routes
-//! enforce (each operation's `x-semiont-limits`, `maxItems`, and how long an
+//! enforce (each operation's `x-xynolog-limits`, `maxItems`, and how long an
 //! `Idempotency-Key` may be), how long a connection waits for a request (the
-//! document's `x-semiont-limits`), the timings of its issuer's key set (the
-//! bearer scheme's `x-semiont-limits`), and what each operation that takes
+//! document's `x-xynolog-limits`), the timings of its issuer's key set (the
+//! bearer scheme's `x-xynolog-limits`), and what each operation that takes
 //! JSON accepts.
 
-use semiont_core::spec::{Spec, spec};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::ops::RangeInclusive;
 use std::sync::OnceLock;
+use xynolog_core::spec::{Spec, spec};
 
 /// What an operation that takes JSON accepts: the component schema its body
-/// must match, and its `x-semiont-limits.maxBodyBytes`.
+/// must match, and its `x-xynolog-limits.maxBodyBytes`.
 #[derive(Debug)]
 pub struct JsonBody {
     pub schema: String,
     pub max_bytes: usize,
 }
 
-/// The limits the spec states: each operation's `x-semiont-limits`, the
+/// The limits the spec states: each operation's `x-xynolog-limits`, the
 /// document's, the bearer scheme's, `maxItems`, and the length of each
 /// operation's `Idempotency-Key`.
 #[derive(Debug)]
@@ -46,7 +46,7 @@ pub struct Limits {
     pub refusals: RefusalLimit,
 }
 
-/// What one holder may have refused (the bearer scheme's `x-semiont-limits`):
+/// What one holder may have refused (the bearer scheme's `x-xynolog-limits`):
 /// `burst` at once, `per_second` after, and how many holders are counted.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct RefusalLimit {
@@ -152,9 +152,9 @@ impl JsonBody {
                 .as_str()
                 .and_then(|r| r.strip_prefix("#/components/schemas/"))
                 .ok_or_else(|| format!("{operation}'s JSON body is not a component schema"))?;
-            let max_bytes = op["x-semiont-limits"]["maxBodyBytes"]
+            let max_bytes = op["x-xynolog-limits"]["maxBodyBytes"]
                 .as_u64()
-                .ok_or_else(|| format!("{operation} states no x-semiont-limits.maxBodyBytes"))?;
+                .ok_or_else(|| format!("{operation} states no x-xynolog-limits.maxBodyBytes"))?;
             out.insert(
                 operation,
                 JsonBody {
@@ -191,20 +191,20 @@ impl<C> PrincipalLimit<C> {
 impl Limits {
     fn of(document: &Value) -> Result<Limits, String> {
         let limit = |path: &str, method: &str, key: &str| -> Result<u64, String> {
-            document["paths"][path][method]["x-semiont-limits"][key]
+            document["paths"][path][method]["x-xynolog-limits"][key]
                 .as_u64()
                 .ok_or_else(|| {
                     format!(
-                        "{} {path} states no x-semiont-limits.{key}",
+                        "{} {path} states no x-xynolog-limits.{key}",
                         method.to_uppercase()
                     )
                 })
         };
         let principal = |path: &str, method: &str, key: &str| -> Result<&Value, String> {
-            let limit = &document["paths"][path][method]["x-semiont-limits"][key];
+            let limit = &document["paths"][path][method]["x-xynolog-limits"][key];
             if limit["baseline"].is_null() {
                 return Err(format!(
-                    "{} {path} states no x-semiont-limits.{key} baseline",
+                    "{} {path} states no x-xynolog-limits.{key} baseline",
                     method.to_uppercase()
                 ));
             }
@@ -217,9 +217,9 @@ impl Limits {
                 .ok_or_else(|| format!("BusSubscribeRequest.{property} states no maxItems"))
         };
         let document_limit = |key: &str| -> Result<u64, String> {
-            document["x-semiont-limits"][key]
+            document["x-xynolog-limits"][key]
                 .as_u64()
-                .ok_or_else(|| format!("the document states no x-semiont-limits.{key}"))
+                .ok_or_else(|| format!("the document states no x-xynolog-limits.{key}"))
         };
         let key_length = |path: &str| -> Result<RangeInclusive<usize>, String> {
             let schema = document["paths"][path]["post"]["parameters"]
@@ -239,9 +239,9 @@ impl Limits {
             }
         };
         let key_set = |key: &str| -> Result<u64, String> {
-            document["components"]["securitySchemes"]["bearerAuth"]["x-semiont-limits"][key]
+            document["components"]["securitySchemes"]["bearerAuth"]["x-xynolog-limits"][key]
                 .as_u64()
-                .ok_or_else(|| format!("the bearerAuth scheme states no x-semiont-limits.{key}"))
+                .ok_or_else(|| format!("the bearerAuth scheme states no x-xynolog-limits.{key}"))
         };
         Ok(Limits {
             request_head_seconds: document_limit("requestHeadSeconds")?,

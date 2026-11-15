@@ -5,13 +5,13 @@ use crate::http::{Authenticated, json_response};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::Response;
-use xynoplex::types::{
+use serde_json::json;
+use std::sync::Arc;
+use xynolog::types::{
     HealthResponse, ProtectedResourceMetadata, ProtectedResourceMetadataBearerMethodsSupportedItem,
     StatusResponse, StatusResponseFeatures, UserResponse,
 };
-use semiont_core::spec::{VERSION, spec};
-use serde_json::json;
-use std::sync::Arc;
+use xynolog_core::spec::{VERSION, spec};
 
 /// `GET /api/health`, and `GET /` — where a person who typed the host lands.
 pub async fn health() -> Response {
@@ -19,7 +19,7 @@ pub async fn health() -> Response {
         StatusCode::OK,
         &HealthResponse {
             status: "operational".to_owned(),
-            message: "Semiont API is running".to_owned(),
+            message: "Xynolog API is running".to_owned(),
             version: VERSION.to_owned(),
             timestamp: chrono::Utc::now()
                 .format("%Y-%m-%dT%H:%M:%S%.3fZ")

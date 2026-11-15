@@ -14,18 +14,18 @@ from typing import Annotated, Final, Literal, assert_never, final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.annotations import QuotedText, TextSpan
-from xynoplex.types import TagCategory, TagSchema
-from xynoplex.watched import Variable
-from semiont_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredReadError, StructuredResponse
-from semiont_inference.mock import MockInferenceClient
 from spec import SPEC
+from xynolog.annotations import QuotedText, TextSpan
+from xynolog.types import TagCategory, TagSchema
+from xynolog.watched import Variable
+from xynolog_inference.interface import ElementSchema, InferenceLimits, InferenceResponse, StructuredReadError, StructuredResponse
+from xynolog_inference.mock import MockInferenceClient
 
-from semiont_worker.detection.annotation_detection import detect_assessments, detect_comments, detect_highlights, detect_tags
-from semiont_worker.detection.chunk_plan import UnderReportedPiece
-from semiont_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, Mention, extract_entities
-from semiont_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
-from semiont_worker.failure_class import DeterministicJobError
+from xynolog_worker.detection.annotation_detection import detect_assessments, detect_comments, detect_highlights, detect_tags
+from xynolog_worker.detection.chunk_plan import UnderReportedPiece
+from xynolog_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, Mention, extract_entities
+from xynolog_worker.detection.parsers import AssessmentMatch, CommentMatch, TagMatch
+from xynolog_worker.failure_class import DeterministicJobError
 
 
 class Stated(BaseModel, frozen=True, extra="forbid", strict=True):

@@ -19,18 +19,18 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.identity import kb_did
 from spec import PACKAGE, SDK
+from xynolog.identity import kb_did
 
-from semiont_vectors.embedding import EmbeddingProvider
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.mock import MockEmbeddingProvider
-from semiont_vectors.ollama import OllamaEmbeddingProvider
-from semiont_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
-from semiont_vectors.store import VectorReader, VectorStore
-from semiont_vectors.voyage import VoyageEmbeddingProvider
+from xynolog_vectors.embedding import EmbeddingProvider
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.mock import MockEmbeddingProvider
+from xynolog_vectors.ollama import OllamaEmbeddingProvider
+from xynolog_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
+from xynolog_vectors.store import VectorReader, VectorStore
+from xynolog_vectors.voyage import VoyageEmbeddingProvider
 
-SRC = PACKAGE / "src/semiont_vectors"
+SRC = PACKAGE / "src/xynolog_vectors"
 KB = kb_did("example.github.io:plain-kb")
 """The knowledge base whose index each Qdrant store and reader made here is."""
 SOURCES = sorted(path for top in ("src", "tests") for path in (PACKAGE / top).rglob("*.py"))
@@ -144,7 +144,7 @@ def test_the_public_modules_and_their_names_are_the_ones_the_design_lists() -> N
     modules = sorted(path.stem for path in SRC.glob("*.py") if not path.stem.startswith("_"))
     assert modules == sorted(SURFACE)
     for module, names in SURFACE.items():
-        assert sorted(importlib.import_module(f"semiont_vectors.{module}").__all__) == sorted(names), f"semiont_vectors.{module}"
+        assert sorted(importlib.import_module(f"xynolog_vectors.{module}").__all__) == sorted(names), f"xynolog_vectors.{module}"
 
 
 def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_root() -> None:
@@ -152,11 +152,11 @@ def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_roo
     # Read as Python, and not as text: a docstring may have a line that begins with the word "from".
     root_statements = ast.parse((SRC / "__init__.py").read_text(encoding="utf-8")).body
     assert not [held for held in root_statements if isinstance(held, ast.Import | ast.ImportFrom)], "the package's root imports something"
-    root = importlib.import_module("semiont_vectors")
+    root = importlib.import_module("xynolog_vectors")
     assert not hasattr(root, "__all__")
     for module, names in SURFACE.items():
         for name in names:
-            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from semiont_vectors.{module}"
+            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from xynolog_vectors.{module}"
     assert (SRC / "py.typed").read_bytes() == b""
 
 
@@ -205,16 +205,16 @@ def test_the_http_client_is_named_only_by_the_modules_that_ask_through_it() -> N
     assert importing("httpx") == ["ollama.py", "qdrant.py", "voyage.py"]
     # The modules that say what a store and a provider are import no store and no provider.
     for module in ("memory", "qdrant", "ollama", "voyage", "mock", "factory"):
-        imported_by = set(importing(rf"semiont_vectors\.{module}"))
+        imported_by = set(importing(rf"xynolog_vectors\.{module}"))
         assert not imported_by & PROTOCOLS, module
     # One module makes a store or a provider from a configuration, and it is the one that names them all.
     for module in ("memory", "qdrant", "ollama", "voyage"):
-        assert importing(rf"semiont_vectors\.{module}") == ["factory.py"], module
-    assert importing(r"semiont_vectors\.mock") == []
+        assert importing(rf"xynolog_vectors\.{module}") == ["factory.py"], module
+    assert importing(r"xynolog_vectors\.mock") == []
     # A store knows no provider: the one thing it asks of one is handed to it.
     for store in ("memory.py", "qdrant.py"):
         for provider in ("ollama", "voyage", "mock"):
-            assert store not in importing(rf"semiont_vectors\.{provider}"), f"{store} imports semiont_vectors.{provider}"
+            assert store not in importing(rf"xynolog_vectors\.{provider}"), f"{store} imports xynolog_vectors.{provider}"
 
 
 def test_no_store_reads_a_clock() -> None:
@@ -267,8 +267,8 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
 def test_what_every_install_has_is_all_of_it_and_there_is_no_extra() -> None:
     project = table(MANIFEST["project"], "project")
     required = listed(project["dependencies"], "dependencies")
-    assert {name_of(requirement) for requirement in required} == {"httpx", "pydantic", "semiont"}
-    for library in ("httpx", "pydantic", "semiont"):
+    assert {name_of(requirement) for requirement in required} == {"httpx", "pydantic", "xynolog"}
+    for library in ("httpx", "pydantic", "xynolog"):
         assert importing(library), f"{library} is required and nothing imports it"
     # A dependency the SDK bounds is named here without a bound of its own.
     of_the_sdk = listed(table(toml(SDK / "pyproject.toml")["project"], "project")["dependencies"], "the SDK's dependencies")

@@ -1,6 +1,6 @@
 # Keyboard Navigation — Implementation
 
-How keyboard navigation is implemented in the Semiont Browser. The end-user-facing shortcut reference lives at **[../../../docs/analyst/KEYBOARD-NAV.md](../../../docs/analyst/KEYBOARD-NAV.md)**; this page covers the patterns and primitives a contributor needs.
+How keyboard navigation is implemented in the Xynolog Browser. The end-user-facing shortcut reference lives at **[../../../docs/analyst/KEYBOARD-NAV.md](../../../docs/analyst/KEYBOARD-NAV.md)**; this page covers the patterns and primitives a contributor needs.
 
 For the broader accessibility implementation guide, see **[ACCESSIBILITY.md](ACCESSIBILITY.md)**.
 
@@ -30,7 +30,7 @@ For the broader accessibility implementation guide, see **[ACCESSIBILITY.md](ACC
 Centralized keyboard event handling with platform detection and context-awareness:
 
 ```typescript
-import { useKeyboardShortcuts } from '@xynoplex/react-ui';
+import { useKeyboardShortcuts } from '@xynolog/react-ui';
 
 const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -58,7 +58,7 @@ The Browser's `KeyboardShortcutsProvider` registers the global set: `Cmd/Ctrl+K`
 Arrow-key navigation for widget groups — on the discover page, the entity-type filter row and the resource grid:
 
 ```tsx
-import { useRovingTabIndex } from '@xynoplex/react-ui';
+import { useRovingTabIndex } from '@xynolog/react-ui';
 
 const entityTypes = ['Person', 'Organization', 'Location'];
 const roving = useRovingTabIndex<HTMLDivElement>(entityTypes.length, {
@@ -78,7 +78,7 @@ Manages the `tabindex` attributes of the buttons, `[role="button"]` and `[tabind
 Screen-reader announcements for dynamic content:
 
 ```typescript
-import { useLiveRegion } from '@xynoplex/react-ui';
+import { useLiveRegion } from '@xynolog/react-ui';
 
 const { announce } = useLiveRegion();
 announce('5 results found', 'polite');
@@ -114,7 +114,7 @@ When a modal opens, focus moves into it and is trapped until close. On close, fo
 
 ### Skip link
 
-`SkipLinks` (in `@xynoplex/react-ui`) renders one visually-hidden-until-focused link, "Skip to main content" in the page's language, that lets keyboard users bypass repetitive navigation. The locale layout mounts it once, ahead of every route, so the skip link is the first focusable element on every page. It lands on `MainContent`, react-ui's `<main>` landmark: every Browser layout and standalone page renders its content in one, and `PageLayout` renders one around its children. See [ACCESSIBILITY.md § Skip link](ACCESSIBILITY.md#skip-link).
+`SkipLinks` (in `@xynolog/react-ui`) renders one visually-hidden-until-focused link, "Skip to main content" in the page's language, that lets keyboard users bypass repetitive navigation. The locale layout mounts it once, ahead of every route, so the skip link is the first focusable element on every page. It lands on `MainContent`, react-ui's `<main>` landmark: every Browser layout and standalone page renders its content in one, and `PageLayout` renders one around its children. See [ACCESSIBILITY.md § Skip link](ACCESSIBILITY.md#skip-link).
 
 ## Component checklist
 

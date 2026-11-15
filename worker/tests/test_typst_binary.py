@@ -21,8 +21,8 @@ from typing import Final
 import pytest
 from spec import PROJECT
 
-from semiont_worker.generation.citations import CitableIds, resolve_citation_tokens
-from semiont_worker.generation.typst import (
+from xynolog_worker.generation.citations import CitableIds, resolve_citation_tokens
+from xynolog_worker.generation.typst import (
     PINNED_CREATION_TIMESTAMP,
     Compiled,
     Landed,

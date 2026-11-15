@@ -15,11 +15,11 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.types import KnowledgeGraph
 from spec import SPEC
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.types import KnowledgeGraph
 
-from semiont_worker.generation.graph_views import Citer, Connection, GraphViews, derive_views
+from xynolog_worker.generation.graph_views import Citer, Connection, GraphViews, derive_views
 
 
 class Stated(BaseModel, frozen=True, extra="forbid", strict=True):

@@ -1,7 +1,7 @@
 # Browser Architecture
 
-This document describes how the Semiont Browser application is built. Where it sits in
-Semiont as a whole is [Human UI](../../../docs/architecture/HUMAN-UI.md).
+This document describes how the Xynolog Browser application is built. Where it sits in
+Xynolog as a whole is [Human UI](../../../docs/architecture/HUMAN-UI.md).
 
 ## Table of Contents
 
@@ -18,12 +18,12 @@ Semiont as a whole is [Human UI](../../../docs/architecture/HUMAN-UI.md).
 
 ## Overview
 
-The Semiont Browser is a Vite + React Router SPA. The architecture emphasizes:
+The Xynolog Browser is a Vite + React Router SPA. The architecture emphasizes:
 
 - **Type Safety**: TypeScript throughout with strict mode enabled
 - **Server State Management**: RxJS observable caches on the SDK's verb-namespace client, invalidated automatically by gateway domain events
 - **Authentication**: bearer-only — the SDK session sends its access token as `Authorization: Bearer` and keeps the access and refresh pair in `localStorage`, per knowledge base; no cookie, no Browser-side auth server
-- **Session state outside React**: one `SemiontBrowser` singleton from the SDK holds the knowledge bases and the active session; components read it through observables
+- **Session state outside React**: one `XynologBrowser` singleton from the SDK holds the knowledge bases and the active session; components read it through observables
 - **Fail-Fast Philosophy**: No default values - explicit configuration required
 
 ## Technology Stack
@@ -42,7 +42,7 @@ The Semiont Browser is a Vite + React Router SPA. The architecture emphasizes:
 
 #### Hybrid CSS Architecture
 The Browser uses a hybrid CSS approach that combines:
-- **@xynoplex/react-ui** - Semantic CSS with BEM methodology for all UI components, organized into:
+- **@xynolog/react-ui** - Semantic CSS with BEM methodology for all UI components, organized into:
   - `core/` - Fundamental UI elements (buttons, toggles, sliders, badges, tags, indicators)
   - `patterns/` - Shared patterns (cards, panel base and helpers)
   - `panels/` - Panel-specific styles (history, user)
@@ -51,7 +51,7 @@ The Browser uses a hybrid CSS approach that combines:
 - **Tailwind CSS** - Utility-first CSS for app-specific layouts and custom components
 
 This architecture ensures:
-- Framework-agnostic component library (@xynoplex/react-ui uses semantic CSS)
+- Framework-agnostic component library (@xynolog/react-ui uses semantic CSS)
 - Modular organization with clear separation (core elements vs. components vs. panels)
 - Centralized design tokens for consistency (panel tokens, color palettes)
 - W3C Web Annotation compliance with dedicated motivation styles
@@ -64,7 +64,7 @@ This architecture ensures:
 
 ### Component Library Architecture
 
-The Browser leverages **@xynoplex/react-ui**, a comprehensive framework-agnostic component library that provides:
+The Browser leverages **@xynolog/react-ui**, a comprehensive framework-agnostic component library that provides:
 
 #### Core Components
 - **UI Components**: Button, Toolbar, Toast, StatusDisplay
@@ -81,7 +81,7 @@ The Browser leverages **@xynoplex/react-ui**, a comprehensive framework-agnostic
 - **Resource Hooks**: useResourceContent, useMediaToken
 
 #### Provider Pattern
-@xynoplex/react-ui uses a two-layer provider model — global (every page) and protected (only routes that require auth):
+@xynolog/react-ui uses a two-layer provider model — global (every page) and protected (only routes that require auth):
 
 ```tsx
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
@@ -92,7 +92,7 @@ function AppTree() {
   // Global layer — auth-independent (browser/src/app/providers.tsx)
   return (
     <TranslationProvider translationManager={translationManager}>
-      <SemiontProvider>            {/* the SemiontBrowser singleton: sessions, KBs, the client */}
+      <XynologProvider>            {/* the XynologBrowser singleton: sessions, KBs, the client */}
         {/* Toast, LiveRegion, KeyboardShortcuts, Theme, LineNumbers, then the app */}
 
         {/* Protected layer — AuthShell, mounted only around the routes that require auth */}
@@ -102,7 +102,7 @@ function AppTree() {
           <KbIdentityConflictModal />
           {/* Auth-aware components live here */}
         </ProtectedErrorBoundary>
-      </SemiontProvider>
+      </XynologProvider>
     </TranslationProvider>
   );
 }
@@ -110,15 +110,15 @@ function AppTree() {
 
 This architecture enables:
 - **Framework Independence**: Components work with any React framework
-- **Consistent Design**: Shared components across all Semiont applications
+- **Consistent Design**: Shared components across all Xynolog applications
 - **Type Safety**: Shared TypeScript types and interfaces
-- **Tested in the library**: the components' tests live with them in `@xynoplex/react-ui`
+- **Tested in the library**: the components' tests live with them in `@xynolog/react-ui`
 - **Clear Boundaries**: Separation between framework code and UI components
 
 See [Component Library Integration Guide](COMPONENT-LIBRARY.md) for detailed usage.
 
 ### API Communication
-- **`@xynoplex/sdk`** over `@xynoplex/http-transport` - every call to a knowledge base. The app itself contains no `fetch` call
+- **`@xynolog/sdk`** over `@xynolog/http-transport` - every call to a knowledge base. The app itself contains no `fetch` call
 - **Server-Sent Events (SSE)** - the bus stream: one `POST /bus/subscribe` connection for the active knowledge base
 
 ### Two origins
@@ -150,17 +150,17 @@ See [AUTHENTICATION.md](AUTHENTICATION.md) for the full authentication flow.
 
 **Session Management:**
 ```
-SemiontProvider (app root) → SemiontBrowser singleton (library-side, outside React)
+XynologProvider (app root) → XynologBrowser singleton (library-side, outside React)
     ├── owns: kbs$ (KB list), activeKbId$ (active KB) — persisted via the storage adapter
-    ├── owns: activeSession$ — the active KB's SemiontSession (its SemiontClient + access/refresh tokens)
+    ├── owns: activeSession$ — the active KB's XynologSession (its XynologClient + access/refresh tokens)
     ├── owns: activeSignals$ — session-expired / permission-denied modal signals
     ├── owns: openResources$, lastViewedResource$ (per-KB), identityToken$
-    └── useSemiont() → SemiontBrowser   (components read observables via useObservable)
+    └── useXynolog() → XynologBrowser   (components read observables via useObservable)
         └── Application Components
 ```
 
 **Authentication Flow:**
-1. User adds a KB → `SemiontBrowser.beginSignIn` discovers the KB's issuer from its gateway (RFC 9728) and redirects there → the callback page's `completeSignIn` exchanges the authorization code (PKCE) for access + refresh tokens
+1. User adds a KB → `XynologBrowser.beginSignIn` discovers the KB's issuer from its gateway (RFC 9728) and redirects there → the callback page's `completeSignIn` exchanges the authorization code (PKCE) for access + refresh tokens
 2. The browser activates the session (`activeSession$`), marks the KB active (`activeKbId$`), and persists the session via the storage adapter
 3. On reload/switch the browser restores the stored session; the client uses its in-memory access token, re-minting from the refresh token as it nears expiry
 4. A 401 that can't be refreshed → the session ends, and its signals raise `sessionEnded$` with why → `SessionEndedModal` surfaces
@@ -173,14 +173,14 @@ SemiontProvider (app root) → SemiontBrowser singleton (library-side, outside R
 ### Authentication Hooks
 
 ```typescript
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 // The browser singleton and its observable session state
-const browser = useSemiont();
+const browser = useXynolog();
 const session = useObservable(browser.activeSession$);   // null when signed out
 const activeKbId = useObservable(browser.activeKbId$);
 
-// The SemiontClient lives on the active session; namespace verbs hang off it.
+// The XynologClient lives on the active session; namespace verbs hang off it.
 // The session feeds the client its in-memory bearer token automatically.
 // (One-shot read: .fresh() is the explicit fetch on a CacheObservable.)
 const resource = await session?.client.browse.resource(resourceId).fresh();
@@ -195,26 +195,26 @@ await browser.signOut(activeKbId!);
 
 High-churn entity data and browser-persistent application state are managed as observable stores — `BehaviorSubject`-backed classes with no React dependency. Components subscribe via `useObservable(store.observable$)`.
 
-**Verb namespace Observables** (live in `@xynoplex/sdk`, owned by `SemiontClient`):
+**Verb namespace Observables** (live in `@xynolog/sdk`, owned by `XynologClient`):
 
 | Namespace | Access | What it caches |
 |---|---|---|
-| Browse | `semiont.browse.resource(id)` | Resource descriptors, lazily fetched, invalidated by EventBus domain events |
-| Browse | `semiont.browse.annotations(id)` | Annotation lists per resource, updated in-place by enriched SSE events |
-| Browse | `semiont.browse.entityTypes()` | Entity types, updated via `frame:entity-type-added` bus channel |
+| Browse | `xynolog.browse.resource(id)` | Resource descriptors, lazily fetched, invalidated by EventBus domain events |
+| Browse | `xynolog.browse.annotations(id)` | Annotation lists per resource, updated in-place by enriched SSE events |
+| Browse | `xynolog.browse.entityTypes()` | Entity types, updated via `frame:entity-type-added` bus channel |
 
-These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(semiont.browse.annotations(resourceId))`. See [`@xynoplex/sdk` Usage.md](../../../docs/builder/Usage.md) for the full verb namespace API.
+These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(xynolog.browse.annotations(resourceId))`. See [`@xynolog/sdk` Usage.md](../../../docs/builder/Usage.md) for the full verb namespace API.
 
-**Application state** lives on the `SemiontBrowser` singleton (`@xynoplex/sdk`) and in `@xynoplex/react-ui` hooks:
+**Application state** lives on the `XynologBrowser` singleton (`@xynolog/sdk`) and in `@xynolog/react-ui` hooks:
 
 | Where | What it holds |
 |---|---|
 | `browser.openResources$` | Open document tabs, per KB; persisted through the `SessionStorage` adapter, which on the web is `WebBrowserStorage` (`localStorage`, synced across browser tabs by the `storage` event) |
 | `useSessionExpiry()` | Time left on the active session's access token (`session.expiresAt`); drives the "expiring soon" warning |
 
-The browser APIs (`localStorage`, `window`) stay in `WebBrowserStorage` (`@xynoplex/react-ui`); the SDK sees only the `SessionStorage` interface.
+The browser APIs (`localStorage`, `window`) stay in `WebBrowserStorage` (`@xynolog/react-ui`); the SDK sees only the `SessionStorage` interface.
 
-**React integration**: `SemiontProvider` exposes the `SemiontBrowser` singleton via `useSemiont()`. Each per-KB `SemiontSession` owns its `SemiontClient` and feeds it the in-memory bearer token as `token$`; the client reads the observable's current value on every request, so token refreshes propagate automatically without any React-specific wiring.
+**React integration**: `XynologProvider` exposes the `XynologBrowser` singleton via `useXynolog()`. Each per-KB `XynologSession` owns its `XynologClient` and feeds it the in-memory bearer token as `token$`; the client reads the observable's current value on every request, so token refreshes propagate automatically without any React-specific wiring.
 
 ### Binary Content (Media Tokens)
 
@@ -232,21 +232,21 @@ ResourceViewerPage
       → browser/PDF.js fetches directly, streams
 ```
 
-`ResourceViewerPage` loads what the view for the media type's render mode reads (`capabilitiesOf(mediaType)?.render`, from `@xynoplex/core`):
+`ResourceViewerPage` loads what the view for the media type's render mode reads (`capabilitiesOf(mediaType)?.render`, from `@xynolog/core`):
 - `'image'` or `'pdf'` → `useMediaToken` → URL passed to the image/PDF viewer
 - `'text'` → `useResourceContent` (fetch + decode to string) → text viewer
 - `'none'`, or a type the registry does not know → nothing. The no-preview fallback reads no content, and its download link mints its own token
 
-Callers of `ResourceViewerPage` do not manage media tokens; the component handles it internally. The `useMediaToken` hook is available from `@xynoplex/react-ui` for any component that needs a token-authenticated URL independently.
+Callers of `ResourceViewerPage` do not manage media tokens; the component handles it internally. The `useMediaToken` hook is available from `@xynolog/react-ui` for any component that needs a token-authenticated URL independently.
 
-See [`@xynoplex/http-transport/docs/MEDIA-TOKENS.md`](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
+See [`@xynolog/http-transport/docs/MEDIA-TOKENS.md`](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
 
 ### UI State (React Context)
 
 UI-only state and framework-agnostic providers:
 
-**Framework-Agnostic Providers** (from `@xynoplex/react-ui`):
-- `SemiontProvider` - Puts the `SemiontBrowser` singleton (KB list, active KB, per-KB `SemiontSession` + its `SemiontClient`, open resources) into context; read via `useSemiont()`
+**Framework-Agnostic Providers** (from `@xynolog/react-ui`):
+- `XynologProvider` - Puts the `XynologBrowser` singleton (KB list, active KB, per-KB `XynologSession` + its `XynologClient`, open resources) into context; read via `useXynolog()`
 - `TranslationProvider` - Injects `TranslationManager` for i18n
 - `ToastProvider` - Toast notification queue
 - `LiveRegionProvider` - ARIA live region for screen reader announcements
@@ -262,43 +262,43 @@ See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.
 
 ### Verb-Namespace Client
 
-Components never call REST routes or generated query hooks. Each per-KB `SemiontSession` owns a `SemiontClient` whose surface is a set of **verb namespaces** — methods grouped by intent rather than by resource:
+Components never call REST routes or generated query hooks. Each per-KB `XynologSession` owns a `XynologClient` whose surface is a set of **verb namespaces** — methods grouped by intent rather than by resource:
 
 ```typescript
-// In a component: const semiont = useObservable(useSemiont().activeSession$)?.client;
+// In a component: const xynolog = useObservable(useXynolog().activeSession$)?.client;
 
 // browse — reads. Live queries return CacheObservable<T> (subscribe via useObservable);
 //          one-shot reads return Promise<T>.
-semiont.browse.resource(resourceId);         // CacheObservable<ResourceDescriptor>
-semiont.browse.annotations(resourceId);      // CacheObservable<Annotation[]>
-semiont.browse.entityTypes();                // CacheObservable<string[]>
-semiont.browse.resourceContent(resourceId);  // Promise<string> (one-shot)
+xynolog.browse.resource(resourceId);         // CacheObservable<ResourceDescriptor>
+xynolog.browse.annotations(resourceId);      // CacheObservable<Annotation[]>
+xynolog.browse.entityTypes();                // CacheObservable<string[]>
+xynolog.browse.resourceContent(resourceId);  // Promise<string> (one-shot)
 
 // mark / yield / frame / bind / gather / match — writes and long-running operations
-semiont.mark.annotation({                    // Promise<{ annotationId }>
+xynolog.mark.annotation({                    // Promise<{ annotationId }>
   motivation: 'highlighting',
   target: { source: resourceId, selector: { type: 'TextQuoteSelector', exact: 'quoted text' } },
 });
-semiont.mark.delete(rId, aId);               // Promise<void>
-const context = await semiont.gather.resource(resourceId);                      // Promise<GatheredContext>
-semiont.yield.delegate({ title: 'Summary', storageUri: 'file://summary.md', context });  // DelegationObservable<YieldJobCompletion>
-semiont.frame.addEntityType('Person');       // Promise<void>
+xynolog.mark.delete(rId, aId);               // Promise<void>
+const context = await xynolog.gather.resource(resourceId);                      // Promise<GatheredContext>
+xynolog.yield.delegate({ title: 'Summary', storageUri: 'file://summary.md', context });  // DelegationObservable<YieldJobCompletion>
+xynolog.frame.addEntityType('Person');       // Promise<void>
 ```
 
-`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@xynoplex/sdk` Usage.md](../../../docs/builder/Usage.md) for the full namespace API.
+`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@xynolog/sdk` Usage.md](../../../docs/builder/Usage.md) for the full namespace API.
 
 ### Caching and Invalidation
 
 There are no query keys to manage. Each live `browse.*` query is backed by an internal `Cache` primitive keyed by its resource id. Caches refresh themselves in response to gateway **domain events** delivered over the bus gateway — call sites never invalidate anything by hand. `mark:added`, for example, refetches the resource's annotation list and history, and `frame:entity-type-added` refetches the entity types.
 
-The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynoplex/core` at build); [CACHE-SEMANTICS.md](../../../protocol/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
+The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynolog/core` at build); [CACHE-SEMANTICS.md](../../../protocol/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
 
 ### Error Handling
 
-**Auth failures (401 / 403):** The transport stamps every failure with a `TransportErrorCode` — `unauthorized` for 401, `forbidden` for 403 — and republishes them on `session.errors$`. `SemiontBrowser` subscribes to the active session's error stream and routes them to that session's `SessionSignals`:
+**Auth failures (401 / 403):** The transport stamps every failure with a `TransportErrorCode` — `unauthorized` for 401, `forbidden` for 403 — and republishes them on `session.errors$`. `XynologBrowser` subscribes to the active session's error stream and routes them to that session's `SessionSignals`:
 
 ```typescript
-// SemiontBrowser, when a session activates (packages/typescript/sdk/src/session/semiont-browser.ts)
+// XynologBrowser, when a session activates (packages/typescript/sdk/src/session/xynolog-browser.ts)
 const signals = createSessionSignals(); // handed to the session factory, then published as activeSignals$
 session.errors$.subscribe((err) => {
   if (err.code === 'unauthorized') void session.refresh(session.token$.getValue());
@@ -314,12 +314,12 @@ the refusal's message as its detail.
 
 `SessionSignals` holds the modal state, one read-only state per signal (`sessionEnded$`, `permissionDenied$`, `kbIdentityConflict$`), each null until raised and moved only by its `notify` and `acknowledge` methods. A notice says what happened, never a sentence: `SessionEndedModal` and `PermissionDeniedModal` write what a person reads, in their language, and render by subscribing to the browser's `activeSignals$` via `useObservable`. When no session is active (e.g. on the landing page), `activeSignals$` is `null`, so auth errors have nowhere to surface and are no-ops.
 
-**Component-level:** a live query carries its own loading/error state in the value it emits — `useObservable(semiont.browse.resource(id))` yields `CacheState` values (`pending` / `ready` / `failed`, plus `undefined` on the very first render). One-shot hooks such as `useResourceContent` return an explicit `{ content, loading, error }` shape, where `content` is `undefined` until the text has loaded and a zero-byte document loads as `''`:
+**Component-level:** a live query carries its own loading/error state in the value it emits — `useObservable(xynolog.browse.resource(id))` yields `CacheState` values (`pending` / `ready` / `failed`, plus `undefined` on the very first render). One-shot hooks such as `useResourceContent` return an explicit `{ content, loading, error }` shape, where `content` is `undefined` until the text has loaded and a zero-byte document loads as `''`:
 
 ```tsx
 function ResourceText() {
-  const semiont = useObservable(useSemiont().activeSession$)?.client;
-  const { content, loading, error } = useResourceContent(semiont ?? null, resourceId, resource);
+  const xynolog = useObservable(useXynolog().activeSession$)?.client;
+  const { content, loading, error } = useResourceContent(xynolog ?? null, resourceId, resource);
 
   if (error) {
     return <p role="alert">{error.message}</p>;
@@ -334,7 +334,7 @@ function ResourceText() {
 
 ```
 Component renders
-    └── useObservable(semiont.browse.resource(id))
+    └── useObservable(xynolog.browse.resource(id))
         └── browse Cache checks for the resource id
             ├── Cache HIT  → emit cached value, revalidate in background
             └── Cache MISS → transport fetches (Bearer token attached)
@@ -345,7 +345,7 @@ Component renders
 
 ```
 User action (e.g., create annotation)
-    └── await semiont.mark.annotation(input)   (Bearer token attached)
+    └── await xynolog.mark.annotation(input)   (Bearer token attached)
         └── the knowledge base records the change and announces it (mark:added)
             └── the event arrives on the bus stream → the browse cache invalidates the affected query
                 └── live Observable re-emits → subscribed components re-render
@@ -356,7 +356,7 @@ No call site invalidates anything by hand — the domain event drives the cache 
 ### Real-Time Updates (Bus Gateway)
 
 ```
-SemiontClient creates one ActorStateUnit (single SSE to /bus/subscribe)
+XynologClient creates one ActorStateUnit (single SSE to /bus/subscribe)
     └── ResourceViewerPage mounts and subscribes to browse.*(id) live queries
         └── observing them acquires the resource scope (adds scoped channels)
             └── the gateway delivers the resource's events to that scope
@@ -385,13 +385,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const translationManager = useMergedTranslationManager();
 
   return (
-    <TranslationProvider translationManager={translationManager}>  {/* @xynoplex/react-ui — i18n */}
-      <SemiontProvider>            {/* @xynoplex/react-ui — the SemiontBrowser singleton (sessions, KBs, the per-KB SemiontClient + app-scoped event bus) */}
-        <ToastProvider>            {/* @xynoplex/react-ui — toast notifications */}
-          <LiveRegionProvider>     {/* @xynoplex/react-ui — screen reader announcements */}
+    <TranslationProvider translationManager={translationManager}>  {/* @xynolog/react-ui — i18n */}
+      <XynologProvider>            {/* @xynolog/react-ui — the XynologBrowser singleton (sessions, KBs, the per-KB XynologClient + app-scoped event bus) */}
+        <ToastProvider>            {/* @xynolog/react-ui — toast notifications */}
+          <LiveRegionProvider>     {/* @xynolog/react-ui — screen reader announcements */}
             <KeyboardShortcutsProvider>  {/* app-specific */}
-              <ThemeProvider>      {/* @xynoplex/react-ui — theme */}
-                <LineNumbersProvider>  {/* @xynoplex/react-ui — line-numbers display */}
+              <ThemeProvider>      {/* @xynolog/react-ui — theme */}
+                <LineNumbersProvider>  {/* @xynolog/react-ui — line-numbers display */}
                   <NavigationHandler />
                   {children}       {/* the landing page, /auth/connect, /auth/callback, /auth/error, or the AuthShell-wrapped routes below */}
                 </LineNumbersProvider>
@@ -399,7 +399,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </KeyboardShortcutsProvider>
           </LiveRegionProvider>
         </ToastProvider>
-      </SemiontProvider>
+      </XynologProvider>
     </TranslationProvider>
   );
 }
@@ -408,7 +408,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ### Auth shell (mounted around protected routes only)
 
 ```tsx
-// browser/src/contexts/AuthShell.tsx — no provider; the SemiontBrowser
+// browser/src/contexts/AuthShell.tsx — no provider; the XynologBrowser
 // singleton (mounted at the app root) already holds all session state.
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
@@ -432,7 +432,7 @@ keeps the shell mounted rather than tearing it down and rebuilding it.
 
 - **Pre-app surfaces** (landing page, OAuth flow, static pages) do not need a validated session and should not surface auth-failure modals.
 - **Protected routes** sit under `AuthShell`, which surfaces the auth-failure modals from the active session's signals (`activeSignals$`). A 401 that can't be refreshed ends the session and `SessionEndedModal` surfaces, saying why.
-- **Switching KBs swaps `activeSession$`** to the new KB's session (with its own `SemiontClient` pointing at that KB's gateway) — the `SemiontBrowser` singleton handles it, with no per-layout provider or external bridge.
+- **Switching KBs swaps `activeSession$`** to the new KB's session (with its own `XynologClient` pointing at that KB's gateway) — the `XynologBrowser` singleton handles it, with no per-layout provider or external bridge.
 
 See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for details on the Provider Pattern architecture.
 
@@ -459,7 +459,7 @@ browser/src/
 │   ├── config.ts          # i18next initialisation
 │   └── routing.tsx        # Link, useRouter, usePathname, redirect
 ├── lib/                   # App-specific utility libraries
-│   ├── routing.tsx        # Link and routes for @xynoplex/react-ui
+│   ├── routing.tsx        # Link and routes for @xynolog/react-ui
 │   ├── tracing.ts         # OpenTelemetry tracer
 │   └── browser-stubs/     # Browser API stubs
 └── types/                 # TypeScript type definitions
@@ -507,7 +507,7 @@ packages/typescript/react-ui/src/      # Reusable React components library
 
 **Note**: `AuthErrorDisplay` is framework-agnostic and lives in `packages/typescript/react-ui/src/features/auth/`. Signing in is not a component: the Browser sends the user to the knowledge base's issuer and completes the exchange on its callback route. The Browser provides React Router-specific wrappers that handle routing, translations, and auth state.
 
-See [`@xynoplex/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for documentation on the reusable component library.
+See [`@xynolog/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for documentation on the reusable component library.
 
 ## Key Design Patterns
 
@@ -515,10 +515,10 @@ See [`@xynoplex/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) fo
 
 **Philosophy:** Avoid framework lock-in by inverting dependencies.
 
-The `@xynoplex/react-ui` library uses the **Provider Pattern** to remain framework-agnostic:
+The `@xynolog/react-ui` library uses the **Provider Pattern** to remain framework-agnostic:
 
 ```tsx
-// @xynoplex/react-ui defines the INTERFACE (TranslationManager); the Browser
+// @xynolog/react-ui defines the INTERFACE (TranslationManager); the Browser
 // provides an IMPLEMENTATION backed by i18next
 import { useMergedTranslationManager } from '@/hooks/useMergedTranslationManager';
 
@@ -537,7 +537,7 @@ function I18nRoot({ children }: { children: React.ReactNode }) {
 **Benefits:**
 - ✅ The UI library imports no i18n library; the host brings its own (the Browser's is i18next)
 - ✅ Routing works the same way: components take the host's `Link` and `routes` as props
-- ✅ Easy to test with mock implementations (`createMockTranslationManager` in `@xynoplex/react-ui/test-utils`)
+- ✅ Easy to test with mock implementations (`createMockTranslationManager` in `@xynolog/react-ui/test-utils`)
 - ✅ Clear separation of concerns
 
 See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for complete documentation.
@@ -569,11 +569,11 @@ function requiredApiUrl(apiUrl: string | undefined): string {
 ```typescript
 // Every call goes through the active session's client — with no session there
 // is no anonymous fallback (as ResourceViewerPage does before a write)
-async function archive(semiont: SemiontClient | undefined, id: ResourceId) {
-  if (!semiont) {
+async function archive(xynolog: XynologClient | undefined, id: ResourceId) {
+  if (!xynolog) {
     throw new Error('No active session');
   }
-  await semiont.mark.archive(id);
+  await xynolog.mark.archive(id);
 }
 ```
 
@@ -584,11 +584,11 @@ async function archive(semiont: SemiontClient | undefined, id: ResourceId) {
 ```typescript
 // Each component subscribes to exactly the observables it needs
 function ResourceView({ resourceId }: { resourceId: ResourceId }) {
-  const semiont = useObservable(useSemiont().activeSession$)?.client;
-  const resource = useObservable(semiont?.browse.resource(resourceId));     // CacheState<ResourceDescriptor>
-  const annotations = useObservable(semiont?.browse.annotations(resourceId)); // CacheState<Annotation[]>
+  const xynolog = useObservable(useXynolog().activeSession$)?.client;
+  const resource = useObservable(xynolog?.browse.resource(resourceId));     // CacheState<ResourceDescriptor>
+  const annotations = useObservable(xynolog?.browse.annotations(resourceId)); // CacheState<Annotation[]>
   // Each emits CacheState (pending → ready | failed) and re-emits on every
-  // cache update; unwrap the value with readyValue(...) from @xynoplex/sdk
+  // cache update; unwrap the value with readyValue(...) from @xynolog/sdk
   // ...
 }
 ```
@@ -599,7 +599,7 @@ function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 
 ```typescript
 // A write is just a verb call — no onSuccess, no invalidate.
-await semiont.mark.annotation({
+await xynolog.mark.annotation({
   motivation: 'highlighting',
   target: { source: resourceId, selector: { type: 'TextQuoteSelector', exact: 'quoted text' } },
 });
@@ -677,7 +677,7 @@ Panels keep their entries' DOM nodes through React ref callbacks, not through an
 ### React UI Library
 - [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) - Provider Pattern architecture
 - [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) - Annotation system documentation
-- [`@xynoplex/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
+- [`@xynolog/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
 
 ### Browser Documentation
 - [AUTHENTICATION.md](AUTHENTICATION.md) - Authentication and authorization

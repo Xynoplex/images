@@ -1,14 +1,14 @@
-# semiont-inference
+# xynolog-inference
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=python-inference)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=python-inference)](https://app.codecov.io/gh/xynolog/images/components)
 
-The model providers [Semiont][semiont]'s Python services call, behind one
+The model providers [Xynolog][xynolog]'s Python services call, behind one
 interface: ask a model for text, ask it for a JSON array of a stated shape,
 and learn what the model can take.
 
-It is for whoever writes a Semiont service in Python that asks a model
+It is for whoever writes a Xynolog service in Python that asks a model
 something: the Worker first. A program that only reads and writes a knowledge
-base needs the SDK, [`semiont`][sdk-python], and not this package.
+base needs the SDK, [`xynolog`][sdk-python], and not this package.
 
 It runs on asyncio and requires Python 3.12 or later. It is checked by
 `mypy --strict` and by `pyright` in strict mode, and ships its types
@@ -17,7 +17,7 @@ It runs on asyncio and requires Python 3.12 or later. It is checked by
 ## What an install has
 
 The package alone has the contract, the Ollama driver and the mock. Its
-dependencies are `semiont`, `httpx`, `pydantic` and `opentelemetry-api`.
+dependencies are `xynolog`, `httpx`, `pydantic` and `opentelemetry-api`.
 
 The library a driver asks its provider through is not required. It comes
 with the extra named for the provider, and is imported only when that
@@ -25,13 +25,13 @@ provider's driver is asked for:
 
 | Provider | Install | What the extra brings |
 | --- | --- | --- |
-| `ollama` | `semiont-inference` | Nothing: Ollama is asked over `httpx` |
-| `anthropic` | `semiont-inference[anthropic]` | Anthropic's `anthropic` library |
-| `openai` | `semiont-inference[openai]` | OpenAI's `openai` library |
-| `google` | `semiont-inference[google]` | Google's `google-genai` library |
-| `together` | `semiont-inference[together]` | Together's `together` library |
-| `vllm` | `semiont-inference[vllm]` | OpenAI's `openai` library, which a vLLM server is asked through |
-| `llamacpp` | `semiont-inference[llamacpp]` | OpenAI's `openai` library, which llama.cpp's server is asked through |
+| `ollama` | `xynolog-inference` | Nothing: Ollama is asked over `httpx` |
+| `anthropic` | `xynolog-inference[anthropic]` | Anthropic's `anthropic` library |
+| `openai` | `xynolog-inference[openai]` | OpenAI's `openai` library |
+| `google` | `xynolog-inference[google]` | Google's `google-genai` library |
+| `together` | `xynolog-inference[together]` | Together's `together` library |
+| `vllm` | `xynolog-inference[vllm]` | OpenAI's `openai` library, which a vLLM server is asked through |
+| `llamacpp` | `xynolog-inference[llamacpp]` | OpenAI's `openai` library, which llama.cpp's server is asked through |
 
 An image built for one provider installs that provider's extra alone. One
 that may be configured for any provider installs every extra. Asked for a
@@ -52,7 +52,7 @@ is reached at. Every argument is stated: a provider that takes no key is
 given `None`, and one that reads no catalogue is given `None` for that too.
 
 ```python
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 
 async def ask(base_url: str) -> str:
@@ -63,7 +63,7 @@ async def ask(base_url: str) -> str:
 
 ## What a client is
 
-`semiont_inference.interface` states it: `InferenceClient`, a protocol every
+`xynolog_inference.interface` states it: `InferenceClient`, a protocol every
 driver satisfies.
 
 | Member | What it is |
@@ -76,27 +76,27 @@ driver satisfies.
 | `generate_structured(prompt, max_tokens, temperature, element_schema)` | A JSON array whose elements the provider held to `element_schema`, as parsed values |
 
 Every name is imported from the module that has it: the contract and its
-failures from `semiont_inference.interface`, `create_inference_client` from
-`semiont_inference.factory`, `report_limits` and `answer_limits_requests`
-from `semiont_inference.limits_report`, and what reads a model catalogue from
-`semiont_inference.catalogue`. A driver is a module too:
+failures from `xynolog_inference.interface`, `create_inference_client` from
+`xynolog_inference.factory`, `report_limits` and `answer_limits_requests`
+from `xynolog_inference.limits_report`, and what reads a model catalogue from
+`xynolog_inference.catalogue`. A driver is a module too:
 
 | Provider | Its client |
 | --- | --- |
-| Anthropic | `semiont_inference.anthropic.AnthropicInferenceClient` |
-| Google's Gemini, by the Developer API | `semiont_inference.google.GoogleInferenceClient` |
-| llama.cpp's server | `semiont_inference.llamacpp.LlamaCppInferenceClient` |
-| Ollama | `semiont_inference.ollama.OllamaInferenceClient` |
-| OpenAI | `semiont_inference.openai.OpenAIInferenceClient` |
-| Together AI | `semiont_inference.together.TogetherInferenceClient` |
-| vLLM | `semiont_inference.vllm.VllmInferenceClient` |
+| Anthropic | `xynolog_inference.anthropic.AnthropicInferenceClient` |
+| Google's Gemini, by the Developer API | `xynolog_inference.google.GoogleInferenceClient` |
+| llama.cpp's server | `xynolog_inference.llamacpp.LlamaCppInferenceClient` |
+| Ollama | `xynolog_inference.ollama.OllamaInferenceClient` |
+| OpenAI | `xynolog_inference.openai.OpenAIInferenceClient` |
+| Together AI | `xynolog_inference.together.TogetherInferenceClient` |
+| vLLM | `xynolog_inference.vllm.VllmInferenceClient` |
 
-For tests there is `semiont_inference.mock.MockInferenceClient`, which
+For tests there is `xynolog_inference.mock.MockInferenceClient`, which
 answers from a list it is given and keeps the calls made of it.
 `report_limits` gathers the limits of the clients a service holds, as the
 protocol's `EngineLimits`. `answer_limits_requests` answers a request
 for them on the bus: it is given the SDK's bus, the limits operation the
-service answers (`semiont.operations.JOB_LIMITS_REQUESTED` for the Worker),
+service answers (`xynolog.operations.JOB_LIMITS_REQUESTED` for the Worker),
 and the clients, and answers each request with a report for as long as it is
 awaited.
 
@@ -165,7 +165,7 @@ the part of that database a driver reads, for three providers (`openai`,
 carries no copy of it and downloads nothing. It reads a file it is pointed
 to:
 
-- `semiont_inference.catalogue` is the reader. `read_catalogue` takes the
+- `xynolog_inference.catalogue` is the reader. `read_catalogue` takes the
   path of a catalogue file and answers what the file holds. A file that is
   not there, or is not a catalogue, is a failure that names the path: there
   is no other place the package looks, and no environment variable it reads.
@@ -225,6 +225,6 @@ over HTTP on this machine. No test reaches a real one. One test builds the
 package's wheel and source distribution with `uv build`, to read what each
 holds.
 
-[semiont]: https://github.com/Xynoplex/images
+[xynolog]: https://github.com/xynolog/images
 [models-dev]: https://models.dev
 [sdk-python]: ../sdk/

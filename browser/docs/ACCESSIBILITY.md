@@ -1,6 +1,6 @@
 # Accessibility — Implementation
 
-How the Semiont Browser implements [WCAG 2.1 Level AA](https://www.w3.org/WAI/WCAG21/quickref/) — patterns, primitives, and how to keep new code conformant.
+How the Xynolog Browser implements [WCAG 2.1 Level AA](https://www.w3.org/WAI/WCAG21/quickref/) — patterns, primitives, and how to keep new code conformant.
 
 For the user-facing capability claim (what users see, how to verify it), see **[../../../docs/analyst/ACCESSIBILITY.md](../../../docs/analyst/ACCESSIBILITY.md)**. For the keyboard navigation architecture, see **[KEYBOARD-NAV.md](KEYBOARD-NAV.md)**.
 
@@ -38,7 +38,7 @@ i18n.on('languageChanged', (language) => {
 
 ### Skip link
 
-[WCAG 2.4.1 Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html) asks for a way past content repeated on every page. `SkipLinks`, the visually-hidden-until-focused link from `@xynoplex/react-ui`, is mounted once, by the locale layout (`src/app/[locale]/layout.tsx`), ahead of every route. Its text is one of react-ui's translated strings, so it reads in the route's locale like the rest of the page. Its link lands on `MainContent`, react-ui's `<main>` landmark, and every page renders its content in one:
+[WCAG 2.4.1 Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html) asks for a way past content repeated on every page. `SkipLinks`, the visually-hidden-until-focused link from `@xynolog/react-ui`, is mounted once, by the locale layout (`src/app/[locale]/layout.tsx`), ahead of every route. Its text is one of react-ui's translated strings, so it reads in the route's locale like the rest of the page. Its link lands on `MainContent`, react-ui's `<main>` landmark, and every page renders its content in one:
 
 ```tsx
 <MainContent className="flex-1 p-6 flex flex-col">
@@ -52,7 +52,7 @@ The knowledge and moderate layouts render theirs beside the sidebar, the splash,
 
 ### Dark theme
 
-`ThemeProvider` from `@xynoplex/react-ui` writes the resolved theme to `data-theme` on `<html>`. react-ui's styles key their dark rules off `[data-theme="dark"]`, and `tailwind.config.js` points Tailwind's `dark:` variant at the same attribute (`darkMode: ['selector', '[data-theme="dark"]']`). A `dark:` class in Browser markup therefore applies in exactly the theme react-ui's components render in: a `dark:` surface and the text on it change together, which [WCAG 1.4.3 Contrast](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) depends on.
+`ThemeProvider` from `@xynolog/react-ui` writes the resolved theme to `data-theme` on `<html>`. react-ui's styles key their dark rules off `[data-theme="dark"]`, and `tailwind.config.js` points Tailwind's `dark:` variant at the same attribute (`darkMode: ['selector', '[data-theme="dark"]']`). A `dark:` class in Browser markup therefore applies in exactly the theme react-ui's components render in: a `dark:` surface and the text on it change together, which [WCAG 1.4.3 Contrast](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) depends on.
 
 `src/__tests__/tailwind-dark-variant.test.tsx` compiles `src/app/globals.css` and checks that every `dark:` rule matches under `ThemeProvider`'s dark theme and none under its light theme.
 
@@ -67,15 +67,15 @@ Per [WCAG 3.3 Input Assistance](https://www.w3.org/WAI/WCAG21/Understanding/inpu
 ```tsx
 function TitleField({ error }: { error?: string }) {
   return (
-    <div className="semiont-form__field">
+    <div className="xynolog-form__field">
       <input
-        className="semiont-input"
+        className="xynolog-input"
         required
         aria-invalid={!!error}
         aria-describedby={error ? 'title-error' : undefined}
       />
       {error && (
-        <p id="title-error" className="semiont-form__error" role="alert">
+        <p id="title-error" className="xynolog-form__error" role="alert">
           {error}
         </p>
       )}
@@ -86,7 +86,7 @@ function TitleField({ error }: { error?: string }) {
 
 ### Live regions for dynamic content
 
-`@xynoplex/react-ui` ships `LiveRegionProvider` (mounted in the Browser's `src/app/providers.tsx`) and the `useLiveRegion()` hook. Use it for any UI update that should be announced to screen readers:
+`@xynolog/react-ui` ships `LiveRegionProvider` (mounted in the Browser's `src/app/providers.tsx`) and the `useLiveRegion()` hook. Use it for any UI update that should be announced to screen readers:
 
 - search result counts
 - form validation outcomes
@@ -102,7 +102,7 @@ announce('5 results found', 'polite');
 
 ### Focus indicators
 
-`@xynoplex/react-ui` gives every interactive element a keyboard focus outline, in light and dark themes alike:
+`@xynolog/react-ui` gives every interactive element a keyboard focus outline, in light and dark themes alike:
 
 ```css
 /* packages/typescript/react-ui/src/styles/utilities/focus.css */
@@ -114,7 +114,7 @@ select:focus-visible,
 [role="button"]:focus-visible,
 [role="link"]:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--semiont-color-primary-500);
+  outline: 2px solid var(--xynolog-color-primary-500);
   outline-offset: 2px;
 }
 ```
@@ -143,7 +143,7 @@ When building or reviewing a UI component:
 
 ### Automated
 
-Component-level [`jest-axe`](https://github.com/nickcolley/jest-axe) assertions live with the components, in `@xynoplex/react-ui`'s `*.a11y.test.tsx` files — see [react-ui ACCESSIBILITY.md § Testing](../../../docs/builder/react-ui/ACCESSIBILITY.md#testing) for the pattern. The Browser has no `jest-axe` dependency of its own.
+Component-level [`jest-axe`](https://github.com/nickcolley/jest-axe) assertions live with the components, in `@xynolog/react-ui`'s `*.a11y.test.tsx` files — see [react-ui ACCESSIBILITY.md § Testing](../../../docs/builder/react-ui/ACCESSIBILITY.md#testing) for the pattern. The Browser has no `jest-axe` dependency of its own.
 
 CI runs accessibility tests on a pull request that changes the Browser or an npm package, in `.github/workflows/ci.yml`: react-ui's axe tests are tests of its suite, and the `lighthouse-accessibility` job audits the built Browser's signed-out pages and fails below a score of 90. `lighthouserc.json` names the pages and the score, and `src/__tests__/lighthouse-urls.test.tsx` holds each page to a route `App` serves. See [docs/contributor/TESTING.md](../../../docs/contributor/TESTING.md) for the testing-overview.
 

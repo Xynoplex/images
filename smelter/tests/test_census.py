@@ -23,17 +23,17 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.channels import PERSISTED_EVENT_TYPES
 from spec import PACKAGE, ROOT, SDK
+from xynolog.channels import PERSISTED_EVENT_TYPES
 
-from semiont_smelter.config import SERVICE
-from semiont_smelter.ocr_engine import OcrEngine
-from semiont_smelter.pdf_reader import PdfReader
-from semiont_smelter.pdfium import PdfiumReader
-from semiont_smelter.scripted import ScriptedOcrEngine, ScriptedPdfReader
-from semiont_smelter.tesseract import TesseractEngine
+from xynolog_smelter.config import SERVICE
+from xynolog_smelter.ocr_engine import OcrEngine
+from xynolog_smelter.pdf_reader import PdfReader
+from xynolog_smelter.pdfium import PdfiumReader
+from xynolog_smelter.scripted import ScriptedOcrEngine, ScriptedPdfReader
+from xynolog_smelter.tesseract import TesseractEngine
 
-SRC = PACKAGE / "src/semiont_smelter"
+SRC = PACKAGE / "src/xynolog_smelter"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PACKAGE / top).rglob("*.py"))
 SHARED = ROOT / "shared/python/service"
 
@@ -137,7 +137,7 @@ def test_the_public_modules_and_their_names_are_the_ones_the_design_lists() -> N
     modules = sorted(path.stem for path in SRC.glob("*.py") if not path.stem.startswith("_"))
     assert modules == sorted(SURFACE)
     for module, names in SURFACE.items():
-        assert sorted(importlib.import_module(f"semiont_smelter.{module}").__all__) == sorted(names), f"semiont_smelter.{module}"
+        assert sorted(importlib.import_module(f"xynolog_smelter.{module}").__all__) == sorted(names), f"xynolog_smelter.{module}"
 
 
 def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_root() -> None:
@@ -145,11 +145,11 @@ def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_roo
     # Read as Python, and not as text: a docstring may have a line that begins with the word "from".
     root_statements = ast.parse((SRC / "__init__.py").read_text(encoding="utf-8")).body
     assert not [held for held in root_statements if isinstance(held, ast.Import | ast.ImportFrom)], "the package's root imports something"
-    root = importlib.import_module("semiont_smelter")
+    root = importlib.import_module("xynolog_smelter")
     assert not hasattr(root, "__all__")
     for module, names in SURFACE.items():
         for name in names:
-            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from semiont_smelter.{module}"
+            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from xynolog_smelter.{module}"
 
 
 def test_a_reader_and_an_engine_have_the_members_of_their_protocols() -> None:
@@ -184,18 +184,18 @@ def test_each_engine_is_reached_by_one_module_and_the_rules_know_neither() -> No
     assert naming("create_subprocess") == ["tesseract.py"]
     assert importing("subprocess") == []
     for driver in ("pdfium", "tesseract", "scripted"):
-        imported_by = set(importing(rf"semiont_smelter\.{driver}"))
+        imported_by = set(importing(rf"xynolog_smelter\.{driver}"))
         # What a reader and an engine are is said without one, and the rules are handed theirs.
         assert not imported_by & (PROTOCOLS | RULES), driver
     # The real reader and the real engine are made by the service as it starts, and by nothing else. The scripted
     # ones are for tests: nothing the service runs imports them.
-    assert importing(r"semiont_smelter\.pdfium") == ["service.py"]
-    assert importing(r"semiont_smelter\.tesseract") == ["service.py"]
-    assert importing(r"semiont_smelter\.scripted") == []
+    assert importing(r"xynolog_smelter\.pdfium") == ["service.py"]
+    assert importing(r"xynolog_smelter\.tesseract") == ["service.py"]
+    assert importing(r"xynolog_smelter\.scripted") == []
     # The store keeps what was derived, and knows nothing of how: it imports no reader, no engine and no rule.
     kept_by = {"anchored_text_store.py"}
     for module in ("pdfium", "tesseract", "scripted", "extraction", "anchoring", "tables", "ocr_text", "pdf_reader", "ocr_engine"):
-        assert not set(importing(rf"semiont_smelter\.{module}")) & kept_by, module
+        assert not set(importing(rf"xynolog_smelter\.{module}")) & kept_by, module
 
 
 def test_the_events_it_does_something_with_are_the_ones_the_protocol_lists_and_each_has_its_case() -> None:
@@ -238,7 +238,7 @@ def test_the_index_and_the_provider_are_reached_through_their_protocols() -> Non
         {
             found.group(1)
             for path in SRC.rglob("*.py")
-            for found in re.finditer(r"^\s*from semiont_vectors\.(\w+) import ", path.read_text(encoding="utf-8"), re.MULTILINE)
+            for found in re.finditer(r"^\s*from xynolog_vectors\.(\w+) import ", path.read_text(encoding="utf-8"), re.MULTILINE)
         }
     )
     assert vector_modules == ["embedding", "factory", "store"]
@@ -246,18 +246,18 @@ def test_the_index_and_the_provider_are_reached_through_their_protocols() -> Non
     assert naming(".embed_documents(") == ["smelter.py"]
     assert naming(".embed_query(") == []
     # It asks for a store and a provider by what its configuration states, in the one module that reads that.
-    assert importing(r"semiont_vectors\.factory") == ["service.py"]
+    assert importing(r"xynolog_vectors\.factory") == ["service.py"]
     assert importing("qdrant_client") == []
     # What the Smelter asks of the Archivist that is not the SDK's: a resource's bytes, its annotations and the record by
-    # position, by the reader every Python service has (`semiont_service.archivist`), made by the module that starts the
+    # position, by the reader every Python service has (`xynolog_service.archivist`), made by the module that starts the
     # service and named, for what reads annotations, by the modules that are handed it; and the anchored-text store the
     # Archivist keeps, by the store alone, as the same account.
     assert importing("httpx") == ["anchored_text_store.py"]
-    assert importing(r"semiont_service\.archivist") == ["anchored_text_store.py", "record.py", "service.py", "smelter.py"]
-    assert importing(r"semiont_service\.content") == ["smelter.py"]
+    assert importing(r"xynolog_service\.archivist") == ["anchored_text_store.py", "record.py", "service.py", "smelter.py"]
+    assert importing(r"xynolog_service\.content") == ["smelter.py"]
     # It follows the record as every follower of it does: the Smelter holds the follower, and the service its cursors' file.
-    assert importing(r"semiont_service\.follower") == ["service.py"]
-    assert naming("from semiont_service import follower") == ["smelter.py"]
+    assert importing(r"xynolog_service\.follower") == ["service.py"]
+    assert naming("from xynolog_service import follower") == ["smelter.py"]
 
 
 def test_it_writes_the_index_and_the_store_and_says_three_things_and_nothing_else() -> None:
@@ -272,7 +272,7 @@ def test_it_writes_the_index_and_the_store_and_says_three_things_and_nothing_els
     assert naming(".request(") == ["anchored_text_store.py", "record.py"]
     asked = sorted(set(re.findall(r"\.request\(\s*(\w+)", (SRC / "record.py").read_text(encoding="utf-8"))))
     assert asked == ["BROWSE_RESOURCE_REQUESTED"]
-    assert naming("from semiont_service import catalog") == ["record.py"]
+    assert naming("from xynolog_service import catalog") == ["record.py"]
     # It writes, makes and takes away no file: the anchored-text store is the Archivist's, and the index is written
     # through its store.
     writes = re.compile(r'\.write_bytes\(|\.write_text\(|\.unlink\(|\.mkdir\(|\.rmdir\(|\.open\("[wax]|\bshutil\.|\btempfile\.')
@@ -290,7 +290,7 @@ def test_one_checksum_is_worked_out_in_one_place_and_white_space_is_asked_of_one
     own = re.compile(r"\.strip\(\)|\.lstrip\(\)|\.rstrip\(\)|\.split\(\)|\.isspace\(\)|\\s")
     for module in ("smelter.py", "reconcile.py", "chunking.py"):
         assert not own.search((SRC / module).read_text(encoding="utf-8")), f"{module} asks Python what white space is"
-        assert "from semiont_service.white_space import trimmed" in (SRC / module).read_text(encoding="utf-8"), module
+        assert "from xynolog_service.white_space import trimmed" in (SRC / module).read_text(encoding="utf-8"), module
 
 
 def test_one_module_names_the_logger_and_one_reads_the_process_s_environment() -> None:
@@ -321,14 +321,14 @@ def test_the_variables_it_reads_by_name_are_the_ones_the_protocol_lists() -> Non
     texts = [re.sub(r"^__all__ = \[.*?\]$", "", path.read_text(encoding="utf-8"), flags=re.DOTALL | re.MULTILINE) for path in sources]
     read_here = {name for text in texts for name in re.findall(r'"([A-Z][A-Z0-9]*_[A-Z0-9_]+)"', text)}
     # The shared package reads the worker's key too: this service proves itself with its secret, and reads no key.
-    assert "SEMIONT_OIDC_CLIENT_KEY" in read_here
-    read_here -= {"SEMIONT_OIDC_CLIENT_KEY"}
+    assert "XYNOLOG_OIDC_CLIENT_KEY" in read_here
+    read_here -= {"XYNOLOG_OIDC_CLIENT_KEY"}
     assert read_here == listed_there
     # Its service account, and what says where its telemetry goes and under what name. Its embedding provider's
     # key is in a variable its document names, and so is named by no code.
     assert read_here == {
-        "SEMIONT_OIDC_CLIENT_ID",
-        "SEMIONT_OIDC_CLIENT_SECRET",
+        "XYNOLOG_OIDC_CLIENT_ID",
+        "XYNOLOG_OIDC_CLIENT_SECRET",
         "OTEL_EXPORTER_OTLP_ENDPOINT",
         "OTEL_SERVICE_NAME",
         "OTEL_SDK_DISABLED",
@@ -341,9 +341,9 @@ def test_the_variables_it_reads_by_name_are_the_ones_the_protocol_lists() -> Non
 
 
 def test_the_distribution_is_named_for_the_service() -> None:
-    # Its telemetry is exported under its word for itself after `semiont-`, at the version of the distribution of
-    # that name (`semiont_service.observability`).
-    assert table(MANIFEST["project"], "project")["name"] == f"semiont-{SERVICE}"
+    # Its telemetry is exported under its word for itself after `xynolog-`, at the version of the distribution of
+    # that name (`xynolog_service.observability`).
+    assert table(MANIFEST["project"], "project")["name"] == f"xynolog-{SERVICE}"
 
 
 def test_it_is_a_service_s_code_and_no_library() -> None:
@@ -351,7 +351,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
     for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PACKAGE:
-            assert "semiont-smelter" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Smelter"
+            assert "xynolog-smelter" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Smelter"
 
 
 def test_the_package_holds_nothing_beside_its_modules() -> None:
@@ -401,11 +401,11 @@ def test_what_the_project_requires_is_what_it_reads_a_pdf_with_what_it_asks_the_
         "httpx",
         "pydantic",
         "pypdfium2",
-        "semiont",
-        "semiont-service",
-        "semiont-vectors",
+        "xynolog",
+        "xynolog-service",
+        "xynolog-vectors",
     }
-    for library in ("httpx", "pydantic", "semiont", "semiont_service", "semiont_vectors"):
+    for library in ("httpx", "pydantic", "xynolog", "xynolog_service", "xynolog_vectors"):
         assert importing(library), f"{library} is required and nothing imports it"
     # A dependency the SDK bounds is named here without a bound of its own.
     of_the_sdk = listed(table(toml(SDK / "pyproject.toml")["project"], "project")["dependencies"], "the SDK's dependencies")

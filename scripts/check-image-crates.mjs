@@ -36,9 +36,9 @@ import { loadPolicy } from '../../.github/scripts/license-policy.mjs';
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 /** Each image that ships a Rust binary: the binary's package, and the image's NOTICE. */
 const IMAGES = [
-  { service: 'gateway', binary: 'semiont-gateway', notice: 'gateway/NOTICE' },
-  { service: 'dispatcher', binary: 'semiont-dispatcher', notice: 'dispatcher/NOTICE' },
-  { service: 'archivist', binary: 'semiont-archivist', notice: 'archivist/NOTICE' },
+  { service: 'gateway', binary: 'xynolog-gateway', notice: 'gateway/NOTICE' },
+  { service: 'dispatcher', binary: 'xynolog-dispatcher', notice: 'dispatcher/NOTICE' },
+  { service: 'archivist', binary: 'xynolog-archivist', notice: 'archivist/NOTICE' },
 ];
 const NATIVE_HEADING = '  Native code those crates compile into the binary:';
 

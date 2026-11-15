@@ -1,5 +1,5 @@
 {
-  "name": "@xynoplex/inference-model-catalogue",
+  "name": "@xynolog/inference-model-catalogue",
   "version": "0.0.0",
   "private": true,
   "description": "Pins the models.dev catalogue the model catalogue is generated from; see scripts/generate-model-catalogue.mjs.",

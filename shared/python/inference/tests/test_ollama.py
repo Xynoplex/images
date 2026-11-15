@@ -17,7 +17,7 @@ from aio import pass_time, run, settle, soon
 from provider import HANG_UP, HOLD, Answer, Ollama, generated, saying, shown, window
 from spec import WORKER_SERVICE_SUITE, JsonObject
 
-from semiont_inference.interface import (
+from xynolog_inference.interface import (
     InferenceLimits,
     InferenceResponse,
     ProviderStatusError,
@@ -25,7 +25,7 @@ from semiont_inference.interface import (
     StructuredResponse,
     TokenUsage,
 )
-from semiont_inference.ollama import OllamaInferenceClient
+from xynolog_inference.ollama import OllamaInferenceClient
 
 ELEMENT: JsonObject = {"type": "object", "properties": {"exact": {"type": "string"}}, "required": ["exact"], "additionalProperties": False}
 EMPTY = generated("[]")
@@ -39,7 +39,7 @@ def shared(context_tokens: int) -> InferenceLimits:
 
 
 def warnings_of(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference" and record.levelno == logging.WARNING]
+    return [record for record in caplog.records if record.name == "xynolog_inference" and record.levelno == logging.WARNING]
 
 
 # ── limits ──────────────────────────────────────────────────────────────
@@ -453,7 +453,7 @@ def test_hidden_thinking_is_warned_of_once_for_the_call_with_its_size(caplog: py
                 "p", 100, 0, {"type": "object"}
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (warned,) = warnings_of(caplog)
     assert re.search("thinking", warned.getMessage(), re.IGNORECASE)
@@ -473,9 +473,9 @@ def test_a_call_logs_what_typescripts_does_at_the_same_levels(caplog: pytest.Log
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
-    ours = [record for record in caplog.records if record.name == "semiont_inference"]
+    ours = [record for record in caplog.records if record.name == "xynolog_inference"]
     assert warnings_of(caplog) == []
     assert [(record.levelname, record.getMessage()) for record in ours] == [
         ("DEBUG", "Generating text with Ollama"),

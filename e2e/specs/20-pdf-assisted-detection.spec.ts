@@ -18,7 +18,7 @@ import { openResourceByName } from '../fixtures/discover';
  *   - linking    → an entity-reference body (entity extraction).
  * Both anchor through `annotationOfSpan`, so both surface as <rect>s; the
  * per-body-shape detail is covered deterministically elsewhere (the Worker
- * service's conformance suite: its `pdf` cases; @xynoplex/core:
+ * service's conformance suite: its `pdf` cases; @xynolog/core:
  * annotation-of-span).
  *
  * Seed dependency: `scripts/seed.ts` yields an `application/pdf` resource named
@@ -31,8 +31,8 @@ import { openResourceByName } from '../fixtures/discover';
  * <rect> *growth* (the KB accumulates across runs), never an absolute count.
  */
 
-const IMG = '.semiont-pdf-annotation-canvas__image';
-const SVG = '.semiont-pdf-annotation-canvas__svg';
+const IMG = '.xynolog-pdf-annotation-canvas__image';
+const SVG = '.xynolog-pdf-annotation-canvas__svg';
 
 async function openPdfInAnnotateMode(page: Page) {
   await openResourceByName(page, 'Cellular Respiration PDF');
@@ -52,7 +52,7 @@ async function openPdfInAnnotateMode(page: Page) {
 // Annotations sub-tabs are icon-only buttons (aria-pressed) in the panel's tab
 // strip; select by emoji, scoped to the strip so it can't collide elsewhere.
 async function selectSubTab(page: Page, emoji: string) {
-  const tab = page.locator('.semiont-unified-panel__tabs').getByRole('button', { name: emoji, exact: true });
+  const tab = page.locator('.xynolog-unified-panel__tabs').getByRole('button', { name: emoji, exact: true });
   await expect(tab).toBeVisible({ timeout: 10_000 });
   if ((await tab.getAttribute('aria-pressed')) !== 'true') await tab.click();
   await expect(tab).toHaveAttribute('aria-pressed', 'true');
@@ -127,7 +127,7 @@ test.describe('delegated detection on a text-layer PDF', () => {
     // Concept-dense (glucose, ATP, mitochondria, …), so extraction reliably
     // yields references. Mirrors 06-assisted-reference's chip flow.
     const conceptChip = page
-      .locator('.semiont-delegate-widget__chips .semiont-chip--selectable')
+      .locator('.xynolog-delegate-widget__chips .xynolog-chip--selectable')
       .filter({ hasText: /concept/i });
     await expect(conceptChip).toBeVisible({ timeout: 10_000 });
     await conceptChip.click();

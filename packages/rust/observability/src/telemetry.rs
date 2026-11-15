@@ -8,7 +8,7 @@
 //! neither an endpoint nor the console exporter, or with the SDK disabled,
 //! nothing is exported and no trace context travels. What it builds it
 //! registers as the process's (`opentelemetry::global`), which is what
-//! `xynoplex-telemetry`'s spans and the transport's count report to. A
+//! `xynolog-telemetry`'s spans and the transport's count report to. A
 //! service's own instruments are made on `meter()`.
 
 use opentelemetry::KeyValue;
@@ -40,7 +40,7 @@ fn telemetry() -> Option<&'static Telemetry> {
 
 /// Start exporting, as the environment says, as `service_name` (unless
 /// `OTEL_SERVICE_NAME` says otherwise) at `version`, for `kb`: the DID of the
-/// knowledge base the process serves (`xynoplex::identity::kb_did` of its
+/// knowledge base the process serves (`xynolog::identity::kb_did` of its
 /// domain), or none, for a process that serves none. Call
 /// once, before the runtime starts: the OTLP exporter's HTTP client runs
 /// threads of its own.
@@ -49,7 +49,7 @@ pub fn initialize(service_name: &str, version: &str, kb: Option<&str>) -> Result
     if TELEMETRY.set(configured).is_err() {
         panic!("telemetry is initialized once");
     }
-    xynoplex::bus_log::set_trace_id_provider(xynoplex_telemetry::active_trace_id);
+    xynolog::bus_log::set_trace_id_provider(xynolog_telemetry::active_trace_id);
     install_fatal_hook();
     if let Some(t) = telemetry() {
         // The process's telemetry is what any library in it reports to.
@@ -133,14 +133,14 @@ fn configure(
     }
     .build();
 
-    let meter = meter_provider.meter("semiont");
+    let meter = meter_provider.meter("xynolog");
     Ok(Some(Telemetry {
         abnormal_exits: meter
-            .u64_counter("semiont.process.abnormal_exit")
+            .u64_counter("xynolog.process.abnormal_exit")
             .with_description("Process terminations that were not a clean shutdown")
             .build(),
         emits: meter
-            .u64_counter("semiont.bus.emit")
+            .u64_counter("xynolog.bus.emit")
             .with_description("Emits accepted")
             .build(),
         meter,
@@ -159,7 +159,7 @@ fn resource(service_name: String, version: &str, kb: Option<&str>) -> Resource {
                 KeyValue::new("service.version", version.to_owned()),
             ]
             .into_iter()
-            .chain(kb.map(|kb| KeyValue::new("semiont.kb", kb.to_owned()))),
+            .chain(kb.map(|kb| KeyValue::new("xynolog.kb", kb.to_owned()))),
         )
         .build()
 }
@@ -180,11 +180,11 @@ pub fn shutdown(within: Duration) {
 
 // ── Metrics ──────────────────────────────────────────────────────────────
 
-/// `semiont.bus.emit`: an emit a gateway accepted.
+/// `xynolog.bus.emit`: an emit a gateway accepted.
 pub fn record_bus_emit(channel: &str, scope: Option<&str>) {
     let Some(t) = telemetry() else { return };
     t.emits
-        .add(1, &xynoplex_telemetry::on_the_bus(channel, scope));
+        .add(1, &xynolog_telemetry::on_the_bus(channel, scope));
 }
 
 /// The meter a service makes its own instruments on, when it exports.
@@ -192,7 +192,7 @@ pub fn meter() -> Option<&'static Meter> {
     telemetry().map(|t| &t.meter)
 }
 
-/// `semiont.process.restarts`: the lives the supervisor recorded, less one.
+/// `xynolog.process.restarts`: the lives the supervisor recorded, less one.
 /// Only under a supervisor; unreadable, the gauge reports nothing, never zero.
 pub fn register_supervisor_restarts() {
     let Some(t) = telemetry() else { return };
@@ -207,7 +207,7 @@ pub fn register_supervisor_restarts() {
     }
     let marker = format!("starting {name}");
     t.meter
-        .u64_observable_gauge("semiont.process.restarts")
+        .u64_observable_gauge("xynolog.process.restarts")
         .with_description("Times the supervisor has restarted this service")
         .with_callback(move |observer| {
             if let Ok(log) = std::fs::read_to_string(&events) {
@@ -225,7 +225,7 @@ fn register_process_start() {
         .map(|d| d.as_secs())
         .unwrap_or(0);
     t.meter
-        .u64_observable_gauge("semiont.process.start_time")
+        .u64_observable_gauge("xynolog.process.start_time")
         .with_description("Unix seconds at which this process started; a change means it restarted")
         .with_unit("s")
         .with_callback(move |observer| observer.observe(started, &[]))
@@ -329,9 +329,9 @@ fn memory_limit() -> Option<u64> {
 
 fn register_runtime_gauges() {
     let Some(t) = telemetry() else { return };
-    let runtime = t.meter_provider.meter("semiont-runtime");
+    let runtime = t.meter_provider.meter("xynolog-runtime");
     runtime
-        .f64_observable_gauge("semiont.runtime.event_loop.lag")
+        .f64_observable_gauge("xynolog.runtime.event_loop.lag")
         .with_description("How late the runtime woke a sleeping task, over the last export interval. Time the process could not serve anything.")
         .with_unit("ms")
         .with_callback(|observer| {
@@ -343,7 +343,7 @@ fn register_runtime_gauges() {
         })
         .build();
     runtime
-        .u64_observable_gauge("semiont.runtime.heap")
+        .u64_observable_gauge("xynolog.runtime.heap")
         .with_description(
             "Process memory by kind: in use, reserved for data, the cgroup's limit, and resident.",
         )
@@ -400,9 +400,9 @@ mod tests {
     use super::resource;
     use opentelemetry::Key;
     use opentelemetry_sdk::Resource;
-    use xynoplex::identity::kb_did;
     use serde_json::Value;
     use std::collections::BTreeSet;
+    use xynolog::identity::kb_did;
 
     /// The services built on this crate.
     const SERVICES: [&str; 3] = ["gateway", "dispatcher", "archivist"];
@@ -445,10 +445,10 @@ mod tests {
         // What OTEL_RESOURCE_ATTRIBUTES would split or decode, a DID passes through.
         let kb = kb_did("example.org%2Cone=two,three:kb");
         for service in SERVICES {
-            let resource = resource(format!("semiont-{service}"), "1.2.3", Some(&kb));
+            let resource = resource(format!("xynolog-{service}"), "1.2.3", Some(&kb));
             assert_eq!(keys(&resource), listed(service), "{service}");
             assert_eq!(
-                resource.get(&Key::from_static_str("semiont.kb")),
+                resource.get(&Key::from_static_str("xynolog.kb")),
                 Some(opentelemetry::Value::from(
                     "did:web:example.org%2Cone=two,three:kb"
                 )),
@@ -459,7 +459,7 @@ mod tests {
 
     #[test]
     fn a_process_that_serves_no_knowledge_base_names_none_as_the_worker_does() {
-        let resource = resource("semiont-conformance-driver".to_owned(), "1.2.3", None);
+        let resource = resource("xynolog-conformance-driver".to_owned(), "1.2.3", None);
         assert_eq!(keys(&resource), listed("worker"));
     }
 }

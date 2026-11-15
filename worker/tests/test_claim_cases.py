@@ -1,7 +1,7 @@
 """Finding a claim again in a PDF's text, held to the `claims` and the `landing` of `protocol/specs/src/annotations/pdf-locate-cases.json`.
 
 The table's `cases` are the locating every SDK does for a span of a PDF, and
-each SDK runs them. Its `claims` and its `landing` are the rule of Semiont's
+each SDK runs them. Its `claims` and its `landing` are the rule of Xynolog's
 worker alone: every place the text of a PDF the worker made has a claim, and
 which of them a citation is anchored to, by where the renderer says the cited
 span ended.
@@ -11,11 +11,11 @@ from typing import Annotated, Final
 
 import pytest
 from pydantic import BaseModel, Field, JsonValue
-from xynoplex.types import AnchoredText, PdfTextItem
 from spec import SPEC
+from xynolog.types import AnchoredText, PdfTextItem
 
-from semiont_worker.generation.claim_search import find_claim_spans, find_landed_claim
-from semiont_worker.generation.typst import Landed
+from xynolog_worker.generation.claim_search import find_claim_spans, find_landed_claim
+from xynolog_worker.generation.typst import Landed
 
 
 class Span(BaseModel, frozen=True, extra="forbid", strict=True):

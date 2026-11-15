@@ -29,14 +29,14 @@
  *     calls `seedKb`, in the shape Playwright's `globalSetup` expects
  *     (see `playwright.config.ts`).
  *
- * Goes through `@xynoplex/sdk` like every other production caller —
+ * Goes through `@xynolog/sdk` like every other production caller —
  * `sessionFor(...)` (`../lib/session`) to sign in at the issuer, then
  * `client.yield.resource(...)` for each seed. No raw HTTP, no
  * hand-rolled multipart, no parallel implementation of the wire
  * protocol to drift out of sync.
  */
 
-import { getStorageUri } from '@xynoplex/core';
+import { getStorageUri } from '@xynolog/core';
 import { sessionFor } from '../lib/session';
 
 interface SeedSpec {

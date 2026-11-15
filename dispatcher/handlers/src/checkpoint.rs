@@ -2,8 +2,8 @@
 //! units by union, and one cursor for each unit, finished or not, replaced
 //! only by one that got further.
 
-use xynoplex::types::{JobMetadata, UnitCursor};
 use std::collections::BTreeMap;
+use xynolog::types::{JobMetadata, UnitCursor};
 
 /// The units recorded, then the incoming ones not already among them.
 pub fn merged_units(existing: Option<&[String]>, incoming: &[String]) -> Vec<String> {

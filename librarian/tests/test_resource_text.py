@@ -10,12 +10,12 @@ held by the cases of `protocol/specs/src/librarian/search-cases.json`, which
 import pytest
 from aio import run
 from rig import FakeAnchoredText, FakeContent, described
-from xynoplex.identifiers import ResourceId
-from xynoplex.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, ResourceDescriptor
-from semiont_service.content import Content, ContentUnread
 from spec import JsonObject
+from xynolog.identifiers import ResourceId
+from xynolog.types import AnchoredTextAbsent, AnchoredTextAnswer, ExtractedText, ExtractionDeclined, ResourceDescriptor
+from xynolog_service.content import Content, ContentUnread
 
-from semiont_librarian.resource_text import preview_of, text_of
+from xynolog_librarian.resource_text import preview_of, text_of
 
 R1 = ResourceId("res-1")
 

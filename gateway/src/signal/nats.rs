@@ -22,12 +22,12 @@ use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use bytes::Bytes;
 use futures::future::BoxFuture;
 use futures::{FutureExt, StreamExt};
-use semiont_core::nats;
-use semiont_observability::logging;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::sync::Arc;
 use std::time::Duration;
+use xynolog_core::nats;
+use xynolog_observability::logging;
 
 const PREFIX: &str = "sig.";
 

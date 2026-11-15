@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "$ROOT/build-tools/container-runtime.sh"
 RUNTIME="$(detect_container_runtime)"
-STATE_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/xynoplex-images/local"
+STATE_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/xynolog-images/local"
 OUTPUT="$STATE_ROOT/python/packages"
 MANIFEST="$STATE_ROOT/python/source.sha256"
 PACKAGES=(graph vectors inference service)
@@ -23,7 +23,7 @@ if [[ "${1:-}" == --ensure ]]; then
   [[ -f "$MANIFEST" && "$(cat "$MANIFEST")" == "$current_hash" ]] || fresh=false
   shopt -s nullglob
   for package in "${PACKAGES[@]}"; do
-    wheels=("$OUTPUT/semiont_${package}-"*.whl)
+    wheels=("$OUTPUT/xynolog_${package}-"*.whl)
     (( ${#wheels[@]} == 1 )) || fresh=false
   done
   if [[ "$fresh" == true ]]; then
@@ -39,7 +39,7 @@ fi
 rm -rf "$ROOT/.local/shared-python-packages"
 mkdir -p "$OUTPUT"
 for package in "${PACKAGES[@]}"; do
-  rm -f "$OUTPUT/semiont_${package}-"*.tar.gz "$OUTPUT/semiont_${package}-"*.whl
+  rm -f "$OUTPUT/xynolog_${package}-"*.tar.gz "$OUTPUT/xynolog_${package}-"*.whl
 done
 
 printf '==> Building shared Python distributions with uv 0.13.7\n'

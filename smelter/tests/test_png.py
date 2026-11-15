@@ -8,8 +8,8 @@ from typing import Final
 
 import pytest
 
-from semiont_smelter._png import png
-from semiont_smelter.pdf_reader import Pixels
+from xynolog_smelter._png import png
+from xynolog_smelter.pdf_reader import Pixels
 
 SIGNATURE: Final = bytes([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
 

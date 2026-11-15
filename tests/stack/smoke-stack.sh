@@ -44,8 +44,8 @@
 # made against a knowledge base no earlier run touched: some of them hold only
 # on a fresh one. The image reaches the stack at localhost
 # through `--network host` on Docker and Podman, or the existing localhost
-# bridge on Apple container. The suite's packages, @xynoplex/core and
-# @xynoplex/sdk, link to this checkout's packages/, which must be built:
+# bridge on Apple container. The suite's packages, @xynolog/core and
+# @xynolog/sdk, link to this checkout's packages/, which must be built:
 # scripts/build-session.sh builds them, as `npm run build:packages` does.
 #
 # DOWN stops, cleans, forgets and removes each knowledge base a failed E2E
@@ -158,7 +158,7 @@ xynolog() {
   "$XYNOLOG" "$@"
 }
 
-KB="${SMOKE_KB:-${XDG_CACHE_HOME:-$HOME/.cache}/semiont/stack-smoke/kb}"
+KB="${SMOKE_KB:-${XDG_CACHE_HOME:-$HOME/.cache}/xynolog/stack-smoke/kb}"
 # The machine's documents as UP found them: <service>.yaml, and <service>.path naming where it goes back.
 KEPT="$KB/.smoke-kept"
 
@@ -187,10 +187,10 @@ init_kb() {
   else
     bad "xynolog init ${flags[*]} refused"; return 1
   fi
-  for doc in "$dir"/.semiont/stack/*.yaml; do
-    sed "s#\(ghcr.io/xynoplex/xynoplex-[a-z]*\):latest#\1:$tag#" "$doc" > "$doc.next" && mv "$doc.next" "$doc"
+  for doc in "$dir"/.xynolog/stack/*.yaml; do
+    sed "s#\(ghcr.io/xynolog/xynolog-[a-z]*\):latest#\1:$tag#" "$doc" > "$doc.next" && mv "$doc.next" "$doc"
   done
-  if [ "$tag" = latest ] || ! grep -q 'ghcr.io/xynoplex/xynoplex-[a-z]*:latest' "$dir"/.semiont/stack/*.yaml; then
+  if [ "$tag" = latest ] || ! grep -q 'ghcr.io/xynolog/xynolog-[a-z]*:latest' "$dir"/.xynolog/stack/*.yaml; then
     ok "the documents name the :$tag images"
   else
     bad "a document still names a :latest image"; return 1
@@ -200,7 +200,7 @@ init_kb() {
 # gateway_of <directory>: where clients reach that knowledge base's gateway,
 # spec.gateway.publicURL of its KnowledgeBase document.
 gateway_of() {
-  awk '/^  gateway:/ { inside = 1; next } /^  [^ ]/ { inside = 0 } inside && /^    publicURL:/ { print $2; exit }' "$1/.semiont/stack/knowledge-base.yaml"
+  awk '/^  gateway:/ { inside = 1; next } /^  [^ ]/ { inside = 0 } inside && /^    publicURL:/ { print $2; exit }' "$1/.xynolog/stack/knowledge-base.yaml"
 }
 
 # start_kb: start the knowledge base standing here. No --config: a new KB
@@ -284,8 +284,8 @@ if [ "$COMMAND" = up ]; then
       bad "could not keep a copy of $SHARED_DOC to put back"; exit 1
     fi
     printf '%s' "$SHARED_DOC" > "$KEPT/$SERVICE.path"
-    sed "s#\(ghcr.io/xynoplex/xynoplex-$SERVICE\):[^[:space:]]*#\1:$IMAGES#" "$SHARED_DOC" > "$SHARED_DOC.next" && mv "$SHARED_DOC.next" "$SHARED_DOC"
-    if grep -q "image: ghcr.io/xynoplex/xynoplex-$SERVICE:$IMAGES\$" "$SHARED_DOC"; then
+    sed "s#\(ghcr.io/xynolog/xynolog-$SERVICE\):[^[:space:]]*#\1:$IMAGES#" "$SHARED_DOC" > "$SHARED_DOC.next" && mv "$SHARED_DOC.next" "$SHARED_DOC"
+    if grep -q "image: ghcr.io/xynolog/xynolog-$SERVICE:$IMAGES\$" "$SHARED_DOC"; then
       ok "$SERVICE's document names :$IMAGES"
     else
       bad "$SERVICE's document ($SHARED_DOC) does not name :$IMAGES"; exit 1
@@ -327,7 +327,7 @@ if [ "$COMMAND" = up ]; then
   HDR=$(curl -s -D- -o /dev/null -X POST \
     -H "Origin: http://localhost:3000" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    --data "grant_type=authorization_code&client_id=xynoplex-browser&code=bogus&redirect_uri=http://localhost:3000/en/auth/callback" \
+    --data "grant_type=authorization_code&client_id=xynolog-browser&code=bogus&redirect_uri=http://localhost:3000/en/auth/callback" \
     "$TOKEN_ENDPOINT" \
     | tr -d '\r' | grep -i '^access-control-allow-origin:')
   case "$HDR" in
@@ -361,9 +361,9 @@ if [ ! -e "$KEPT" ] || ! xynolog status --root "$KB" >/dev/null 2>&1; then
   echo "No healthy stack from up at $KB: bring one up first (tests/stack/smoke-stack.sh up)." >&2
   exit 1
 fi
-IMAGES=$(grep -ho -m1 'ghcr.io/xynoplex/xynoplex-gateway:[^[:space:]]*' "$KB/.semiont/stack/knowledge-base.yaml" | sed 's/.*://')
+IMAGES=$(grep -ho -m1 'ghcr.io/xynolog/xynolog-gateway:[^[:space:]]*' "$KB/.xynolog/stack/knowledge-base.yaml" | sed 's/.*://')
 if [ -z "$IMAGES" ]; then
-  echo "$KB/.semiont/stack/knowledge-base.yaml names no gateway image, so the images up ran cannot be read." >&2
+  echo "$KB/.xynolog/stack/knowledge-base.yaml names no gateway image, so the images up ran cannot be read." >&2
   exit 1
 fi
 RUN=$(od -An -N4 -tx1 /dev/urandom | tr -d ' \n')
@@ -387,7 +387,7 @@ start_kb "$IMAGES" || exit 1
 # A port of its own beside up's.
 GATEWAY=$(gateway_of "$E2E_KB")
 if [ -z "$GATEWAY" ]; then
-  bad "$E2E_KB/.semiont/stack/knowledge-base.yaml names no spec.gateway.publicURL"; exit 1
+  bad "$E2E_KB/.xynolog/stack/knowledge-base.yaml names no spec.gateway.publicURL"; exit 1
 fi
 
 head_ "npm run $SUITE_SCRIPT${SUITE_ARGUMENTS[@]+ -- ${SUITE_ARGUMENTS[*]}}, in mcr.microsoft.com/playwright:v$PLAYWRIGHT-noble, against $GATEWAY"

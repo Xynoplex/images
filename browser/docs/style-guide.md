@@ -1,19 +1,19 @@
-# Semiont Browser Style Guide
+# Xynolog Browser Style Guide
 
 ## CSS Architecture Overview
 
-The Semiont Browser uses a hybrid CSS architecture that combines:
-1. **Semantic CSS from @xynoplex/react-ui** - Framework-agnostic component styles with modular organization
+The Xynolog Browser uses a hybrid CSS architecture that combines:
+1. **Semantic CSS from @xynolog/react-ui** - Framework-agnostic component styles with modular organization
 2. **Tailwind CSS** - For app-specific styling and utilities
 
 ### Technical Implementation
 
-#### @xynoplex/react-ui Styles
-All React UI components from `@xynoplex/react-ui` come with semantic CSS classes following BEM methodology. These styles are imported in `globals.css`, ahead of Tailwind:
+#### @xynolog/react-ui Styles
+All React UI components from `@xynolog/react-ui` come with semantic CSS classes following BEM methodology. These styles are imported in `globals.css`, ahead of Tailwind:
 
 ```css
 /* browser/src/app/globals.css */
-@import '@xynoplex/react-ui/styles';
+@import '@xynolog/react-ui/styles';
 @import "tailwindcss";
 ```
 
@@ -25,11 +25,11 @@ The styles are organized into a modular architecture:
 - **Features** (`features/`) - Feature-specific styling
 - **Component-level CSS** - Composed components (modals, navigation, resource panels, toolbar) keep their CSS beside their code
 
-This provides all component styles with the `semiont-` prefix:
-- `semiont-button`, `semiont-button--primary` (from `core/buttons.css`)
-- `semiont-card` (from `patterns/cards.css`)
-- `semiont-panel`, `semiont-panel-header__title` (from `patterns/panels-base.css`)
-- `semiont-toggle`, `semiont-progress`, `semiont-slider` (from `core/`)
+This provides all component styles with the `xynolog-` prefix:
+- `xynolog-button`, `xynolog-button--primary` (from `core/buttons.css`)
+- `xynolog-card` (from `patterns/cards.css`)
+- `xynolog-panel`, `xynolog-panel-header__title` (from `patterns/panels-base.css`)
+- `xynolog-toggle`, `xynolog-progress`, `xynolog-slider` (from `core/`)
 - And more...
 
 #### Tailwind Configuration
@@ -43,12 +43,12 @@ The Browser app uses Tailwind for its own components and layout. `globals.css` l
 @source "../../../../packages/typescript/react-ui/src";
 ```
 
-### Using @xynoplex/react-ui Components
+### Using @xynolog/react-ui Components
 
-When using components from @xynoplex/react-ui, they already have all necessary styling:
+When using components from @xynolog/react-ui, they already have all necessary styling:
 
 ```tsx
-import { Button, Toolbar } from '@xynoplex/react-ui';
+import { Button, Toolbar } from '@xynolog/react-ui';
 
 // Components come pre-styled with semantic classes
 <Button variant="primary">Click me</Button>
@@ -56,13 +56,13 @@ import { Button, Toolbar } from '@xynoplex/react-ui';
 
 ### Dark Mode Support
 
-`ThemeProvider` from @xynoplex/react-ui resolves the theme (`light`, `dark`, or `system`) and sets `data-theme` on the `<html>` element. The react-ui styles and the Browser's `globals.css` key their dark rules off `[data-theme="dark"]`.
+`ThemeProvider` from @xynolog/react-ui resolves the theme (`light`, `dark`, or `system`) and sets `data-theme` on the `<html>` element. The react-ui styles and the Browser's `globals.css` key their dark rules off `[data-theme="dark"]`.
 
 The Browser's `tailwind.config.js` sets `darkMode: ['selector', '[data-theme="dark"]']`, so Tailwind's `dark:` variants respond to the same attribute: a `dark:` class applies exactly when react-ui's dark rules do.
 
 ### Custom Styling Approach
 
-#### For @xynoplex/react-ui Components
+#### For @xynolog/react-ui Components
 If you need to customize a react-ui component, add additional classes without overriding the semantic ones:
 
 ```tsx
@@ -86,28 +86,28 @@ Use Tailwind utilities freely for components defined in the Browser app:
 ## Color System
 
 ### Design Tokens
-The design system uses CSS custom properties from @xynoplex/react-ui:
-- `--semiont-color-primary-*`: Blue color scale
-- `--semiont-color-gray-*`: Neutral color scale
-- `--semiont-color-red-*`, `--semiont-color-green-*`, etc.: Semantic colors
-- `--semiont-color-yellow-*`: Full yellow palette for highlights
-- `--semiont-color-orange-*`, `--semiont-color-amber-*`: For tagging motivations
+The design system uses CSS custom properties from @xynolog/react-ui:
+- `--xynolog-color-primary-*`: Blue color scale
+- `--xynolog-color-gray-*`: Neutral color scale
+- `--xynolog-color-red-*`, `--xynolog-color-green-*`, etc.: Semantic colors
+- `--xynolog-color-yellow-*`: Full yellow palette for highlights
+- `--xynolog-color-orange-*`, `--xynolog-color-amber-*`: For tagging motivations
 
 ### Panel Design Tokens
 Centralized tokens ensure consistency across all panels:
-- `--semiont-panel-padding`: 1rem
-- `--semiont-panel-title-size`: var(--semiont-text-lg)
-- `--semiont-panel-title-weight`: var(--semiont-font-semibold)
-- `--semiont-panel-header-margin-bottom`: 0.75rem
-- `--semiont-panel-section-gap`: 1.5rem
-- `--semiont-panel-icon-size`: 1.125rem
+- `--xynolog-panel-padding`: 1rem
+- `--xynolog-panel-title-size`: var(--xynolog-text-lg)
+- `--xynolog-panel-title-weight`: var(--xynolog-font-semibold)
+- `--xynolog-panel-header-margin-bottom`: 0.75rem
+- `--xynolog-panel-section-gap`: 1.5rem
+- `--xynolog-panel-icon-size`: 1.125rem
 
 ### Primary Colors
-The Semiont design system uses a **blue/cyan** color palette as its primary theme:
+The Xynolog design system uses a **blue/cyan** color palette as its primary theme:
 
-- **Primary Blue:** `--semiont-color-blue-500` (RGB: 59, 130, 246) - Used for primary actions, links, and selections
-- **Cyan Accent:** `--semiont-color-cyan-500` (RGB: 6, 182, 212) - Used in gradients and accent elements
-- **Cyan/Blue Gradient:** `--semiont-gradient-primary` - Cyan-500 to blue-500 at 20% opacity, deepening to cyan-600 → blue-600 on hover
+- **Primary Blue:** `--xynolog-color-blue-500` (RGB: 59, 130, 246) - Used for primary actions, links, and selections
+- **Cyan Accent:** `--xynolog-color-cyan-500` (RGB: 6, 182, 212) - Used in gradients and accent elements
+- **Cyan/Blue Gradient:** `--xynolog-gradient-primary` - Cyan-500 to blue-500 at 20% opacity, deepening to cyan-600 → blue-600 on hover
 
 ### Secondary Colors
 - **Yellow:** Reserved exclusively for text highlights (yellow-200 light / yellow-900 at 50% dark)
@@ -131,9 +131,9 @@ Use blue and cyan colors for:
 Yellow is reserved exclusively for text highlights in documents. This creates a clear visual distinction between highlighted text and interactive references.
 
 #### Gradients
-The cyan-to-blue gradient (`--semiont-gradient-primary`) marks primary action buttons (`semiont-button--primary`). Reference annotations carry a lighter cyan-to-blue gradient (`--semiont-motivation-reference-bg`).
+The cyan-to-blue gradient (`--xynolog-gradient-primary`) marks primary action buttons (`xynolog-button--primary`). Reference annotations carry a lighter cyan-to-blue gradient (`--xynolog-motivation-reference-bg`).
 
-## Core UI Elements from @xynoplex/react-ui
+## Core UI Elements from @xynolog/react-ui
 
 The react-ui package provides fundamental UI elements in the `core/` directory:
 
@@ -142,16 +142,16 @@ The react-ui package provides fundamental UI elements in the `core/` directory:
 // From core/toggles.css
 const [isOn, setIsOn] = useState(false);
 
-<label className="semiont-toggle-label">
-  <span className="semiont-toggle-label__text">Line numbers</span>
+<label className="xynolog-toggle-label">
+  <span className="xynolog-toggle-label__text">Line numbers</span>
   <button
     type="button"
     role="switch"
     aria-checked={isOn}
     onClick={() => setIsOn(!isOn)}
-    className={`semiont-toggle ${isOn ? 'semiont-toggle--active' : ''}`}
+    className={`xynolog-toggle ${isOn ? 'xynolog-toggle--active' : ''}`}
   >
-    <span className={`semiont-toggle__slider ${isOn ? 'semiont-toggle__slider--active' : ''}`} />
+    <span className={`xynolog-toggle__slider ${isOn ? 'xynolog-toggle__slider--active' : ''}`} />
   </button>
 </label>
 ```
@@ -159,23 +159,23 @@ const [isOn, setIsOn] = useState(false);
 ### Progress Bars
 ```tsx
 // From core/progress.css
-<div className="semiont-progress">
-  <div className="semiont-progress__fill" style={{width: '60%'}}></div>
+<div className="xynolog-progress">
+  <div className="xynolog-progress__fill" style={{width: '60%'}}></div>
 </div>
 ```
 
 ### Range Sliders
 ```tsx
 // From core/sliders.css
-<input type="range" className="semiont-slider" min="0" max="100" />
+<input type="range" className="xynolog-slider" min="0" max="100" />
 ```
 
 ### Tags
 ```tsx
 // From core/tags.css
 <>
-  <span className="semiont-tag">Category</span>
-  <span className="semiont-tag semiont-tag--secondary">Secondary</span>
+  <span className="xynolog-tag">Category</span>
+  <span className="xynolog-tag xynolog-tag--secondary">Secondary</span>
 </>
 ```
 
@@ -194,18 +194,18 @@ Which class an annotation gets is decided by the `ANNOTATORS` registry — see [
 
 ## Component Styling Guidelines
 
-### Using @xynoplex/react-ui Components
+### Using @xynolog/react-ui Components
 
-Components from @xynoplex/react-ui come with built-in semantic CSS classes. Here's how to use them:
+Components from @xynolog/react-ui come with built-in semantic CSS classes. Here's how to use them:
 
 #### Buttons
 ```tsx
-import { Button } from '@xynoplex/react-ui';
+import { Button } from '@xynolog/react-ui';
 
-// Primary button - renders class="semiont-button" data-variant="primary"
+// Primary button - renders class="xynolog-button" data-variant="primary"
 const primary = <Button variant="primary">Primary Action</Button>;
 
-// Secondary button - renders class="semiont-button" data-variant="secondary"
+// Secondary button - renders class="xynolog-button" data-variant="secondary"
 const secondary = <Button variant="secondary">Secondary Action</Button>;
 
 // With additional spacing (combines semantic + utility)
@@ -215,7 +215,7 @@ const spaced = <Button variant="primary" className="mt-4">Submit</Button>;
 #### Cards
 ```tsx
 // A card is a class, not a component
-<div className="semiont-card">
+<div className="xynolog-card">
   <h3>Title</h3>
   <p>Content here</p>
 </div>
@@ -224,11 +224,11 @@ const spaced = <Button variant="primary" className="mt-4">Submit</Button>;
 #### Panels
 ```tsx
 // Using semantic classes directly
-<div className="semiont-panel">
-  <div className="semiont-panel-header">
-    <h2 className="semiont-panel-header__title">Panel Title</h2>
+<div className="xynolog-panel">
+  <div className="xynolog-panel-header">
+    <h2 className="xynolog-panel-header__title">Panel Title</h2>
   </div>
-  <div className="semiont-panel__content">
+  <div className="xynolog-panel__content">
     Panel content
   </div>
 </div>
@@ -236,7 +236,7 @@ const spaced = <Button variant="primary" className="mt-4">Submit</Button>;
 
 ### Button Class Strings
 
-For a plain `<button>`, `@xynoplex/react-ui` exports `buttonStyles`: ready-made `semiont-button` class strings. The Browser's home page renders its Begin button with `buttonStyles.primary.base`.
+For a plain `<button>`, `@xynolog/react-ui` exports `buttonStyles`: ready-made `xynolog-button` class strings. The Browser's home page renders its Begin button with `buttonStyles.primary.base`.
 
 #### Primary Buttons
 **When to use:** Main call-to-action buttons that represent the primary action on a page or in a modal.
@@ -250,7 +250,7 @@ For a plain `<button>`, `@xynoplex/react-ui` exports `buttonStyles`: ready-made 
 - "Save" (when it's the main action)
 
 ```tsx
-import { buttonStyles } from '@xynoplex/react-ui';
+import { buttonStyles } from '@xynolog/react-ui';
 
 <>
   <button className={buttonStyles.primary.base}>Primary Action</button>
@@ -296,7 +296,7 @@ import { buttonStyles } from '@xynoplex/react-ui';
 ## Special Cases
 
 ### Highlight Button
-For a highlight action, use the amber `buttonStyles.warning.base` (`semiont-button--warning`), which matches the visual language of highlights:
+For a highlight action, use the amber `buttonStyles.warning.base` (`xynolog-button--warning`), which matches the visual language of highlights:
 
 ```tsx
 <button className={buttonStyles.warning.base}>Highlight</button>
@@ -309,7 +309,7 @@ When showing selected items, use blue backgrounds:
 - **Active filters:** `bg-blue-100 dark:bg-blue-900/30 border border-blue-300`
 
 ### Disabled States
-Every `semiont-button` dims to 50% opacity with a `not-allowed` cursor when it is `:disabled` or carries `data-disabled="true"`. Always disable buttons when:
+Every `xynolog-button` dims to 50% opacity with a `not-allowed` cursor when it is `:disabled` or carries `data-disabled="true"`. Always disable buttons when:
 - An action is in progress
 - Required fields are empty
 - The action is not available
@@ -319,13 +319,13 @@ Every `semiont-button` dims to 50% opacity with a `not-allowed` cursor when it i
 Each motivation's class name lives in the `ANNOTATORS` registry (`packages/typescript/react-ui/src/lib/annotation-registry.ts`); its colours live in `packages/typescript/react-ui/src/styles/motivations/`.
 
 ### Highlights
-- **Background:** Yellow (`--semiont-motivation-highlight-bg`: yellow-200; yellow-900 at 50% in dark mode)
+- **Background:** Yellow (`--xynolog-motivation-highlight-bg`: yellow-200; yellow-900 at 50% in dark mode)
 - **Border:** Dashed outline in dark mode
 - **Hover:** Deeper yellow (yellow-300; yellow-900 at 60% in dark mode)
 - **Purpose:** Visual prominence for highlighted text
 
 ### References (All Types)
-- **Background:** Cyan/blue gradient (`--semiont-motivation-reference-bg`: cyan-200 → blue-200)
+- **Background:** Cyan/blue gradient (`--xynolog-motivation-reference-bg`: cyan-200 → blue-200)
 - **Border:** Dashed cyan outline in dark mode
 - **Hover:** Deeper gradient (cyan-300 → blue-300)
 - **Purpose:** Show connections between documents and entities
@@ -333,7 +333,7 @@ Each motivation's class name lives in the `ANNOTATORS` registry (`packages/types
 
 ### Usage
 ```tsx
-import { ANNOTATORS } from '@xynoplex/react-ui';
+import { ANNOTATORS } from '@xynolog/react-ui';
 
 // The annotator whose motivation matches supplies the class
 const annotator = Object.values(ANNOTATORS).find((a) => a.matchesAnnotation(annotation));
@@ -349,19 +349,19 @@ const annotator = Object.values(ANNOTATORS).find((a) => a.matchesAnnotation(anno
 ## Form Elements
 
 ### Text Inputs
-Inputs take react-ui's `semiont-input` (`core/inputs.css`), as the Browser's `KnowledgeBasePanel` form does. A labelled field wraps it in the `core/forms.css` classes:
+Inputs take react-ui's `xynolog-input` (`core/inputs.css`), as the Browser's `KnowledgeBasePanel` form does. A labelled field wraps it in the `core/forms.css` classes:
 
 ```tsx
-<div className="semiont-form__field">
-  <label htmlFor="host" className="semiont-form__label">Host</label>
-  <input id="host" type="text" className="semiont-input" />
-  <p className="semiont-form__help">Helper text</p>
+<div className="xynolog-form__field">
+  <label htmlFor="host" className="xynolog-form__label">Host</label>
+  <input id="host" type="text" className="xynolog-input" />
+  <p className="xynolog-form__help">Helper text</p>
 </div>
 ```
 
 ### Select Dropdowns
 ```tsx
-<select className="semiont-select">
+<select className="xynolog-select">
   <option value="http">HTTP</option>
   <option value="https">HTTPS</option>
 </select>
@@ -376,7 +376,7 @@ Inputs take react-ui's `semiont-input` (`core/inputs.css`), as the Browser's `Kn
 
 ### Card Components
 ```tsx
-<div className="semiont-card">
+<div className="xynolog-card">
   {/* Card content */}
 </div>
 ```
@@ -384,19 +384,19 @@ Inputs take react-ui's `semiont-input` (`core/inputs.css`), as the Browser's `Kn
 ### Navigation Sidebars
 The knowledge and moderation layouts use react-ui's `LeftSidebar`, styled by its own `LeftSidebar.css`.
 
-## SemiontBranding Component
+## XynologBranding Component
 
-The `SemiontBranding` component is our main brand identity element: the "SEMIONT" wordmark over a tagline, which it renders as `t('tagline')` — "make meaning" under the Browser's `Home` messages. It's resizable and used in different contexts throughout the application.
+The `XynologBranding` component is our main brand identity element: the "XYNOLOG" wordmark over a tagline, which it renders as `t('tagline')` — "make meaning" under the Browser's `Home` messages. It's resizable and used in different contexts throughout the application.
 
 ### Component Props
 ```tsx
-<SemiontBranding
+<XynologBranding
   t={tHome}               // required: renders t('tagline')
   size="lg"               // 'sm' | 'md' | 'lg' | 'xl'; default 'lg'
   showTagline={true}      // default true
   animated={true}         // fade-in animation; default true
   compactTagline={false}  // wider tagline letter-spacing; default false
-  className=""            // appended to semiont-branding
+  className=""            // appended to xynolog-branding
 />
 ```
 
@@ -411,7 +411,7 @@ The `SemiontBranding` component is our main brand identity element: the "SEMIONT
 
 **Example:**
 ```tsx
-<SemiontBranding
+<XynologBranding
   t={tHome}
   size="sm"
   showTagline={true}
@@ -425,7 +425,7 @@ The `SemiontBranding` component is our main brand identity element: the "SEMIONT
 
 **Example:**
 ```tsx
-<SemiontBranding t={tHome} size="md" />
+<XynologBranding t={tHome} size="md" />
 ```
 
 #### Large (`size="lg"`)
@@ -433,7 +433,7 @@ The `SemiontBranding` component is our main brand identity element: the "SEMIONT
 
 **Example:**
 ```tsx
-<SemiontBranding t={tHome} />
+<XynologBranding t={tHome} />
 ```
 
 #### Extra Large (`size="xl"`)
@@ -444,7 +444,7 @@ The `SemiontBranding` component is our main brand identity element: the "SEMIONT
 
 **Example:**
 ```tsx
-<SemiontBranding
+<XynologBranding
   t={tHome}
   size="xl"
   animated={true}
@@ -454,7 +454,7 @@ The `SemiontBranding` component is our main brand identity element: the "SEMIONT
 
 ### Styling Details
 
-The component uses the Orbitron font for "SEMIONT" and includes:
+The component uses the Orbitron font for "XYNOLOG" and includes:
 - **Gradient text:** Black → primary-600 → black, and white → primary-400 → white in dark mode
 - **Animation:** Optional fade-in effect for landing pages
 - **Responsive sizing:** Title and tagline sizes are set per `data-size` in `Branding.css`, and the title steps up at the 640px and 768px breakpoints
@@ -470,7 +470,7 @@ The component uses the Orbitron font for "SEMIONT" and includes:
 ## Best Practices
 
 ### CSS Architecture
-1. **Component Organization:** @xynoplex/react-ui styles are organized into:
+1. **Component Organization:** @xynolog/react-ui styles are organized into:
    - `core/` - Fundamental UI elements (buttons, toggles, sliders, inputs)
    - `patterns/` - Shared panel and card structures
    - `panels/` - Styles for individual panels
@@ -478,8 +478,8 @@ The component uses the Orbitron font for "SEMIONT" and includes:
    - CSS beside each composed component under `src/components/`
 2. **Use Design Tokens:** Leverage panel design tokens and CSS variables for consistency
 3. **App Styles:** Use Tailwind for app-specific components and layouts
-4. **Don't Mix:** Avoid overriding semantic classes from @xynoplex/react-ui with Tailwind utilities
-5. **Custom Properties:** Use CSS variables from @xynoplex/react-ui (colors, spacing, typography)
+4. **Don't Mix:** Avoid overriding semantic classes from @xynolog/react-ui with Tailwind utilities
+5. **Custom Properties:** Use CSS variables from @xynolog/react-ui (colors, spacing, typography)
 
 ### Style Guidelines
 1. **Consistency:** Always use the predefined styles rather than creating custom classes
@@ -492,10 +492,10 @@ The component uses the Orbitron font for "SEMIONT" and includes:
 ## Importing Styles
 
 ### For App Components
-Import button styles from `@xynoplex/react-ui` at the top of your component:
+Import button styles from `@xynolog/react-ui` at the top of your component:
 
 ```typescript
-import { buttonStyles } from '@xynoplex/react-ui';
+import { buttonStyles } from '@xynolog/react-ui';
 ```
 
 ### For Combining Classes
@@ -504,16 +504,16 @@ import { buttonStyles } from '@xynoplex/react-ui';
 <button className={`${buttonStyles.primary.base} w-full`}>Save</button>
 ```
 
-react-ui's `Button` merges its `className` prop after `semiont-button`, so `<Button className="mt-4">` combines the two the same way.
+react-ui's `Button` merges its `className` prop after `xynolog-button`, so `<Button className="mt-4">` combines the two the same way.
 
 ## File Organization
 
 ### Browser App Files
-- `src/app/globals.css` - Global styles, the @xynoplex/react-ui import, and the Tailwind setup
+- `src/app/globals.css` - Global styles, the @xynolog/react-ui import, and the Tailwind setup
 - `tailwind.config.js` - Tailwind configuration (`darkMode`, theme extensions)
 
-### @xynoplex/react-ui Style Organization
-- `@xynoplex/react-ui/styles/` - Main styles directory
+### @xynolog/react-ui Style Organization
+- `@xynolog/react-ui/styles/` - Main styles directory
   - `index.css` - Entry point that imports all styles, including component-level CSS
   - `variables.css` - Design tokens and CSS custom properties
   - `base/` - Reset and semantic utility classes

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { KnowledgeBasePanel } from '../KnowledgeBasePanel';
-import { SignInError, type KnowledgeBase } from '@xynoplex/sdk';
+import { SignInError, type KnowledgeBase } from '@xynolog/sdk';
 const translations: Record<string, string> = {
   'KnowledgeBasePanel.title': 'Knowledge Bases',
   'KnowledgeBasePanel.connectTitle': 'Connect to Knowledge Base',
@@ -93,8 +93,8 @@ const {
 // through this holder (reset in beforeEach, set per test).
 const discoveryHolder = vi.hoisted(() => ({
   current: { state: null, kbs: [] } as {
-    state: import('@xynoplex/sdk').DiscoveryState | null;
-    kbs: import('@xynoplex/core').DiscoveredKB[];
+    state: import('@xynolog/sdk').DiscoveryState | null;
+    kbs: import('@xynolog/core').DiscoveredKB[];
   },
 }));
 
@@ -104,11 +104,11 @@ vi.mock('@/i18n/routing', () => ({
   usePathname: () => pathHolder.current,
 }));
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual<typeof import('@xynoplex/react-ui')>('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual<typeof import('@xynolog/react-ui')>('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => mockBrowser,
+    useXynolog: () => mockBrowser,
     useKBDiscovery: () => discoveryHolder.current,
     defaultProtocol: (host: string) => host === 'localhost' || host === '127.0.0.1' ? 'http' : 'https',
   };
@@ -118,7 +118,7 @@ vi.mock('@xynoplex/react-ui', async () => {
 // to the URL it returns. jsdom's `location.assign` is not implemented, so
 // the navigation is recorded here.
 const assign = vi.fn();
-const ISSUER_URL = 'https://issuer.test/realms/semiont/protocol/openid-connect/auth?client_id=semiont-browser';
+const ISSUER_URL = 'https://issuer.test/realms/xynolog/protocol/openid-connect/auth?client_id=xynolog-browser';
 
 describe('KnowledgeBasePanel', () => {
   beforeEach(() => {
@@ -170,7 +170,7 @@ describe('KnowledgeBasePanel', () => {
       const notice = await screen.findByText(/Project Gutenberg is answering at this address/);
       expect(notice).toHaveAttribute('title', 'did:web:gutenberg.example');
       // On the connected entry's row, and no other.
-      expect(notice.closest('.semiont-panel-item')).toHaveTextContent('Production');
+      expect(notice.closest('.xynolog-panel-item')).toHaveTextContent('Production');
       // What the entry last said of itself is not shown as the present.
       expect(screen.getByText('main')).toHaveAttribute('title', expect.stringMatching(/^As of /));
     });
@@ -334,12 +334,12 @@ describe('KnowledgeBasePanel', () => {
       // kb1 = prod.example.com:4000, did:web:prod.example
       const mine = {
         host: 'prod.example.com', port: 4000, placement: 'local' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:prod.example', repo: 'org/prod-kb',
+        managedBy: 'xynolog-launcher', did: 'did:web:prod.example', repo: 'org/prod-kb',
       };
       discoveryHolder.current = { state: { kind: 'managed', kbs: [mine] }, kbs: [mine] };
       render(<KnowledgeBasePanel />);
 
-      const row = screen.getByText('Production').closest('.semiont-panel-item') as HTMLElement;
+      const row = screen.getByText('Production').closest('.xynolog-panel-item') as HTMLElement;
       expect(within(row).getByTitle('Managed by launcher')).toBeInTheDocument();
       expect(within(row).getByText('org/prod-kb')).toBeInTheDocument();
       expect(screen.queryByText('Found on this machine')).not.toBeInTheDocument();
@@ -349,13 +349,13 @@ describe('KnowledgeBasePanel', () => {
       // A single entry at my address that is a DIFFERENT knowledge base.
       const notMine = {
         host: 'prod.example.com', port: 4000, placement: 'codespace' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:pingel-org.github.io:synthetic-family',
+        managedBy: 'xynolog-launcher', did: 'did:web:pingel-org.github.io:synthetic-family',
         repo: 'pingel-org/synthetic-family',
       };
       discoveryHolder.current = { state: { kind: 'managed', kbs: [notMine] }, kbs: [notMine] };
       render(<KnowledgeBasePanel />);
 
-      const row = screen.getByText('Production').closest('.semiont-panel-item') as HTMLElement;
+      const row = screen.getByText('Production').closest('.xynolog-panel-item') as HTMLElement;
       expect(within(row).queryByTitle('Managed by launcher')).not.toBeInTheDocument();
       expect(within(row).queryByText('pingel-org/synthetic-family')).not.toBeInTheDocument();
       // Unadopted, so it stays visible as its own discovered entry.
@@ -368,7 +368,7 @@ describe('KnowledgeBasePanel', () => {
       // COMMON. Distinct running copies with distinct health.
       const localCopy = {
         host: 'localhost', port: 4000, placement: 'local' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:twin.example', repo: 'org/twin-kb',
+        managedBy: 'xynolog-launcher', did: 'did:web:twin.example', repo: 'org/twin-kb',
       };
       const codespaceCopy = { ...localCopy, port: 4001, placement: 'codespace' as const };
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -398,7 +398,7 @@ describe('KnowledgeBasePanel', () => {
       // The launcher also publishes a codespace copy of the SAME KB elsewhere.
       const mine = {
         host: 'prod.example.com', port: 4000, placement: 'local' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:prod.example', repo: 'org/prod-kb',
+        managedBy: 'xynolog-launcher', did: 'did:web:prod.example', repo: 'org/prod-kb',
         siteName: 'Production',
       };
       const twin = { ...mine, host: 'localhost', port: 4002, placement: 'codespace' as const };
@@ -407,7 +407,7 @@ describe('KnowledgeBasePanel', () => {
       render(<KnowledgeBasePanel />);
 
       // The twin renders as its own row (never merged) …
-      const twinRow = screen.getByText('localhost:4002').closest('.semiont-panel-item') as HTMLElement;
+      const twinRow = screen.getByText('localhost:4002').closest('.xynolog-panel-item') as HTMLElement;
       // … and says WHY it looks like a duplicate.
       expect(within(twinRow).getByText(/another copy of the knowledge base/i)).toBeInTheDocument();
     });
@@ -415,7 +415,7 @@ describe('KnowledgeBasePanel', () => {
     it('does not mark an unrelated discovered KB', () => {
       const stranger = {
         host: 'localhost', port: 4002, placement: 'codespace' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:stranger.example', repo: 'org/stranger',
+        managedBy: 'xynolog-launcher', did: 'did:web:stranger.example', repo: 'org/stranger',
         siteName: 'Stranger KB',
       };
       discoveryHolder.current = { state: { kind: 'managed', kbs: [stranger] }, kbs: [stranger] };
@@ -432,12 +432,12 @@ describe('KnowledgeBasePanel', () => {
   describe('Conflict + verification', () => {
     const claimantA = {
       host: 'localhost', port: 4000, placement: 'local' as const,
-      managedBy: 'semiont-launcher', did: 'did:web:caselaw.example',
+      managedBy: 'xynolog-launcher', did: 'did:web:caselaw.example',
       siteName: 'Caselaw Knowledge Base', repo: 'org/caselaw',
     };
     const claimantB = {
       host: 'localhost', port: 4000, placement: 'codespace' as const,
-      managedBy: 'semiont-launcher', did: 'did:web:synthetic.example',
+      managedBy: 'xynolog-launcher', did: 'did:web:synthetic.example',
       siteName: 'Synthetic Family', repo: 'pingel-org/synthetic-family',
     };
 
@@ -513,7 +513,7 @@ describe('KnowledgeBasePanel', () => {
       host: 'localhost',
       port: 4001,
       placement: 'local' as const,
-      managedBy: 'semiont-launcher',
+      managedBy: 'xynolog-launcher',
       did: 'did:web:local.example',
       siteName: 'Local KB',
     };
@@ -522,7 +522,7 @@ describe('KnowledgeBasePanel', () => {
       host: 'prod.example.com',
       port: 4000,
       placement: 'codespace' as const,
-      managedBy: 'semiont-launcher',
+      managedBy: 'xynolog-launcher',
       did: 'did:web:prod.example',
       siteName: 'Production KB',
       repo: 'org/prod-kb',
@@ -548,7 +548,7 @@ describe('KnowledgeBasePanel', () => {
     });
 
     it('renders a placeholder name for a discovered KB without a siteName — never a duplicated line', () => {
-      const nameless = { host: 'localhost', port: 4002, placement: 'local' as const, managedBy: 'semiont-launcher', did: 'did:web:nameless.example', repo: 'org/other-kb' };
+      const nameless = { host: 'localhost', port: 4002, placement: 'local' as const, managedBy: 'xynolog-launcher', did: 'did:web:nameless.example', repo: 'org/other-kb' };
       discoveryHolder.current = { state: { kind: 'managed', kbs: [nameless] }, kbs: [nameless] };
       render(<KnowledgeBasePanel />);
 
@@ -598,11 +598,11 @@ describe('KnowledgeBasePanel', () => {
       // stale launcher record is surfaced instead of silently swallowed.
       const dupLocal = {
         host: 'prod.example.com', port: 4000, placement: 'local' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:real', repo: 'org/real-kb',
+        managedBy: 'xynolog-launcher', did: 'did:web:real', repo: 'org/real-kb',
       };
       const dupStale = {
         host: 'prod.example.com', port: 4000, placement: 'codespace' as const,
-        managedBy: 'semiont-launcher', did: 'did:web:stale', repo: 'org/stale-kb',
+        managedBy: 'xynolog-launcher', did: 'did:web:stale', repo: 'org/stale-kb',
       };
       discoveryHolder.current = {
         state: { kind: 'managed', kbs: [dupLocal, dupStale] },
@@ -612,7 +612,7 @@ describe('KnowledgeBasePanel', () => {
 
       // The registered row (kb1 lives at prod.example.com:4000) borrows nothing
       // from either claimant — no badge, and neither repo bleeds into its line.
-      const registeredRow = screen.getByText('Production').closest('.semiont-panel-item') as HTMLElement;
+      const registeredRow = screen.getByText('Production').closest('.xynolog-panel-item') as HTMLElement;
       expect(within(registeredRow).queryByTitle('Managed by launcher')).not.toBeInTheDocument();
       expect(within(registeredRow).queryByText(/org\/(real|stale)-kb/)).not.toBeInTheDocument();
 

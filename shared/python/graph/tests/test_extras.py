@@ -15,46 +15,46 @@ NEO4J = 'Neo4jGraphConfig(type="neo4j", uri="bolt://127.0.0.1:1", username="neo4
 
 ASKING_FOR_NEITHER = f"""
 import sys
-import semiont_graph
-from xynoplex.types import MemoryGraphConfig
-from semiont_graph.codec import intended_graph_annotation
-from semiont_graph.factory import create_graph_database
-from semiont_graph.interface import GraphDatabase
+import xynolog_graph
+from xynolog.types import MemoryGraphConfig
+from xynolog_graph.codec import intended_graph_annotation
+from xynolog_graph.factory import create_graph_database
+from xynolog_graph.interface import GraphDatabase
 
 store = create_graph_database(MemoryGraphConfig(type="memory"), password=None)
-print(type(store).__name__, {LOADED}, "semiont_graph.neo4j" in sys.modules, "semiont_graph.janusgraph" in sys.modules)
+print(type(store).__name__, {LOADED}, "xynolog_graph.neo4j" in sys.modules, "xynolog_graph.janusgraph" in sys.modules)
 """
 
 ASKING_FOR_NEO4J = f"""
 import sys
-from xynoplex.types import Neo4jGraphConfig
-from semiont_graph.factory import create_graph_database
+from xynolog.types import Neo4jGraphConfig
+from xynolog_graph.factory import create_graph_database
 
 store = create_graph_database({NEO4J}, password="p")
-print(type(store).__name__, store.is_connected(), "neo4j" in sys.modules, "semiont_graph.neo4j" in sys.modules)
+print(type(store).__name__, store.is_connected(), "neo4j" in sys.modules, "xynolog_graph.neo4j" in sys.modules)
 """
 
 WITHOUT_THE_CLIENT = f"""
 import sys
 
 sys.modules["neo4j"] = None  # as an interpreter has it where the client is not installed
-from xynoplex.types import MemoryGraphConfig, Neo4jGraphConfig
-from semiont_graph.factory import create_graph_database
+from xynolog.types import MemoryGraphConfig, Neo4jGraphConfig
+from xynolog_graph.factory import create_graph_database
 
 for ask in ("the factory", "the module"):
     try:
         if ask == "the factory":
             create_graph_database({NEO4J}, password="p")
         else:
-            import semiont_graph.neo4j
+            import xynolog_graph.neo4j
     except ModuleNotFoundError as missing:
         print(ask, "|", type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(type(create_graph_database(MemoryGraphConfig(type="memory"), password=None)).__name__)
 """
 
 WITHOUT_A_PASSWORD = f"""
-from xynoplex.types import Neo4jGraphConfig
-from semiont_graph.factory import create_graph_database
+from xynolog.types import Neo4jGraphConfig
+from xynolog_graph.factory import create_graph_database
 
 for password in (None, ""):
     try:
@@ -65,16 +65,16 @@ for password in (None, ""):
 
 ASKING_FOR_A_READER_IN_MEMORY = f"""
 import sys
-from xynoplex.types import MemoryGraphConfig
-from semiont_graph.factory import create_graph_reader
+from xynolog.types import MemoryGraphConfig
+from xynolog_graph.factory import create_graph_reader
 
 reader = create_graph_reader(MemoryGraphConfig(type="memory"), password=None)
-print(type(reader).__name__, {LOADED}, "semiont_graph.neo4j" in sys.modules)
+print(type(reader).__name__, {LOADED}, "xynolog_graph.neo4j" in sys.modules)
 """
 
 ASKING_FOR_EACH_READER = f"""
-from xynoplex.types import JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
-from semiont_graph.factory import create_graph_reader
+from xynolog.types import JanusGraphConfig, MemoryGraphConfig, Neo4jGraphConfig, NeptuneGraphConfig
+from xynolog_graph.factory import create_graph_reader
 
 # No server listens at any of these addresses: a reader that dialled when it was made would fail here.
 for config, password in (
@@ -109,7 +109,7 @@ def test_asking_for_the_neo4j_store_is_what_imports_the_client_and_making_it_dia
 
 
 def test_without_the_client_the_neo4j_store_fails_naming_the_extra_and_the_store_in_memory_is_made() -> None:
-    said = "The neo4j store needs Neo4j's `neo4j` client, which is not installed. It comes with the extra: install `semiont-graph[neo4j]`."
+    said = "The neo4j store needs Neo4j's `neo4j` client, which is not installed. It comes with the extra: install `xynolog-graph[neo4j]`."
     assert alone(WITHOUT_THE_CLIENT).splitlines() == [
         f"the factory | ModuleNotFoundError | neo4j | ModuleNotFoundError | {said}",
         f"the module | ModuleNotFoundError | neo4j | ModuleNotFoundError | {said}",

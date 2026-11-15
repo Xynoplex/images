@@ -6,8 +6,8 @@ use axum::body::Body;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::Response;
-use xynoplex::types::{MediaTokenRequest, MediaTokenResponse};
 use std::sync::Arc;
+use xynolog::types::{MediaTokenRequest, MediaTokenResponse};
 
 /// `POST /api/tokens/media`: a token naming one resource for five minutes,
 /// for the links that cannot send a header.

@@ -7,11 +7,11 @@
 use async_nats::jetstream::kv;
 use bytes::Bytes;
 use futures::StreamExt;
-use semiont_observability::logging;
 use serde_json::json;
 use std::fmt;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use xynolog_observability::logging;
 
 /// What a service's broker log lines say: its tag (`[<tag> BROKER-DOWN]`),
 /// what stops while the broker is away, and who the broker refused.

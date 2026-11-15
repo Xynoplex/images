@@ -56,8 +56,8 @@ COPY packages/rust/observability/src packages/rust/observability/src
 WORKDIR /build/packages/rust
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/build/packages/rust/target \
-    cargo auditable build --release --locked -p semiont-archivist -p semiont-dispatcher -p semiont-gateway && \
-    cp target/release/semiont-archivist target/release/semiont-dispatcher target/release/semiont-gateway /
+    cargo auditable build --release --locked -p xynolog-archivist -p xynolog-dispatcher -p xynolog-gateway && \
+    cp target/release/xynolog-archivist target/release/xynolog-dispatcher target/release/xynolog-gateway /
 
 FROM alpine:3.24
 # git is the Archivist's staging driver's: a knowledge base that syncs git has
@@ -70,19 +70,19 @@ RUN apk upgrade --no-cache && apk add --no-cache tini git && \
     git config --system --add safe.directory /kb
 
 # The uid the launcher's state mount is written as, as in every service image.
-RUN addgroup --system --gid 1001 semiont && \
-    adduser --system --uid 1001 --ingroup semiont --home /home/semiont semiont
+RUN addgroup --system --gid 1001 xynolog && \
+    adduser --system --uid 1001 --ingroup xynolog --home /home/xynolog xynolog
 
-COPY --from=builder /semiont-archivist /usr/local/bin/semiont-archivist
-COPY LICENSE archivist/NOTICE /home/semiont/
+COPY --from=builder /xynolog-archivist /usr/local/bin/xynolog-archivist
+COPY LICENSE archivist/NOTICE /home/xynolog/
 COPY shared/supervise.sh /usr/local/bin/supervise.sh
 COPY shared/boot.sh /usr/local/bin/boot.sh
 
 # The knowledge base is mounted here, and is where git is run.
 WORKDIR /kb
-RUN chown semiont:semiont /kb
+RUN chown xynolog:xynolog /kb
 
-USER semiont
+USER xynolog
 
 EXPOSE 24103
 
@@ -94,4 +94,4 @@ ENV SUPERVISE_NAME=archivist \
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/boot.sh"]
 # --config names where the launcher mounts the Archivist's document; the
 # launcher's census (TestConfigDocumentsAreWhereTheImagesLook) reads it here.
-CMD ["/usr/local/bin/semiont-archivist", "--config", "/etc/semiont/archivist.json"]
+CMD ["/usr/local/bin/xynolog-archivist", "--config", "/etc/xynolog/archivist.json"]

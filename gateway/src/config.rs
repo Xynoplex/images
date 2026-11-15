@@ -1,10 +1,10 @@
 //! The gateway's configuration document: `GatewayConfig` in the spec, its type
-//! generated in `semiont_core::types`, read at boot from the path `--config`
-//! names (the image passes `/etc/semiont/gateway.json`, where the launcher
+//! generated in `xynolog_core::types`, read at boot from the path `--config`
+//! names (the image passes `/etc/xynolog/gateway.json`, where the launcher
 //! mounts it) and validated against its schema before anything in it is used.
 
-use semiont_core::config::{self, ConfigError, Document};
-use semiont_core::types::{GatewayConfig, GatewayConfigSignalType};
+use xynolog_core::config::{self, ConfigError, Document};
+use xynolog_core::types::{GatewayConfig, GatewayConfigSignalType};
 
 pub const DOCUMENT: Document = Document {
     service: "gateway",

@@ -8,11 +8,11 @@ anchored by them, and one that is a character out selects other text.
 
 from collections.abc import Sequence
 
-from xynoplex.types import PdfTextItem
+from xynolog.types import PdfTextItem
 
-from semiont_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
-from semiont_smelter.ocr_text import ImageText, ReadWord, assemble, place
-from semiont_smelter.pdf_reader import Matrix
+from xynolog_smelter.ocr_engine import Box, OcrLine, OcrParagraph, OcrRead, OcrWord
+from xynolog_smelter.ocr_text import ImageText, ReadWord, assemble, place
+from xynolog_smelter.pdf_reader import Matrix
 
 WHOLE_PAGE: Matrix = (612.0, 0.0, 0.0, 792.0, 0.0, 0.0)
 """The matrix that places an image over the whole of a US Letter page."""

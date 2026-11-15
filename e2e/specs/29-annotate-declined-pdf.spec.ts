@@ -35,12 +35,12 @@ import { test, expect } from '../fixtures/auth';
 import type { Page } from '@playwright/test';
 import { openResourceByName } from '../fixtures/discover';
 
-const IMG = '.semiont-pdf-annotation-canvas__image';
-const SVG = '.semiont-pdf-annotation-canvas__svg';
-const CONTAINER = '.semiont-pdf-annotation-canvas__container';
-const CANVAS = '.semiont-pdf-annotation-canvas';
-const TEXT_UNREADABLE = '.semiont-anchored-text-notice[data-anchored-text="never"]';
-const TEXT_AWAITED = '.semiont-anchored-text-notice[data-anchored-text="waiting"]';
+const IMG = '.xynolog-pdf-annotation-canvas__image';
+const SVG = '.xynolog-pdf-annotation-canvas__svg';
+const CONTAINER = '.xynolog-pdf-annotation-canvas__container';
+const CANVAS = '.xynolog-pdf-annotation-canvas';
+const TEXT_UNREADABLE = '.xynolog-anchored-text-notice[data-anchored-text="never"]';
+const TEXT_AWAITED = '.xynolog-anchored-text-notice[data-anchored-text="waiting"]';
 
 async function openScannedInAnnotateMode(page: Page) {
   await openResourceByName(page, 'Scanned Smoke PDF');

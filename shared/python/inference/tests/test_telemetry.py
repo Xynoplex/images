@@ -1,6 +1,6 @@
 """What the drivers tell OpenTelemetry, held to the table every service is held to (`protocol/specs/src/service-telemetry/telemetry.json`).
 
-The three `semiont.inference.*` rows are read from the table, and compared
+The three `xynolog.inference.*` rows are read from the table, and compared
 with what an in-memory reader collected from real calls of the drivers whose
 providers the table names: the names, the kind of instrument, the attribute
 keys, and the values a row lists. A row that changes fails here.
@@ -45,11 +45,11 @@ from provider import (
 )
 from spec import SPEC, JsonObject, objects, read, strings, text
 
-from semiont_inference.anthropic import AnthropicInferenceClient
-from semiont_inference.catalogue import CatalogueFacts, CatalogueLimit
-from semiont_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError
-from semiont_inference.ollama import OllamaInferenceClient
-from semiont_inference.openai import OpenAIInferenceClient
+from xynolog_inference.anthropic import AnthropicInferenceClient
+from xynolog_inference.catalogue import CatalogueFacts, CatalogueLimit
+from xynolog_inference.interface import ProviderStatusError, ProviderWithheldError, StructuredReadError
+from xynolog_inference.ollama import OllamaInferenceClient
+from xynolog_inference.openai import OpenAIInferenceClient
 
 # Models no other test names: the reader keeps what the whole run recorded.
 LLAMA, CLAUDE, GPT = "telemetry-llama", "telemetry-claude", "telemetry-gpt"
@@ -65,7 +65,7 @@ GPT_FACTS = CatalogueFacts(
 ELEMENT: JsonObject = {"type": "object"}
 # OpenAI's strict mode is sent a schema rewritten, and an object must state its properties to be rewritten.
 ELEMENT_OF_ONE: JsonObject = {"type": "object", "properties": {"exact": {"type": "string"}}, "required": ["exact"]}
-PREFIX = "semiont.inference."
+PREFIX = "xynolog.inference."
 
 
 @pytest.fixture(scope="session")
@@ -201,17 +201,17 @@ def test_what_the_drivers_record_is_what_the_table_lists(arrived: dict[str, Metr
 
 def test_a_generation_is_counted_once_by_how_it_ended_and_its_tokens_are_the_providers(arrived: dict[str, Metric]) -> None:
     calls: dict[tuple[object, object], float] = {}
-    for point in ours(arrived["semiont.inference.calls"]):
+    for point in ours(arrived["xynolog.inference.calls"]):
         assert isinstance(point, NumberDataPoint)
         attributes = point.attributes or {}
         calls[attributes["inference.provider"], attributes["inference.outcome"]] = point.value
     tokens: dict[tuple[object, object], float] = {}
-    for point in ours(arrived["semiont.inference.tokens"]):
+    for point in ours(arrived["xynolog.inference.tokens"]):
         assert isinstance(point, NumberDataPoint)
         attributes = point.attributes or {}
         tokens[attributes["inference.provider"], attributes["inference.direction"]] = point.value
     timed: dict[tuple[object, object], int] = {}
-    for point in ours(arrived["semiont.inference.duration"]):
+    for point in ours(arrived["xynolog.inference.duration"]):
         assert isinstance(point, HistogramDataPoint)
         attributes = point.attributes or {}
         timed[attributes["inference.provider"], attributes["inference.outcome"]] = point.count
@@ -226,7 +226,7 @@ def test_a_generation_is_counted_once_by_how_it_ended_and_its_tokens_are_the_pro
     }
     # Every generation is timed, the failing ones too, in milliseconds.
     assert timed == calls
-    assert arrived["semiont.inference.duration"].unit == "ms"
+    assert arrived["xynolog.inference.duration"].unit == "ms"
 
 
 def test_the_openai_driver_records_the_same_three_by_the_tables_keys_under_its_own_providers_name(arrived: dict[str, Metric]) -> None:

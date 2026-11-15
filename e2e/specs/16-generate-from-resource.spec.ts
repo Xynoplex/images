@@ -20,7 +20,7 @@ import { expectGeneratedAt } from '../fixtures/generated';
  *
  * Selectors are label-independent where it matters: the Info panel opens via the
  * Toolbar's `button[data-panel="info"]`; the recall chips are
- * `.semiont-form__recall-chip`; progress is asserted on the bus
+ * `.xynolog-form__recall-chip`; progress is asserted on the bus
  * (i18n-independent). The few accessible-name selectors use the `ResourceGenerate`
  * / `ResourceInfoPanel` en.json labels — only **Generate** and **Gather**.
  *
@@ -39,7 +39,7 @@ test.describe('generate from resource', () => {
 
     // ── Resource Info panel: the terse `Generate` button renders ABOVE Clone ──
     await page.locator('button[data-panel="info"]').click();
-    const infoPanel = page.locator('.semiont-resource-info-panel');
+    const infoPanel = page.locator('.xynolog-resource-info-panel');
     await expect(infoPanel).toBeVisible({ timeout: 10_000 });
     // The DelegateShell adds a collapsible "Generate ›" section header, so match
     // the ✨ prefix — literal in ResourceInfoPanel, unlike the translated word.
@@ -58,14 +58,14 @@ test.describe('generate from resource', () => {
     // role="dialog" element is a zero-box positioning wrapper Playwright treats
     // as "hidden". `--gather` is unique to this modal (excludes the info-panel
     // Generate button still in the background DOM).
-    const modal = page.locator('.semiont-search-modal__panel--gather');
+    const modal = page.locator('.xynolog-search-modal__panel--gather');
     await expect(modal).toBeVisible({ timeout: 10_000 });
-    await expect(modal.locator('.semiont-wizard__step-scroll')).toBeVisible();
+    await expect(modal.locator('.xynolog-wizard__step-scroll')).toBeVisible();
 
     // ── Exclude an entity type from recall (threaded as excludeEntityTypes) ──
     // Inverted UI: every type is IN recall until crossed off, so clicking
     // EXCLUDES it — data-included flips true → false.
-    const recallChips = modal.locator('.semiont-form__recall-chip');
+    const recallChips = modal.locator('.xynolog-form__recall-chip');
     await expect(recallChips.first()).toBeVisible({ timeout: 10_000 });
     const firstChip = recallChips.first();
     await expect(firstChip).toHaveAttribute('data-included', 'true');
@@ -82,7 +82,7 @@ test.describe('generate from resource', () => {
     await bus.expectRequestResponse('gather:resource-requested', 'gather:resource-complete', 60_000);
 
     // The spent controls fold into a receipt, gated on `gatherFired`.
-    const receipt = modal.locator('.semiont-gather-receipt');
+    const receipt = modal.locator('.xynolog-gather-receipt');
     await expect(receipt).toBeVisible({ timeout: 30_000 });
 
     // ConfigureGenerationStep mounts only under `gatherFired && gatherContext`,

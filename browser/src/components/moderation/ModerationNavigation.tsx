@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePathname } from '@/i18n/routing';
 import { Link } from '@/lib/routing';
-import { SimpleNavigation, useEventSubscriptions } from '@xynoplex/react-ui';
-import type { SimpleNavigationItem } from '@xynoplex/react-ui';
+import { SimpleNavigation, useEventSubscriptions } from '@xynolog/react-ui';
+import type { SimpleNavigationItem } from '@xynolog/react-ui';
 import {
   ClockIcon,
   TagIcon,

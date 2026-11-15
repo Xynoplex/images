@@ -16,8 +16,8 @@ from provider import Answer, saying
 from provider_chat_completions import ChatCompletions, alone, completed, listing, vllm_entry, vllm_error
 from spec import JsonObject
 
-from semiont_inference.interface import InferenceClient, InferenceLimits, ProviderStatusError
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.interface import InferenceClient, InferenceLimits, ProviderStatusError
+from xynolog_inference.vllm import VllmInferenceClient
 
 ELEMENT: JsonObject = {"type": "object", "properties": {"exact": {"type": "string"}}, "required": ["exact"], "additionalProperties": False}
 
@@ -206,7 +206,7 @@ ANOTHER_PROCESS = """
 import asyncio
 import sys
 
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
 asyncio.run(VllmInferenceClient(model="served", base_url=sys.argv[1], api_key=None).generate_text("p", 100, 0))
 """
@@ -272,24 +272,24 @@ LOADED = 'sorted(name for name in sys.modules if name.split(".")[0] in ("httpx2"
 
 ASKING_FOR_VLLM = f"""
 import sys
-import semiont_inference
-from semiont_inference.interface import InferenceLimits
+import xynolog_inference
+from xynolog_inference.interface import InferenceLimits
 
 before = {LOADED}
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
 client = VllmInferenceClient(model="served", base_url="http://127.0.0.1:1/v1", api_key=None)
-print(before, client.provider, "openai" in sys.modules, "httpx2" in sys.modules, "semiont_inference.vllm" in sys.modules)
+print(before, client.provider, "openai" in sys.modules, "httpx2" in sys.modules, "xynolog_inference.vllm" in sys.modules)
 """
 
 WITHOUT_OPENAIS_LIBRARY = """
 import sys
 
 sys.modules["openai"] = None  # as an interpreter has it where the library is not installed
-from semiont_inference.factory import create_inference_client
+from xynolog_inference.factory import create_inference_client
 
 try:
-    import semiont_inference.vllm
+    import xynolog_inference.vllm
 except ModuleNotFoundError as missing:
     print(type(missing).__name__, "|", missing.name, "|", type(missing.__cause__).__name__, "|", missing)
 print(create_inference_client(provider="ollama", model="llama3", base_url="http://127.0.0.1:1", api_key=None, catalogue=None).provider)
@@ -301,9 +301,9 @@ import sys
 sys.modules["httpx2"] = None  # the library is installed, and something it imports is not
 
 try:
-    import semiont_inference.vllm
+    import xynolog_inference.vllm
 except ModuleNotFoundError as missing:
-    print(type(missing).__name__, "|", missing.name, "|", "semiont-inference" in str(missing))
+    print(type(missing).__name__, "|", missing.name, "|", "xynolog-inference" in str(missing))
 """
 
 
@@ -314,7 +314,7 @@ def test_asking_for_the_vllm_driver_is_what_imports_openais_library() -> None:
 def test_without_openais_library_the_vllm_driver_fails_naming_its_extra_and_an_ollama_client_is_made() -> None:
     said = (
         "The vLLM driver needs OpenAI's `openai` library, which is not installed. "
-        "It comes with the extra: install `semiont-inference[vllm]`."
+        "It comes with the extra: install `xynolog-inference[vllm]`."
     )
     assert alone(WITHOUT_OPENAIS_LIBRARY).splitlines() == [f"ModuleNotFoundError | openai | ModuleNotFoundError | {said}", "ollama"]
 

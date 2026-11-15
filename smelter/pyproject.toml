@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-smelter"
+name = "xynolog-smelter"
 dynamic = ["version"]
-description = "Semiont's Smelter service: it derives the text of what a knowledge base holds, and keeps a vector index of it"
+description = "Xynolog's Smelter service: it derives the text of what a knowledge base holds, and keeps a vector index of it"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 classifiers = [
@@ -23,17 +23,17 @@ classifiers = [
 # against: what the reader leans on in it is listed in pdfium.py. Its wheel
 # carries PDFium itself, built for the image's Alpine. What reads a scanned
 # page, the `tesseract` program, is no Python package: the image installs it.
-# What every Python service is built on is semiont-service, which also reads
+# What every Python service is built on is xynolog-service, which also reads
 # a resource's bytes from the Archivist, and the index the Smelter writes and
-# the provider it asks for vectors are semiont-vectors. httpx is what the
+# the provider it asks for vectors are xynolog-vectors. httpx is what the
 # Smelter asks the Archivist's anchored-text store with; the SDK bounds it.
 dependencies = [
     "httpx",
     "pydantic",
     "pypdfium2>=5.14,<6",
-    "xynoplex",
-    "semiont-service",
-    "semiont-vectors",
+    "xynolog",
+    "xynolog-service",
+    "xynolog-vectors",
 ]
 
 # The SDK, what every Python service is built on and the vector stores are
@@ -41,9 +41,9 @@ dependencies = [
 # types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynoplex = { path = "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
-semiont-service = { path = "../shared/python/service", editable = true }
-semiont-vectors = { path = "../shared/python/vectors", editable = true }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog-service = { path = "../shared/python/service", editable = true }
+xynolog-vectors = { path = "../shared/python/vectors", editable = true }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -65,7 +65,7 @@ path = "../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_smelter"]
+packages = ["src/xynolog_smelter"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -75,7 +75,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this service's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_smelter"]
+source = ["xynolog_smelter"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

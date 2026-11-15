@@ -7,7 +7,7 @@
  * "absent" from a KB list. ETag + no-cache make polling a revalidation
  * round-trip. The traversal probe and the inverse guard (SPA fallback still
  * works everywhere else) pin the carve-out's edges. Fetching
- * `DISCOVERY_URL_PATH` from @xynoplex/core couples the served prefix +
+ * `DISCOVERY_URL_PATH` from @xynolog/core couples the served prefix +
  * filename to the constant every consumer will use.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -15,7 +15,7 @@ import http from 'node:http';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { DISCOVERY_URL_PATH } from '@xynoplex/core';
+import { DISCOVERY_URL_PATH } from '@xynolog/core';
 import { createHandler } from '../../server.js';
 
 interface Response {
@@ -47,7 +47,7 @@ describe('Browser static server — /discovery prefix', () => {
   }
 
   beforeAll(async () => {
-    root = mkdtempSync(path.join(tmpdir(), 'semiont-l2a-'));
+    root = mkdtempSync(path.join(tmpdir(), 'xynolog-l2a-'));
     const distDir = path.join(root, 'dist');
     const discoveryDir = path.join(root, 'discovery');
     mkdirSync(distDir);
@@ -60,7 +60,7 @@ describe('Browser static server — /discovery prefix', () => {
       path.join(discoveryDir, 'kbs.json'),
       JSON.stringify({
         version: 1,
-        kbs: [{ host: 'localhost', port: 4001, placement: 'local', repo: 'org/kb', did: 'did:web:example', siteName: 'Example KB', managedBy: 'semiont-launcher' }],
+        kbs: [{ host: 'localhost', port: 4001, placement: 'local', repo: 'org/kb', did: 'did:web:example', siteName: 'Example KB', managedBy: 'xynolog-launcher' }],
       }),
     );
 

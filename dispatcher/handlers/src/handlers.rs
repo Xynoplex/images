@@ -7,12 +7,16 @@
 
 use crate::admission::{Refusal, Vocabulary, admit};
 use crate::queue::{Checkpoint, Claim, FailOutcome, JobQueue, QueueError};
-use xynoplex::channels::{
+use serde::Serialize;
+use serde::de::DeserializeOwned;
+use serde_json::{Map, Value, json};
+use std::sync::Arc;
+use xynolog::channels::{
     Channel, JobAssign, JobCancel, JobCancelRequested, JobCheckpoint, JobClaim, JobComplete,
     JobCreate, JobFail, JobReportProgress, JobStatusRequested, Request,
 };
-use xynoplex::roles::WORKER_ROLE;
-use xynoplex::types::{
+use xynolog::roles::WORKER_ROLE;
+use xynolog::types::{
     BusFrame, CommandError, CommandErrorCode, Job, JobAssignCommand, JobCancelCommand,
     JobCancelRequest, JobCheckpointCommand, JobClaimCommand, JobClaimedResult, JobCompleteCommand,
     JobCreatedResult, JobCreatedResultResponse, JobFailCommand, JobId, JobProgress,
@@ -20,11 +24,7 @@ use xynoplex::types::{
     JobStatusResponseStatus, JobStatusResult, JobStoredProgress, JobStoredResult, MarkJobResult,
     YieldJobResult,
 };
-use semiont_observability::logging;
-use serde::Serialize;
-use serde::de::DeserializeOwned;
-use serde_json::{Map, Value, json};
-use std::sync::Arc;
+use xynolog_observability::logging;
 
 /// The channels the dispatcher subscribes to and answers. Each is named, here
 /// and in `handle`, by its type, which exists only for a channel the bus

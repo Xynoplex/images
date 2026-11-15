@@ -25,22 +25,22 @@ import pytest
 from aio import hurried, run
 from pydantic import JsonValue
 from rig import DIMENSIONS, AnnotationPoint, Held, Rig, checksum_of, drawn, scanned
-from xynoplex.errors import BusRequestError, TransportError
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.transport import ConnectionState, Frame
-from xynoplex.types import ExtractedText, ExtractionDeclined, SmeltSettledReason
-from semiont_service.content import Content
-from semiont_vectors.mock import deterministic_vector
-from semiont_vectors.store import AnnotationPayload, AnnotationStamp, Declined, EmbeddingChunk, ResourceStamp, SearchFilter, SearchOptions
 from spec import JsonObject
+from xynolog.errors import BusRequestError, TransportError
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.transport import ConnectionState, Frame
+from xynolog.types import ExtractedText, ExtractionDeclined, SmeltSettledReason
+from xynolog_service.content import Content
+from xynolog_vectors.mock import deterministic_vector
+from xynolog_vectors.store import AnnotationPayload, AnnotationStamp, Declined, EmbeddingChunk, ResourceStamp, SearchFilter, SearchOptions
 
-from semiont_smelter.chunking import Chunking, chunk_text
-from semiont_smelter.extraction import LARGEST_PDF_BYTES
-from semiont_smelter.ocr_engine import OcrRead
-from semiont_smelter.pdf_reader import PdfEncrypted, PdfUnreadable
-from semiont_smelter.reconcile import ReconcileSummary
-from semiont_smelter.scripted import ScriptedDocument
-from semiont_smelter.smelter import ReconcileState
+from xynolog_smelter.chunking import Chunking, chunk_text
+from xynolog_smelter.extraction import LARGEST_PDF_BYTES
+from xynolog_smelter.ocr_engine import OcrRead
+from xynolog_smelter.pdf_reader import PdfEncrypted, PdfUnreadable
+from xynolog_smelter.reconcile import ReconcileSummary
+from xynolog_smelter.scripted import ScriptedDocument
+from xynolog_smelter.smelter import ReconcileState
 
 TEXT = b"Ada Lovelace wrote the first program."
 LATER = b"Charles Babbage designed the engine it was for."
@@ -104,7 +104,7 @@ def applied(rig: Rig) -> int:
 
 def lines(caplog: pytest.LogCaptureFixture, level: int) -> list[dict[str, object]]:
     """The facts of each line the Smelter logged at `level`, in order: what was said beside the message, by name."""
-    return [dict(vars(record)) for record in caplog.records if record.name == "semiont_smelter" and record.levelno == level]
+    return [dict(vars(record)) for record in caplog.records if record.name == "xynolog_smelter" and record.levelno == level]
 
 
 def came_to(
@@ -995,7 +995,7 @@ def test_a_turn_of_several_mark_added_events_that_fails_logs_each_event_and_coun
             assert (await rig.held()).annotations == {}
             assert applied(rig) == 1
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     assert [(said["type"], said["resourceId"]) for said in lines(caplog, logging.ERROR)] == [("mark:added", "res-1")] * 2
 
@@ -1100,7 +1100,7 @@ def test_an_event_that_fails_stops_its_resources_record_until_the_next_sweep_and
             assert applied(rig) == 4
             assert rig.smelter.following["stopped"] == 0
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     (failed,) = lines(caplog, logging.ERROR)
     assert failed["type"] == "yield:created"
@@ -1191,7 +1191,7 @@ def test_a_skipped_resource_has_no_points_and_its_reason_is_said(reason: str, tm
             assert signals(rig) == [indexed("res-1", TEXT), ("res-1", checksum, "skipped", reason)]
             assert rig.provider.asked == []
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         run(scenario())
     (said,) = lines(caplog, logging.WARNING)
     assert said["resourceId"] == "res-1"
@@ -1250,7 +1250,7 @@ def test_bytes_that_could_not_be_read_are_no_decision(tmp_path: Path, caplog: py
             assert held.chunks == {"res-1": (TEXT.decode(),), "res-2": (LATER.decode(),)}
             assert signals(rig) == [indexed("res-1", TEXT), indexed("res-2", LATER)]
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         run(scenario())
     (said,) = lines(caplog, logging.WARNING)
     assert said["resourceId"] == "res-1"
@@ -1371,7 +1371,7 @@ def test_an_entry_that_cannot_be_written_does_not_stop_the_indexing(tmp_path: Pa
             assert signals(rig) == [indexed("pdf-1", PDF)]
             assert rig.store.kept(checksum_of(PDF)) is None
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         run(scenario())
     (said,) = lines(caplog, logging.WARNING)
     assert said["contentChecksum"] == checksum_of(PDF)
@@ -1625,7 +1625,7 @@ def test_an_annotation_removed_after_a_reconcile_read_is_not_put_back_by_it(
             # Two were planned, and that is what is counted: the one left undone is counted nowhere.
             assert summary.annotations_embedded == 2
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
     assert left_undone(caplog) == [("embed-annotation", "ann-1")]
 
@@ -1658,7 +1658,7 @@ def test_a_resource_archived_after_a_reconcile_read_is_not_indexed_by_it_and_nei
             assert (summary.resources_embedded, summary.resources_unavailable, summary.resources_failed) == (1, 0, 0)
             assert summary.resources_skipped == {}
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
     assert left_undone(caplog) == [("embed", "res-1"), ("embed-annotation", "res-1")]
 
@@ -1686,7 +1686,7 @@ def test_points_a_reconcile_planned_to_take_out_are_kept_where_the_catalog_has_t
             # What was planned is what is counted.
             assert (summary.resource_vectors_deleted, summary.annotation_vectors_deleted) == (1, 1)
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
     assert sorted(left_undone(caplog)) == [("purge", "res-1"), ("purge-annotation", "ann-1")]
 
@@ -1870,7 +1870,7 @@ def test_a_reconcile_works_on_one_pdf_at_a_time_and_indexes_a_text_beside_it(tmp
             assert sorted(rig.reader.opened) == sorted([PDF, OTHER_PDF])
             assert sorted(rig.world.read_of) == ["pdf-1", "pdf-2", "res-1"]
 
-    with caplog.at_level(logging.INFO, logger="semiont_smelter"):
+    with caplog.at_level(logging.INFO, logger="xynolog_smelter"):
         run(scenario())
     indexed = [said for said in lines(caplog, logging.INFO) if said["msg"] == "Indexed resource"]
     assert len(indexed) == 3
@@ -2045,7 +2045,7 @@ def test_a_reconcile_that_fails_says_so_and_the_smelter_goes_on_following(tmp_pa
             assert (await rig.held()).stamps == {"res-2": stamp(LATER)}
             assert applied(rig) == 1
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     (said,) = lines(caplog, logging.ERROR)
     assert "could not answer browse:resources-requested" in str(said["error"])
@@ -2326,7 +2326,7 @@ def test_a_rebuild_command_that_is_no_command_is_passed_by(tmp_path: Path, caplo
             assert [answer.correlation_id for answer in rig.answered("smelt:rebuild-anchors-ok")] == ["c-1"]
             assert rig.answered("smelt:rebuild-anchors-failed") == []
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     assert len(lines(caplog, logging.ERROR)) == 1
 
@@ -2376,7 +2376,7 @@ def test_an_event_whose_payload_is_not_its_events_is_refused_taken_as_nothing_an
             assert rig.smelter.following["stopped"] == 0
             assert applied(rig) == 2
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     (refused,) = lines(caplog, logging.ERROR)
     assert (refused["type"], refused["resourceId"], refused["sequenceNumber"]) == ("mark:added", "res-1", 2)
@@ -2393,7 +2393,7 @@ def test_a_frame_on_a_channel_of_the_record_that_carries_no_recorded_event_is_sa
             assert (await rig.held()).stamps == {"res-1": stamp(TEXT)}
             assert applied(rig) == 1
 
-    with caplog.at_level(logging.ERROR, logger="semiont_smelter"):
+    with caplog.at_level(logging.ERROR, logger="xynolog_smelter"):
         run(scenario())
     (unread,) = lines(caplog, logging.ERROR)
     assert unread["channel"] == "yield:created"
@@ -2493,7 +2493,7 @@ def test_a_smelter_started_again_with_its_cursors_takes_what_was_recorded_since_
 
 def follower_lines(caplog: pytest.LogCaptureFixture, level: int) -> list[dict[str, object]]:
     """The facts of each line the follower the Smelter is built on logged at `level`, in order."""
-    return [dict(vars(record)) for record in caplog.records if record.name == "semiont_service.follower" and record.levelno == level]
+    return [dict(vars(record)) for record in caplog.records if record.name == "xynolog_service.follower" and record.levelno == level]
 
 
 def test_each_drop_of_its_stream_is_counted_and_said(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
@@ -2525,7 +2525,7 @@ def test_each_drop_of_its_stream_is_counted_and_said(tmp_path: Path, caplog: pyt
             assert rig.smelter.following["streamDrops"] == 3
             await rig.settled()
 
-    with caplog.at_level(logging.WARNING, logger="semiont_service.follower"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_service.follower"):
         run(scenario())
     assert [said["streamDrops"] for said in follower_lines(caplog, logging.WARNING)] == [1, 2, 3]
 
@@ -2539,7 +2539,7 @@ def test_a_stream_that_is_closed_has_not_dropped(tmp_path: Path, caplog: pytest.
 
             assert rig.smelter.following["streamDrops"] == 0
 
-    with caplog.at_level(logging.WARNING, logger="semiont_service.follower"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_service.follower"):
         run(scenario())
     assert follower_lines(caplog, logging.WARNING) == []
 

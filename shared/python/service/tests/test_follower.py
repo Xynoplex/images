@@ -17,11 +17,11 @@ from typing import Final, final, override
 
 from aio import pass_time, run, turns
 from pydantic import JsonValue
-from xynoplex.transport import ConnectionState
-from xynoplex.types import StoredEventResponse
-from xynoplex.watched import Variable
+from xynolog.transport import ConnectionState
+from xynolog.types import StoredEventResponse
+from xynolog.watched import Variable
 
-from semiont_service.follower import SYSTEM, Cursors, Follower, FromTheFirst, OwnStart, Record, RecordUnread, Unfinished, log_of
+from xynolog_service.follower import SYSTEM, Cursors, Follower, FromTheFirst, OwnStart, Record, RecordUnread, Unfinished, log_of
 
 
 def stored(log: str, sequence: int) -> StoredEventResponse:

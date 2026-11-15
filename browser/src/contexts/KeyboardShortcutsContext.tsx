@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { useRouter } from '@/i18n/routing';
-import { useKeyboardShortcuts, useDoubleKeyPress, KeyboardShortcutsHelpModal } from '@xynoplex/react-ui';
+import { useKeyboardShortcuts, useDoubleKeyPress, KeyboardShortcutsHelpModal } from '@xynolog/react-ui';
 import { GlobalSearchModal } from '../components/modals/GlobalSearchModal';
 
 interface KeyboardShortcutsContextType {

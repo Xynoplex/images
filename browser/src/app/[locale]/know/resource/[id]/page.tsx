@@ -10,16 +10,16 @@
 import { useEffect, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { useLocale } from '@/i18n/routing';
-import { useXynoplex, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@xynoplex/react-ui';
-import { isResourceId, type ResourceId } from '@xynoplex/core';
-import type { XynoplexSession } from '@xynoplex/sdk';
+import { useXynolog, useObservable, useSessionStateUnit, createResourceLoaderStateUnit } from '@xynolog/react-ui';
+import { isResourceId, type ResourceId } from '@xynolog/core';
+import type { XynologSession } from '@xynolog/sdk';
 import { Link, routes } from '@/lib/routing';
 
 // Feature components
-import { ResourceLoadingState, ResourceErrorState, ResourceViewerPage } from '@xynoplex/react-ui';
+import { ResourceLoadingState, ResourceErrorState, ResourceViewerPage } from '@xynolog/react-ui';
 import { ToolbarPanels } from '@/components/toolbar/ToolbarPanels';
 import NotFound from '../../../not-found';
-import type { XynoplexResource } from '@xynoplex/react-ui';
+import type { XynologResource } from '@xynolog/react-ui';
 
 /**
  * Main page component — routing, session gating, and initial resource load.
@@ -42,7 +42,7 @@ import type { XynoplexResource } from '@xynoplex/react-ui';
  */
 export default function KnowledgeResourcePage() {
   const params = useParams<{ id: string }>();
-  const session = useObservable(useXynoplex().activeSession$) ?? null;
+  const session = useObservable(useXynolog().activeSession$) ?? null;
 
   // A URL carries any text: an old bookmark, a mistyped address, or nothing
   // at all if the route pattern is ever renamed. Text that is not a resource's
@@ -69,7 +69,7 @@ function KnowledgeResourcePageInner({
   session,
   rId,
 }: {
-  session: XynoplexSession;
+  session: XynologSession;
   rId: ResourceId;
 }) {
   const locale = useLocale();
@@ -108,7 +108,7 @@ function KnowledgeResourcePageInner({
     return <ResourceErrorState error={new Error(`Resource ${rId} not found`)} onRetry={refetchDocument} />;
   }
 
-  const resource = resourceData as XynoplexResource;
+  const resource = resourceData as XynologResource;
 
   // Render with minimal props - all data loading/events handled inside ResourceViewerPage
   return (

@@ -7,12 +7,12 @@ from typing import Final, final
 import pytest
 from aio import pass_time, run, under_way
 from pydantic import JsonValue
-from xynoplex.bus import Bus, reply_channels_for
-from xynoplex.errors import BusRequestError
-from xynoplex.operations import BROWSE_RESOURCES_REQUESTED
-from xynoplex.testing import FaultyTransport
+from xynolog.bus import Bus, reply_channels_for
+from xynolog.errors import BusRequestError
+from xynolog.operations import BROWSE_RESOURCES_REQUESTED
+from xynolog.testing import FaultyTransport
 
-from semiont_service import catalog
+from xynolog_service import catalog
 
 _OPERATION: Final = "browse:resources-requested"
 

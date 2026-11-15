@@ -15,7 +15,7 @@
  *   - `JAEGER_QUERY_URL`  — Jaeger UI/Query base URL.
  *                           Default: `http://192.168.64.1:16686`
  *   - `JAEGER_SERVICES`   — Comma-separated services to query.
- *                           Default: `semiont-gateway,semiont-worker,semiont-smelter,semiont-browser`
+ *                           Default: `xynolog-gateway,xynolog-worker,xynolog-smelter,xynolog-browser`
  *   - `JAEGER_ATTACH`     — `failure` (default), `always`, or `off`.
  *                           Controls when the fixture attaches spans
  *                           to the Playwright report.
@@ -39,7 +39,7 @@ const JAEGER_QUERY_URL = process.env.JAEGER_QUERY_URL ?? 'http://192.168.64.1:16
 
 const JAEGER_SERVICES = (
   process.env.JAEGER_SERVICES ??
-  'semiont-gateway,semiont-worker,semiont-smelter,semiont-browser'
+  'xynolog-gateway,xynolog-worker,xynolog-smelter,xynolog-browser'
 ).split(',').map((s) => s.trim()).filter(Boolean);
 
 type AttachMode = 'failure' | 'always' | 'off';

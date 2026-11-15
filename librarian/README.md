@@ -1,21 +1,21 @@
-# semiont-librarian
+# xynolog-librarian
 
-[![codecov](https://codecov.io/gh/Xynoplex/images/graph/badge.svg?component=image-librarian)](https://app.codecov.io/gh/Xynoplex/images/components)
+[![codecov](https://codecov.io/gh/xynolog/images/graph/badge.svg?component=image-librarian)](https://app.codecov.io/gh/xynolog/images/components)
 
-**The Librarian is a Semiont knowledge base's reference desk**: a Python service that answers the
+**The Librarian is a Xynolog knowledge base's reference desk**: a Python service that answers the
 questions that need the graph the Weaver writes, the vector index the Smelter writes, or a
 model — what a reference could refer to, which resources a text finds, what surrounds an
 annotation or a resource, and what refers to a resource. It records nothing. Every question
 reaches it, and every answer leaves it, on the gateway's event
 [bus](../../protocol/contract/EVENT-BUS.md); its one HTTP route is `/health`, on port 24104. The
-launcher starts it with `semiont start`.
+launcher starts it with `xynolog start`.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-librarian` |
+| Image | `ghcr.io/xynolog/xynolog-librarian` |
 | Port | 24104 (`/health`, and nothing else: everything it answers is on the bus) |
-| Command | `python -P -m semiont_librarian --config /etc/semiont/librarian.json` |
-| Code | Python, in this directory: [`src/semiont_librarian`](src/semiont_librarian) |
+| Command | `python -P -m xynolog_librarian --config /etc/xynolog/librarian.json` |
+| Code | Python, in this directory: [`src/xynolog_librarian`](src/xynolog_librarian) |
 | Specification | [protocol/contract/LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) |
 | Judged by | [protocol/conformance/librarian](../../protocol/conformance/librarian/README.md) |
 | Published | to no package index: the image only |
@@ -93,7 +93,7 @@ a status other than 0.
 It reads one document, the protocol's
 [`LibrarianConfig`](../protocol/specs/src/components/schemas/LibrarianConfig.json), at the path
 `--config` names. Whoever starts a Librarian writes it, resolved, and mounts it where the
-image's command looks: `/etc/semiont/librarian.json`. The Librarian defaults nothing in it.
+image's command looks: `/etc/xynolog/librarian.json`. The Librarian defaults nothing in it.
 
 | Member | |
 | --- | --- |
@@ -111,8 +111,8 @@ image's command looks: `/etc/semiont/librarian.json`. The Librarian defaults not
 | `port` | the port `/health` answers on |
 | `logLevel`, `logFormat` | how it logs |
 
-Its environment is its service account, **`SEMIONT_OIDC_CLIENT_ID`** and
-**`SEMIONT_OIDC_CLIENT_SECRET`**, and each variable its document names: for the graph
+Its environment is its service account, **`XYNOLOG_OIDC_CLIENT_ID`** and
+**`XYNOLOG_OIDC_CLIENT_SECRET`**, and each variable its document names: for the graph
 database's password, for the embedding provider's key, for the vector index's token, and for
 the key of each actor's model. It signs in as itself, and the gateway names it by its account:
 `did:web:<the knowledge base's domain>:agents:<its subject at the issuer>`.
@@ -125,11 +125,11 @@ launcher mints it from the key it keeps for a Qdrant it runs, and for one somebo
 is handed it in the variable the stack's `KnowledgeIndex` names
 (`spec.vectors.external.librarianToken`).
 
-**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `semiont-librarian`, naming
-the knowledge base it serves by its DID (`semiont.kb`): what every Python service says of its
+**Its telemetry goes where `OTEL_EXPORTER_OTLP_ENDPOINT` says**, as `xynolog-librarian`, naming
+the knowledge base it serves by its DID (`xynolog.kb`): what every Python service says of its
 own process, a span for each frame it sends and receives on the bus, what a driver records of
 each request of a model, and the count of gathers that went without something
-(`semiont.gather.degraded`). Without the endpoint the Librarian
+(`xynolog.gather.degraded`). Without the endpoint the Librarian
 exports nothing, unless `OTEL_CONSOLE_EXPORTER=true` asks for its spans and metrics on stdout. Its log lines carry the trace and the span they were written in.
 
 **It refuses to start** without its document, without its account or without a variable its
@@ -144,7 +144,7 @@ that does not serve an actor's model, and a port it cannot listen on.
 
 The service, and the five Python packages of this repository it runs on:
 
-- the SDK ([the Xynoplex SDK](https://github.com/Xynoplex/sdk)), its client of the gateway;
+- the SDK ([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway;
 - the graph stores ([`shared/python/graph`](../../shared/python/graph/)), which ask a
   graph database;
 - the vector stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
@@ -158,7 +158,7 @@ The service, and the five Python packages of this repository it runs on:
 All six are built into the image from the commit it is published from, and carry
 [`version.json`](../version.json)'s version. Everything else in its environment is what
 [`uv.lock`](uv.lock) pins. Nothing is built, installed or fetched when the container starts.
-The image also carries the model catalogue, at `/usr/share/semiont/model-catalogue.json`, the
+The image also carries the model catalogue, at `/usr/share/xynolog/model-catalogue.json`, the
 path the launcher writes into `modelCatalogue`.
 
 **Every graph database's client and every provider's library is in it.** The stores ask each
@@ -171,13 +171,13 @@ provider. The vector stores and the embedding providers have no extra: each is a
 what every install has.
 
 It runs on the oldest Python the repository's Python packages support, on Alpine, as the
-user `semiont`. It carries no installer (`pip`, `uv`) and no Node.
+user `xynolog`. It carries no installer (`pip`, `uv`) and no Node.
 
 ### A slimmer image
 
 The one line that decides which clients and which libraries an image has is the builder
 stage's `uv sync` in the [Dockerfile](Dockerfile). `--all-extras` asks for every extra of
-`semiont-librarian`, each of which brings the stores' or the drivers' extra of the same name.
+`xynolog-librarian`, each of which brings the stores' or the drivers' extra of the same name.
 An image for one database and one provider names those two in its place:
 
 ```dockerfile
@@ -208,7 +208,7 @@ After staging the pinned SDK artifacts, run the Python floor helper:
 
 ```bash
 docker build --build-arg PYTHON_FLOOR=$(shared/python/python-floor.sh .local/sdk-artifacts/current) \
-  --file librarian/Dockerfile --tag ghcr.io/xynoplex/xynoplex-librarian:local .
+  --file librarian/Dockerfile --tag ghcr.io/xynolog/xynolog-librarian:local .
 ```
 
 [`make build`](../Makefile) builds it so with the other
@@ -219,8 +219,8 @@ checks what a built one promises.
 
 - [LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) — what a Librarian does, rule by rule
 - [Gather flow](../../protocol/contract/flows/GATHER.md) · [Match flow](../../protocol/contract/flows/MATCH.md) — the client's side of what it answers
-- [`semiont-graph`](../../shared/python/graph/), [`semiont-vectors`](../../shared/python/vectors/)
-  and [`semiont-inference`](../../shared/python/inference/) — the stores, the embedding
+- [`xynolog-graph`](../../shared/python/graph/), [`xynolog-vectors`](../../shared/python/vectors/)
+  and [`xynolog-inference`](../../shared/python/inference/) — the stores, the embedding
   providers and the drivers it reads and asks through
 - [Gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — the other half of the pair: it holds the record and answers

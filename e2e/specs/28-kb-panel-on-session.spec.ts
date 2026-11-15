@@ -27,7 +27,7 @@ const control = (page: Page, panel: string) => page.locator(`[data-panel="${pane
 
 /** The Knowledge Base panel proper — its header names it. */
 const kbPanel = (page: Page) =>
-  page.locator('.semiont-panel').filter({ hasText: 'Knowledge Bases' });
+  page.locator('.xynolog-panel').filter({ hasText: 'Knowledge Bases' });
 
 test.describe('knowledge base panel on a live session', () => {
   test('a session restored at launch opens the KB panel, over the panel the app closed with', async ({
@@ -36,7 +36,7 @@ test.describe('knowledge base panel on a live session', () => {
     // Land somewhere else, deliberately. Settings survives the layout's
     // corrector, so if it is still active after the reload the hook did nothing.
     await control(page, 'settings').click();
-    await expect(page.locator('.semiont-settings-panel')).toBeVisible();
+    await expect(page.locator('.xynolog-settings-panel')).toBeVisible();
     await expect(control(page, 'settings')).toHaveAttribute('aria-pressed', 'true');
 
     // Restore the session at launch — the render the hook exists for.

@@ -23,12 +23,12 @@ from collections.abc import Iterable
 import pytest
 from aio import run, soon
 from pydantic import JsonValue
-from xynoplex.types import ExtractedText, ExtractionDeclined, ExtractionOutcome
 from spec import ROOT, JsonObject, objects, read, strings, text, thing
+from xynolog.types import ExtractedText, ExtractionDeclined, ExtractionOutcome
 
-from semiont_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor
-from semiont_smelter.pdfium import PdfiumReader
-from semiont_smelter.tesseract import TesseractEngine
+from xynolog_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor
+from xynolog_smelter.pdfium import PdfiumReader
+from xynolog_smelter.tesseract import TesseractEngine
 
 TABLE = read(ROOT / "protocol/specs/src/smelter/extraction-cases.json")
 CASES = objects(TABLE["cases"], "cases")

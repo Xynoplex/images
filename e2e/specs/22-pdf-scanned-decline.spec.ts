@@ -48,8 +48,8 @@ import { openResourceByName } from '../fixtures/discover';
  * deterministically with the engine played (`test_extraction.py`).
  */
 
-const IMG = '.semiont-pdf-annotation-canvas__image';
-const SVG = '.semiont-pdf-annotation-canvas__svg';
+const IMG = '.xynolog-pdf-annotation-canvas__image';
+const SVG = '.xynolog-pdf-annotation-canvas__svg';
 
 async function openScannedPdfInAnnotateMode(page: Page) {
   await openResourceByName(page, 'Scanned Smoke PDF');
@@ -64,7 +64,7 @@ async function openScannedPdfInAnnotateMode(page: Page) {
 }
 
 async function selectSubTab(page: Page, emoji: string) {
-  const tab = page.locator('.semiont-unified-panel__tabs').getByRole('button', { name: emoji, exact: true });
+  const tab = page.locator('.xynolog-unified-panel__tabs').getByRole('button', { name: emoji, exact: true });
   await expect(tab).toBeVisible({ timeout: 10_000 });
   if ((await tab.getAttribute('aria-pressed')) !== 'true') await tab.click();
   await expect(tab).toHaveAttribute('aria-pressed', 'true');

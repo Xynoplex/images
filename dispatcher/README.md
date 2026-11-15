@@ -1,15 +1,15 @@
-# semiont-dispatcher
+# xynolog-dispatcher
 
 **Where a worker asks what to do and reports back.** The dispatcher owns a knowledge base's job
 queue: a [worker](../worker) claims each job here and reports its progress and outcome here. It
 is a Rust service. It serves `/health` on port 24105 and nothing else; all its real traffic is
-the gateway's [bus](../protocol/contract/EVENT-BUS.md). The launcher (`semiont start`) starts it.
+the gateway's [bus](../protocol/contract/EVENT-BUS.md). The launcher (`xynolog start`) starts it.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-dispatcher` |
+| Image | `ghcr.io/xynolog/xynolog-dispatcher` |
 | Port | 24105 (`/health`, and nothing else: everything it answers is on the bus) |
-| Command | `/usr/local/bin/semiont-dispatcher --config /etc/semiont/dispatcher.json` |
+| Command | `/usr/local/bin/xynolog-dispatcher --config /etc/xynolog/dispatcher.json` |
 | Code | Rust, in this directory: [src](src), and its crates [handlers](handlers) and [jetstream](jetstream) |
 | Specification | [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) |
 | Judged by | [protocol/conformance/dispatcher](../protocol/conformance/dispatcher/README.md) |
@@ -37,9 +37,9 @@ Three crates of the repository's Rust workspace, split so the broker stays behin
 
 | Crate | Path | What |
 | --- | --- | --- |
-| `semiont-dispatcher-handlers` | [`handlers/`](handlers) | The `JobQueue` trait and the nine handlers, generic over the queue. No NATS in its dependencies: `scripts/check-broker-boundary.mjs` checks it. |
-| `semiont-dispatcher-jetstream` | [`jetstream/`](jetstream) | The queue on JetStream: the one implementation of the trait, and the only code here that names the broker (`lint:broker-boundary`). |
-| `semiont-dispatcher` | [`src/`](src) | The binary: reads its document, signs in, opens the queue, and answers the bus through the SDK's bus client (`semiont`) over its HTTP transport (`semiont-http-transport`), with `semiont-observability`'s telemetry and logs. |
+| `xynolog-dispatcher-handlers` | [`handlers/`](handlers) | The `JobQueue` trait and the nine handlers, generic over the queue. No NATS in its dependencies: `scripts/check-broker-boundary.mjs` checks it. |
+| `xynolog-dispatcher-jetstream` | [`jetstream/`](jetstream) | The queue on JetStream: the one implementation of the trait, and the only code here that names the broker (`lint:broker-boundary`). |
+| `xynolog-dispatcher` | [`src/`](src) | The binary: reads its document, signs in, opens the queue, and answers the bus through the SDK's bus client (`xynolog`) over its HTTP transport (`xynolog-http-transport`), with `xynolog-observability`'s telemetry and logs. |
 
 ## What it talks to
 
@@ -62,10 +62,10 @@ Three things, and nothing else:
 
 ## A claim is authorized, not just authenticated
 
-`job:claim` is admitted only when the caller's token carries the `semiont-worker` role. The
+`job:claim` is admitted only when the caller's token carries the `xynolog-worker` role. The
 issuer's realm grants that role to worker clients; the gateway forwards the roles the caller's
 token carries on the frame as `_roles` — set or cleared on every emit, so a caller cannot supply
-it. Every sidecar (a service with its own service account) carries `semiont-service`; that is the
+it. Every sidecar (a service with its own service account) carries `xynolog-service`; that is the
 floor, not the discriminator, so the Archivist's or the Smelter's token is refused here exactly as
 a person's is.
 
@@ -81,9 +81,9 @@ two verdicts a worker's claim loop must tell apart travel as `CommandError.code`
 A refusal carrying neither is unclassified — a malformed record or a missing injection — and
 the consumer logs it.
 
-A realm whose worker client lacks the role stamps only `semiont-service` on it; such a worker
-authenticates but can never claim. `semiont start` refuses that realm by name, and
-`semiont identity sync` reconciles the client's roles mapper.
+A realm whose worker client lacks the role stamps only `xynolog-service` on it; such a worker
+authenticates but can never claim. `xynolog start` refuses that realm by name, and
+`xynolog identity sync` reconciles the client's roles mapper.
 
 ## Exactly one per knowledge base
 
@@ -97,7 +97,7 @@ concurrent workers never share a job.
 
 One document, `DispatcherConfig` in [protocol/specs/](../protocol/specs/src/components/schemas/DispatcherConfig.json),
 at the path `--config` names. The launcher writes it, resolved, and mounts it where the image's
-`CMD` passes it: `/etc/semiont/dispatcher.json`. Started without `--config`, or with a path that
+`CMD` passes it: `/etc/xynolog/dispatcher.json`. Started without `--config`, or with a path that
 names no file, the dispatcher refuses to start and says which; a document that does not validate
 is refused naming each failing field. **Secrets are never values in it:** a field that needs one
 names the environment variable holding it.
@@ -106,16 +106,16 @@ Every other variable it reads, what sets it and what it changes, is in
 [`protocol/specs/src/service-environment/variables.json`](../protocol/specs/src/service-environment/variables.json).
 Among them:
 
-- **`SEMIONT_OIDC_CLIENT_ID`** / **`SEMIONT_OIDC_CLIENT_SECRET`** — this process's own service
+- **`XYNOLOG_OIDC_CLIENT_ID`** / **`XYNOLOG_OIDC_CLIENT_SECRET`** — this process's own service
   account at the knowledge base's issuer. It exchanges them for an issuer token, which is its
   bearer at the gateway.
-- `SEMIONT_BUS_LOG`.
+- `XYNOLOG_BUS_LOG`.
 - The telemetry variables.
 
 ## What the image carries
 
-The binary, at `/usr/local/bin/semiont-dispatcher`, on Alpine, with `tini` and the shared
-`boot.sh` and supervisor. It runs as the user `semiont`, carries no source, and builds,
+The binary, at `/usr/local/bin/xynolog-dispatcher`, on Alpine, with `tini` and the shared
+`boot.sh` and supervisor. It runs as the user `xynolog`, carries no source, and builds,
 installs or fetches nothing at start.
 
 ## Working on it
@@ -137,7 +137,7 @@ From the repository root, with the toolchain
 
 ```bash
 docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.sh) \
-  --file dispatcher/Dockerfile --tag ghcr.io/xynoplex/xynoplex-dispatcher:local .
+  --file dispatcher/Dockerfile --tag ghcr.io/xynolog/xynolog-dispatcher:local .
 ```
 
 [`make build`](../Makefile) and the publish workflow pass
@@ -152,8 +152,8 @@ that names the document it cannot read.
 
 - [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) — what it does, channel by channel
 - [protocol/contract/WORKER-CONTRACT.md](../protocol/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
-- [semiont-worker](../worker) — the executor, and a client of this service
-- [semiont-archivist](../archivist) — keeps the record: the bytes a worker reads through the gateway, and the annotations it commits
+- [xynolog-worker](../worker) — the executor, and a client of this service
+- [xynolog-archivist](../archivist) — keeps the record: the bytes a worker reads through the gateway, and the annotations it commits
 - [Container Topology](../../docs/operator/CONTAINER-TOPOLOGY.md) — where it sits in the fleet
 - [Authentication](../../docs/operator/administration/AUTHENTICATION.md) — the service-account
   and worker-role requirements an issuer must meet

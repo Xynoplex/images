@@ -4,11 +4,11 @@ import logging
 
 import pytest
 from aio import run
-from xynoplex.identifiers import AnnotationId, ResourceId
-from semiont_vectors.memory import MemoryVectorStore
-from semiont_vectors.store import AnnotationPayload, EmbeddingChunk
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog_vectors.memory import MemoryVectorStore
+from xynolog_vectors.store import AnnotationPayload, EmbeddingChunk
 
-from semiont_smelter.telemetry import points_held
+from xynolog_smelter.telemetry import points_held
 
 
 def test_the_points_its_index_holds_are_read_as_the_index_counts_them_of_resources_and_of_annotations_together() -> None:
@@ -39,8 +39,8 @@ def test_a_count_the_index_fails_to_give_is_no_number_and_is_logged_once_as_a_wa
 
     monkeypatch.setattr(index, "count", refusing)
 
-    with caplog.at_level(logging.WARNING, logger="semiont_smelter"):
+    with caplog.at_level(logging.WARNING, logger="xynolog_smelter"):
         assert run(points_held(index)) is None
-    (said,) = [record for record in caplog.records if record.name == "semiont_smelter"]
+    (said,) = [record for record in caplog.records if record.name == "xynolog_smelter"]
     assert said.levelno == logging.WARNING
     assert dict(vars(said))["error"] == "ConnectionError: the database did not answer"

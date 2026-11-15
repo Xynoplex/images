@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { LeftSidebar, useXynoplex, useObservable } from '@xynoplex/react-ui';
+import { LeftSidebar, useXynolog, useObservable } from '@xynolog/react-ui';
 import { KnowledgeNavigation } from './KnowledgeNavigation';
 import { Link, routes } from '@/lib/routing';
 
 export function KnowledgeSidebarWrapper() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Navigation' });
   const { t: tHome } = useTranslation(undefined, { keyPrefix: 'Home' });
-  const session = useObservable(useXynoplex().activeSession$);
+  const session = useObservable(useXynolog().activeSession$);
   const user = useObservable(session?.user$);
   const isAuthenticated = !!user;
 

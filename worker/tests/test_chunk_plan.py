@@ -3,7 +3,7 @@
 The check that a reply was not cut off; the cursor a piece leaves; and what a
 descent tells as it goes: its caller of each count and each piece kept though
 under-reported, whoever reads the service's log, and OpenTelemetry of every
-call it makes (the `semiont.detection.call*` rows of
+call it makes (the `xynolog.detection.call*` rows of
 `protocol/specs/src/service-telemetry/telemetry.json`).
 """
 
@@ -19,12 +19,12 @@ import pytest
 from aio import run, turns
 from opentelemetry.sdk.metrics.export import Histogram, HistogramDataPoint, InMemoryMetricReader, Metric, NumberDataPoint, Sum
 from pydantic import JsonValue
-from xynoplex.types import UnitCursor
-from semiont_inference.interface import StructuredReadError, TokenUsage
 from telemetry_rows import as_the_table_writes, worker_metrics
+from xynolog.types import UnitCursor
+from xynolog_inference.interface import StructuredReadError, TokenUsage
 
-from semiont_worker.chunking import estimate_tokens
-from semiont_worker.detection.chunk_plan import (
+from xynolog_worker.chunking import estimate_tokens
+from xynolog_worker.detection.chunk_plan import (
     ChunkCallResult,
     ChunkCursor,
     UnderReportedPiece,
@@ -32,9 +32,9 @@ from semiont_worker.detection.chunk_plan import (
     assert_not_truncated,
     call_chunk_subdividing,
 )
-from semiont_worker.failure_class import DeterministicJobError, classify_failure
-from semiont_worker.inference_call import InferenceTimeoutError
-from semiont_worker.telemetry import DetectionLabel, DetectionOutcome
+from xynolog_worker.failure_class import DeterministicJobError, classify_failure
+from xynolog_worker.inference_call import InferenceTimeoutError
+from xynolog_worker.telemetry import DetectionLabel, DetectionOutcome
 
 # A piece whose own half is over the size floor, and cuts it in two or more: one that can descend.
 CHUNK: Final = "".join(f"passage {number} lorem ipsum dolor sit amet " for number in range(200))
@@ -180,13 +180,13 @@ def test_a_descent_nobody_listens_to_tells_nobody() -> None:
 
 
 def warnings_of(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.levelno == logging.WARNING]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.levelno == logging.WARNING]
 
 
 def test_a_piece_that_descends_is_warned_of_with_its_length_the_level_and_the_size_it_is_cut_at_next(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     assert raised_by(call_chunk_subdividing("highlight", CHUNK, OVERLAP, failing_whole(CUT_OFF, CHUNK, NOTHING), None, None)) is None
     (warned,) = warnings_of(caplog)
     assert warned.getMessage() == "Chunk call failed at a size-shaped bound — subdividing and retrying smaller"
@@ -199,7 +199,7 @@ def test_a_piece_that_descends_is_warned_of_with_its_length_the_level_and_the_si
 
 
 def test_a_cut_off_piece_too_small_to_halve_is_warned_of_before_it_is_asked_about_once_more(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     assert raised_by(call_chunk_subdividing("highlight", SMALL, OVERLAP, failing_once(CUT_OFF, NOTHING), None, None)) is None
     (warned,) = warnings_of(caplog)
     assert warned.getMessage() == "Floor-size piece truncated — re-rolling once before giving up"
@@ -212,7 +212,7 @@ def test_a_cut_off_piece_too_small_to_halve_is_warned_of_before_it_is_asked_abou
 
 def test_a_piece_kept_though_under_reported_is_warned_of_with_what_was_kept(caplog: pytest.LogCaptureFixture) -> None:
     collapse = YieldCollapseError("found 1 of 4 counted mentions", ["kept"], UnderReportedPiece(found=1, counted=4, piece_chars=400))
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     assert raised_by(call_chunk_subdividing("reference", SMALL, OVERLAP, failing(collapse), None, None)) is None
     (warned,) = warnings_of(caplog)
     assert warned.getMessage() == "Floor-size piece still flagged as collapsed — accepting its under-reported salvage and continuing"
@@ -225,11 +225,11 @@ def test_a_piece_kept_though_under_reported_is_warned_of_with_what_was_kept(capl
 
 
 def test_nothing_is_logged_of_a_piece_that_answers_or_of_a_failure_no_smaller_piece_can_fix(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     broke = RuntimeError("the provider went away")
     assert raised_by(call_chunk_subdividing("highlight", CHUNK, OVERLAP, answering(["a"], None, None), None, None)) is None
     assert raised_by(call_chunk_subdividing("highlight", CHUNK, OVERLAP, failing(broke), None, None)) is broke
-    assert [record for record in caplog.records if record.name == "semiont_worker"] == []
+    assert [record for record in caplog.records if record.name == "xynolog_worker"] == []
 
 
 # ── the telemetry ───────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ def kind_of(point: NumberDataPoint | HistogramDataPoint) -> Kind:
 
 def counted_calls(reader: InMemoryMetricReader) -> Counter[Kind]:
     """How many calls have been counted so far, by what each is filed under."""
-    calls = metric(reader, "semiont.detection.calls")
+    calls = metric(reader, "xynolog.detection.calls")
     so_far: Counter[Kind] = Counter()
     if calls is None:
         return so_far
@@ -292,10 +292,10 @@ def test_a_call_that_answers_is_counted_once_as_first_asked_with_its_proposals_a
 ) -> None:
     kind: Kind = ("highlight", "success", 0, False)
     readings = [
-        ("semiont.detection.call.items", None),
-        ("semiont.detection.call.tokens", "input"),
-        ("semiont.detection.call.tokens", "output"),
-        ("semiont.detection.call.duration", None),
+        ("xynolog.detection.call.items", None),
+        ("xynolog.detection.call.tokens", "input"),
+        ("xynolog.detection.call.tokens", "output"),
+        ("xynolog.detection.call.duration", None),
     ]
 
     def so_far() -> list[tuple[int, float]]:
@@ -316,11 +316,11 @@ def test_a_call_that_answers_is_counted_once_as_first_asked_with_its_proposals_a
 
 def test_a_call_its_provider_did_not_count_adds_no_tokens(metric_reader: InMemoryMetricReader) -> None:
     kind: Kind = ("assessment", "success", 0, False)
-    before = {direction: recorded(metric_reader, "semiont.detection.call.tokens", direction).get(kind) for direction in ("input", "output")}
+    before = {direction: recorded(metric_reader, "xynolog.detection.call.tokens", direction).get(kind) for direction in ("input", "output")}
     made, _ = calls_made_by(metric_reader, call_chunk_subdividing("assessment", CHUNK, OVERLAP, answering(["a"], None, None), None, None))
     assert made == Counter({kind: 1})
     assert {
-        direction: recorded(metric_reader, "semiont.detection.call.tokens", direction).get(kind) for direction in ("input", "output")
+        direction: recorded(metric_reader, "xynolog.detection.call.tokens", direction).get(kind) for direction in ("input", "output")
     } == before
 
 
@@ -390,12 +390,12 @@ def test_a_call_its_caller_cancelled_is_counted_as_an_error_and_the_cancellation
 
 
 def test_what_a_descent_records_is_what_the_table_lists(metric_reader: InMemoryMetricReader) -> None:
-    listed = worker_metrics("semiont.detection.call")
+    listed = worker_metrics("xynolog.detection.call")
     assert sorted(listed) == [
-        "semiont.detection.call.duration",
-        "semiont.detection.call.items",
-        "semiont.detection.call.tokens",
-        "semiont.detection.calls",
+        "xynolog.detection.call.duration",
+        "xynolog.detection.call.items",
+        "xynolog.detection.call.tokens",
+        "xynolog.detection.calls",
     ]
 
     # A call of every label, ended every way, a second asking among them, and one its provider counted.
@@ -431,13 +431,13 @@ def test_what_a_descent_records_is_what_the_table_lists(metric_reader: InMemoryM
                 assert seen <= set(attribute.values), f"{name}: {attribute.key} was {seen}"
                 # Every call is counted, timed and its proposals recorded, so each of those has been filed under
                 # every value. Tokens are an answered call's alone, and only the direction has every value there.
-                if name != "semiont.detection.call.tokens" or attribute.key == "detection.direction":
+                if name != "xynolog.detection.call.tokens" or attribute.key == "detection.direction":
                     assert seen == set(attribute.values), f"{name}: {attribute.key} was only ever {seen}"
-    duration = metric(metric_reader, "semiont.detection.call.duration")
+    duration = metric(metric_reader, "xynolog.detection.call.duration")
     assert duration is not None
     assert duration.unit == "ms"
 
     # And the two vocabularies the worker types its calls by are the table's.
-    values = {attribute.key: attribute.values for attribute in listed["semiont.detection.calls"].attributes}
+    values = {attribute.key: attribute.values for attribute in listed["xynolog.detection.calls"].attributes}
     assert sorted(get_args(DetectionLabel.__value__)) == sorted(values["detection.label"] or [])
     assert sorted(get_args(DetectionOutcome.__value__)) == sorted(values["detection.outcome"] or [])

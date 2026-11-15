@@ -31,12 +31,12 @@ from gremlin_stores import (
     without_the_library,
 )
 from pydantic import JsonValue
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.model import written
-from xynoplex.types import Annotation
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.model import written
+from xynolog.types import Annotation
 
-from semiont_graph.codec import decode_annotation, encode_annotation, encode_resource, intended_graph_annotation
-from semiont_graph.janusgraph import JanusGraphDatabase
+from xynolog_graph.codec import decode_annotation, encode_annotation, encode_resource, intended_graph_annotation
+from xynolog_graph.janusgraph import JanusGraphDatabase
 
 READ_RESOURCE = "g.V().has('Resource', 'id', rid).valueMap()"
 READ_ANNOTATION = "g.V().has('Annotation', 'id', aid).valueMap()"
@@ -82,7 +82,7 @@ def test_it_asks_through_one_connection_at_the_address_it_was_given_and_closes_i
 def test_without_the_clients_library_the_store_fails_naming_its_extra_and_the_in_memory_store_is_made() -> None:
     said = (
         "The janusgraph store needs Apache TinkerPop's `gremlinpython` client, which is not installed. "
-        "It comes with the extra: install `semiont-graph[janusgraph]`."
+        "It comes with the extra: install `xynolog-graph[janusgraph]`."
     )
     assert alone(without_the_library("janusgraph")).splitlines() == [
         f"ModuleNotFoundError | gremlin_python | ModuleNotFoundError | {said}",

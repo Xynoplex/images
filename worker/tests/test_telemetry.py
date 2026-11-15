@@ -13,14 +13,14 @@ from aio import run, turns
 from holding import EVERY_JOB, KB, Parties, answering, job
 from opentelemetry.sdk.metrics.export import Histogram, HistogramDataPoint, InMemoryMetricReader, NumberDataPoint, Sum
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
-from xynoplex.identity import kb_did
 from standing_in import GENERATOR
 from telemetry_rows import TABLE, MetricRow, SpanRow, worker_metrics
+from xynolog.identity import kb_did
 
-from semiont_worker.agent import run_what_is_claimed
-from semiont_worker.telemetry import record_anchor
+from xynolog_worker.agent import run_what_is_claimed
+from xynolog_worker.telemetry import record_anchor
 
-ANCHORS = "semiont.detection.anchors"
+ANCHORS = "xynolog.detection.anchors"
 
 
 def anchors(reader: InMemoryMetricReader) -> Counter[tuple[tuple[str, object], ...]]:
@@ -45,9 +45,9 @@ def test_an_anchor_is_counted_once_by_what_was_anchored_and_how_under_the_keys_t
     before = anchors(metric_reader)
     record_anchor("tag", "fuzzy-match")
     assert anchors(metric_reader) - before == Counter(
-        {(("anchor.method", "fuzzy-match"), ("detection.label", "tag"), ("semiont.kb", KB)): 1}
+        {(("anchor.method", "fuzzy-match"), ("detection.label", "tag"), ("xynolog.kb", KB)): 1}
     )
-    assert sorted(attribute.key for attribute in row.attributes) == ["anchor.method", "detection.label", "semiont.kb"]
+    assert sorted(attribute.key for attribute in row.attributes) == ["anchor.method", "detection.label", "xynolog.kb"]
 
 
 def test_every_row_the_worker_alone_exports_names_the_knowledge_base_on_every_signal() -> None:
@@ -56,7 +56,7 @@ def test_every_row_the_worker_alone_exports_names_the_knowledge_base_on_every_si
     own = [row for row in rows if row.services == ["worker"]]
     assert own
     for row in own:
-        (kb,) = [attribute for attribute in row.attributes if attribute.key == "semiont.kb"]
+        (kb,) = [attribute for attribute in row.attributes if attribute.key == "xynolog.kb"]
         assert (kb.values, kb.only) == (None, None), row.name
 
 
@@ -108,10 +108,10 @@ def test_a_job_s_spans_and_its_count_name_the_knowledge_base_whose_claims_handed
     run(scenario())
     held = [span for span in exported_spans.get_finished_spans() if span.name in ("job:mark", "detection:prepare")]
     assert sorted(span.name for span in held) == ["detection:prepare", "job:mark"]
-    assert [(span.attributes or {})["semiont.kb"] for span in held] == [there, there]
+    assert [(span.attributes or {})["xynolog.kb"] for span in held] == [there, there]
 
-    for name in ("semiont.job.outcome", "semiont.job.duration"):
-        points = [point for point in points_of(metric_reader, name) if (point.attributes or {})["semiont.kb"] == there]
+    for name in ("xynolog.job.outcome", "xynolog.job.duration"):
+        points = [point for point in points_of(metric_reader, name) if (point.attributes or {})["xynolog.kb"] == there]
         assert [dict(point.attributes or {}) for point in points] == [
-            {"semiont.kb": there, "job.type": "mark", "job.motivation": "highlighting", "job.outcome": "completed"}
+            {"xynolog.kb": there, "job.type": "mark", "job.motivation": "highlighting", "job.outcome": "completed"}
         ], name

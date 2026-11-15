@@ -5,10 +5,10 @@
 //! with what the dispatcher adds; and its announcement carries the
 //! description without what was added and without the job's input.
 
-use xynoplex::job_filter::job_matches_filter;
-use xynoplex::types::{JobFilter, JobParams, JobPending, TagSchema};
-use semiont_dispatcher_handlers::admission::{Refusal, Vocabulary, admit, announcement};
 use serde_json::{Value, json};
+use xynolog::job_filter::job_matches_filter;
+use xynolog::types::{JobFilter, JobParams, JobPending, TagSchema};
+use xynolog_dispatcher_handlers::admission::{Refusal, Vocabulary, admit, announcement};
 
 /// A knowledge base that registers two entity types and one tag schema.
 struct Registered;

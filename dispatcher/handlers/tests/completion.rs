@@ -6,8 +6,8 @@
 
 mod support;
 
-use xynoplex::types::Job;
 use serde_json::{Value, json};
+use xynolog::types::Job;
 
 /// A job of `job_type`, running.
 fn running(job_type: &str) -> Job {

@@ -15,12 +15,12 @@ import pytest
 from opentelemetry import trace
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.types import LogFormat, LogLevel
+from xynolog.types import LogFormat, LogLevel
 
-from semiont_service.log import configure
+from xynolog_service.log import configure
 
-LOG = logging.getLogger("semiont_worker")
-OWN = ("semiont_worker", "semiont_inference", "semiont")
+LOG = logging.getLogger("xynolog_worker")
+OWN = ("xynolog_worker", "xynolog_inference", "xynolog")
 
 _LINE = TypeAdapter[dict[str, JsonValue]](dict[str, JsonValue])
 
@@ -71,8 +71,8 @@ def test_who_said_an_event_is_the_service_the_log_was_configured_for(capsys: pyt
 
 @pytest.mark.usefixtures("unconfigured")
 def test_a_logger_the_service_did_not_name_as_its_own_is_written_from_warnings_up(capsys: pytest.CaptureFixture[str]) -> None:
-    configure("worker", "debug", "json", own=("semiont_worker",))
-    for name in ("semiont_worker", "semiont_inference"):
+    configure("worker", "debug", "json", own=("xynolog_worker",))
+    for name in ("xynolog_worker", "xynolog_inference"):
         logging.getLogger(name).info("said")
         logging.getLogger(name).warning("warned")
     assert [_LINE.validate_json(line)["message"] for line in lines(capsys)] == ["said", "warned", "warned"]
@@ -158,7 +158,7 @@ def test_the_drivers_and_the_sdk_are_written_from_the_document_s_level_and_anyth
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     configured("debug", "json")
-    for name in ("semiont_inference", "semiont.http", "httpx", "anthropic"):
+    for name in ("xynolog_inference", "xynolog.http", "httpx", "anthropic"):
         logging.getLogger(name).debug("quiet")
         logging.getLogger(name).info("said")
         logging.getLogger(name).warning("warned")
@@ -169,7 +169,7 @@ def test_the_drivers_and_the_sdk_are_written_from_the_document_s_level_and_anyth
 @pytest.mark.usefixtures("unconfigured")
 def test_a_level_above_warnings_holds_back_the_warnings_of_everything(capsys: pytest.CaptureFixture[str]) -> None:
     configured("error", "json")
-    for name in ("semiont_worker", "semiont.http", "httpx"):
+    for name in ("xynolog_worker", "xynolog.http", "httpx"):
         logging.getLogger(name).warning("warned")
         logging.getLogger(name).error("failed")
     assert [_LINE.validate_json(line)["message"] for line in lines(capsys)] == ["failed", "failed", "failed"]

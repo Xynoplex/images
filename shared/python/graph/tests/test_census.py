@@ -20,13 +20,13 @@ from pathlib import Path
 from pydantic import JsonValue, TypeAdapter
 from spec import PACKAGE, SDK
 
-from semiont_graph.interface import GraphDatabase, GraphReader
-from semiont_graph.janusgraph import JanusGraphDatabase
-from semiont_graph.memory import MemoryGraphDatabase
-from semiont_graph.neo4j import Neo4jGraphDatabase, Neo4jGraphReader
-from semiont_graph.neptune import NeptuneGraphDatabase
+from xynolog_graph.interface import GraphDatabase, GraphReader
+from xynolog_graph.janusgraph import JanusGraphDatabase
+from xynolog_graph.memory import MemoryGraphDatabase
+from xynolog_graph.neo4j import Neo4jGraphDatabase, Neo4jGraphReader
+from xynolog_graph.neptune import NeptuneGraphDatabase
 
-SRC = PACKAGE / "src/semiont_graph"
+SRC = PACKAGE / "src/xynolog_graph"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PACKAGE / top).rglob("*.py"))
 
 # The public names, by the module that has each.
@@ -177,7 +177,7 @@ def test_the_public_modules_and_their_names_are_the_ones_the_design_lists() -> N
     modules = sorted(path.stem for path in SRC.glob("*.py") if not path.stem.startswith("_"))
     assert modules == sorted(SURFACE)
     for module, names in SURFACE.items():
-        assert sorted(importlib.import_module(f"semiont_graph.{module}").__all__) == sorted(names), f"semiont_graph.{module}"
+        assert sorted(importlib.import_module(f"xynolog_graph.{module}").__all__) == sorted(names), f"xynolog_graph.{module}"
 
 
 def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_root() -> None:
@@ -185,11 +185,11 @@ def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_roo
     # Read as Python, and not as text: the root's docstring has a line that begins with the word "from".
     root_statements = ast.parse((SRC / "__init__.py").read_text(encoding="utf-8")).body
     assert not [held for held in root_statements if isinstance(held, ast.Import | ast.ImportFrom)], "the package's root imports something"
-    root = importlib.import_module("semiont_graph")
+    root = importlib.import_module("xynolog_graph")
     assert not hasattr(root, "__all__")
     for module, names in SURFACE.items():
         for name in names:
-            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from semiont_graph.{module}"
+            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from xynolog_graph.{module}"
     assert (SRC / "py.typed").read_bytes() == b""
 
 
@@ -268,19 +268,19 @@ def test_a_client_is_named_only_by_the_module_that_asks_through_it() -> None:
     # names it, and the two stores that ask through it ask that module.
     assert importing("gremlin_python") == []
     assert naming("gremlin_python") == ["_gremlin.py"]
-    assert importing(r"semiont_graph\._gremlin") == ["janusgraph.py", "neptune.py"]
+    assert importing(r"xynolog_graph\._gremlin") == ["janusgraph.py", "neptune.py"]
     # The interface, the codec and what they share import no store, and so no client.
     for store in ("neo4j", "janusgraph", "neptune", "memory", "_gremlin", "factory"):
-        imported_by = set(importing(rf"semiont_graph\.{store}"))
+        imported_by = set(importing(rf"xynolog_graph\.{store}"))
         assert not imported_by & {"interface.py", "codec.py", "_query.py"}, store
 
 
 def test_the_factory_imports_a_store_where_its_database_is_asked_for_and_not_before() -> None:
     source = (SRC / "factory.py").read_text(encoding="utf-8")
     at_the_top = [line for line in source.splitlines() if re.match(r"(import|from)\s", line)]
-    assert not any(re.search(r"semiont_graph\.(neo4j|janusgraph|neptune|memory)\b", line) for line in at_the_top)
+    assert not any(re.search(r"xynolog_graph\.(neo4j|janusgraph|neptune|memory)\b", line) for line in at_the_top)
     for store in ("neo4j", "janusgraph", "neptune", "memory"):
-        assert re.search(rf"^\s+from semiont_graph\.{store} import ", source, re.MULTILINE), store
+        assert re.search(rf"^\s+from xynolog_graph\.{store} import ", source, re.MULTILINE), store
 
 
 def test_no_module_reads_a_clock() -> None:
@@ -304,7 +304,7 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
         return {name_of(requirement): requirement for requirement in dev}
 
     checkers = ("mypy", "pyright", "pytest", "pytest-cov", "ruff")
-    assert set(tools(MANIFEST)) == {*checkers, "semiont-graph"}
+    assert set(tools(MANIFEST)) == {*checkers, "xynolog-graph"}
     assert {name: tools(MANIFEST)[name] for name in checkers} == {name: tools(theirs)[name] for name in checkers}
 
     def settings(of: Toml, tool: str, *, but: tuple[str, ...]) -> Toml:
@@ -335,8 +335,8 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
 def test_what_every_install_has_is_what_the_package_imports_without_a_databases_client() -> None:
     project = table(MANIFEST["project"], "project")
     required = listed(project["dependencies"], "dependencies")
-    assert {name_of(requirement) for requirement in required} == {"pydantic", "semiont"}
-    for library in ("pydantic", "semiont"):
+    assert {name_of(requirement) for requirement in required} == {"pydantic", "xynolog"}
+    for library in ("pydantic", "xynolog"):
         assert importing(library), f"{library} is required and nothing imports it"
     # A dependency the SDK bounds is named here without a bound of its own.
     of_the_sdk = listed(table(toml(SDK / "pyproject.toml")["project"], "project")["dependencies"], "the SDK's dependencies")
@@ -360,4 +360,4 @@ def test_what_every_install_has_is_what_the_package_imports_without_a_databases_
 
     # The checkers and the tests read every store: the environment they run in has every extra.
     dev = listed(table(MANIFEST["dependency-groups"], "dependency-groups")["dev"], "dev")
-    assert f"semiont-graph[{','.join(sorted(extras))}]" in dev
+    assert f"xynolog-graph[{','.join(sorted(extras))}]" in dev

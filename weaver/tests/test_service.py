@@ -17,30 +17,30 @@ from typing import Final, Self, final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.channels import PERSISTED_EVENT_TYPES
-from xynoplex.http import SecretCredential, ServiceToken
-from xynoplex.identifiers import UserId
-from xynoplex.testing import FaultyTransport
-from xynoplex.types import GraphConfig
-from xynoplex.watched import Variable, Watched
-from semiont_graph.memory import MemoryGraphDatabase
-from semiont_service.config import Refused
+from xynolog.channels import PERSISTED_EVENT_TYPES
+from xynolog.http import SecretCredential, ServiceToken
+from xynolog.identifiers import UserId
+from xynolog.testing import FaultyTransport
+from xynolog.types import GraphConfig
+from xynolog.watched import Variable, Watched
+from xynolog_graph.memory import MemoryGraphDatabase
+from xynolog_service.config import Refused
 
-from semiont_weaver import service
-from semiont_weaver.service import CHANNELS, boot, main
+from xynolog_weaver import service
+from xynolog_weaver.service import CHANNELS, boot, main
 
 pytestmark = pytest.mark.usefixtures("the_log_as_it_was")
 
-ACCOUNT: Final = {"SEMIONT_OIDC_CLIENT_ID": "semiont-weaver", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
+ACCOUNT: Final = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-weaver", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
 PASSWORD: Final = {"NEO4J_PASSWORD": "n30"}
 
 DOCUMENT: Final[dict[str, JsonValue]] = {
     "kb": {"name": "example-kb", "domain": "example.github.io:example-kb"},
     "gatewayUrl": "http://127.0.0.1:1",
-    "identity": {"issuer": "http://127.0.0.1:1/realms/semiont"},
+    "identity": {"issuer": "http://127.0.0.1:1/realms/xynolog"},
     "graph": {"type": "neo4j", "uri": "bolt://127.0.0.1:1", "username": "neo4j", "passwordEnv": "NEO4J_PASSWORD", "database": "neo4j"},
     "archivist": {"host": "127.0.0.1", "port": 1},
-    "cursorsPath": "/tmp/semiont/weaver-cursors.json",
+    "cursorsPath": "/tmp/xynolog/weaver-cursors.json",
     "port": 24102,
     "logLevel": "warn",
     "logFormat": "simple",
@@ -67,7 +67,7 @@ def test_started_with_everything_it_boots_and_dials_nothing(tmp_path: Path) -> N
     started = boot(["--config", written(tmp_path)], {**ACCOUNT, **PASSWORD})
     assert started.config.gateway_url == "http://127.0.0.1:1"
     assert started.credential == SecretCredential(
-        issuer="http://127.0.0.1:1/realms/semiont", client_id="semiont-weaver", client_secret="s3cret"
+        issuer="http://127.0.0.1:1/realms/xynolog", client_id="xynolog-weaver", client_secret="s3cret"
     )
     # A store is made and not connected: nothing at that address was asked anything.
     assert not started.graph.is_connected()
@@ -142,10 +142,10 @@ def test_the_document_is_settled_before_the_account_and_the_account_before_the_p
     assert refusal(["--config", written(tmp_path, without("graph"))], {}).endswith("  Missing required property: graph")
     path = written(tmp_path)
     assert refusal(["--config", path], {}) == (
-        "SEMIONT_OIDC_CLIENT_ID is not set in the weaver's environment: a weaver signs in as a service account"
+        "XYNOLOG_OIDC_CLIENT_ID is not set in the weaver's environment: a weaver signs in as a service account"
     )
-    assert refusal(["--config", path], {"SEMIONT_OIDC_CLIENT_ID": "semiont-weaver", "SEMIONT_OIDC_CLIENT_SECRET": ""}) == (
-        "SEMIONT_OIDC_CLIENT_SECRET is not set in the weaver's environment: a weaver signs in as a service account"
+    assert refusal(["--config", path], {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-weaver", "XYNOLOG_OIDC_CLIENT_SECRET": ""}) == (
+        "XYNOLOG_OIDC_CLIENT_SECRET is not set in the weaver's environment: a weaver signs in as a service account"
     )
     assert refusal(["--config", path], ACCOUNT) == "graph.passwordEnv names NEO4J_PASSWORD, which is not set in the weaver's environment"
     renamed = written(tmp_path, {**DOCUMENT, "graph": {**DOCUMENT_GRAPH, "passwordEnv": "SOMEBODY_ELSES"}})
@@ -167,7 +167,7 @@ DOCUMENT_GRAPH: Final[dict[str, JsonValue]] = {
 def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["semiont_weaver", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_weaver", "--config", written(tmp_path)])
     for name in (*ACCOUNT, *PASSWORD):
         monkeypatch.delenv(name, raising=False)
 
@@ -175,7 +175,7 @@ def test_a_refusal_is_one_line_on_stderr_and_status_1_and_nothing_on_stdout(
 
     said = capsys.readouterr()
     assert said.out == ""
-    assert said.err == "[fatal] SEMIONT_OIDC_CLIENT_ID is not set in the weaver's environment: a weaver signs in as a service account\n"
+    assert said.err == "[fatal] XYNOLOG_OIDC_CLIENT_ID is not set in the weaver's environment: a weaver signs in as a service account\n"
 
 
 @final
@@ -217,7 +217,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     @final
     class SignedIn:
         def __init__(self, gateway: str, *, service: ServiceToken) -> None:
-            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:semiont-weaver")
+            self.did: Final = UserId("did:web:example.github.io:example-kb:agents:xynolog-weaver")
             self.token: Final[Watched[str | None]] = Variable[str | None]("issued")
 
         async def refresh(self) -> str | None:
@@ -259,7 +259,7 @@ def started_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, knowledge_base: 
     monkeypatch.setattr(service, "AgentToken", SignedIn)
     monkeypatch.setattr(service, "HttpTransport", Stream)
     monkeypatch.setattr(service, "create_graph_database", made)
-    monkeypatch.setattr(sys, "argv", ["semiont_weaver", "--config", written(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_weaver", "--config", written(tmp_path)])
     for name, value in {**ACCOUNT, **PASSWORD, "OTEL_SDK_DISABLED": "true"}.items():
         monkeypatch.setenv(name, value)
 

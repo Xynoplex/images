@@ -38,11 +38,11 @@ test.describe('hover → beckon', () => {
     await openResourceByName(page, 'Quantum Computing Primer');
 
     // Annotations render as `[data-annotation-id]` inside BrowseView's
-    // container. The `.semiont-browse-view`-scoped locator is load-
+    // container. The `.xynolog-browse-view`-scoped locator is load-
     // bearing — `[data-annotation-id]` also appears in the references
     // panel, but only BrowseView has the mouseover handler bound that
     // fires `beckon:hover`.
-    const annLocator = page.locator('.semiont-browse-view [data-annotation-id]').first();
+    const annLocator = page.locator('.xynolog-browse-view [data-annotation-id]').first();
 
     const alreadyHas = await annLocator.isVisible({ timeout: 2_000 }).catch(() => false);
 
@@ -147,7 +147,7 @@ test.describe('hover → beckon', () => {
       // localStorage, so a plain reload would come back up in annotate
       // mode (CodeMirror) rather than browse mode (ReactMarkdown +
       // overlay). The hover handler is bound only on BrowseView's
-      // `.semiont-browse-view` container, so we need that renderer
+      // `.xynolog-browse-view` container, so we need that renderer
       // mounted.
       await page.getByRole('button', { name: /^mode$/i }).click();
       await page.getByRole('menuitem', { name: /^browse$/i }).click();

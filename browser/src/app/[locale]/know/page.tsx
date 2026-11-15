@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslation } from 'react-i18next';
-import { useXynoplex, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 /**
  * The /know landing route: resume where the user left off in the ACTIVE
@@ -15,11 +15,11 @@ import { useXynoplex, useObservable } from '@xynoplex/react-ui';
 export default function KnowledgePage() {
   const { t } = useTranslation(undefined, { keyPrefix: 'Sidebar' });
   const router = useRouter();
-  const semiont = useXynoplex();
+  const xynolog = useXynolog();
 
-  const session = useObservable(semiont.activeSession$) ?? null;
-  const activating = useObservable(semiont.sessionActivating$) ?? false;
-  const lastViewed = useObservable(semiont.lastViewedResource$) ?? null;
+  const session = useObservable(xynolog.activeSession$) ?? null;
+  const activating = useObservable(xynolog.sessionActivating$) ?? false;
+  const lastViewed = useObservable(xynolog.lastViewedResource$) ?? null;
 
   // The projection only carries an answer once a session exists, so a
   // redirect decided during activation would send every cold load to

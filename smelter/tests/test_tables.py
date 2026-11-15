@@ -10,11 +10,11 @@ taken for a grid, is held on the pieces a reader gives.
 from collections.abc import Sequence
 
 import pytest
-from xynoplex.types import PdfTextItem
+from xynolog.types import PdfTextItem
 
-from semiont_smelter.anchoring import anchor_runs
-from semiont_smelter.pdf_reader import Run
-from semiont_smelter.tables import TableCell, detect_table, render_table
+from xynolog_smelter.anchoring import anchor_runs
+from xynolog_smelter.pdf_reader import Run
+from xynolog_smelter.tables import TableCell, detect_table, render_table
 
 WORD_SPACE = 3.0
 """The gap between two words of one cell: a quarter of the height of 12-point text."""

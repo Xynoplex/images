@@ -30,15 +30,15 @@ import tomllib
 from pathlib import Path
 
 from pydantic import JsonValue, TypeAdapter
-from xynoplex.bus import reply_channels_for
-from semiont_vectors.store import VectorReader, VectorStore
 from spec import PROJECT, ROOT, SDK
+from xynolog.bus import reply_channels_for
+from xynolog_vectors.store import VectorReader, VectorStore
 
-from semiont_librarian.config import SERVICE
-from semiont_librarian.record import READ
-from semiont_librarian.service import CHANNELS
+from xynolog_librarian.config import SERVICE
+from xynolog_librarian.record import READ
+from xynolog_librarian.service import CHANNELS
 
-SRC = PROJECT / "src/semiont_librarian"
+SRC = PROJECT / "src/xynolog_librarian"
 SOURCES = sorted(path for top in ("src", "tests") for path in (PROJECT / top).rglob("*.py"))
 GRAPH = ROOT / "shared/python/graph"
 INFERENCE = ROOT / "shared/python/inference"
@@ -133,16 +133,16 @@ def test_the_walk_found_the_project() -> None:
 def test_every_module_states_its_public_names_and_has_each() -> None:
     assert {"config", "log", "reads"} <= set(PUBLIC)
     for module in PUBLIC:
-        held = importlib.import_module(f"semiont_librarian.{module}")
-        assert hasattr(held, "__all__"), f"semiont_librarian.{module} states no public names"
+        held = importlib.import_module(f"xynolog_librarian.{module}")
+        assert hasattr(held, "__all__"), f"xynolog_librarian.{module} states no public names"
         stated = sorted(held.__all__)
-        assert stated, f"semiont_librarian.{module} has no public name"
-        assert len(set(stated)) == len(stated), f"semiont_librarian.{module} states a name twice"
+        assert stated, f"xynolog_librarian.{module} has no public name"
+        assert len(set(stated)) == len(stated), f"xynolog_librarian.{module} states a name twice"
         for name in stated:
-            assert hasattr(held, name), f"semiont_librarian.{module} states {name} and has none"
+            assert hasattr(held, name), f"xynolog_librarian.{module} states {name} and has none"
     # What a Librarian is handed is the protocols its design lists, and no others.
-    assert sorted(importlib.import_module("semiont_librarian.reads").__all__) == sorted(HANDED)
-    assert importlib.import_module("semiont_librarian.config").__all__ == [
+    assert sorted(importlib.import_module("xynolog_librarian.reads").__all__) == sorted(HANDED)
+    assert importlib.import_module("xynolog_librarian.config").__all__ == [
         "SERVICE",
         "Actor",
         "api_key_of",
@@ -151,8 +151,8 @@ def test_every_module_states_its_public_names_and_has_each() -> None:
         "read_librarian_config",
         "vectors_token_of",
     ]
-    assert importlib.import_module("semiont_librarian.log").__all__ == ["LOG"]
-    assert importlib.import_module("semiont_librarian.service").__all__ == ["CHANNELS", "boot", "health", "main"]
+    assert importlib.import_module("xynolog_librarian.log").__all__ == ["LOG"]
+    assert importlib.import_module("xynolog_librarian.service").__all__ == ["CHANNELS", "boot", "health", "main"]
 
 
 def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_root() -> None:
@@ -160,11 +160,11 @@ def test_a_public_name_is_imported_from_its_module_and_not_from_the_packages_roo
     # begins with the word "from".
     root_statements = ast.parse((SRC / "__init__.py").read_text(encoding="utf-8")).body
     assert not [held for held in root_statements if isinstance(held, ast.Import | ast.ImportFrom)], "the package's root imports something"
-    root = importlib.import_module("semiont_librarian")
+    root = importlib.import_module("xynolog_librarian")
     assert not hasattr(root, "__all__")
     for module in PUBLIC:
-        for name in sorted(importlib.import_module(f"semiont_librarian.{module}").__all__):
-            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from semiont_librarian.{module}"
+        for name in sorted(importlib.import_module(f"xynolog_librarian.{module}").__all__):
+            assert not hasattr(root, name), f"{name} can be imported from the package's root as well as from xynolog_librarian.{module}"
 
 
 def test_no_hand_written_line_forces_a_type_or_silences_a_checker() -> None:
@@ -189,7 +189,7 @@ def test_the_checkers_and_their_strictness_are_the_sdks() -> None:
     checkers = ("mypy", "pyright", "pytest", "pytest-cov", "ruff")
     # Beside them, the service itself with every extra, and what makes the histories of a property test, which the
     # SDK has no use for.
-    assert set(tools(MANIFEST)) == {*checkers, "hypothesis", "semiont-librarian"}
+    assert set(tools(MANIFEST)) == {*checkers, "hypothesis", "xynolog-librarian"}
     assert {name: tools(MANIFEST)[name] for name in checkers} == {name: tools(theirs)[name] for name in checkers}
 
     def settings(of: Toml, tool: str, *, but: tuple[str, ...]) -> Toml:
@@ -220,18 +220,18 @@ def test_what_the_source_imports_the_manifest_requires() -> None:
     assert required == {
         "opentelemetry-api",
         "pydantic",
-        "semiont",
-        "semiont-graph",
-        "semiont-inference",
-        "semiont-service",
-        "semiont-vectors",
+        "xynolog",
+        "xynolog-graph",
+        "xynolog-inference",
+        "xynolog-service",
+        "xynolog-vectors",
     }
     # Every module imported from outside the standard library is of a distribution the manifest requires, and
     # nothing required goes unused. A distribution is imported by its own name, but for OpenTelemetry's API, which
     # is imported as `opentelemetry`.
     declared = {"opentelemetry" if name == "opentelemetry-api" else name.replace("-", "_") for name in required}
     roots = {module.split(".")[0] for module in imported()}
-    assert roots - set(sys.stdlib_module_names) - {"semiont_librarian"} == declared
+    assert roots - set(sys.stdlib_module_names) - {"xynolog_librarian"} == declared
     # Of OpenTelemetry the service takes the API alone, in the one module that counts what it counts. What exports,
     # its SDK and its exporter, is the shared package's to require, at the versions its own manifest states, and
     # to import.
@@ -250,11 +250,11 @@ def test_what_the_source_imports_the_manifest_requires() -> None:
 def test_the_sdk_and_the_packages_it_is_built_on_are_the_ones_in_this_repository() -> None:
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "xynoplex": {"path": "../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl"},
-        "semiont-graph": {"path": "../../shared/python/graph", "editable": True},
-        "semiont-inference": {"path": "../../shared/python/inference", "editable": True},
-        "semiont-service": {"path": "../../shared/python/service", "editable": True},
-        "semiont-vectors": {"path": "../../shared/python/vectors", "editable": True},
+        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"},
+        "xynolog-graph": {"path": "../../shared/python/graph", "editable": True},
+        "xynolog-inference": {"path": "../../shared/python/inference", "editable": True},
+        "xynolog-service": {"path": "../../shared/python/service", "editable": True},
+        "xynolog-vectors": {"path": "../../shared/python/vectors", "editable": True},
     }
     assert (SDK / "pyproject.toml").is_file()
     for there in (GRAPH, INFERENCE, SHARED, VECTORS):
@@ -262,14 +262,16 @@ def test_the_sdk_and_the_packages_it_is_built_on_are_the_ones_in_this_repository
         assert (there / "pyproject.toml").is_file(), there.name
     # Every one of them the manifest requires is taken from here, and nothing else is.
     requirements = listed(table(MANIFEST["project"], "project")["dependencies"], "dependencies")
-    assert {name_of(requirement) for requirement in requirements if name_of(requirement).startswith("semiont")} == {name for name in sources if name.startswith("semiont")}
+    assert {name_of(requirement) for requirement in requirements if name_of(requirement).startswith("xynolog")} == {
+        name for name in sources if name.startswith("xynolog")
+    }
 
 
 def test_the_distribution_is_named_for_the_service() -> None:
-    # Its telemetry is exported under its word for itself after `semiont-`, at the version of the distribution of
-    # that name (`semiont_service.observability`): the manifest's name is that, or an exporting service does not start.
+    # Its telemetry is exported under its word for itself after `xynolog-`, at the version of the distribution of
+    # that name (`xynolog_service.observability`): the manifest's name is that, or an exporting service does not start.
     assert SERVICE == "librarian"
-    assert table(MANIFEST["project"], "project")["name"] == f"semiont-{SERVICE}"
+    assert table(MANIFEST["project"], "project")["name"] == f"xynolog-{SERVICE}"
 
 
 def test_it_is_a_service_s_code_and_no_library() -> None:
@@ -279,7 +281,7 @@ def test_it_is_a_service_s_code_and_no_library() -> None:
     assert "Private :: Do Not Upload" in listed(table(MANIFEST["project"], "project")["classifiers"], "classifiers")
     for other in sorted(ROOT.glob("shared/python/*/pyproject.toml")) + sorted(ROOT.glob("*/pyproject.toml")):
         if other.parent != PROJECT:
-            assert "semiont-librarian" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Librarian"
+            assert "xynolog-librarian" not in other.read_text(encoding="utf-8"), f"{other.relative_to(ROOT)} requires the Librarian"
 
 
 def test_the_source_imports_no_database_s_client_and_no_provider_s_library() -> None:
@@ -295,10 +297,10 @@ def test_a_client_and_a_library_are_each_an_extra_and_the_tests_ask_for_every_on
     of_inference = table(table(toml(INFERENCE / "pyproject.toml")["project"], "project")["optional-dependencies"], "the drivers' extras")
     assert not set(of_the_graph) & set(of_inference), "an extra of the graph package and one of the inference drivers have one name"
     # An extra for each of the two packages', which brings that one and nothing else.
-    expected = {name: [f"semiont-graph[{name}]"] for name in of_the_graph} | {name: [f"semiont-inference[{name}]"] for name in of_inference}
+    expected = {name: [f"xynolog-graph[{name}]"] for name in of_the_graph} | {name: [f"xynolog-inference[{name}]"] for name in of_inference}
     assert extras == expected
     dev = listed(table(MANIFEST["dependency-groups"], "dependency-groups")["dev"], "dev")
-    assert f"semiont-librarian[{','.join(sorted(extras))}]" in dev
+    assert f"xynolog-librarian[{','.join(sorted(extras))}]" in dev
 
 
 def test_it_reads_only() -> None:
@@ -335,7 +337,7 @@ def test_it_opens_no_file_of_the_record() -> None:
 
 def test_one_module_names_the_logger_and_one_reads_the_process_s_environment_and_its_arguments() -> None:
     assert naming("getLogger(") == ["log.py"]
-    assert (SRC / "log.py").read_text(encoding="utf-8").count('getLogger("semiont_librarian")') == 1
+    assert (SRC / "log.py").read_text(encoding="utf-8").count('getLogger("xynolog_librarian")') == 1
     reading = sorted(
         str(path.relative_to(SRC))
         for path in SRC.rglob("*.py")
@@ -343,7 +345,7 @@ def test_one_module_names_the_logger_and_one_reads_the_process_s_environment_and
     )
     assert reading == ["service.py"]
     # It hands both over whole, to what reads a document's path, a service's account and where telemetry goes
-    # (`semiont_service`), and to what reads a variable the document names. It looks nothing up in either itself.
+    # (`xynolog_service`), and to what reads a variable the document names. It looks nothing up in either itself.
     service = (SRC / "service.py").read_text(encoding="utf-8")
     assert re.findall(r"os\.environ\b(.?)", service) == [")", ","]
     assert re.findall(r"sys\.argv(.{4})", service) == ["[1:]"]
@@ -355,14 +357,14 @@ def test_what_makes_a_store_a_provider_and_a_client_is_asked_by_the_module_that_
     # The Librarian is handed what it reads by. What a document names is made into a store, a provider or a client
     # by each package's own factory, in the module that reads the document, and the reader of a resource's bytes
     # there too.
-    for factory in (r"semiont_graph\.factory", r"semiont_vectors\.factory", r"semiont_inference\.factory", r"semiont_service\.archivist"):
+    for factory in (r"xynolog_graph\.factory", r"xynolog_vectors\.factory", r"xynolog_inference\.factory", r"xynolog_service\.archivist"):
         assert importing(factory) == ["service.py"], factory
     # A reader of the index is asked for, and never what writes one.
     assert "create_vector_reader(" in (SRC / "service.py").read_text(encoding="utf-8")
     # What answers a request for a model's limits is every service's that holds a model, asked by what takes the frames.
-    assert importing(r"semiont_inference\.limits_report") == ["librarian.py"]
+    assert importing(r"xynolog_inference\.limits_report") == ["librarian.py"]
     # The order it works in is every Python service's lanes.
-    assert importing(r"semiont_service\.lanes") == ["librarian.py"]
+    assert importing(r"xynolog_service\.lanes") == ["librarian.py"]
 
 
 def test_every_channel_its_stream_names_is_answered_followed_or_a_reply_to_what_it_asks_and_no_other_is() -> None:
@@ -413,14 +415,14 @@ def test_the_variables_it_reads_by_name_are_the_ones_the_protocol_lists() -> Non
     texts = [re.sub(r"^__all__ = \[.*?\]$", "", path.read_text(encoding="utf-8"), flags=re.DOTALL | re.MULTILINE) for path in sources]
     read_here = {name for text in texts for name in re.findall(r'"([A-Z][A-Z0-9]*_[A-Z0-9_]+)"', text)}
     # The shared package reads the worker's key too: this service proves itself with its secret, and reads no key.
-    assert "SEMIONT_OIDC_CLIENT_KEY" in read_here
-    read_here -= {"SEMIONT_OIDC_CLIENT_KEY"}
+    assert "XYNOLOG_OIDC_CLIENT_KEY" in read_here
+    read_here -= {"XYNOLOG_OIDC_CLIENT_KEY"}
     assert read_here == listed_there
     # Its service account, and what says where its telemetry goes and under what name. Each secret is in a
     # variable its document names, and so is named by no code.
     assert read_here == {
-        "SEMIONT_OIDC_CLIENT_ID",
-        "SEMIONT_OIDC_CLIENT_SECRET",
+        "XYNOLOG_OIDC_CLIENT_ID",
+        "XYNOLOG_OIDC_CLIENT_SECRET",
         "OTEL_EXPORTER_OTLP_ENDPOINT",
         "OTEL_SERVICE_NAME",
         "OTEL_SDK_DISABLED",

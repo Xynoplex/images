@@ -12,7 +12,7 @@ from provider import Ollama, generated
 from readme import a_first_call
 from spec import PACKAGE
 
-from semiont_inference.interface import InferenceClient
+from xynolog_inference.interface import InferenceClient
 
 README = (PACKAGE / "README.md").read_text(encoding="utf-8")
 PROGRAMS = {
@@ -58,7 +58,7 @@ def test_the_readme_names_the_extra_of_every_provider_that_has_one() -> None:
         extras = tomllib.load(file)["project"]["optional-dependencies"]
     assert extras, "the package has no extra: this gate reads nothing"
     for extra in extras:
-        assert f"`semiont-inference[{extra}]`" in README, f"the README does not say how the {extra} driver's library is installed"
+        assert f"`xynolog-inference[{extra}]`" in README, f"the README does not say how the {extra} driver's library is installed"
 
 
 def test_the_readme_names_every_member_of_a_client() -> None:

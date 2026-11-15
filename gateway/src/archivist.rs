@@ -5,7 +5,7 @@
 //! parses none of it; it forwards, and maps the answer onto its own
 //! responses. It reaches the Archivist as itself, with its service account's
 //! token, and waits for it as the Archivist's document says (its
-//! `x-semiont-limits`).
+//! `x-xynolog-limits`).
 
 use crate::http::ApiError;
 use axum::body::Body;
@@ -14,14 +14,14 @@ use bytes::Bytes;
 use futures::{Stream, StreamExt, TryStreamExt};
 use opentelemetry::KeyValue;
 use opentelemetry::trace::SpanKind;
-use xynoplex::identity::encode_uri_component;
-use xynoplex::types::ResourceId;
-use semiont_core::spec::{Spec, spec};
-use xynoplex_http_transport::service_account::{Credential, ServiceToken};
-use semiont_observability::logging;
 use serde_json::{Value, json};
 use std::task::Poll;
 use std::time::Duration;
+use xynolog::identity::encode_uri_component;
+use xynolog::types::ResourceId;
+use xynolog_core::spec::{Spec, spec};
+use xynolog_http_transport::service_account::{Credential, ServiceToken};
+use xynolog_observability::logging;
 
 /// The Archivist operations the gateway calls. The embedded Archivist
 /// document must declare each, or the gateway does not start.
@@ -60,7 +60,7 @@ fn client(fields: Value) -> Value {
 }
 
 /// How long the gateway waits for the Archivist, as the Archivist's document
-/// states it (`x-semiont-limits`).
+/// states it (`x-xynolog-limits`).
 #[derive(Clone, Copy)]
 struct Waits {
     /// `connectSeconds`: for a connection to be taken.
@@ -73,10 +73,10 @@ struct Waits {
 impl Waits {
     fn stated() -> Result<Waits, String> {
         let limit = |key: &str| {
-            spec().archivist["x-semiont-limits"][key]
+            spec().archivist["x-xynolog-limits"][key]
                 .as_u64()
                 .map(Duration::from_secs)
-                .ok_or_else(|| format!("The Archivist's document states no x-semiont-limits.{key}"))
+                .ok_or_else(|| format!("The Archivist's document states no x-xynolog-limits.{key}"))
         };
         Ok(Waits {
             connect: limit("connectSeconds")?,
@@ -201,7 +201,7 @@ fn path(template: &str, value: &str) -> String {
 }
 
 async fn in_client_span<T>(operation: &str, work: impl std::future::Future<Output = T>) -> T {
-    xynoplex_telemetry::in_span(
+    xynolog_telemetry::in_span(
         format!("archivist.{operation}"),
         SpanKind::Client,
         vec![KeyValue::new("peer.service", "archivist")],
@@ -275,11 +275,11 @@ impl Archivist {
             .post(format!("{}/resources", self.base))
             .header("authorization", authorization)
             .header("content-type", content_type)
-            .header("semiont-principal", principal)
+            .header("xynolog-principal", principal)
             .header("idempotency-key", key)
             .body(reqwest::Body::wrap_stream(upload));
         if !roles.is_empty() {
-            request = request.header("semiont-roles", roles.join(","));
+            request = request.header("xynolog-roles", roles.join(","));
         }
         let read = self.waits.read;
         let unanswered = async move {
@@ -561,7 +561,7 @@ impl Archivist {
             .json(response)
             .await
             .map_err(|error| format!("Archivist replay answer is not JSON: {error}"))?;
-        if let Some(problems) = semiont_core::spec::problems("ArchivistEventsResponse", &answer) {
+        if let Some(problems) = xynolog_core::spec::problems("ArchivistEventsResponse", &answer) {
             return Err(format!(
                 "Archivist replay answer is not an ArchivistEventsResponse: {problems}"
             ));
@@ -760,7 +760,7 @@ mod tests {
 
     /// The longest the Archivist holds a read of anchored text.
     fn settle_wait() -> Duration {
-        spec().archivist["paths"]["/resources/{id}/anchored-text"]["get"]["x-semiont-limits"]
+        spec().archivist["paths"]["/resources/{id}/anchored-text"]["get"]["x-xynolog-limits"]
             ["settleWaitSeconds"]
             .as_u64()
             .map(Duration::from_secs)

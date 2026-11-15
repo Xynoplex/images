@@ -3,17 +3,17 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "semiont-inference"
+name = "xynolog-inference"
 dynamic = ["version"]
-description = "The model providers Semiont's Python services call, behind one interface: text and structured generation, and discovered limits"
+description = "The model providers Xynolog's Python services call, behind one interface: text and structured generation, and discovered limits"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-keywords = ["semiont", "inference", "anthropic", "ollama", "openai"]
+keywords = ["xynolog", "inference", "anthropic", "ollama", "openai"]
 classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    # A library of Semiont's Python services, installed in their images: no index takes an upload that says this.
+    # A library of Xynolog's Python services, installed in their images: no index takes an upload that says this.
     "Private :: Do Not Upload",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -28,7 +28,7 @@ dependencies = [
     "httpx",
     "opentelemetry-api",
     "pydantic",
-    "xynoplex",
+    "xynolog",
 ]
 
 # A provider's own library is not required: it comes with the extra named for
@@ -53,13 +53,13 @@ vllm = ["openai>=3.28,<4"]
 llamacpp = ["openai>=3.28,<4"]
 
 [project.urls]
-Homepage = "https://the-ai-alliance.github.io/semiont/"
-Repository = "https://github.com/Xynoplex/images"
-Issues = "https://github.com/Xynoplex/images/issues"
+Homepage = "https://github.com/xynolog/images"
+Repository = "https://github.com/xynolog/images"
+Issues = "https://github.com/xynolog/images/issues"
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -67,7 +67,7 @@ xynoplex = { path = "../../../.local/sdk-artifacts/current/python/xynoplex-0.7.3
 [dependency-groups]
 dev = [
     # Every extra: the checkers and the tests read every driver.
-    "semiont-inference[anthropic,google,llamacpp,openai,together,vllm]",
+    "xynolog-inference[anthropic,google,llamacpp,openai,together,vllm]",
     "mypy==2.4.1",
     # What reads, in memory, the telemetry the drivers record (tests/test_telemetry.py).
     "opentelemetry-sdk>=1.30,<2",
@@ -83,12 +83,12 @@ path = "../../../version.json"
 pattern = '"version": "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/xynoplex_inference"]
+packages = ["src/xynolog_inference"]
 
 # What the wheel is built from, and no more. The tests read the repository
 # around this package, which a source distribution does not hold.
 [tool.hatch.build.targets.sdist]
-only-include = ["src/xynoplex_inference", "README.md"]
+only-include = ["src/xynolog_inference", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -98,7 +98,7 @@ xfail_strict = true
 # What `pytest --cov` measures: this package's own source, its paths relative to
 # this directory, so Codecov can place them in the tree.
 [tool.coverage.run]
-source = ["semiont_inference"]
+source = ["xynolog_inference"]
 relative_files = true
 
 # No target-version: ruff takes it from requires-python.

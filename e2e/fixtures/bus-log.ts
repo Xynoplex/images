@@ -4,8 +4,8 @@ import { expect } from '@playwright/test';
 /**
  * Bus-log capture for e2e tests.
  *
- * Enables the cross-wire logging (`busLog()` in `@xynoplex/core`) by
- * flipping `globalThis.__SEMIONT_BUS_LOG__` at page init, then listens
+ * Enables the cross-wire logging (`busLog()` in `@xynolog/core`) by
+ * flipping `globalThis.__XYNOLOG_BUS_LOG__` at page init, then listens
  * for `console.debug` lines matching the `[bus OP]` format and
  * collects them into structured entries.
  *
@@ -167,7 +167,7 @@ export class BusLogCapture {
 export async function attachBusLog(page: Page): Promise<BusLogCapture> {
   const capture = new BusLogCapture();
   await page.addInitScript(() => {
-    (globalThis as unknown as { __SEMIONT_BUS_LOG__?: boolean }).__SEMIONT_BUS_LOG__ = true;
+    (globalThis as unknown as { __XYNOLOG_BUS_LOG__?: boolean }).__XYNOLOG_BUS_LOG__ = true;
   });
   page.on('console', (msg) => capture.ingest(msg));
   return capture;

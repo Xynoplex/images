@@ -39,7 +39,7 @@ from provider import (
 from pydantic import JsonValue, TypeAdapter
 from spec import PACKAGE, JsonObject, objects, read, strings, thing
 
-from semiont_inference.catalogue import (
+from xynolog_inference.catalogue import (
     BudgetTokensOption,
     CatalogueFacts,
     CatalogueLimit,
@@ -50,7 +50,7 @@ from semiont_inference.catalogue import (
     catalogue_facts,
     read_catalogue,
 )
-from semiont_inference.interface import (
+from xynolog_inference.interface import (
     InferenceClient,
     InferenceLimits,
     InferenceResponse,
@@ -61,7 +61,7 @@ from semiont_inference.interface import (
     StructuredUnsupportedError,
     TokenUsage,
 )
-from semiont_inference.openai import OpenAIInferenceClient
+from xynolog_inference.openai import OpenAIInferenceClient
 
 KEY = "sk-played-key"
 CATALOGUE = PACKAGE / "tests/catalogue/model-catalogue.json"
@@ -177,7 +177,7 @@ async def generation(client: OpenAIInferenceClient, structured: bool) -> Inferen
 
 
 def ours(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference"]
+    return [record for record in caplog.records if record.name == "xynolog_inference"]
 
 
 def errors(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
@@ -727,7 +727,7 @@ def test_a_reply_with_no_final_text_is_a_failure_that_carries_the_stop_reason(
                 "Structured response could not be read: response is empty (stop_reason: max_tokens)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = errors(caplog)
     assert error.getMessage() == "Empty response from OpenAI"
@@ -786,7 +786,7 @@ def test_an_answer_the_provider_withheld_is_a_failure_of_its_own_in_each_of_its_
             assert (withheld.value.reason, str(withheld.value)) == (reason, f"The provider withheld its answer: {detail}")
             assert len(played.responses) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = errors(caplog)
     assert error.getMessage() == "The provider withheld its answer"
@@ -875,7 +875,7 @@ def test_a_failed_reply_that_states_no_block_is_a_plain_failure_with_no_status_a
             # The library does not ask again: the provider answered 200.
             assert len(played.responses) == 1
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (logged,) = errors(caplog)
     assert logged.getMessage() == "OpenAI reported that the generation failed"
@@ -982,7 +982,7 @@ def test_a_call_logs_what_the_other_drivers_do_at_the_same_levels(caplog: pytest
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0.2, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     records = ours(caplog)
     assert [(record.levelname, record.getMessage()) for record in records] == [

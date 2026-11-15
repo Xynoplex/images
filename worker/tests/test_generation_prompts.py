@@ -18,18 +18,18 @@ from typing import Final
 
 import pytest
 from pydantic import JsonValue
-from xynoplex.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
-from xynoplex.types import GenerationJobParams, SupportedMediaType
 from spec import ROOT
+from xynolog.timing import GENERATION_STALL_ASSUMED_TOKENS_COUNT
+from xynolog.types import GenerationJobParams, SupportedMediaType
 
-from semiont_worker.generation.resource_generation import (
+from xynolog_worker.generation.resource_generation import (
     RESOURCE_CONTENT_CAP,
     SEMANTIC_MATCH_CODE_POINTS,
     SEMANTIC_MATCH_LIMIT,
     Repair,
     generation_prompt,
 )
-from semiont_worker.log import LOG
+from xynolog_worker.log import LOG
 
 PROMPTS: Final = ROOT / "protocol/conformance/worker-service/prompts"
 

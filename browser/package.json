@@ -1,5 +1,5 @@
 {
-  "name": "semiont-browser",
+  "name": "xynolog-browser",
   "version": "0.7.3",
   "engines": {
     "node": ">=24.15.0"
@@ -50,8 +50,8 @@
     "@opentelemetry/resources": "^3.0.0",
     "@opentelemetry/sdk-trace": "^3.0.0",
     "@opentelemetry/semantic-conventions": "^1.44.0",
-    "@xynoplex/react-ui": "*",
-    "@xynoplex/sdk": "*",
+    "@xynolog/react-ui": "*",
+    "@xynolog/sdk": "*",
     "i18next": "^27.1.1",
     "i18next-http-backend": "^4.0.10",
     "pdfjs-dist": "^6.5.438",

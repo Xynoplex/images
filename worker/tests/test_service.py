@@ -31,24 +31,24 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from gateways import KnowledgeBaseStoodIn, stand_in
 from holding import LIMITS, Parties, answering, job
 from pydantic import JsonValue
-from xynoplex.errors import SignInError
-from xynoplex.http import KeyCredential
-from xynoplex.model import written
-from xynoplex.timing import MAX_RECONNECT_MS, RECONNECT_MS
-from xynoplex.transport import Frame
-from xynoplex.types import WorkerHealth, WorkerKnowledgeBaseConfig
-from semiont_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
-from semiont_service.config import Refused
-from semiont_service.knowledge_base import CONFIRMING_CHANNELS
+from xynolog.errors import SignInError
+from xynolog.http import KeyCredential
+from xynolog.model import written
+from xynolog.timing import MAX_RECONNECT_MS, RECONNECT_MS
+from xynolog.transport import Frame
+from xynolog.types import WorkerHealth, WorkerKnowledgeBaseConfig
+from xynolog_inference.interface import ElementSchema, InferenceClient, InferenceLimits, InferenceResponse, StructuredResponse
+from xynolog_service.config import Refused
+from xynolog_service.knowledge_base import CONFIRMING_CHANNELS
 
-from semiont_worker import agent
-from semiont_worker.knowledge_base import NO_KNOWLEDGE_BASE_ADMITS, KnowledgeBases, Served
-from semiont_worker.log import LOG
-from semiont_worker.service import boot, main
+from xynolog_worker import agent
+from xynolog_worker.knowledge_base import NO_KNOWLEDGE_BASE_ADMITS, KnowledgeBases, Served
+from xynolog_worker.log import LOG
+from xynolog_worker.service import boot, main
 
 KEY: Final = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 PEM: Final = KEY.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8, serialization.NoEncryption()).decode()
-ACCOUNT: Final = {"SEMIONT_OIDC_CLIENT_KEY": PEM}
+ACCOUNT: Final = {"XYNOLOG_OIDC_CLIENT_KEY": PEM}
 
 GEMMA: Final[dict[str, JsonValue]] = {
     "engine": {"provider": "ollama", "model": "gemma2:27b"},
@@ -61,7 +61,7 @@ DOCUMENT: Final[dict[str, JsonValue]] = {
         {
             "domain": "a.example",
             "gatewayUrl": "http://127.0.0.1:1",
-            "identity": {"issuer": "http://127.0.0.1:1/realms/semiont", "clientId": "semiont-worker"},
+            "identity": {"issuer": "http://127.0.0.1:1/realms/xynolog", "clientId": "xynolog-worker"},
             "engines": [
                 {
                     "engine": {"provider": "anthropic", "model": "claude-test"},
@@ -90,7 +90,7 @@ DOCUMENT: Final[dict[str, JsonValue]] = {
             ],
         },
     ],
-    "modelCatalogue": "/usr/share/semiont/model-catalogue.json",
+    "modelCatalogue": "/usr/share/xynolog/model-catalogue.json",
     "port": 24100,
     "logLevel": "warn",
     "logFormat": "simple",
@@ -208,10 +208,10 @@ def test_a_provider_whose_facts_are_a_catalogue_s_boots_with_them_and_is_refused
 def test_everything_it_is_started_with_is_read_at_boot_an_account_at_each_knowledge_base_and_a_client_of_each_distinct_engine(
     tmp_path: Path,
 ) -> None:
-    started = boot(["--config", document_file(tmp_path)], {**ACCOUNT, **KEYS, "SEMIONT_OIDC_CLIENT_ID": "unread", "UNREAD": "x"})
+    started = boot(["--config", document_file(tmp_path)], {**ACCOUNT, **KEYS, "XYNOLOG_OIDC_CLIENT_ID": "unread", "UNREAD": "x"})
     first, second = started.knowledge_bases
     # The account at each is the client its entry names at the issuer its entry names, proven by the one key.
-    assert (first.credential.issuer, first.credential.client_id) == ("http://127.0.0.1:1/realms/semiont", "semiont-worker")
+    assert (first.credential.issuer, first.credential.client_id) == ("http://127.0.0.1:1/realms/xynolog", "xynolog-worker")
     assert (second.credential.issuer, second.credential.client_id) == ("http://127.0.0.1:2/oauth", "worker-of-a-participant")
     for served in started.knowledge_bases:
         assert served.credential.private_key.private_numbers() == KEY.private_numbers()
@@ -246,9 +246,9 @@ def test_the_document_is_refused_before_the_key_the_key_before_a_provider_s_and_
         "knowledgeBases[2].domain is the domain of knowledgeBases[0]: a worker serves a knowledge base once"
     )
     # The key, before any provider's key. A secret, or a client id, is no key.
-    assert refusal(["--config", path], {}).startswith("SEMIONT_OIDC_CLIENT_KEY is not set")
-    accounts = {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker", "SEMIONT_OIDC_CLIENT_SECRET": "s3cret"}
-    assert refusal(["--config", path], accounts).startswith("SEMIONT_OIDC_CLIENT_KEY is not set")
+    assert refusal(["--config", path], {}).startswith("XYNOLOG_OIDC_CLIENT_KEY is not set")
+    accounts = {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker", "XYNOLOG_OIDC_CLIENT_SECRET": "s3cret"}
+    assert refusal(["--config", path], accounts).startswith("XYNOLOG_OIDC_CLIENT_KEY is not set")
     # The providers' keys, the first knowledge base's first engine's first.
     assert refusal(["--config", path], ACCOUNT).startswith("knowledgeBases[0].engines[0].apiKeyEnv names a variable")
     assert refusal(["--config", path], {**ACCOUNT, "FIRST_KEY": "sk-first"}).startswith(
@@ -276,8 +276,8 @@ def test_from_boot_on_the_log_is_written_as_the_document_says(tmp_path: Path, ca
         (["--config"], ACCOUNT, "[fatal] The worker's configuration document is not named: start it with --config <path>\n"),
         (
             ["--config", "<document>"],
-            {"SEMIONT_OIDC_CLIENT_ID": "semiont-worker"},
-            "[fatal] SEMIONT_OIDC_CLIENT_KEY is not set in the worker's environment: a worker signs in as a service account\n",
+            {"XYNOLOG_OIDC_CLIENT_ID": "xynolog-worker"},
+            "[fatal] XYNOLOG_OIDC_CLIENT_KEY is not set in the worker's environment: a worker signs in as a service account\n",
         ),
         (
             ["--config", "<document>"],
@@ -304,7 +304,7 @@ def test_a_service_that_does_not_start_says_why_once_on_stderr_and_exits_with_st
     assert isinstance(knowledge_bases, list)
     twice = document_file(tmp_path / "..", {**DOCUMENT, "knowledgeBases": [*knowledge_bases, knowledge_bases[0]]})
     named = {"<document>": document, "<twice>": twice}
-    monkeypatch.setattr(sys, "argv", ["semiont_worker", *(named.get(argument, argument) for argument in arguments)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_worker", *(named.get(argument, argument) for argument in arguments)])
     monkeypatch.setattr(os, "environ", environment)
     assert main() == 1
     captured = capsys.readouterr()
@@ -320,7 +320,7 @@ def test_a_document_the_schema_refuses_is_said_with_each_reason_on_a_line_of_its
 ) -> None:
     lacking = {name: value for name, value in DOCUMENT.items() if name not in ("port", "knowledgeBases")}
     document = document_file(tmp_path, lacking)
-    monkeypatch.setattr(sys, "argv", ["semiont_worker", f"--config={document}"])
+    monkeypatch.setattr(sys, "argv", ["xynolog_worker", f"--config={document}"])
     monkeypatch.setattr(os, "environ", dict(ACCOUNT))
     assert main() == 1
     head, *reasons = capsys.readouterr().err.splitlines()
@@ -412,7 +412,7 @@ async def settled() -> None:
 
 
 def records(caplog: pytest.LogCaptureFixture, message: str) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.getMessage() == message]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.getMessage() == message]
 
 
 def said_of(caplog: pytest.LogCaptureFixture, message: str, *facts: str) -> list[tuple[str | int, ...]]:
@@ -440,7 +440,7 @@ def test_each_knowledge_base_s_engines_claim_and_settle_on_its_own_stream_as_the
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=with_a_job("job-a"))
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=with_a_job("job-b"))
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -567,7 +567,7 @@ def test_a_knowledge_base_that_refuses_the_worker_is_said_once_and_left_refused_
         a.refusing.append(SignInError("exchange", "Client-credentials grant for worker-at-a failed (HTTP 401)", status=401))
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=with_a_job("job-b"))
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -611,7 +611,7 @@ def test_a_knowledge_base_whose_archivist_is_not_there_yet_is_starting_while_it_
     a.away = 3
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -642,7 +642,7 @@ def test_a_knowledge_base_nobody_answers_for_however_long_it_is_asked_is_trouble
     a.away = 17
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -674,7 +674,7 @@ def test_told_to_stop_while_its_one_knowledge_base_is_asked_which_it_is_the_stat
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=holding_nothing)
     a.away = 100
     stand_in(monkeypatch, a)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b()[:1])
@@ -702,7 +702,7 @@ def test_a_claim_refused_as_unauthorized_refuses_that_knowledge_base_alone(
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=unauthorized)
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=with_a_job("job-b"))
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -730,7 +730,7 @@ def test_one_knowledge_base_s_stream_ending_starts_that_one_again_alone_after_th
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=holding_nothing)
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         knowledge_bases = KnowledgeBases(a_and_b())
@@ -775,7 +775,7 @@ def test_each_further_start_of_a_knowledge_base_in_trouble_waits_twice_the_one_b
     # Its issuer does not answer six times in a row, and then does.
     a.refusing.extend([SignInError("exchange", "Client-credentials grant got no answer")] * 6)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     waits = [5000, 10000, 20000, 40000, 60000, 60000]
     assert (waits[0], waits[-1]) == (RECONNECT_MS, MAX_RECONNECT_MS)
 
@@ -806,7 +806,7 @@ def test_a_held_job_that_stalls_starts_its_knowledge_base_again_failing_the_job_
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=with_a_job("job-a"))
     b = KnowledgeBaseStoodIn(B_GATEWAY, "b.example", B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
     wedged = asyncio.Event()
 
     async def run_job(*_: object, **__: object) -> None:
@@ -880,7 +880,7 @@ def test_every_knowledge_base_refused_with_none_confirmed_first_is_a_refusal_to_
     a = KnowledgeBaseStoodIn(A_GATEWAY, "elsewhere.example", A_DID, each_life=holding_nothing)
     b = KnowledgeBaseStoodIn(B_GATEWAY, None, B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         with pytest.raises(Refused) as refused:
@@ -900,7 +900,7 @@ def test_every_knowledge_base_refused_after_one_was_confirmed_is_status_1(
     a = KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=unauthorized)
     b = KnowledgeBaseStoodIn(B_GATEWAY, "elsewhere.example", B_DID, each_life=holding_nothing)
     stand_in(monkeypatch, a, b)
-    caplog.set_level(logging.INFO, logger="semiont_worker")
+    caplog.set_level(logging.INFO, logger="xynolog_worker")
 
     async def scenario() -> None:
         assert await asyncio.wait_for(KnowledgeBases(a_and_b()).work(asyncio.Event()), 5) == 1
@@ -935,7 +935,7 @@ def started_document(tmp_path: Path, *gateways: str) -> str:
                 }
                 for name, gateway in zip(names, gateways, strict=True)
             ],
-            "modelCatalogue": "/usr/share/semiont/model-catalogue.json",
+            "modelCatalogue": "/usr/share/xynolog/model-catalogue.json",
             "port": free_port(),
             "logLevel": "info",
             "logFormat": "json",
@@ -1005,7 +1005,7 @@ def test_the_health_endpoint_answers_a_worker_health_with_each_knowledge_base_in
     assert isinstance(read, dict)
     port = read["port"]
     assert isinstance(port, int)
-    monkeypatch.setattr(sys, "argv", ["semiont_worker", "--config", document])
+    monkeypatch.setattr(sys, "argv", ["xynolog_worker", "--config", document])
     monkeypatch.setattr(os, "environ", dict(ACCOUNT))
     every_state = [("a.example", "refused"), ("b.example", "working"), ("c.example", "starting")]
     body = answered_health(port, lambda health: [(each.domain, each.state) for each in health.knowledge_bases] == every_state)
@@ -1057,7 +1057,7 @@ def test_a_service_every_knowledge_base_of_which_refused_it_none_confirmed_says_
         KnowledgeBaseStoodIn(A_GATEWAY, "elsewhere.example", A_DID, each_life=holding_nothing),
         KnowledgeBaseStoodIn(B_GATEWAY, None, B_DID, each_life=holding_nothing),
     )
-    monkeypatch.setattr(sys, "argv", ["semiont_worker", "--config", started_document(tmp_path, A_GATEWAY, B_GATEWAY)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_worker", "--config", started_document(tmp_path, A_GATEWAY, B_GATEWAY)])
     monkeypatch.setattr(os, "environ", dict(ACCOUNT))
     assert main() == 1
     captured = capsys.readouterr()
@@ -1079,7 +1079,7 @@ def test_a_service_every_knowledge_base_of_which_refused_it_one_confirmed_first_
         KnowledgeBaseStoodIn(A_GATEWAY, "a.example", A_DID, each_life=unauthorized),
         KnowledgeBaseStoodIn(B_GATEWAY, "elsewhere.example", B_DID, each_life=holding_nothing),
     )
-    monkeypatch.setattr(sys, "argv", ["semiont_worker", "--config", started_document(tmp_path, A_GATEWAY, B_GATEWAY)])
+    monkeypatch.setattr(sys, "argv", ["xynolog_worker", "--config", started_document(tmp_path, A_GATEWAY, B_GATEWAY)])
     monkeypatch.setattr(os, "environ", dict(ACCOUNT))
     assert main() == 1
     captured = capsys.readouterr()

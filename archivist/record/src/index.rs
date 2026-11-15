@@ -4,9 +4,9 @@
 use crate::shard::shard_path;
 use crate::{Object, RecordError, failed, indented, read_object, write_whole};
 use ring::digest::{SHA256, digest};
-use xynoplex::channels::{Channel, YieldCloned, YieldCreated, YieldMoved};
 use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
+use xynolog::channels::{Channel, YieldCloned, YieldCreated, YieldMoved};
 
 pub struct UriIndex {
     dir: PathBuf,

@@ -3,7 +3,7 @@
 //! services read.
 //!
 //! The bundles in protocol/specs/ are gitignored build output, absent from a clean
-//! checkout, so this bundles protocol/specs/src itself (xynoplex-codegen): one document
+//! checkout, so this bundles protocol/specs/src itself (xynolog-codegen): one document
 //! per API — the protocol's, and the Archivist's. From the protocol's document
 //! it writes the component schemas as JSON Schema draft 7 and compiles every
 //! one of them, so a schema that cannot be compiled fails here rather than at
@@ -13,13 +13,13 @@
 //! `SERVICE_SCHEMAS` are the schemas no client reads — the configuration
 //! documents, and what a service keeps or answers of its own — generated into
 //! `service_types.rs`. A schema they reach that is the protocol's is named
-//! from the SDK (`xynoplex::types`), which generates it: one home for each.
+//! from the SDK (`xynolog::types`), which generates it: one home for each.
 
-use xynoplex_codegen::bundle::{Bundle, draft7_definitions, read_json, write_json};
-use xynoplex_codegen::types::{Generation, generate};
 use serde_json::{Value, json};
 use std::fs;
 use std::path::PathBuf;
+use xynolog_codegen::bundle::{Bundle, draft7_definitions, read_json, write_json};
+use xynolog_codegen::types::{Generation, generate};
 
 /// The schemas only the services read.
 const SERVICE_SCHEMAS: [&str; 17] = [
@@ -72,7 +72,7 @@ fn main() {
             &definitions["definitions"],
             &Generation {
                 roots: &SERVICE_SCHEMAS,
-                elsewhere: Some("xynoplex::types"),
+                elsewhere: Some("xynolog::types"),
                 identifiers: &[],
                 discriminator_accessors: &[],
             },
@@ -84,7 +84,7 @@ fn main() {
     let version = version["version"]
         .as_str()
         .expect("version.json has a string `version`");
-    println!("cargo:rustc-env=SEMIONT_VERSION={version}");
+    println!("cargo:rustc-env=XYNOLOG_VERSION={version}");
 }
 
 fn compile_every_schema(definitions: &Value) {

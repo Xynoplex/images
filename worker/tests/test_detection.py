@@ -22,10 +22,10 @@ from aio import pass_time, run, under_way
 from counted import counted
 from opentelemetry.sdk.metrics.export import InMemoryMetricReader
 from pydantic import JsonValue
-from xynoplex.annotations import QuotedText, TextSpan, reconcile
-from xynoplex.types import TagCategory, TagSchema, UnitCursor
-from xynoplex.watched import Variable
-from semiont_inference.interface import (
+from xynolog.annotations import QuotedText, TextSpan, reconcile
+from xynolog.types import TagCategory, TagSchema, UnitCursor
+from xynolog.watched import Variable
+from xynolog_inference.interface import (
     ElementSchema,
     InferenceClient,
     InferenceLimits,
@@ -33,14 +33,14 @@ from semiont_inference.interface import (
     StructuredResponse,
     TokenUsage,
 )
-from semiont_inference.mock import MockInferenceClient
+from xynolog_inference.mock import MockInferenceClient
 
-from semiont_worker.chunking import Chunking, Cut, chunk_text, cut_chunk, estimate_tokens
-from semiont_worker.detection.annotation_detection import detect_assessments, detect_comments, detect_highlights, detect_tags
-from semiont_worker.detection.chunk_plan import ChunkCursor, DetectionBudget, UnderReportedPiece, derive_detection_budget
-from semiont_worker.detection.chunk_size import CallOutcome, next_chunk_size, resumed_size
-from semiont_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, ENTITY_ELEMENT_SCHEMA, Mention, extract_entities
-from semiont_worker.detection.parsers import (
+from xynolog_worker.chunking import Chunking, Cut, chunk_text, cut_chunk, estimate_tokens
+from xynolog_worker.detection.annotation_detection import detect_assessments, detect_comments, detect_highlights, detect_tags
+from xynolog_worker.detection.chunk_plan import ChunkCursor, DetectionBudget, UnderReportedPiece, derive_detection_budget
+from xynolog_worker.detection.chunk_size import CallOutcome, next_chunk_size, resumed_size
+from xynolog_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, ENTITY_ELEMENT_SCHEMA, Mention, extract_entities
+from xynolog_worker.detection.parsers import (
     ASSESSMENT_ELEMENT_SCHEMA,
     COMMENT_ELEMENT_SCHEMA,
     HIGHLIGHT_ELEMENT_SCHEMA,
@@ -49,8 +49,8 @@ from semiont_worker.detection.parsers import (
     CommentMatch,
     TagMatch,
 )
-from semiont_worker.detection.prompts import assessment_prompt, comment_prompt, count_prompt, highlight_prompt, mention_prompt, tag_prompt
-from semiont_worker.failure_class import DeterministicJobError
+from xynolog_worker.detection.prompts import assessment_prompt, comment_prompt, count_prompt, highlight_prompt, mention_prompt, tag_prompt
+from xynolog_worker.failure_class import DeterministicJobError
 
 # Sixty sentences, each naming a marker no other names: a text of several pieces, in which a span says which piece proposed it.
 TEXT: Final = " ".join(f"Sentence {n} of the survey names marker {n:03d} beside the river." for n in range(1, 61))
@@ -570,7 +570,7 @@ def test_a_reply_that_was_cut_off_is_refused_in_words_that_say_whose_it_was_and_
 
 def calls_counted(reader: InMemoryMetricReader) -> Counter[tuple[object, ...]]:
     """How many generations of a mark job have been counted so far, by everything each is filed under."""
-    return counted(reader, "semiont.detection.calls", "detection.label", "detection.outcome", "detection.depth", "detection.reroll")
+    return counted(reader, "xynolog.detection.calls", "detection.label", "detection.outcome", "detection.depth", "detection.reroll")
 
 
 @EVERY_KIND
@@ -790,7 +790,7 @@ def test_a_reply_that_found_under_half_the_count_of_a_piece_that_can_be_cut_smal
 def test_a_collapse_kept_says_what_was_found_and_counted_over_how_long_a_piece_and_what_was_found_is_handed_on(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     limits = limits_of(REFERENCE, 600)
     # A character outside the Basic Multilingual Plane is one code point of a piece's length, and two UTF-16 code units.
     text = chr(0x1F600) + " " + TEXT[:298]
@@ -818,11 +818,11 @@ def test_a_collapse_kept_says_what_was_found_and_counted_over_how_long_a_piece_a
 
 
 def said(caplog: pytest.LogCaptureFixture, message: str) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_worker" and record.getMessage() == message]
+    return [record for record in caplog.records if record.name == "xynolog_worker" and record.getMessage() == message]
 
 
 def test_an_extraction_says_what_it_opens_with_and_what_each_reply_carried(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     limits = limits_of(REFERENCE, 600)
     budget = budget_of(REFERENCE, limits)
     size = budget.chunking.chunk_size
@@ -849,7 +849,7 @@ def test_an_extraction_says_what_it_opens_with_and_what_each_reply_carried(caplo
 
 
 def test_an_element_that_is_no_mention_is_whispered_of_and_a_mention_of_another_type_is_warned_of(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     limits = limits_of(REFERENCE, 600)
     reply: list[JsonValue] = [{"exact": "marker 001"}, {"exact": "the river", "entityType": "River"}]
 
@@ -864,7 +864,7 @@ def test_an_element_that_is_no_mention_is_whispered_of_and_a_mention_of_another_
 def test_a_count_that_fails_or_answers_no_count_is_warned_of_checks_nothing_and_is_told_as_unchecked(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    caplog.set_level(logging.DEBUG, logger="semiont_worker")
+    caplog.set_level(logging.DEBUG, logger="xynolog_worker")
     limits = limits_of(REFERENCE, 600)
     text = TEXT[:300]
     piece = one_piece_of(text, limits)

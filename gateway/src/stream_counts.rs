@@ -1,5 +1,5 @@
 //! Streams per principal, counted across replicas
-//! (`x-semiont-limits.streamsPerPrincipal`). Each stream a limited principal
+//! (`x-xynolog-limits.streamsPerPrincipal`). Each stream a limited principal
 //! holds is an entry in a table every replica shares, keyed by the stream's id
 //! and naming its DID: its lease. The connection writes it again every
 //! heartbeat and deletes it when the stream ends. A lease whose connection
@@ -13,12 +13,12 @@
 use crate::limits;
 use crate::principal::Principal;
 use crate::signal::{SharedTable, SignalPlane, Subscription, now_ms};
-use semiont_observability::logging;
 use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::time::Duration;
 use tokio::sync::mpsc;
+use xynolog_observability::logging;
 
 const TABLE: &str = "streams_held";
 

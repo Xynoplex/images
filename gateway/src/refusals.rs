@@ -1,4 +1,4 @@
-//! Refused requests per holder (the bearer scheme's `x-semiont-limits`): a
+//! Refused requests per holder (the bearer scheme's `x-xynolog-limits`): a
 //! token bucket for each holder a refused token names, read without verifying
 //! it, and one shared by every request that names none. Consulted only once a
 //! credential is refused, so a token that verifies is never limited, whatever

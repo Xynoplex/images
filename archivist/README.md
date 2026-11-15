@@ -1,15 +1,15 @@
-# semiont-archivist
+# xynolog-archivist
 
-**The Archivist keeps Semiont's system of record**: the event log, of which everything else — views,
+**The Archivist keeps Xynolog's system of record**: the event log, of which everything else — views,
 graph, vectors — is a projection. It appends to that record, serves it, and is **the only process
 that touches the knowledge base tree**; every other service reaches it over the wire. It is a Rust
-service that serves HTTP on port 24103, and the launcher starts it with `semiont start`.
+service that serves HTTP on port 24103, and the launcher starts it with `xynolog start`.
 
 | | |
 | --- | --- |
-| Image | `ghcr.io/xynoplex/xynoplex-archivist` |
+| Image | `ghcr.io/xynolog/xynolog-archivist` |
 | Port | 24103 |
-| Command | `/usr/local/bin/semiont-archivist --config /etc/semiont/archivist.json` |
+| Command | `/usr/local/bin/xynolog-archivist --config /etc/xynolog/archivist.json` |
 | Code | Rust, in this directory: [src](src), and its crates [record](record) and [staging](staging) |
 | Specification | [protocol/contract/ARCHIVIST.md](../protocol/contract/ARCHIVIST.md) |
 | Judged by | [protocol/conformance/archivist](../protocol/conformance/archivist/README.md) |
@@ -50,7 +50,7 @@ single-writer — the Archivist's staging driver runs it, so two processes on on
 the only process that stages into it.
 
 **A knowledge base need not be a git repository.** Without `git.sync: true` in its committed
-`.semiont/config.yaml` the Archivist runs no git, and reports no branch. A project file that says
+`.xynolog/config.yaml` the Archivist runs no git, and reports no branch. A project file that says
 `git.sync: true` over a tree that is not a git checkout stops the Archivist at boot, naming the tree
 and the two ways out: `git init`, or `git.sync` set to `false`.
 
@@ -68,7 +68,7 @@ globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](
 | Route | What it does | Called by |
 | --- | --- | --- |
 | `GET /health` | liveness; the only unauthenticated path | health checks |
-| `POST /resources` | stores an upload, multipart as the client sent it, and records the resource for the principal named in `Semiont-Principal` (its roles in `Semiont-Roles`), as a copy when the upload carries `cloneToken`; answers `{resourceId}`. Its `Idempotency-Key` decides the resource's id, so an upload sent again is answered with the resource its first attempt made, and nothing is stored again; 422 when it carries other fields or other bytes. 400 names what is wrong with the upload; 500 carries the record's reason for refusing it | the gateway, for `POST /resources` |
+| `POST /resources` | stores an upload, multipart as the client sent it, and records the resource for the principal named in `Xynolog-Principal` (its roles in `Xynolog-Roles`), as a copy when the upload carries `cloneToken`; answers `{resourceId}`. Its `Idempotency-Key` decides the resource's id, so an upload sent again is answered with the resource its first attempt made, and nothing is stored again; 422 when it carries other fields or other bytes. 400 names what is wrong with the upload; 500 carries the record's reason for refusing it | the gateway, for `POST /resources` |
 | `GET /resources/:id/content` | a resource's bytes, streamed, with its stored media type | the gateway, for `GET /resources/:id`; the Librarian, the Smelter and the workers, directly |
 | `GET /resources/:id/jsonld` | a resource's linked-data description (the answer to `browse:resource-requested`); 404 when there is no such resource | the gateway, for `GET /resources/:id/jsonld` |
 | `GET /resources/:id/annotations` | a resource's annotations, the persons they mention named, and how many there are; 404 when there is no such resource | the gateway, for `GET /resources/:id/annotations`; the Smelter, directly |
@@ -88,13 +88,13 @@ reply against it, and the gateway's holds its stand-in Archivist to it.
 A browser never calls these: its requests go to the gateway, which calls them with its own
 credential.
 
-**Every caller holds `semiont-service`.** Everything but `/health` requires a bearer token from
-the knowledge base's identity provider carrying the `semiont-service` role. Each caller gets one
+**Every caller holds `xynolog-service`.** Everything but `/health` requires a bearer token from
+the knowledge base's identity provider carrying the `xynolog-service` role. Each caller gets one
 with its own service account. Every refusal is **401**, with the challenge `Bearer`, or
 `Bearer error="invalid_token"` when a token was presented and refused.
 
 The principal headers on `POST /resources` are believed because the caller holds the
-`semiont-service` role: only the stack's own services call this surface, and the gateway is the one
+`xynolog-service` role: only the stack's own services call this surface, and the gateway is the one
 that verified the person.
 
 **Standing rule: this surface serves content, and nothing else** — the KB tree, each resource's
@@ -104,7 +104,7 @@ answers whose size follows the document's, and the bus is for messages of bounde
 not belong here.
 
 **Known limit: a worker outside the stack.** A worker reads resource bytes here directly, so it
-needs this port and a token carrying `semiont-service`. This service accepts the same role for
+needs this port and a token carrying `xynolog-service`. This service accepts the same role for
 reading the event log and for writing bytes into the working tree. A worker run outside the stack
 therefore holds a credential that can write here, and only network access keeps it out.
 
@@ -112,7 +112,7 @@ therefore holds a credential that can write here, and only network access keeps 
 
 **It is the only container that mounts the knowledge base**, pinned by
 `TestExactlyOneContainerMountsTheKB` in the launcher. `/kb` is the working tree (the document's
-`root`): the resources, and the event log under `.semiont/events/`. The views it derives from the
+`root`): the resources, and the event log under `.xynolog/events/`. The views it derives from the
 log go to the state volume (the document's `stateHome`), at its top; the Librarian reads what it
 needs of them over the bus. The anchored-text store (`/anchored-text`) holds the text the Smelter
 derives from a PDF, with where each piece of it sits on its page; the Smelter stores each entry
@@ -130,33 +130,33 @@ which is what makes that ordering enforceable.
 
 It reads one configuration document, an
 [`ArchivistConfig`](../protocol/specs/src/components/schemas/ArchivistConfig.json), from the path its
-`--config` flag names; the image passes `/etc/semiont/archivist.json`. The document names the
+`--config` flag names; the image passes `/etc/xynolog/archivist.json`. The document names the
 gateway, the issuer, the knowledge base's root, the state volume, the anchored-text store, the
 engine for each job and each Librarian actor, the port, and the staging bounds. Mount the knowledge base, the state volume and
 the anchored-text store where the document says they are.
 
-**Its own service account.** Set `SEMIONT_OIDC_CLIENT_ID` and `SEMIONT_OIDC_CLIENT_SECRET` to its
+**Its own service account.** Set `XYNOLOG_OIDC_CLIENT_ID` and `XYNOLOG_OIDC_CLIENT_SECRET` to its
 service account at the knowledge base's issuer. The token the issuer grants it is its bearer at
 the gateway, and it requires a token of the same kind on its own surface.
 
 **`skipRebuild`** in the document skips the startup view rebuild, and with it the reap: views the
-log no longer justifies survive until a rebuild runs or `semiont clean --store state` clears them.
+log no longer justifies survive until a rebuild runs or `xynolog clean --store state` clears them.
 
 ## What the image carries
 
-The binary, at `/usr/local/bin/semiont-archivist`, on Alpine, with `tini`, `git` (which trusts
+The binary, at `/usr/local/bin/xynolog-archivist`, on Alpine, with `tini`, `git` (which trusts
 the knowledge base's working tree, mounted at `/kb`) and the shared `boot.sh` and supervisor.
-It runs as the user `semiont`, carries no source, and builds, installs or fetches nothing at
+It runs as the user `xynolog`, carries no source, and builds, installs or fetches nothing at
 start.
 
 ## Working on it
 
-Its three crates, `semiont-archivist`, `semiont-archivist-record` and
-`semiont-archivist-staging`, are members of the Rust workspace in
+Its three crates, `xynolog-archivist`, `xynolog-archivist-record` and
+`xynolog-archivist-staging`, are members of the Rust workspace in
 [packages/rust](../packages/rust/README.md). From there,
 
 ```bash
-cargo test -p semiont-archivist -p semiont-archivist-record -p semiont-archivist-staging
+cargo test -p xynolog-archivist -p xynolog-archivist-record -p xynolog-archivist-staging
 ```
 
 runs their tests. The [conformance suite](../protocol/conformance/archivist/README.md) holds a
@@ -169,7 +169,7 @@ From the repository root, with the toolchain
 
 ```bash
 docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.sh) \
-  --file archivist/Dockerfile --tag ghcr.io/xynoplex/xynoplex-archivist:local .
+  --file archivist/Dockerfile --tag ghcr.io/xynolog/xynolog-archivist:local .
 ```
 
 [`make build`](../Makefile) and the publish workflow pass

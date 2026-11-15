@@ -1,7 +1,7 @@
 """What the vLLM driver and the llama.cpp driver do alike, against a Chat Completions server this test plays over HTTP.
 
 Both reach their server through OpenAI's own library, by one implementation
-they share (`semiont_inference._chat_completions`), which no caller imports:
+they share (`xynolog_inference._chat_completions`), which no caller imports:
 each case here is run through each driver. The library is not replaced or
 patched: it sends real requests to the stand-in, which answers from what a
 test scripted. What arrives is held exactly, the headers too.
@@ -40,7 +40,7 @@ from provider_chat_completions import (
 from pydantic import JsonValue, TypeAdapter
 from spec import PACKAGE, SPEC, JsonObject, objects, read, text, thing
 
-from semiont_inference.interface import (
+from xynolog_inference.interface import (
     InferenceClient,
     InferenceLimits,
     InferenceResponse,
@@ -49,8 +49,8 @@ from semiont_inference.interface import (
     StructuredResponse,
     TokenUsage,
 )
-from semiont_inference.llamacpp import LlamaCppInferenceClient
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
 MODEL = "served-model"
 KEY = "sk-played-key"
@@ -180,7 +180,7 @@ async def generation(client: InferenceClient, structured: bool) -> InferenceResp
 
 
 def ours(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
-    return [record for record in caplog.records if record.name == "semiont_inference"]
+    return [record for record in caplog.records if record.name == "xynolog_inference"]
 
 
 def at_level(caplog: pytest.LogCaptureFixture, level: int) -> list[logging.LogRecord]:
@@ -656,7 +656,7 @@ def test_the_answer_is_the_content_alone_and_what_the_model_thought_all_the_same
             else:
                 assert answer == InferenceResponse(text="The Loire.", stop_reason="end_turn", usage=COUNTED)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (warned,) = at_level(caplog, logging.WARNING)
     assert re.search("thinking", warned.getMessage(), re.IGNORECASE)
@@ -681,7 +681,7 @@ def test_a_reply_with_no_thought_in_it_warns_of_none_and_neither_does_the_other_
             assert (await client.generate_text("p", 100, 0)).text == "ok"
             assert (await client.generate_text("p", 100, 0)).text == "ok"
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     assert at_level(caplog, logging.WARNING) == []
 
@@ -745,7 +745,7 @@ def test_a_reply_cut_off_before_its_first_character_is_a_failure_that_carries_th
                 "Structured response could not be read: response is empty (stop_reason: max_tokens)",
             )
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = at_level(caplog, logging.ERROR)
     assert error.getMessage() == "Empty response from the server"
@@ -848,7 +848,7 @@ def test_a_reply_that_cannot_be_read_as_the_array_raises_and_is_never_an_empty_o
                 await driver(server, played).generate_structured("p", 1000, 0.3, PERSON)
             assert str(unread.value) == f"Structured response could not be read: {detail}"
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     (error,) = at_level(caplog, logging.ERROR)
     assert error.getMessage() == "Structured response could not be read"
@@ -917,7 +917,7 @@ def test_a_call_logs_what_the_other_drivers_do_at_the_same_levels(server: Server
             with pytest.raises(StructuredReadError):
                 await client.generate_structured("prompt", 100, 0.2, ELEMENT)
 
-    caplog.set_level(logging.DEBUG, logger="semiont_inference")
+    caplog.set_level(logging.DEBUG, logger="xynolog_inference")
     run(scenario())
     records = ours(caplog)
     assert [(record.levelname, record.getMessage()) for record in records] == [
@@ -1080,9 +1080,9 @@ import provider_chat_completions as played_server
 from aio import run, soon
 from provider import HOLD
 
-from semiont_inference.interface import ProviderStatusError, StructuredReadError
-from semiont_inference.llamacpp import LlamaCppInferenceClient
-from semiont_inference.vllm import VllmInferenceClient
+from xynolog_inference.interface import ProviderStatusError, StructuredReadError
+from xynolog_inference.llamacpp import LlamaCppInferenceClient
+from xynolog_inference.vllm import VllmInferenceClient
 
 Driver, entry = {
     "vllm": (VllmInferenceClient, played_server.vllm_entry),
@@ -1141,13 +1141,13 @@ print(
             for resource in reader.get_metrics_data().resource_metrics
             for scope in resource.scope_metrics
             for metric in scope.metrics
-            if metric.name.startswith("semiont.inference.")
+            if metric.name.startswith("xynolog.inference.")
         ]
     )
 )
 """
 
-PREFIX = "semiont.inference."
+PREFIX = "xynolog.inference."
 
 
 @each_server
@@ -1198,4 +1198,4 @@ def test_a_generation_is_counted_once_by_how_it_ended_under_its_drivers_own_name
     assert tokens == {"input": 4127 + 10 + 7, "output": 571 + 5 + 3}
     # Every generation is timed, the failing ones too, in milliseconds.
     assert timed == calls
-    assert recorded["semiont.inference.duration"]["unit"] == "ms"
+    assert recorded["xynolog.inference.duration"]["unit"] == "ms"

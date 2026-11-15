@@ -4,7 +4,7 @@ set -euo pipefail
 # Audit: every service image is supervision-CAPABLE and orchestrator-native.
 #
 # The image half of a split gate. Supervision is decided per RUN by the
-# launcher (SEMIONT_SUPERVISE), so this gate can only prove an image is
+# launcher (XYNOLOG_SUPERVISE), so this gate can only prove an image is
 # CAPABLE of it: tini as PID 1, a boot entrypoint that branches on the flag,
 # the shared supervisor on board, and a conventional exec-form CMD (`node`
 # on an entry module, a Rust service's binary, or `python -P -m` on a Python

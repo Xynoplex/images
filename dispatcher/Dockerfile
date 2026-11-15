@@ -56,22 +56,22 @@ COPY packages/rust/observability/src packages/rust/observability/src
 WORKDIR /build/packages/rust
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/build/packages/rust/target \
-    cargo auditable build --release --locked -p semiont-archivist -p semiont-dispatcher -p semiont-gateway && \
-    cp target/release/semiont-archivist target/release/semiont-dispatcher target/release/semiont-gateway /
+    cargo auditable build --release --locked -p xynolog-archivist -p xynolog-dispatcher -p xynolog-gateway && \
+    cp target/release/xynolog-archivist target/release/xynolog-dispatcher target/release/xynolog-gateway /
 
 FROM alpine:3.24
 RUN apk upgrade --no-cache && apk add --no-cache tini
 
 # The uid the launcher's state mount is written as, as in every service image.
-RUN addgroup --system --gid 1001 semiont && \
-    adduser --system --uid 1001 --ingroup semiont --home /home/semiont semiont
+RUN addgroup --system --gid 1001 xynolog && \
+    adduser --system --uid 1001 --ingroup xynolog --home /home/xynolog xynolog
 
-COPY --from=builder /semiont-dispatcher /usr/local/bin/semiont-dispatcher
-COPY LICENSE dispatcher/NOTICE /home/semiont/
+COPY --from=builder /xynolog-dispatcher /usr/local/bin/xynolog-dispatcher
+COPY LICENSE dispatcher/NOTICE /home/xynolog/
 COPY shared/supervise.sh /usr/local/bin/supervise.sh
 COPY shared/boot.sh /usr/local/bin/boot.sh
 
-USER semiont
+USER xynolog
 
 EXPOSE 24105
 
@@ -83,4 +83,4 @@ ENV SUPERVISE_NAME=dispatcher \
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/boot.sh"]
 # --config names where the launcher mounts the dispatcher's document; the
 # launcher's census (TestConfigDocumentsAreWhereTheImagesLook) reads it here.
-CMD ["/usr/local/bin/semiont-dispatcher", "--config", "/etc/semiont/dispatcher.json"]
+CMD ["/usr/local/bin/xynolog-dispatcher", "--config", "/etc/xynolog/dispatcher.json"]

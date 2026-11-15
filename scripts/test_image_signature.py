@@ -43,11 +43,11 @@ class SignatureTest(unittest.TestCase):
 
     def test_transitive_npm_integrity_changes_without_a_version_bump(self):
         packages = {
-            "@xynoplex/app": {
+            "@xynolog/app": {
                 "dist": {"integrity": "app"},
-                "dependencies": {"@xynoplex/core": "*"},
+                "dependencies": {"@xynolog/core": "*"},
             },
-            "@xynoplex/core": {"dist": {"integrity": "first"}},
+            "@xynolog/core": {"dist": {"integrity": "first"}},
         }
 
         class Registry(BaseHTTPRequestHandler):
@@ -75,12 +75,12 @@ class SignatureTest(unittest.TestCase):
         worker = threading.Thread(target=server.serve_forever, daemon=True)
         worker.start()
         try:
-            self.dockerfile.write_text("FROM scratch\nRUN npm install @xynoplex/app\n")
+            self.dockerfile.write_text("FROM scratch\nRUN npm install @xynolog/app\n")
             address = f"http://127.0.0.1:{server.server_port}"
             before = self.signature(registry=address)
-            packages["@xynoplex/core"]["dist"]["integrity"] = "second"
+            packages["@xynolog/core"]["dist"]["integrity"] = "second"
             self.assertNotEqual(self.signature(registry=address), before)
-            del packages["@xynoplex/core"]
+            del packages["@xynolog/core"]
             self.assertEqual(self.signature(registry=address), "")
         finally:
             server.shutdown()

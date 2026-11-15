@@ -1,6 +1,6 @@
 # Browser Development
 
-How to work on the Semiont Browser: running it from source against a real stack, the scripts
+How to work on the Xynolog Browser: running it from source against a real stack, the scripts
 it has, adding a page, and where to look when something is wrong.
 
 Building the whole monorepo, and running your changes as the shipped images, is the
@@ -10,14 +10,14 @@ what is particular to this app.
 ## Run it from source against a stack
 
 The Browser is a client, so it needs a knowledge base to talk to. Start one with the
-[`semiont` launcher](../../../apps/launcher/README.md), from a knowledge base's directory, and then
+[`xynolog` launcher](../../../apps/launcher/README.md), from a knowledge base's directory, and then
 serve the app from source in place of the stack's own Browser.
 
 ```bash
 # In a knowledge base's directory
-semiont start
-semiont useradd --email you@example.com   # prompts for the password
-semiont stop --service browser            # free port 3000 for the dev server
+xynolog start
+xynolog useradd --email you@example.com   # prompts for the password
+xynolog stop --service browser            # free port 3000 for the dev server
 ```
 
 ```bash
@@ -43,9 +43,9 @@ container. Under Vite, add the knowledge base by hand.
 
 When a change needs to be exercised as the image, or it touches a package a service runs,
 rebuild with [`make build`](../../Makefile) and name the
-`:local` image: `ghcr.io/xynoplex/xynoplex-browser:local` as `spec.image` in the
-Browser's document (`semiont settings browser --path` prints where it is), and `:local` in the
-knowledge base's `.semiont/stack/` documents for the services. An image still named `:latest` is the published one, and your change is not in it.
+`:local` image: `ghcr.io/xynolog/xynolog-browser:local` as `spec.image` in the
+Browser's document (`xynolog settings browser --path` prints where it is), and `:local` in the
+knowledge base's `.xynolog/stack/` documents for the services. An image still named `:latest` is the published one, and your change is not in it.
 [Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md) has the loop.
 
 ## Scripts
@@ -65,7 +65,7 @@ knowledge base's `.semiont/stack/` documents for the services. An image still na
 | `npm run test:a11y` | The accessibility tests |
 
 Translations are generated before `dev`, `build`, `start` and the test scripts run:
-`scripts/merge-translations.js` merges `messages-source/` with `@xynoplex/react-ui`'s strings
+`scripts/merge-translations.js` merges `messages-source/` with `@xynolog/react-ui`'s strings
 into `messages/` and `public/messages/`. Edit `messages-source/`, never the generated
 directories ([Internationalization](INTERNATIONALIZATION.md)).
 
@@ -80,10 +80,10 @@ and a route registered for it in `src/App.tsx`.
 
 ```tsx sketch
 // src/app/[locale]/know/timeline/page.tsx
-import { useSemiont, useObservable } from '@xynoplex/react-ui';
+import { useXynolog, useObservable } from '@xynolog/react-ui';
 
 export default function TimelinePage() {
-  const session = useObservable(useSemiont().activeSession$);
+  const session = useObservable(useXynolog().activeSession$);
   const state = useObservable(session?.client.browse.entityTypes());
 
   if (!state || state.status === 'pending') return <p>Loading…</p>;
@@ -111,20 +111,20 @@ A page reads and writes through the session's client and nothing else. The app c
 `fetch` call. [API Integration](API-INTEGRATION.md) has the client's namespaces and how live
 queries refresh themselves.
 
-A component that could serve another host application belongs in `@xynoplex/react-ui`, not
+A component that could serve another host application belongs in `@xynolog/react-ui`, not
 here. This app holds routes, providers and the few components that make sense nowhere else
 ([Component Library](COMPONENT-LIBRARY.md)).
 
 ## Styles
 
-`src/app/globals.css` imports `@xynoplex/react-ui/styles` and then Tailwind:
+`src/app/globals.css` imports `@xynolog/react-ui/styles` and then Tailwind:
 
-- **`@xynoplex/react-ui`'s semantic classes** style every library component. Do not override
+- **`@xynolog/react-ui`'s semantic classes** style every library component. Do not override
   them from the app.
 - **Tailwind utilities** are for this app's own layout: page containers, spacing, positioning.
 
 ```tsx
-import { Button } from '@xynoplex/react-ui';
+import { Button } from '@xynolog/react-ui';
 
 // Good: spacing around a library component
 <Button variant="primary" className="mt-4">Submit</Button>;
@@ -139,7 +139,7 @@ react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
 
 ## When something is wrong
 
-- **See the bus.** In the page's console, `window.__SEMIONT_BUS_LOG__ = true` logs one line for
+- **See the bus.** In the page's console, `window.__XYNOLOG_BUS_LOG__ = true` logs one line for
   every bus event the page sends and receives. It is usually the fastest way to see what a
   change did ([bus logging](../../e2e/docs/bus-logging.md)).
 - **Who am I signed in as?** `GET /api/users/me` on the gateway, with the session's token,
@@ -147,7 +147,7 @@ react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
 - **Sign-in fails.** Look at the identity provider's logs, not the gateway's: a sign-in that
   fails never reaches the gateway. An `Invalid origin` there means the app is not running at
   the origin the provider expects, which is the port rule above.
-- **Signed out on reload.** The session is in `localStorage`, under `semiont.session.<kb id>`.
+- **Signed out on reload.** The session is in `localStorage`, under `xynolog.session.<kb id>`.
   If it is there and the app still shows signed out, the provider refused to renew it.
 - **Requests are blocked as mixed content.** An app loaded over `https` cannot call a gateway
   over `http`.

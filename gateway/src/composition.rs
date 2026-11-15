@@ -9,8 +9,8 @@ use crate::emit_keys::EmitKeys;
 use crate::ledger::Ledger;
 use crate::signal::{ClientSubscription, SignalPlane, Subscription};
 use crate::stream_counts::StreamCounts;
-use semiont_core::spec::spec;
 use std::sync::Arc;
+use xynolog_core::spec::spec;
 
 pub struct Composition {
     pub plane: Arc<dyn SignalPlane>,

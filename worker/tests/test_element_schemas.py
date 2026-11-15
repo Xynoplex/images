@@ -10,11 +10,11 @@ import re
 from typing import Final
 
 from pydantic import JsonValue
-from semiont_inference.interface import ElementSchema
 from spec import ROOT
+from xynolog_inference.interface import ElementSchema
 
-from semiont_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, ENTITY_ELEMENT_SCHEMA
-from semiont_worker.detection.parsers import (
+from xynolog_worker.detection.entity_extractor import COUNT_ELEMENT_SCHEMA, ENTITY_ELEMENT_SCHEMA
+from xynolog_worker.detection.parsers import (
     ASSESSMENT_ELEMENT_SCHEMA,
     COMMENT_ELEMENT_SCHEMA,
     HIGHLIGHT_ELEMENT_SCHEMA,

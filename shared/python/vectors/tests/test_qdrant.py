@@ -20,11 +20,11 @@ import httpx
 import pytest
 from aio import run
 from qdrant_stand_in import TOKEN, PlayedQdrant
-from xynoplex.identifiers import AnnotationId, ResourceId
-from xynoplex.identity import kb_did
+from xynolog.identifiers import AnnotationId, ResourceId
+from xynolog.identity import kb_did
 
-from semiont_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
-from semiont_vectors.store import AnnotationPayload, Declined, SearchOptions, VectorReader, VectorStore
+from xynolog_vectors.qdrant import QdrantVectorReader, QdrantVectorStore
+from xynolog_vectors.store import AnnotationPayload, Declined, SearchOptions, VectorReader, VectorStore
 
 KB: Final = kb_did("example.github.io:plain-kb")
 RESOURCE: Final = ResourceId("res-1")

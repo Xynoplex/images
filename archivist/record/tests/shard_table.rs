@@ -3,8 +3,8 @@
 //! and the Smelter read and write the same files with, runs the same table
 //! (shared/python/service/tests/test_shard_cases.py).
 
-use semiont_archivist_record::shard::shard_path;
 use serde::Deserialize;
+use xynolog_archivist_record::shard::shard_path;
 
 #[derive(Deserialize)]
 struct Table {

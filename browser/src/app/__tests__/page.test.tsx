@@ -12,17 +12,17 @@ const { routerPush, routerReplace, session$ } = vi.hoisted(() => {
   };
 });
 
-vi.mock('@xynoplex/react-ui', async () => {
-  const actual = await vi.importActual('@xynoplex/react-ui');
+vi.mock('@xynolog/react-ui', async () => {
+  const actual = await vi.importActual('@xynolog/react-ui');
   return {
     ...actual,
-    useXynoplex: () => ({ activeSession$: session$ }),
-    XynoplexBranding: ({ className }: { className?: string }) => (
-      <div data-testid="semiont-branding" className={className}>
-        <h2>Semiont</h2>
+    useXynolog: () => ({ activeSession$: session$ }),
+    XynologBranding: ({ className }: { className?: string }) => (
+      <div data-testid="xynolog-branding" className={className}>
+        <h2>Xynolog</h2>
       </div>
     ),
-    buttonStyles: { primary: { base: 'semiont-button semiont-button--primary' } },
+    buttonStyles: { primary: { base: 'xynolog-button xynolog-button--primary' } },
   };
 });
 
@@ -47,7 +47,7 @@ describe('Home Page (Splash)', () => {
 
   it('should render the branding', () => {
     render(<Home />);
-    expect(screen.getByTestId('semiont-branding')).toBeInTheDocument();
+    expect(screen.getByTestId('xynolog-branding')).toBeInTheDocument();
   });
 
   it('should render a begin button', () => {

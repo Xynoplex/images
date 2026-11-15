@@ -22,21 +22,21 @@ import { openResourceByName } from '../fixtures/discover';
  *     ? selectedShape : null` — and only while the canvas holds the
  *     document's text, which it says as `data-annotate-deferred="false"`.
  *     The mode a page takes is surfaced on its container as
- *     `data-drawing-mode`. A drag >10px on `.semiont-pdf-annotation-
+ *     `data-drawing-mode`. A drag >10px on `.xynolog-pdf-annotation-
  *     canvas__container` fires `session.client.mark.request(FragmentSelector,
  *     motivation)`; for `highlighting` the same auto-submit chain as text
  *     runs (`mark:create-request` → `mark:create-ok`). Persisted
- *     annotations re-render as `<rect>` in `.semiont-pdf-annotation-canvas__svg`.
+ *     annotations re-render as `<rect>` in `.xynolog-pdf-annotation-canvas__svg`.
  *
  * Seed dependency: `scripts/seed.ts` yields an `application/pdf` resource
  * named "Spatial Smoke PDF" (seeded oldest so it never displaces the
  * `.first()` card the other specs open).
  */
 
-const IMG = '.semiont-pdf-annotation-canvas__image';
-const SVG = '.semiont-pdf-annotation-canvas__svg';
-const CONTAINER = '.semiont-pdf-annotation-canvas__container';
-const CANVAS = '.semiont-pdf-annotation-canvas';
+const IMG = '.xynolog-pdf-annotation-canvas__image';
+const SVG = '.xynolog-pdf-annotation-canvas__svg';
+const CONTAINER = '.xynolog-pdf-annotation-canvas__container';
+const CANVAS = '.xynolog-pdf-annotation-canvas';
 
 async function openPdfInAnnotateMode(page: Page) {
   await openResourceByName(page, 'Spatial Smoke PDF');
@@ -183,7 +183,7 @@ test.describe('pdf render + spatial highlight', () => {
     // annotation itself is fine in that failure (`mark:create-ok` above has
     // already passed, and the stored quote is correct); only the surface it
     // is read from is gone. Spec 23 carries the same note.
-    await expect(page.locator('.semiont-unified-panel')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('.xynolog-unified-panel')).toBeVisible({ timeout: 10_000 });
     await expect
       .poll(
         async () => page.locator('[data-type="highlight"]').filter({ hasText: /smoke test pdf/i }).count(),
