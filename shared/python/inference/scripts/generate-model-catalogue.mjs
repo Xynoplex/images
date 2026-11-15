@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Generate a model catalogue file: the part of the models.dev catalogue a
 // Python inference driver reads, from the npm package @opencode-ai/models at
-// the one version the repository's package.json pins.
+// the one version this package's package.json pins.
 //
-//   node shared/python/inference/scripts/generate-model-catalogue.mjs --out <directory>
-//   node shared/python/inference/scripts/generate-model-catalogue.mjs --check <directory>
+//   node scripts/generate-model-catalogue.mjs --out <directory>
+//   node scripts/generate-model-catalogue.mjs --check <directory>
+//
+// run in shared/python/inference, after `npm ci` there installs the pin.
 //
 // `--out` writes two files in <directory>, and `--check` compares them
 // without writing:
@@ -53,12 +55,11 @@
 // The notice is the npm package's own LICENSE, which MIT asks to go with a
 // copy.
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { writeOrCheck } from '../../../codegen/lib/committed-source.mjs';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+const HERE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = '@opencode-ai/models';
 const FILE = 'model-catalogue.json';
 
@@ -81,9 +82,9 @@ function refuse(message) {
   process.exit(1);
 }
 
-const pinned = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8')).devDependencies?.[PACKAGE];
+const pinned = JSON.parse(readFileSync(resolve(HERE, 'package.json'), 'utf8')).devDependencies?.[PACKAGE];
 if (typeof pinned !== 'string' || !/^\d+\.\d+\.\d+$/.test(pinned)) {
-  refuse(`the repository's package.json pins it as ${JSON.stringify(pinned)}, which is not one version`);
+  refuse(`shared/python/inference/package.json pins it as ${JSON.stringify(pinned)}, which is not one version`);
 }
 
 /** Where the installed package's snapshot is: the copy of the database it carries. */
@@ -91,7 +92,7 @@ function snapshotOfTheInstalledPackage() {
   try {
     return import.meta.resolve(`${PACKAGE}/snapshot`);
   } catch {
-    return refuse(`it is not installed. Run npm install, which installs ${pinned}`);
+    return refuse(`it is not installed. Run npm ci in shared/python/inference, which installs ${pinned}`);
   }
 }
 
@@ -107,7 +108,7 @@ function directoryOfTheInstalledPackage(snapshot) {
 const snapshot = snapshotOfTheInstalledPackage();
 const installed = directoryOfTheInstalledPackage(snapshot);
 const manifest = JSON.parse(readFileSync(resolve(installed, 'package.json'), 'utf8'));
-if (manifest.version !== pinned) refuse(`${manifest.version} is installed and package.json pins ${pinned}. Run npm install`);
+if (manifest.version !== pinned) refuse(`${manifest.version} is installed and package.json pins ${pinned}. Run npm ci in shared/python/inference`);
 if (typeof manifest.license !== 'string') refuse('its package.json states no licence');
 
 const { providers, generatedAt } = await import(snapshot);
@@ -184,5 +185,20 @@ which follows.
 
 ${licence.endsWith('\n') ? licence : `${licence}\n`}`;
 
-writeOrCheck(ROOT, OUT, text, CHECK);
-writeOrCheck(ROOT, NOTICE, notice, CHECK);
+/** Write `content` at `path`, or, with --check, fail when what is there differs. */
+function writeOrCheck(path, content) {
+  const shown = relative(process.cwd(), path);
+  if (!CHECK) {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, content);
+    console.log(`✓ wrote ${shown}`);
+  } else if (existsSync(path) && readFileSync(path, 'utf8') === content) {
+    console.log(`✓ ${shown} matches`);
+  } else {
+    console.error(`✗ ${shown} differs from what ${PACKAGE} ${pinned} makes. Run npm run generate:model-catalogue in shared/python/inference`);
+    process.exitCode = 1;
+  }
+}
+
+writeOrCheck(OUT, text);
+writeOrCheck(NOTICE, notice);

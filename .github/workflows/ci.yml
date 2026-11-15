@@ -95,6 +95,25 @@ jobs:
           print("groups=" + json.dumps([{"name": "the Rust images", "images": " ".join(rust)}, {"name": "the other images", "images": " ".join(rest)}]))
           ' "$(value RUST_IMAGES)" "$(value IMAGE_NAMES)" >> "$GITHUB_OUTPUT"
 
+  model-catalogue:
+    name: Model catalogue matches its pin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared/python/inference
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Install the pinned catalogue package
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Regenerate and compare
+        run: npm run generate:model-catalogue:check
+
   images:
     name: Build ${{ matrix.group.name }}
     needs: [checks, sdk]

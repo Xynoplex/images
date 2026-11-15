@@ -174,8 +174,8 @@ to:
   `None`, and never a value in its place.
 - The file is made when an image is built, by
   `shared/python/inference/scripts/generate-model-catalogue.mjs` of the repository, from the
-  npm package `@opencode-ai/models` at the one version the repository's
-  `package.json` pins. The script writes `model-catalogue.json`, which says
+  npm package `@opencode-ai/models` at the one version
+  `shared/python/inference/package.json` pins. The script writes `model-catalogue.json`, which says
   that package and that version at its top, and `model-catalogue.LICENSE`
   beside it: the catalogue is models.dev's, under the MIT licence, which asks
   that its notice go with a copy.

@@ -95,7 +95,7 @@ COPY LICENSE librarian/NOTICE /home/semiont/
 # of them is asked with these facts, and the service's document names this
 # path (modelCatalogue). It is the repository's one generated copy, made by
 # shared/python/inference/scripts/generate-model-catalogue.mjs from the npm package
-# package.json pins, and held to that pin by CI's drift job. Nothing is fetched
+# shared/python/inference/package.json pins, and held to that pin by CI's drift job. Nothing is fetched
 # to build it here. Its licence notice goes with it.
 COPY shared/python/inference/tests/catalogue/model-catalogue.json /usr/share/semiont/model-catalogue.json
 COPY shared/python/inference/tests/catalogue/model-catalogue.LICENSE /usr/share/semiont/model-catalogue.LICENSE

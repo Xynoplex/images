@@ -1,0 +1,13 @@
+{
+  "name": "@xynoplex/inference-model-catalogue",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pins the models.dev catalogue the model catalogue is generated from; see scripts/generate-model-catalogue.mjs.",
+  "scripts": {
+    "generate:model-catalogue": "node scripts/generate-model-catalogue.mjs --out tests/catalogue",
+    "generate:model-catalogue:check": "node scripts/generate-model-catalogue.mjs --check tests/catalogue"
+  },
+  "devDependencies": {
+    "@opencode-ai/models": "0.0.127"
+  }
+}

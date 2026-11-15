@@ -22,7 +22,7 @@ from pathlib import Path
 import pytest
 from pydantic import JsonValue
 from refusals.a_provider_the_catalogue_lacks import facts_under_an_unknown_provider
-from spec import PACKAGE, ROOT, JsonObject, read, text, thing
+from spec import PACKAGE, JsonObject, read, text, thing
 
 from semiont_inference.catalogue import (
     BudgetTokensOption,
@@ -131,8 +131,8 @@ def as_written(facts: CatalogueFacts) -> JsonObject:
     }
 
 
-def test_the_fixture_says_which_package_it_was_made_from_at_the_version_the_repository_pins() -> None:
-    pinned = thing(read(ROOT / "package.json")["devDependencies"], "the repository's devDependencies")[NPM_PACKAGE]
+def test_the_fixture_says_which_package_it_was_made_from_at_the_version_this_package_pins() -> None:
+    pinned = thing(read(PACKAGE / "package.json")["devDependencies"], "this package's devDependencies")[NPM_PACKAGE]
     assert isinstance(pinned, str)
     assert re.fullmatch(r"\d+\.\d+\.\d+", pinned), f"{NPM_PACKAGE} is pinned as {pinned}, which is not one version"
     assert list(WRITTEN) == ["package", "version", "generatedAt", "license", "providers"]
@@ -143,10 +143,10 @@ def test_the_fixture_says_which_package_it_was_made_from_at_the_version_the_repo
     assert CATALOGUE.generated_at == WRITTEN["generatedAt"]
 
 
-def test_the_fixture_is_where_the_repositorys_scripts_write_and_check_it() -> None:
+def test_the_fixture_is_where_this_packages_scripts_write_and_check_it() -> None:
     # CI's drift job runs the second of these: it is this directory that is held to the generator and the pin.
-    scripts = thing(read(ROOT / "package.json")["scripts"], "the repository's scripts")
-    generator, directory = "node shared/python/inference/scripts/generate-model-catalogue.mjs", FIXTURE.relative_to(ROOT).as_posix()
+    scripts = thing(read(PACKAGE / "package.json")["scripts"], "this package's scripts")
+    generator, directory = "node scripts/generate-model-catalogue.mjs", FIXTURE.relative_to(PACKAGE).as_posix()
     assert scripts["generate:model-catalogue"] == f"{generator} --out {directory}"
     assert scripts["generate:model-catalogue:check"] == f"{generator} --check {directory}"
     assert sorted(path.name for path in FIXTURE.iterdir()) == ["model-catalogue.LICENSE", "model-catalogue.json"]
