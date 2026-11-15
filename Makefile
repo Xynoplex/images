@@ -11,7 +11,7 @@ help:
 	  '  make                  Build all eight images (default target)' \
 	  '  make local            Same as make' \
 	  '  make build            Same as make' \
-	  '  make shared           Build Librarian, Smelter, Weaver, and Worker (shared Python libraries)' \
+	  '  make shared           Build the shared Python distributions: graph, vectors, inference, service' \
 	  '  make gateway          Build the Gateway image' \
 	  '  make archivist        Build the Archivist image' \
 	  '  make dispatcher       Build the Dispatcher image' \
@@ -29,7 +29,7 @@ help:
 	  '  SEMIONT_BROWSER_VERSION=<version> Override the Browser package version' \
 	  '' \
 	  'Clean:' \
-	  '  make clean            Remove the eight local image tags; retain staged SDK artifacts'
+	  '  make clean            Remove local image tags and shared-package distributions; retain staged SDK artifacts'
 
 build: local
 
@@ -37,7 +37,7 @@ local:
 	@./scripts/build-session.sh all
 
 shared:
-	@./scripts/build-session.sh librarian smelter weaver worker
+	@./scripts/build-shared-python.sh
 
 image:
 	@test -n "$(NAME)" || { echo "Set NAME to one of: $(IMAGE_NAMES)" >&2; exit 2; }

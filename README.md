@@ -22,11 +22,12 @@ A root Makefile is the primary build interface. Install Docker, Podman, or Apple
 ```sh
 make help
 make local
+make shared
 make image NAME=gateway
 make clean
 ```
 
-Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make local`.
+`make shared` builds the four private Python distributions in `shared/python/` (`graph`, `vectors`, `inference`, and `service`) into `.local/shared-python-packages/`. Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make local`.
 
 ## Repository layout
 
