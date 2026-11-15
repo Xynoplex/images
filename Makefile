@@ -27,9 +27,9 @@ E2E_SCRIPT ?= test:ci
 E2E_MODEL ?=
 ## E2E_ARGS=words: Extra Playwright arguments, after --
 E2E_ARGS ?=
-## XYNAUT=path: The xynaut executable; else the one on PATH
-XYNAUT ?=
-export CONTAINER_RUNTIME SDK_REPO XYNAUT
+## XYNOLOG=path: The xynolog executable; else the one on PATH
+XYNOLOG ?=
+export CONTAINER_RUNTIME SDK_REPO XYNOLOG
 
 help:
 	@awk -v list="$(IMAGE_NAMES)" -f scripts/make-help.awk Makefile Makefile

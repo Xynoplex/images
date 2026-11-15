@@ -1,7 +1,7 @@
 # Real-stack smoke test
 
-The stack smoke exercises built images through the separately installed `xynaut`
-launcher. Set `XYNAUT` to its executable path if it is not on `PATH`.
+The stack smoke exercises built images through the separately installed `xynolog`
+launcher. Set `XYNOLOG` to its executable path if it is not on `PATH`.
 
 From the repository root:
 

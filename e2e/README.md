@@ -7,7 +7,7 @@ React lifecycle, bus round-trips) that unit and component tests can't.
 ## Stack smoke test
 
 The image repository builds images only. The optional real-stack smoke script
-uses the separately installed `xynaut` CLI (set `XYNAUT` to its executable path
+uses the separately installed `xynolog` CLI (set `XYNOLOG` to its executable path
 if needed) to start a knowledge base from the selected images:
 
 ```sh
@@ -208,7 +208,7 @@ nor `gemma3:1b` answered them correctly within their timeouts.
   storage URI, so a re-run against a seeded knowledge base skips it.
 - **Real sign-in.** Connect leaves the Browser for the launcher-run
   Keycloak, and the `signIn` fixture types the credentials into its login
-  page. An account's first sign-in asks for a name, which `xynaut useradd`
+  page. An account's first sign-in asks for a name, which `xynolog useradd`
   does not set; the seed's sign-in, always the run's first, gives one.
 - **One worker, no retries.** Specs share the knowledge base; a flake is
   diagnosed, not retried away.
@@ -218,19 +218,19 @@ nor `gemma3:1b` answered them correctly within their timeouts.
 
 Continuous integration builds the image set with `make build`. The real-stack
 e2e smoke requires a running container engine, Ollama or another configured
-inference provider, and an installed `xynaut` CLI, so it is run explicitly with
+inference provider, and an installed `xynolog` CLI, so it is run explicitly with
 `tests/stack/smoke-stack.sh` rather than as part of the default image build.
 
 ## Running against freshly-built images
 
 Build the image set from this checkout, then use a KB configured for the local
-tags with `xynaut`:
+tags with `xynolog`:
 
 ```sh
 make build
 # In a knowledge base directory, update configured image references to :local,
-# then run the stack with xynaut using that configuration.
-xynaut start
+# then run the stack with xynolog using that configuration.
+xynolog start
 ```
 
 The standalone `tests/stack/smoke-stack.sh` automates this flow for a fresh KB.
@@ -246,10 +246,10 @@ the host; see the [Quick start](#quick-start).
 - **Host Ollama needs `OLLAMA_HOST=0.0.0.0`.** Otherwise the gateway
   container can't reach it. Either configure Ollama Desktop with
   `launchctl setenv OLLAMA_HOST 0.0.0.0` (and quit/relaunch), or use
-  `xynaut start --config anthropic` to skip Ollama entirely.
+  `xynolog start --config anthropic` to skip Ollama entirely.
 - **Code changes require rebuilding the `:local` images.** `./tests/stack/smoke-stack.sh up` does it
   for you. On a stack you started yourself, rerun `make build`, then restart
-  the stack with `xynaut start`, its documents naming the `:local` images. Without the
+  the stack with `xynolog start`, its documents naming the `:local` images. Without the
   rebuild + restart, you'll run yesterday's images with today's source.
 - **SPA tracing is not wired.** Gateway / worker / smelter
   produce traces; the Browser SPA does not. End-to-end traces

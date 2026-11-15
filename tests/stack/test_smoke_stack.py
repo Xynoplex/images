@@ -40,7 +40,7 @@ def log(name, entry):
     with (root / name).open("a") as f:
         f.write(json.dumps(entry) + "\\n")
 if command == "--version":
-    print("smoke-test xynaut")
+    print("smoke-test xynolog")
 elif command == "init":
     inits = root / "inits.jsonl"
     count = len(inits.read_text().splitlines()) if inits.exists() else 0
@@ -66,7 +66,7 @@ elif command == "start":
     statuses = os.environ["SMOKE_TEST_START_STATUS"].split(",")
     sys.exit(int(statuses[min(count, len(statuses) - 1)]))
 elif command in ("stop", "clean", "forget", "useradd", "status"):
-    log("xynaut.jsonl", sys.argv[1:])
+    log("xynolog.jsonl", sys.argv[1:])
     if command == "useradd":
         sys.stdin.read()
     # The dispatcher's line of a status report, as the launcher prints it when the
@@ -98,9 +98,9 @@ class SmokeStackTest(unittest.TestCase):
             (self.root / directory).mkdir(parents=True)
         for name, text in DOCUMENTS.items():
             (self.root / "state home" / f"{name}.yaml").write_text(text)
-        self.xynaut = self.root / "bin/xynaut"
-        self.xynaut.write_text(f"#!{sys.executable}\n" + LAUNCHER)
-        self.xynaut.chmod(0o755)
+        self.xynolog = self.root / "bin/xynolog"
+        self.xynolog.write_text(f"#!{sys.executable}\n" + LAUNCHER)
+        self.xynolog.chmod(0o755)
         self.use_runtime("smoke-test-runtime", 0)
 
     def use_runtime(self, runtime: str, e2e_status: int) -> None:
@@ -151,7 +151,7 @@ class SmokeStackTest(unittest.TestCase):
                 "PATH": str(self.root / "bin") + os.pathsep + os.environ["PATH"],
                 "SMOKE_TEST_ROOT": str(self.root),
                 "SMOKE_TEST_START_STATUS": start_status,
-                "XYNAUT": str(self.xynaut),
+                "XYNOLOG": str(self.xynolog),
                 "SMOKE_TEST_QUEUE": queue,
                 "CONTAINER_RUNTIME": self.runtime,
                 "SMOKE_KB": str(self.kb),
@@ -171,7 +171,7 @@ class SmokeStackTest(unittest.TestCase):
 
     def stopped(self) -> list[str]:
         """The root of each `stop`, resolved: macOS reports a temporary directory's cwd under /private."""
-        stops = [call for call in self.lines("xynaut.jsonl") if call[0] == "stop"]
+        stops = [call for call in self.lines("xynolog.jsonl") if call[0] == "stop"]
         for call in stops:
             self.assertIn(
                 "--root", call, "a stop naming no root stops whichever stack it finds"
@@ -182,7 +182,7 @@ class SmokeStackTest(unittest.TestCase):
         """The root of each `status`, resolved."""
         return [
             os.path.realpath(call[call.index("--root") + 1])
-            for call in self.lines("xynaut.jsonl")
+            for call in self.lines("xynolog.jsonl")
             if call[0] == "status"
         ]
 
@@ -224,9 +224,9 @@ class SmokeStackTest(unittest.TestCase):
                 self.assertIn(os.path.realpath(self.kb), self.stopped())
                 shutil.rmtree(self.kb)
 
-    def test_stack_smoke_requires_xynaut_before_starting_anything(self) -> None:
+    def test_stack_smoke_requires_xynolog_before_starting_anything(self) -> None:
         env = {**os.environ, "PATH": str(self.root / "bin")}
-        (self.root / "bin/xynaut").unlink()
+        (self.root / "bin/xynolog").unlink()
         result = subprocess.run(
             ["bash", str(self.root / "tests/stack/smoke-stack.sh"), "up", "local"],
             check=False,
@@ -235,7 +235,7 @@ class SmokeStackTest(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 2)
-        self.assertIn("needs the xynaut CLI", result.stderr)
+        self.assertIn("needs the xynolog CLI", result.stderr)
         self.assertEqual(self.lines("starts.jsonl"), [])
 
     def test_up_checks_the_realm_at_the_issuer_the_gateway_names(self) -> None:
@@ -427,7 +427,7 @@ class SmokeStackTest(unittest.TestCase):
                     for name in (
                         "starts.jsonl",
                         "inits.jsonl",
-                        "xynaut.jsonl",
+                        "xynolog.jsonl",
                         "runtime.log",
                         "suites.log",
                     ):

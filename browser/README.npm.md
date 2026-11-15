@@ -12,7 +12,7 @@ Most people should **not** install this package directly. A Semiont stack is run
 launcher — a single static binary that pulls the published container images:
 
 ```bash
-brew install xynoplex/xynaut/xynaut
+brew install xynolog/xynolog/xynolog
 
 cd /path/to/your-knowledge-base
 semiont start

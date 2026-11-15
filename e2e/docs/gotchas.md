@@ -76,7 +76,7 @@ does not change. See [containers.md § IP refresh](containers.md#ip-refresh).
 tag — but the KB stack runs them only when its documents name them:
 `ghcr.io/xynoplex/xynoplex-<service>:local` for each `image` in
 `.semiont/stack/*.yaml`, and the Browser's and the worker's in their own
-documents, the files `xynaut settings browser --path` and `xynaut settings
+documents, the files `xynolog settings browser --path` and `xynolog settings
 worker --path` print. An image
 still named `:latest` is pulled as **published**, and your local code
 changes are invisible.

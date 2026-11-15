@@ -166,7 +166,7 @@ got console errors." Steps:
   errors, watch the browser DevTools console (or add `bus.entries`
   capture via a Playwright spec).
 - **Live monitoring requires the dev stack to be up** ([`containers.md`](containers.md))
-  and Jaeger to be running (the `xynaut start` default; `--no-observe`
+  and Jaeger to be running (the `xynolog start` default; `--no-observe`
   disables it).
 - **No persistence across container restarts.** The streaming tails
   start from the moment they attach; if you restart a container

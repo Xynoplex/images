@@ -29,7 +29,7 @@ Defaults:
   static-server stdout). Each entry is a full container name or a
   bare product, as ``container_names.py`` resolves it.
 - ``--jaeger-url http://localhost:16686`` — local Jaeger from
-  ``xynaut start`` (on by default; ``--no-observe`` skips it).
+  ``xynolog start`` (on by default; ``--no-observe`` skips it).
   Override for non-local stacks.
 - ``--max-lines-per-container 40`` — caps verbose dumps so the report
   stays scannable.

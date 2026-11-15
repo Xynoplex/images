@@ -9,9 +9,9 @@
 #   tests/stack/smoke-stack.sh down              # stop it, and check every port is released
 #   tests/stack/smoke-stack.sh run 0.6.5 --e2e   # all three in one run, as Stack Smoke does
 #
-# The launcher CLI is installed separately as `xynaut`; set XYNAUT to use a
+# The launcher CLI is installed separately as `xynolog`; set XYNOLOG to use a
 # specific executable. This repository owns only the images and their build.
-# IMAGES is the tag `up` is given, written into the stack documents xynaut init
+# IMAGES is the tag `up` is given, written into the stack documents xynolog init
 # creates. For `local`, build the images first with `make build`.
 #
 # UP asserts, and nothing more: that every health gate opens against a real
@@ -35,7 +35,7 @@
 # specs and leaves out @slow and @model), or the npm script --script names,
 # with the arguments after -- given to Playwright, against its gateway, in the
 # Playwright image whose tag is the version e2e/package.json pins. Then
-# it reads the knowledge base's job queue from `xynaut status` until nothing
+# it reads the knowledge base's job queue from `xynolog status` until nothing
 # is pending or running: a job the suite started that no worker claimed, or
 # that none finished, fails the run though every test passed. On exit, when
 # everything passed, it stops, cleans and forgets that knowledge base, leaving
@@ -146,16 +146,16 @@ if [ "$E2E" = true ]; then
     exit 2
   fi
 fi
-XYNAUT="${XYNAUT:-$(command -v xynaut || true)}"
-if [ -z "$XYNAUT" ] || [ ! -x "$XYNAUT" ]; then
-  echo "The stack smoke test needs the xynaut CLI. Install it or set XYNAUT to its executable path." >&2
+XYNOLOG="${XYNOLOG:-$(command -v xynolog || true)}"
+if [ -z "$XYNOLOG" ] || [ ! -x "$XYNOLOG" ]; then
+  echo "The stack smoke test needs the xynolog CLI. Install it or set XYNOLOG to its executable path." >&2
   exit 2
 fi
-# xynaut: the separately installed launcher CLI; show each invocation on fd 3.
+# xynolog: the separately installed launcher CLI; show each invocation on fd 3.
 exec 3>&1
-xynaut() {
-  { printf '  $ xynaut'; printf ' %q' "$@"; printf '\n'; } >&3
-  "$XYNAUT" "$@"
+xynolog() {
+  { printf '  $ xynolog'; printf ' %q' "$@"; printf '\n'; } >&3
+  "$XYNOLOG" "$@"
 }
 
 KB="${SMOKE_KB:-${XDG_CACHE_HOME:-$HOME/.cache}/semiont/stack-smoke/kb}"
@@ -178,14 +178,14 @@ init_kb() {
   # The domain is the one setting with no safe default, so it is the one flag a new user's init needs.
   local flags=(--domain "$domain")
   [ $# -lt 4 ] || flags+=(--model "$4")
-  head_ "A new knowledge base: xynaut init in $dir"
-  echo "  launcher: $XYNAUT ($(xynaut --version))"
+  head_ "A new knowledge base: xynolog init in $dir"
+  echo "  launcher: $XYNOLOG ($(xynolog --version))"
   mkdir -p "$dir" && cd "$dir" || return 1
   git init -q && git config user.email smoke@example.com && git config user.name smoke
-  if xynaut init --yes "${flags[@]}" >/dev/null; then
-    ok "xynaut init ${flags[*]} made it, with a config the plan deriver accepts"
+  if xynolog init --yes "${flags[@]}" >/dev/null; then
+    ok "xynolog init ${flags[*]} made it, with a config the plan deriver accepts"
   else
-    bad "xynaut init ${flags[*]} refused"; return 1
+    bad "xynolog init ${flags[*]} refused"; return 1
   fi
   for doc in "$dir"/.semiont/stack/*.yaml; do
     sed "s#\(ghcr.io/xynoplex/xynoplex-[a-z]*\):latest#\1:$tag#" "$doc" > "$doc.next" && mv "$doc.next" "$doc"
@@ -209,7 +209,7 @@ gateway_of() {
 # otherwise a container that pulls the two small models.
 start_kb() {
   head_ "Boot from :$1 on $RUNTIME"
-  if xynaut start --runtime "$RUNTIME"; then
+  if xynolog start --runtime "$RUNTIME"; then
     ok "every health gate opened against a real service"
   else
     bad "start failed: the launcher's reason is above"; return 1
@@ -218,14 +218,14 @@ start_kb() {
 
 # stop_kb <directory>: its stack alone. The shared containers stop with the
 # last knowledge base recorded, so stopping E2E's leaves UP's running.
-stop_kb() { xynaut stop --root "$1" --runtime "$RUNTIME" >/dev/null 2>&1; }
+stop_kb() { xynolog stop --root "$1" --runtime "$RUNTIME" >/dev/null 2>&1; }
 
 # forget_kb <directory> <removable>: clean a stopped knowledge base's state,
 # forget it, and remove the directory above it when the run made that.
 forget_kb() {
   local dir="$1" removable="$2"
-  xynaut clean --root "$dir" >/dev/null 2>&1
-  xynaut forget "$dir" >/dev/null 2>&1
+  xynolog clean --root "$dir" >/dev/null 2>&1
+  xynolog forget "$dir" >/dev/null 2>&1
   [ "$removable" = true ] && rm -rf "$(dirname "$dir")"
 }
 
@@ -267,7 +267,7 @@ if [ "$COMMAND" = up ]; then
   SUCCEEDED=false
   trap 'cd / && [ "$SUCCEEDED" = true ] || down_kb' EXIT
   init_kb "$KB" example.github.io:stack-smoke "$IMAGES" || exit 1
-  if xynaut clean --root "$KB" >/dev/null; then
+  if xynolog clean --root "$KB" >/dev/null; then
     ok "no state from an earlier run remains"
   else
     bad "clean refused the state an earlier run left"; exit 1
@@ -277,7 +277,7 @@ if [ "$COMMAND" = up ]; then
   # writes one where there is none). DOWN restores both.
   mkdir -p "$KEPT" || exit 1
   for SERVICE in browser worker; do
-    if ! SHARED_DOC=$(xynaut settings "$SERVICE" --path); then
+    if ! SHARED_DOC=$(xynolog settings "$SERVICE" --path); then
       bad "the launcher named no $SERVICE document"; exit 1
     fi
     if ! cp "$SHARED_DOC" "$KEPT/$SERVICE.yaml"; then
@@ -296,7 +296,7 @@ if [ "$COMMAND" = up ]; then
   head_ "Status"
   # `status --root` is the health-coded form: it exits non-zero when a core row
   # is unhealthy, so the exit status IS the assertion.
-  if xynaut status --root "$KB"; then ok "every core row healthy"; else bad "a core row is unhealthy"; fi
+  if xynolog status --root "$KB"; then ok "every core row healthy"; else bad "a core row is unhealthy"; fi
 
   head_ "The realm the start created"
   # The knowledge base's realm is its key, made from the domain init was given.
@@ -357,7 +357,7 @@ if [ "$COMMAND" = down ]; then
 fi
 
 # e2e
-if [ ! -e "$KEPT" ] || ! xynaut status --root "$KB" >/dev/null 2>&1; then
+if [ ! -e "$KEPT" ] || ! xynolog status --root "$KB" >/dev/null 2>&1; then
   echo "No healthy stack from up at $KB: bring one up first (tests/stack/smoke-stack.sh up)." >&2
   exit 1
 fi
@@ -398,7 +398,7 @@ head_ "npm run $SUITE_SCRIPT${SUITE_ARGUMENTS[@]+ -- ${SUITE_ARGUMENTS[*]}}, in 
 E2E_EMAIL=e2e@example.com
 E2E_PASSWORD=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
 export E2E_EMAIL E2E_PASSWORD
-if ! printf '%s\n' "$E2E_PASSWORD" | xynaut useradd --email "$E2E_EMAIL" --runtime "$RUNTIME" >/dev/null; then
+if ! printf '%s\n' "$E2E_PASSWORD" | xynolog useradd --email "$E2E_EMAIL" --runtime "$RUNTIME" >/dev/null; then
   bad "useradd refused $E2E_EMAIL, so the suite has no one to sign in as"; exit 1
 fi
 ok "useradd made $E2E_EMAIL in the realm"
@@ -442,14 +442,14 @@ head_ "The knowledge base's job queue, after the suite"
 # it reads empty, for two minutes.
 QUEUE=""
 for ATTEMPT in 1 2 3 4 5 6 7 8 9 10 11 12; do
-  QUEUE=$(xynaut status --root "$E2E_KB" 2>/dev/null \
+  QUEUE=$(xynolog status --root "$E2E_KB" 2>/dev/null \
     | sed -n 's/^ *queue  *\([0-9][0-9]*\) pending[^0-9]*\([0-9][0-9]*\) running.*/\1 \2/p')
   [ "$QUEUE" = "0 0" ] && break
   [ "$ATTEMPT" -eq 12 ] || sleep 10
 done
 case "$QUEUE" in
   "0 0") ok "nothing pending or running" ;;
-  "") bad "xynaut status printed no queue line for the knowledge base's dispatcher" ;;
+  "") bad "xynolog status printed no queue line for the knowledge base's dispatcher" ;;
   *) bad "${QUEUE% *} pending and ${QUEUE#* } running two minutes after the suite: a job it started was never claimed, or never finished" ;;
 esac
 summary

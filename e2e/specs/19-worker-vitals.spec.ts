@@ -12,7 +12,7 @@ import { signInSession } from '../fixtures/sdk-session';
  * claim loops are moving makes a hung worker *invisible*. The payload carries
  * each engine's vitals so a stalled one is visible, not just alive. This spec
  * pins that payload as a cross-process **contract** — the consumers (image
- * HEALTHCHECK, compose `service_healthy`, `xynaut start` waits, and any
+ * HEALTHCHECK, compose `service_healthy`, `xynolog start` waits, and any
  * operator's `curl :24100/health`) live outside the Worker service, so its
  * own tests of the body it builds can't catch a break in what a running
  * stack serves. The body is checked against the protocol's `WorkerHealth`
@@ -48,7 +48,7 @@ import { signInSession } from '../fixtures/sdk-session';
 
 // The worker publishes its health server on port 24100 of the same host as
 // the gateway in every stack shape this suite targets (compose
-// `24100:24100`, `xynaut start` publishing 24100) — derived from
+// `24100:24100`, `xynolog start` publishing 24100) — derived from
 // E2E_GATEWAY_URL rather than adding a config knob of its own.
 const WORKER_HEALTH_URL = (() => {
   const u = new URL(GATEWAY_URL);

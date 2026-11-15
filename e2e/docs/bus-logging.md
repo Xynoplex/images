@@ -91,7 +91,7 @@ stdout.
 
 The gateway runs in a container, so the variable has to reach the
 container — and the launcher passes a container only the variables its
-config references, so `SEMIONT_BUS_LOG=1 xynaut start` does not. The
+config references, so `SEMIONT_BUS_LOG=1 xynolog start` does not. The
 launcher has no option to set it.
 
 ## A typical full-trace timeline

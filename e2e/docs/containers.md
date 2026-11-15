@@ -11,7 +11,7 @@ the test stack from this repository.
 | `xynoplex-browser` | Vite-built SPA served on `:3000` | published image, or `:local` via `make build` |
 | `semiont-<kb>-gateway` | the gateway (Rust, `gateway`) on `:4000` | published image, or `:local` via `make build` |
 | `semiont-<kb>-archivist`, `semiont-<kb>-librarian`, `semiont-<kb>-dispatcher`, `semiont-worker`, `semiont-<kb>-smelter`, `semiont-<kb>-weaver` | The services behind the gateway: the record, search, the job queue, inference jobs, and the two projection pipelines | published images, or `:local` via `make build` |
-| plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynaut start` |
+| plus: `semiont-<kb>-neo4j`, `semiont-qdrant`, `semiont-ollama`, `semiont-postgres`, `semiont-<kb>-nats`, `semiont-keycloak`, `semiont-jaeger` | Storage, inference, messaging, identity, traces | started by `xynolog start` |
 
 A knowledge base's containers are named `semiont-<kb>-<product>`, where
 `<kb>` is its did:web domain made safe for a name: `did:web:example.org:my-kb`
@@ -31,7 +31,7 @@ So the "full rebuild" flow depends on what changed:
 | Change in | Rebuild | Restart |
 |---|---|---|
 | `browser` | `make browser` | browser |
-| `gateway`, `archivist`, `dispatcher`, `librarian`, `smelter`, `weaver`, or `worker` | `make <service>` | the stack: `xynaut start` |
+| `gateway`, `archivist`, `dispatcher`, `librarian`, `smelter`, `weaver`, or `worker` | `make <service>` | the stack: `xynolog start` |
 | Several images or shared image inputs | `make build` | the affected services |
 
 ## Apple container CLI primer
@@ -51,7 +51,7 @@ container inspect <name>                  # JSON dump — mounts, env, IP, etc.
 
 Use `container logs --follow semiont-<kb>-gateway` when diagnosing a failing test
 — the gateway's structured logs often reveal whether a bus handler
-actually ran. (`xynaut logs`, from the KB directory, follows all
+actually ran. (`xynolog logs`, from the KB directory, follows all
 services at once with `[svc]` prefixes.)
 
 ## <a name="ip-refresh"></a>IP refresh after every restart
@@ -100,16 +100,16 @@ cd /path/to/semiont-template-kb
 # Browser's and the worker's own documents name theirs (once):
 perl -pi -e 's#(semiont-browser):\S+#$1:local#' "$(semiont settings browser --path)"
 perl -pi -e 's#(semiont-worker):\S+#$1:local#' "$(semiont settings worker --path)"
-# xynaut start reads ANTHROPIC_API_KEY from env when --config anthropic.
+# xynolog start reads ANTHROPIC_API_KEY from env when --config anthropic.
 # Source your secrets first if it's not already exported.
 semiont start --config anthropic
-echo password | xynaut useradd --email admin@example.com
+echo password | xynolog useradd --email admin@example.com
 ```
 
 The `ollama-gemma` Inference document avoids the API-key requirement if
 you only need to exercise non-inference paths.
 
-`xynaut start` stops and recreates the running containers, so their IPs
+`xynolog start` stops and recreates the running containers, so their IPs
 change. **That is exactly why e2e should not use them** — target the host
 bridge gateway `192.168.64.1`, which routes to the published ports and is
 stable across restarts. See

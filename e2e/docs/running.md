@@ -24,7 +24,7 @@ local-dev defaults.
 
 The user must exist in the stack's issuer. The stack flow in the
 [README](../README.md#running-against-a-freshly-built-stack) creates
-`admin@example.com` / `password` with `xynaut useradd`.
+`admin@example.com` / `password` with `xynolog useradd`.
 
 ## Running from a container (recommended on macOS)
 
