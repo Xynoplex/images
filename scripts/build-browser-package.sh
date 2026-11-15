@@ -21,22 +21,7 @@ RUNTIME="$(detect_container_runtime)"
     tar -xzf /sdk-bundle/typescript/xynoplex-react-ui-*.tgz \
       -C /packages/typescript/react-ui --strip-components=1 package/translations
     cp -a /source/browser/. /tmp/browser/
-    python3 - /tmp/browser/package.json /sdk-bundle/artifacts.json <<'PY'
-import json
-import sys
-from pathlib import Path
-
-package_path, manifest_path = map(Path, sys.argv[1:])
-package = json.loads(package_path.read_text())
-manifest = json.loads(manifest_path.read_text())
-for artifact in manifest["artifacts"]:
-    if artifact["ecosystem"] == "npm":
-        package["dependencies"][artifact["package"]] = (
-            "file:/sdk-bundle"
-            + "/" + artifact["path"]
-        )
-package_path.write_text(json.dumps(package, indent=2) + "\n")
-PY
+    python3 /source/build-tools/prepare-sdk-package.py /sdk-bundle /tmp/browser/package.json
     cd /tmp/browser
     npm install --no-audit --no-fund
     npm install-scripts approve --all --no-allow-scripts-pin
