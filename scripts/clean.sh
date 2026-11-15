@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "$ROOT/scripts/container-runtime.sh"
+source "$ROOT/build-tools/container-runtime.sh"
 runtime="$(detect_container_runtime)"
 images="$("$ROOT/scripts/image-groups.sh" IMAGE_NAMES)"
 for name in $images; do

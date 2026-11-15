@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-source "$ROOT/scripts/container-runtime.sh"
+source "$ROOT/build-tools/container-runtime.sh"
 RUNTIME="$(detect_container_runtime)"
 STATE_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/xynoplex-images/local"
 OUTPUT="$STATE_ROOT/python/packages"

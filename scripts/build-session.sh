@@ -31,7 +31,7 @@ if [[ "$1" == all ]]; then
   set -- "${every[@]}"
 fi
 
-source "$REPO_ROOT/scripts/container-runtime.sh"
+source "$REPO_ROOT/build-tools/container-runtime.sh"
 RT="$(detect_container_runtime)"
 RUST_TOOLCHAIN="$(packages/rust/scripts/rust-toolchain.sh)"
 VERSION="$(python3 -c 'import json; print(json.load(open("version.json"))["version"])')"
@@ -52,7 +52,7 @@ if [[ ",$languages_csv," == *,python,* ]]; then
   cp "$shared_output"/*.whl "$shared_staging/"
 fi
 IFS=, read -r -a selected_languages <<< "$languages_csv"
-bundle="$(bash "$REPO_ROOT/scripts/prepare-sdk-artifacts.sh" "${selected_languages[@]}")"
+bundle="$(bash "$REPO_ROOT/build-tools/prepare-sdk-artifacts.sh" "${selected_languages[@]}")"
 bundle_id="$(SDK_ARTIFACTS="$bundle" bash "$REPO_ROOT/scripts/stage-sdk-artifacts.sh" "${selected_languages[@]}")"
 bundle_dir=".local/sdk-artifacts/$bundle_id"
 if [[ ",$languages_csv," == *,python,* ]]; then
