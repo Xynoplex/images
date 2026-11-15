@@ -7,7 +7,7 @@ SDK_BUNDLE_DIR="${1:?Usage: build-browser-package.sh <verified-sdk-bundle-direct
   echo "SDK artifact manifest not found: $SDK_BUNDLE_DIR/artifacts.json" >&2
   exit 2
 }
-mkdir -p "$ROOT/.local/browser-package"
+mkdir -p "$ROOT/.local/browser-package" "$ROOT/.local/browser-lock"
 
 source "$ROOT/build-tools/container-runtime.sh"
 RUNTIME="$(detect_container_runtime)"
@@ -38,10 +38,12 @@ for artifact in manifest["artifacts"]:
 package_path.write_text(json.dumps(package, indent=2) + "\n")
 PY
     cd /tmp/browser
-    npm install --no-audit --no-fund --package-lock=false
+    npm install --no-audit --no-fund
     npm install-scripts approve --all --no-allow-scripts-pin
     npm rebuild
     npm run build
+    # The lock this install resolved, for the advisory scan; nothing commits one.
+    cp /tmp/browser/package-lock.json /source/.local/browser-lock/package-lock.json
     cp /source/browser/server.js /tmp/browser-publish/server.js
     cp /source/browser/package.publish.json /tmp/browser-publish/package.json
     cp -a /tmp/browser/dist /tmp/browser-publish/dist

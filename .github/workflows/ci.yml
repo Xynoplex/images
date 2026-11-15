@@ -29,10 +29,10 @@ jobs:
     permissions:
       issues: write
 
+  # Every run builds or restores it: the image builds install from it, and the
+  # advisories and crates jobs, which run every time, resolve against it.
   sdk:
     name: SDK bundle from the pinned SDK commit
-    needs: checks
-    if: needs.checks.outputs.groups != '[]'
     runs-on: ubuntu-latest
     env:
       SDK_LANGUAGES: typescript python rust
@@ -158,13 +158,74 @@ jobs:
           SDK_ARTIFACTS: ${{ runner.temp }}/sdk-artifacts
         run: make $IMAGES
 
+  # No dependency in any lockfile has a published advisory that advisories.toml
+  # does not ignore with a reason, and no ignore outlives its finding
+  # (build-tools/advisories.py).
+  # The browser package commits no lock; building it from the SDK bundle, as its
+  # image does, leaves the lock its install resolved.
+  advisories:
+    name: No dependency has an advisory nobody judged
+    needs: sdk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
+
+      - name: Download the SDK bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: sdk-artifacts
+          path: ${{ runner.temp }}/sdk-artifacts
+
+      - name: Install osv-scanner
+        run: |
+          bash build-tools/install-osv-scanner.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve the browser package's lock by building it
+        run: bash scripts/build-browser-package.sh "$RUNNER_TEMP/sdk-artifacts"
+
+      - name: Scan every lockfile
+        run: python3 build-tools/advisories.py --root . --lockfile .local/browser-lock/package-lock.json
+
+  # cargo-deny's bans and sources checks (packages/rust/deny.toml). Advisories are
+  # the advisories job's, with every other lockfile's.
+  # The workspace takes the SDK's crates from the bundle, by the patch the Rust
+  # images' Dockerfiles install, at the path they put them.
+  crates:
+    name: Every crate comes from crates.io, by version
+    needs: sdk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Download the SDK bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: sdk-artifacts
+          path: ${{ runner.temp }}/sdk-artifacts
+
+      - name: Install cargo-deny
+        run: cargo install --locked cargo-deny@0.20.2
+
+      - name: Stage the SDK's crates
+        run: |
+          sudo install -d -o "$USER" /sdk/cargo-local
+          python3 scripts/prepare-rust-sdk-artifacts.py "$RUNNER_TEMP/sdk-artifacts" /sdk/cargo-local
+          cp /sdk/cargo-local/config.toml "$HOME/.cargo/config.toml"
+
+      - name: Check the workspace's crates
+        working-directory: packages/rust
+        run: cargo deny --locked check bans sources
+
   # What the ruleset requires. It waits for every other job, a census holds
   # that list to the workflow's jobs, and it fails when any of them failed or
   # was cancelled. A job skipped by its own condition passes.
   gate:
     name: CI Gate
     if: always()
-    needs: [dco, labels, sdk, checks, model-catalogue, images]
+    needs: [dco, labels, sdk, checks, model-catalogue, images, advisories, crates]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
