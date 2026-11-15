@@ -17,6 +17,7 @@ multi-ecosystem-groups:
 
 updates:
   - package-ecosystem: github-actions
+    labels: ["dependencies"]
     directory: /
     schedule:
       interval: cron
@@ -31,6 +32,7 @@ updates:
       prefix: ci
 
   - package-ecosystem: npm
+    labels: ["dependencies"]
     directories:
       - /browser
       - /e2e
@@ -53,6 +55,7 @@ updates:
       prefix: deps
 
   - package-ecosystem: cargo
+    labels: ["dependencies"]
     directory: /packages/rust
     multi-ecosystem-group: rust
     patterns: ["*"]
@@ -61,11 +64,13 @@ updates:
       semver-major-days: 30
 
   - package-ecosystem: rust-toolchain
+    labels: ["dependencies"]
     directory: /packages/rust
     multi-ecosystem-group: rust
     patterns: ["*"]
 
   - package-ecosystem: uv
+    labels: ["dependencies"]
     directories:
       - /shared/python/graph
       - /shared/python/inference
@@ -89,6 +94,7 @@ updates:
       prefix: deps
 
   - package-ecosystem: docker
+    labels: ["dependencies"]
     directories:
       - /archivist
       - /browser
