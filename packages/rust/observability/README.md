@@ -9,7 +9,7 @@ What a Semiont service writes about itself, and what exports it.
 [dispatcher](../../../dispatcher/README.md) and the
 [Archivist](../../../archivist/README.md). An application built on the
 SDK installs an OpenTelemetry of its own instead:
-[`xynoplex-telemetry`](../telemetry/README.md) says how.
+[`xynoplex-telemetry`](https://github.com/Xynoplex/sdk/tree/main/rust/telemetry) says how.
 
 | Module | What it holds |
 |---|---|

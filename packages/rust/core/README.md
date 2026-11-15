@@ -6,8 +6,8 @@ What Semiont's Rust services share and no client needs.
 
 **Not published.** It is a crate of this workspace, built into the
 [gateway](../../../gateway/README.md) and the
-[dispatcher](../../../dispatcher/README.md). To use Semiont from Rust, the
-crate you want is [`semiont`](../sdk/README.md).
+[dispatcher](../../../dispatcher/README.md). To use Xynoplex from Rust, the
+crate you want is [`xynoplex`](https://github.com/Xynoplex/sdk/tree/main/rust/sdk).
 
 | Module | What it holds |
 |---|---|
@@ -22,4 +22,4 @@ A protocol type it reaches is the SDK's (`xynoplex::types`): one home for
 each. What a service writes about itself is
 [`semiont-observability`](../observability/README.md)'s, and how it
 reaches the bus is the SDK's client over
-[`xynoplex-http-transport`](../http-transport/README.md).
+[`xynoplex-http-transport`](https://github.com/Xynoplex/sdk/tree/main/rust/http-transport).

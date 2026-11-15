@@ -14,7 +14,7 @@ built on it.
 
 It is the services' own code and no library for anyone else: no index holds
 it, and each service's image builds it from this repository. A program that
-reads and writes a knowledge base needs the SDK, [`semiont`][sdk-python], and
+reads and writes a knowledge base needs the SDK, [`xynoplex`][sdk-python], and
 not this package.
 
 It runs on asyncio and requires Python 3.12 or later. It is checked by
@@ -76,5 +76,5 @@ uv run pytest
 [worker]: ../../../worker/README.md
 [weaver]: ../../../weaver/README.md
 [smelter]: ../../../smelter/README.md
-[sdk-python]: ../sdk/README.md
+[sdk-python]: https://github.com/Xynoplex/sdk/tree/main/python/sdk
 [telemetry]: ../../../protocol/specs/src/service-telemetry/telemetry.json

@@ -1,7 +1,6 @@
 //! The clock of a test that waits out long times over real sockets, in a
-//! test whose runtime starts paused: the one every such test of the HTTP
-//! crates runs on. This crate's sign-in tests and its renewal's own tests
-//! take it as a module, and so do the HTTP service's accept-loop tests.
+//! test whose runtime starts paused: the one the HTTP service's accept-loop
+//! tests run on.
 //!
 //! A paused clock alone will not do. It runs ahead to the next timer
 //! whenever nothing is runnable, and bytes on their way over a socket are

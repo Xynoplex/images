@@ -5,8 +5,8 @@
 What Semiont's Rust services that serve HTTP share.
 
 **Not published.** It is a crate of this workspace, built into the
-[gateway](../../../gateway/README.md). To use Semiont from Rust, the crate
-you want is [`semiont`](../sdk/README.md).
+[gateway](../../../gateway/README.md). To use Xynoplex from Rust, the crate
+you want is [`xynoplex`](https://github.com/Xynoplex/sdk/tree/main/rust/sdk).
 
 | Item | What it is |
 |---|---|

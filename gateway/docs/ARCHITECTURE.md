@@ -14,11 +14,11 @@ The gateway is a member of the repository's Rust workspace
 | `semiont-gateway` | `gateway` | Everything particular to the gateway: the routes, the ledger, the signal plane, token minting, principals and limits |
 | `semiont-core` | [packages/rust/core](../../packages/rust/core) | What every Rust service shares and no client needs: the embedded spec, reading the configuration document and the other service-only types generated from the spec, and (its `nats` feature) reaching the broker |
 | `xynoplex` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/sdk) | What a client needs too: the protocol's types, generated from the spec, which type every body the gateway reads and writes; naming the knowledge base and its principals; the realm's roles; and the bus log |
-| `semiont-telemetry` | [packages/rust/telemetry](../../packages/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
+| `xynoplex-telemetry` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/telemetry) | Its spans' making and the trace context they travel in: a caller's trace continued, and the gateway's own carried on what it sends |
 | `semiont-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
 | `semiont-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
-| `semiont-http-transport` | [packages/rust/http-transport](../../packages/rust/http-transport) | Signing in as a service account, to reach the Archivist |
-| `semiont-codegen` | [packages/rust/codegen](../../packages/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
+| `xynoplex-http-transport` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/http-transport) | Signing in as a service account, to reach the Archivist |
+| `xynoplex-codegen` | [Rust SDK](https://github.com/Xynoplex/sdk/tree/main/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
 
 ## Built against the spec
 

@@ -4,7 +4,6 @@
 //! answer, its next request is waited for `idle`, and a head it has begun is
 //! given `request_head` from its first byte.
 
-#[path = "../../http-transport/tests/quick_clock/mod.rs"]
 mod quick_clock;
 
 use axum::Router;
