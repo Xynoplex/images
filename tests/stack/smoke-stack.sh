@@ -327,7 +327,7 @@ if [ "$COMMAND" = up ]; then
   HDR=$(curl -s -D- -o /dev/null -X POST \
     -H "Origin: http://localhost:3000" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    --data "grant_type=authorization_code&client_id=semiont-browser&code=bogus&redirect_uri=http://localhost:3000/en/auth/callback" \
+    --data "grant_type=authorization_code&client_id=xynoplex-browser&code=bogus&redirect_uri=http://localhost:3000/en/auth/callback" \
     "$TOKEN_ENDPOINT" \
     | tr -d '\r' | grep -i '^access-control-allow-origin:')
   case "$HDR" in
