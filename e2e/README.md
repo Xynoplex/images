@@ -12,11 +12,22 @@ if needed) to start a knowledge base from the selected images:
 
 ```sh
 make build
-./tests/stack/smoke-stack.sh up local
-./tests/stack/smoke-stack.sh e2e
-./tests/stack/smoke-stack.sh down
-./tests/stack/smoke-stack.sh run local --e2e
+make stack-up
+make e2e
+make stack-down
+make smoke                 # self-cleaning combined flow
 ```
+
+Set `SMOKE_TAG` to use another image tag. `E2E_SCRIPT`, `E2E_MODEL`, and
+`E2E_ARGS` configure the suite; for example:
+
+```sh
+make e2e E2E_SCRIPT=test:slow E2E_MODEL=gemma4:26b E2E_ARGS='specs/01-sign-in.spec.ts --repeat-each=5'
+```
+
+`make e2e` expects a stack started with `make stack-up`. On failure it leaves
+the test KB running for inspection; `make stack-down` cleans up the stack and
+any failed test KBs. `make smoke` always attempts teardown.
 
 A published image tag can replace `local`. `e2e` creates a separate test KB and
 user, runs Playwright in the pinned Playwright container, and waits for its job
