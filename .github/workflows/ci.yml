@@ -72,30 +72,40 @@ jobs:
           include-hidden-files: true
 
   checks:
-    name: Make help and the image names
+    name: Make help and the image groups
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.images.outputs.images }}
+      groups: ${{ steps.groups.outputs.groups }}
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Make help lists every public target
         run: python3 scripts/test_make_help.py
 
-      - name: List the Makefile's images
-        id: images
+      # The Rust images share one compile of the Rust workspace, so they build together;
+      # every other image takes seconds, less than a job of its own costs.
+      - name: Group the Makefile's images
+        id: groups
         run: |
-          images="$(make -pRrq -f Makefile : | sed -n 's/^IMAGE_NAMES := //p')"
-          echo "images=$(python3 -c 'import json, sys; print(json.dumps(sys.argv[1].split()))' "$images")" >> "$GITHUB_OUTPUT"
+          make -pRrq -f Makefile : > "$RUNNER_TEMP/make-database"
+          python3 - "$RUNNER_TEMP/make-database" >> "$GITHUB_OUTPUT" <<'PY'
+          import json, re, sys
+          database = open(sys.argv[1]).read()
+          words = lambda name: re.search(rf"^{name} := (.*)$", database, re.M)[1].split()
+          rust = words("RUST_IMAGES")
+          rest = [image for image in words("IMAGE_NAMES") if image not in rust]
+          groups = [{"name": "the Rust images", "images": " ".join(rust)}, {"name": "the other images", "images": " ".join(rest)}]
+          print("groups=" + json.dumps(groups))
+          PY
 
   images:
-    name: Build the ${{ matrix.image }} image
+    name: Build ${{ matrix.group.name }}
     needs: [checks, sdk]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        image: ${{ fromJSON(needs.checks.outputs.images) }}
+        group: ${{ fromJSON(needs.checks.outputs.groups) }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -108,8 +118,8 @@ jobs:
           path: ${{ runner.temp }}/sdk-artifacts
 
       - uses: docker/setup-buildx-action@v4.4.1
-      - name: Build the image
+      - name: Build the group's images
         env:
-          IMAGE: ${{ matrix.image }}
+          IMAGES: ${{ matrix.group.images }}
           SDK_ARTIFACTS: ${{ runner.temp }}/sdk-artifacts
-        run: make "$IMAGE"
+        run: make $IMAGES
