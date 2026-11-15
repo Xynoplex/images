@@ -213,7 +213,7 @@ jobs:
         run: |
           sudo install -d -o "$USER" /sdk/cargo-local
           python3 scripts/prepare-rust-sdk-artifacts.py "$RUNNER_TEMP/sdk-artifacts" /sdk/cargo-local
-          cp /sdk/cargo-local/config.toml "${CARGO_HOME:?}/config.toml"
+          cp /sdk/cargo-local/config.toml "$HOME/.cargo/config.toml"
 
       - name: Check the workspace's crates
         working-directory: packages/rust
