@@ -71,17 +71,35 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-  images:
-    name: Build all images
-    needs: sdk
+  checks:
+    name: Make help and the image names
     runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.images.outputs.images }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Make help lists every public target
+        run: python3 scripts/test_make_help.py
+
+      - name: List the Makefile's images
+        id: images
+        run: |
+          images="$(make -pRrq -f Makefile : | sed -n 's/^IMAGE_NAMES := //p')"
+          echo "images=$(python3 -c 'import json, sys; print(json.dumps(sys.argv[1].split()))' "$images")" >> "$GITHUB_OUTPUT"
+
+  images:
+    name: Build the ${{ matrix.image }} image
+    needs: [checks, sdk]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.checks.outputs.images) }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-
-      - name: Make help lists every public target
-        run: python3 scripts/test_make_help.py
 
       - name: Download the SDK bundle
         uses: actions/download-artifact@v8
@@ -90,7 +108,8 @@ jobs:
           path: ${{ runner.temp }}/sdk-artifacts
 
       - uses: docker/setup-buildx-action@v4.4.1
-      - name: Build image set
+      - name: Build the image
         env:
+          IMAGE: ${{ matrix.image }}
           SDK_ARTIFACTS: ${{ runner.temp }}/sdk-artifacts
-        run: make build
+        run: make "$IMAGE"
