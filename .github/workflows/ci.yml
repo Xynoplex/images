@@ -29,10 +29,10 @@ jobs:
     permissions:
       issues: write
 
+  # Every run builds or restores it: the image builds install from it, and the
+  # advisories and crates jobs, which run every time, resolve against it.
   sdk:
     name: SDK bundle from the pinned SDK commit
-    needs: checks
-    if: needs.checks.outputs.groups != '[]'
     runs-on: ubuntu-latest
     env:
       SDK_LANGUAGES: typescript python rust
@@ -191,14 +191,29 @@ jobs:
 
   # cargo-deny's bans and sources checks (packages/rust/deny.toml). Advisories are
   # the advisories job's, with every other lockfile's.
+  # The workspace takes the SDK's crates from the bundle, by the patch the Rust
+  # images' Dockerfiles install, at the path they put them.
   crates:
     name: Every crate comes from crates.io, by version
+    needs: sdk
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
 
+      - name: Download the SDK bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: sdk-artifacts
+          path: ${{ runner.temp }}/sdk-artifacts
+
       - name: Install cargo-deny
         run: cargo install --locked cargo-deny@0.20.2
+
+      - name: Stage the SDK's crates
+        run: |
+          sudo install -d -o "$USER" /sdk/cargo-local
+          python3 scripts/prepare-rust-sdk-artifacts.py "$RUNNER_TEMP/sdk-artifacts" /sdk/cargo-local
+          cp /sdk/cargo-local/config.toml "${CARGO_HOME:?}/config.toml"
 
       - name: Check the workspace's crates
         working-directory: packages/rust
