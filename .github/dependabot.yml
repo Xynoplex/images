@@ -7,6 +7,12 @@ version: 2
 # proposed, and a major release a month where the ecosystem reads semver (not
 # GitHub Actions or Docker).
 
+# Security updates are grouped the same way, in a group of each entry's own,
+# and Dependabot raises them when an advisory is published, not on the
+# schedule; neither the cooldown nor the one-PR limit holds them back.
+# Rust's crates and toolchain are not: whether an entry in a
+# multi-ecosystem group may also have groups of its own is undocumented.
+
 multi-ecosystem-groups:
   rust:
     schedule:
@@ -26,6 +32,9 @@ updates:
     cooldown:
       default-days: 7
     groups:
+      github-actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
       github-actions:
         patterns: ["*"]
     commit-message:
@@ -44,6 +53,9 @@ updates:
       default-days: 7
       semver-major-days: 30
     groups:
+      npm-dependencies-security:
+        applies-to: security-updates
+        patterns: ["*"]
       npm-dependencies:
         patterns: ["*"]
     ignore:
@@ -88,6 +100,9 @@ updates:
       default-days: 7
       semver-major-days: 30
     groups:
+      python-dependencies-security:
+        applies-to: security-updates
+        patterns: ["*"]
       python-dependencies:
         patterns: ["*"]
     commit-message:
@@ -111,6 +126,9 @@ updates:
     cooldown:
       default-days: 7
     groups:
+      container-base-images-security:
+        applies-to: security-updates
+        patterns: ["*"]
       container-base-images:
         patterns: ["*"]
     commit-message:
