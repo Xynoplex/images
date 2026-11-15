@@ -27,7 +27,7 @@ make image NAME=gateway
 make clean
 ```
 
-`make shared` builds the four private Python distributions in `shared/python/` (`graph`, `vectors`, `inference`, and `service`) into `.local/shared-python-packages/`. Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make local`.
+`make shared` builds the four private Python distributions in `shared/python/` (`graph`, `vectors`, `inference`, and `service`) into `${XDG_CACHE_HOME:-~/.cache}/xynoplex-images/local/python/packages/`. Builds are local and are not pushed. `CONTAINER_RUNTIME` can select an installed runtime explicitly, for example `CONTAINER_RUNTIME=docker make local`.
 
 ## Repository layout
 

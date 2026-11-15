@@ -27,6 +27,7 @@ help:
 	  '  SDK_ARTIFACTS=<path>  Use and verify an existing SDK artifact bundle' \
 	  '  CONTAINER_RUNTIME=<cmd> Select container, docker, or podman explicitly' \
 	  '  SEMIONT_BROWSER_VERSION=<version> Override the Browser package version' \
+	  '  Shared Python output   XDG cache: xynoplex-images/local/python/packages' \
 	  '' \
 	  'Clean:' \
 	  '  make clean            Remove local image tags and shared-package distributions; retain staged SDK artifacts'
