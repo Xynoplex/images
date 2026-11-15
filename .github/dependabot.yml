@@ -44,6 +44,11 @@ updates:
     groups:
       npm-dependencies:
         patterns: ["*"]
+    ignore:
+      # TypeScript stays on 6: 7 has no JavaScript API, which the SDK's own
+      # build (openapi-typescript) needs, and the products move with the SDK.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: deps
 
