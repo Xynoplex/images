@@ -18,6 +18,8 @@ concurrency:
 jobs:
   sdk:
     name: SDK bundle from the pinned SDK commit
+    needs: checks
+    if: needs.checks.outputs.groups != '[]'
     runs-on: ubuntu-latest
     env:
       SDK_LANGUAGES: typescript python rust
@@ -72,29 +74,29 @@ jobs:
           include-hidden-files: true
 
   checks:
-    name: Make help and the image groups
+    name: Make help and the images this change affects
     runs-on: ubuntu-latest
     outputs:
       groups: ${{ steps.groups.outputs.groups }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Make help lists every public target
         run: python3 scripts/test_make_help.py
 
-      # The Rust images share one compile of the Rust workspace, so they build together;
+      # An image builds when this change touches one of its inputs (its Dockerfile's
+      # copies, its language's shared code, what every build reads). The Rust images
+      # share one compile of the Rust workspace, so the affected ones build together;
       # every other image takes seconds, less than a job of its own costs.
-      - name: Group the Makefile's images
+      - name: Group the images this change affects
         id: groups
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
         run: |
-          rust=$(scripts/image-groups.sh RUST_IMAGES)
-          every=$(scripts/image-groups.sh IMAGE_NAMES)
-          python3 -c '
-          import json, sys
-          rust = sys.argv[1].split()
-          rest = [image for image in sys.argv[2].split() if image not in rust]
-          print("groups=" + json.dumps([{"name": "the Rust images", "images": " ".join(rust)}, {"name": "the other images", "images": " ".join(rest)}]))
-          ' "$rust" "$every" >> "$GITHUB_OUTPUT"
+          groups=$(python3 scripts/changed-images.py "$BASE" "$GITHUB_SHA")
+          echo "groups=$groups" >> "$GITHUB_OUTPUT"
 
   model-catalogue:
     name: Model catalogue matches its pin
@@ -118,6 +120,7 @@ jobs:
   images:
     name: Build ${{ matrix.group.name }}
     needs: [checks, sdk]
+    if: needs.checks.outputs.groups != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
