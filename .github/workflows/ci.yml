@@ -87,13 +87,14 @@ jobs:
       - name: Group the Makefile's images
         id: groups
         run: |
-          value() { printf 'print-%%:\n\t@echo $($*)\n' | make -s --no-print-directory -f Makefile -f - "print-$1"; }
+          rust=$(scripts/image-groups.sh RUST_IMAGES)
+          every=$(scripts/image-groups.sh IMAGE_NAMES)
           python3 -c '
           import json, sys
           rust = sys.argv[1].split()
           rest = [image for image in sys.argv[2].split() if image not in rust]
           print("groups=" + json.dumps([{"name": "the Rust images", "images": " ".join(rust)}, {"name": "the other images", "images": " ".join(rest)}]))
-          ' "$(value RUST_IMAGES)" "$(value IMAGE_NAMES)" >> "$GITHUB_OUTPUT"
+          ' "$rust" "$every" >> "$GITHUB_OUTPUT"
 
   model-catalogue:
     name: Model catalogue matches its pin

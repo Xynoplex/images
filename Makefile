@@ -1,9 +1,12 @@
 .DEFAULT_GOAL := build
 
-# The Rust images share one compile of the Rust workspace; the Python images, the shared Python packages.
+# Each image by the language of the SDK it builds against: the one place the
+# groups are written (scripts/image-groups.sh reads them). The Rust images share
+# one compile of the Rust workspace; the Python images, the shared Python packages.
 RUST_IMAGES := gateway archivist dispatcher
+TYPESCRIPT_IMAGES := browser
 PYTHON_IMAGES := librarian smelter weaver worker
-IMAGE_NAMES := $(RUST_IMAGES) browser $(PYTHON_IMAGES)
+IMAGE_NAMES := $(RUST_IMAGES) $(TYPESCRIPT_IMAGES) $(PYTHON_IMAGES)
 
 .PHONY: help build shared clean $(IMAGE_NAMES) stack-up e2e stack-down smoke
 
