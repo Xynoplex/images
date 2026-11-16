@@ -6,24 +6,28 @@
  * For each service in SERVICES:
  *
  * 1. Reads, both directions. Every environment read in the service's source —
- *    its crate's, and every workspace crate's it links — is a row listing the
- *    service with `readBy: service`, and every such row is read — by literal
- *    name (`env::var`, `env::var_os`). A computed name is allowed only where
- *    DYNAMIC says why; `env::vars()` and `EnvFilter::from_default_env` never
- *    are.
- * 2. Provision. A `launcher` row is passed on the service's line of the
- *    launcher's default boot golden; an `image` row is set by the service's
- *    Dockerfile or exported by the supervisor.
+ *    its crate's, and every workspace or SDK crate's it links — is a row
+ *    listing the service with `readBy: service`, and every such row is read —
+ *    by literal name (`env::var`, `env::var_os`). A computed name is allowed
+ *    only where DYNAMIC says why; `env::vars()` and
+ *    `EnvFilter::from_default_env` never are.
+ * 2. Provision. An `image` row is set by the service's Dockerfile or exported
+ *    by the supervisor. A `launcher` row is the launcher's to pass, and the
+ *    launcher is not in this repository.
  * 3. Exercise. The service's conformance suite names every row that lists it.
+ *
+ * The SDK's crates are read from the directory scripts/prepare-rust-sdk-artifacts.py
+ * stages them in, the one the Rust images build against:
+ *
+ *   node scripts/check-service-environment.mjs <staged SDK crates directory>
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, posix, relative } from 'node:path';
+import { isAbsolute, join, posix, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { withoutComments } from '../.github/scripts/checks/source-text.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const TABLE = 'protocol/specs/src/service-environment/variables.json';
-const BOOT_GOLDEN = 'packages/go/launcher/testdata/golden/start-default-boot.argv';
 const SUPERVISOR = 'shared/supervise.sh';
 
 /** Each service the table covers: its crate, its image, and its suite. */
@@ -43,7 +47,13 @@ const DYNAMIC = {
 
 const failures = [];
 const fail = (message) => failures.push(message);
-const read = (path) => readFileSync(join(ROOT, path), 'utf8');
+const read = (path) => readFileSync(isAbsolute(path) ? path : join(ROOT, path), 'utf8');
+
+if (process.argv.length !== 3) {
+  console.error('Usage: node scripts/check-service-environment.mjs <staged SDK crates directory>');
+  process.exit(2);
+}
+const STAGED = join(resolve(process.argv[2]), 'crates');
 const serviceNames = new Set(SERVICES.map((s) => s.name));
 
 // ── the table ───────────────────────────────────────────────────────────────
@@ -68,9 +78,9 @@ const rowsOf = (service) => rows.filter((r) => Array.isArray(r.services) && r.se
 // ── 1. reads, both directions ───────────────────────────────────────────────
 function sourceFiles(dir) {
   const out = [];
-  for (const entry of readdirSync(join(ROOT, dir))) {
+  for (const entry of readdirSync(isAbsolute(dir) ? dir : join(ROOT, dir))) {
     const path = join(dir, entry);
-    if (statSync(join(ROOT, path)).isDirectory()) out.push(...sourceFiles(path));
+    if (statSync(isAbsolute(path) ? path : join(ROOT, path)).isDirectory()) out.push(...sourceFiles(path));
     else if (entry.endsWith('.rs')) out.push(path);
   }
   return out;
@@ -95,19 +105,44 @@ const BY_PATH = read('packages/rust/Cargo.toml').split('\n').filter((line) => li
 if (WORKSPACE.size !== BY_PATH) fail(`packages/rust/Cargo.toml names ${BY_PATH} crates by path, and ${WORKSPACE.size} of them were read: an entry is written in a shape this lint does not know`);
 
 /**
+ * The SDK's crates by package name: their staged directories. Packaging
+ * rewrites a crate's manifest, which then names each dependency in a table of
+ * its own (`[dependencies.<name>]`, `[target.<cfg>.dependencies.<name>]`).
+ */
+const SDK = new Map(
+  readdirSync(STAGED).map((entry) => {
+    const dir = join(STAGED, entry);
+    const name = read(join(dir, 'Cargo.toml')).match(/^\[package\]$[^[]*?^name = "([^"]+)"$/m)?.[1];
+    if (!name) fail(`${dir}/Cargo.toml names no package`);
+    return [name, dir];
+  }),
+);
+if (SDK.size === 0) fail(`${STAGED} holds no SDK crate`);
+const SDK_DIRS = new Set(SDK.values());
+for (const name of SDK.keys()) if (WORKSPACE.has(name)) fail(`${name} is both a workspace crate and a staged SDK crate`);
+const CRATES = new Map([...WORKSPACE, ...SDK]);
+
+/** The crates a manifest depends on to build its library and binaries, not its tests or build script. */
+function dependencyNames(dir) {
+  const manifest = read(join(dir, 'Cargo.toml'));
+  if (SDK_DIRS.has(dir)) {
+    return [...manifest.matchAll(/^\[(?:target\.[^\]]+\.)?dependencies\.([a-z][a-z0-9_-]*)\]$/gm)].map((m) => m[1]);
+  }
+  const dependencies = manifest.split(/^\[build-dependencies\]$/m)[0];
+  return [...dependencies.matchAll(/^([a-z][a-z0-9-]*)(?:\.workspace = true| = \{ workspace = true)/gm)].map((m) => m[1]);
+}
+
+/**
  * The source a service's binary is built from: its crate's, and each workspace
- * crate's it reaches through its manifests' dependencies — never a build
- * script's (`src/` only).
+ * or SDK crate's it reaches through its manifests' dependencies — never a
+ * build script's (`src/` only).
  */
 function crateSources(crate) {
   const crates = new Set([crate]);
   const pending = [crate];
   while (pending.length > 0) {
-    const dir = pending.pop();
-    const manifest = read(`${dir}/Cargo.toml`);
-    const dependencies = manifest.split(/^\[build-dependencies\]$/m)[0];
-    for (const [, name] of dependencies.matchAll(/^([a-z][a-z0-9-]*)(?:\.workspace = true| = \{ workspace = true)/gm)) {
-      const path = WORKSPACE.get(name);
+    for (const name of dependencyNames(pending.pop())) {
+      const path = CRATES.get(name);
       if (path && !crates.has(path)) {
         crates.add(path);
         pending.push(path);
@@ -123,7 +158,6 @@ for (const file of Object.keys(DYNAMIC)) {
 }
 
 const supervisorExports = [...read(SUPERVISOR).matchAll(/^\s*export ([A-Z_][A-Z0-9_]*)=/gm)].map((m) => m[1]);
-const goldenLines = read(BOOT_GOLDEN).split('\n');
 
 for (const service of SERVICES) {
   const sources = crateSources(service.crate);
@@ -148,14 +182,6 @@ for (const service of SERVICES) {
   }
 
   // ── 2. provision ──────────────────────────────────────────────────────────
-  // A knowledge base's container is named xynolog-<its did key>-<service>.
-  const named = new RegExp(`--name xynolog-\\S+-${service.name} `);
-  const line = goldenLines.find((l) => named.test(l));
-  if (!line) fail(`${BOOT_GOLDEN} has no line running the ${service.name}'s container`);
-  // Passed either with its value (`--env NAME=value`) or, for a secret, by name alone: the value
-  // crosses through the runtime command's own environment, never the command line, so the
-  // golden shows `--env NAME`.
-  const passed = new Set([...(line ?? '').matchAll(/(?:--env|-e) ([A-Z_][A-Z0-9_]*)(?=[=\s]|$)/g)].map((m) => m[1]));
   const imageSet = new Set(supervisorExports);
   let inEnv = false;
   for (const l of read(service.dockerfile).split('\n')) {
@@ -164,7 +190,6 @@ for (const service of SERVICES) {
     if (!l.trimEnd().endsWith('\\')) inEnv = false;
   }
   for (const row of listed) {
-    if (row.providedBy === 'launcher' && !passed.has(row.name)) fail(`${TABLE} says the launcher provides ${row.name}, and the ${service.name}'s line in ${BOOT_GOLDEN} does not pass it`);
     if (row.providedBy === 'image' && !imageSet.has(row.name)) fail(`${TABLE} says the image provides ${row.name}, and neither ${service.dockerfile} nor ${SUPERVISOR} sets it`);
   }
 
@@ -180,4 +205,4 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`   ${f}`);
   process.exit(1);
 }
-console.log(`✅ lint:service-environment — ${rows.length} variables over ${SERVICES.map((s) => `the ${s.name} (${rowsOf(s.name).length})`).join(' and ')}: every read listed, every listed read, provided where the table says, and exercised by each suite (${relative(ROOT, join(ROOT, TABLE))})`);
+console.log(`✅ lint:service-environment — ${rows.length} variables over ${SERVICES.map((s) => `the ${s.name} (${rowsOf(s.name).length})`).join(' and ')}: every read listed, every listed read (${SDK.size} SDK crates staged), set by the image where the table says, and exercised by each suite (${relative(ROOT, join(ROOT, TABLE))})`);
