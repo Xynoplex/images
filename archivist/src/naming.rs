@@ -46,7 +46,7 @@ mod tests {
     #[test]
     fn naming_cases() {
         let table: Value = serde_json::from_str(include_str!(
-            "../../../protocol/specs/src/principals/naming-cases.json"
+            "../../protocol/specs/src/principals/naming-cases.json"
         ))
         .expect("principals/naming-cases.json is JSON");
         let cases = table["cases"]
