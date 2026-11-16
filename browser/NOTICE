@@ -12,6 +12,9 @@ This product is licensed under the Apache License, Version 2.0.
 This product includes software developed by The AI Alliance
 (https://thealliance.ai/).
 
+Upstream source: Semiont, The AI Alliance's monorepo
+(https://github.com/The-AI-Alliance/semiont), as it stood through 2026-08-26.
+
 This container image includes the following third-party components:
 
   Alpine Linux - MIT License
