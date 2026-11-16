@@ -27,18 +27,18 @@ SHARED="shared/supervise.sh"
 BOOT="shared/boot.sh"
 # No exemption list, deliberately, and none for the browser: that a static
 # server has nothing in flight to lose is an argument about the death record,
-# not one against the restart. Every service in
-#  is supervised; an exemption list is where the next one would hide.
+# not one against the restart. Every service image is supervised; an
+# exemption list is where the next one would hide.
 
 FAIL=0
 [ -f "$SHARED" ] || { echo "❌ supervision: $SHARED is missing"; FAIL=1; }
 [ -f "$BOOT" ]   || { echo "❌ supervision: $BOOT is missing"; FAIL=1; }
 
 for stem in supervise boot; do
-  copies=$(find apps packages -name "${stem}*.sh" -not -path '*/node_modules/*' | wc -l | tr -d ' ')
-  if [ "$copies" -ne 0 ]; then
-    echo "❌ supervision: $copies copy/copies of ${stem}.sh outside scripts — two supervisors is two policies"
-    find apps packages -name "${stem}*.sh" -not -path '*/node_modules/*' | sed 's/^/     /'
+  copies=$(git ls-files ":(glob)**/${stem}*.sh" | grep -vxF "shared/${stem}.sh" || true)
+  if [ -n "$copies" ]; then
+    echo "❌ supervision: $(echo "$copies" | wc -l | tr -d ' ') copy/copies of ${stem}.sh outside shared/ — two supervisors is two policies"
+    echo "$copies" | sed 's/^/     /'
     FAIL=1
   fi
 done

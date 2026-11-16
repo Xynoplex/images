@@ -19,9 +19,9 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, posix, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { withoutComments } from '../../.github/scripts/checks/source-text.mjs';
+import { withoutComments } from '../.github/scripts/checks/source-text.mjs';
 
-const ROOT = fileURLToPath(new URL('../..', import.meta.url));
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const TABLE = 'protocol/specs/src/service-environment/variables.json';
 const BOOT_GOLDEN = 'packages/go/launcher/testdata/golden/start-default-boot.argv';
 const SUPERVISOR = 'shared/supervise.sh';
