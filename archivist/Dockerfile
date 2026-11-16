@@ -13,16 +13,25 @@
 ARG RUST_TOOLCHAIN
 ARG SDK_ARTIFACT_BUNDLE
 
-FROM rust:${RUST_TOOLCHAIN}-alpine AS builder
-ARG SDK_ARTIFACT_BUNDLE
+# The build stages, from here to the runtime stage, are the same in each Rust
+# service's Dockerfile (lint:rust-images): they build every service's binary,
+# so an image built after, or beside, another reuses them instead of compiling
+# the workspace again.
+FROM rust:${RUST_TOOLCHAIN}-alpine AS chef
 # make builds jemalloc, the allocator tikv-jemalloc-sys compiles into the binary.
 RUN apk add --no-cache make
 # cargo-auditable writes the crates the binary links into the binary itself,
 # which is how the image scan (Trivy) sees them in an image with no Cargo.lock.
 RUN cargo install cargo-auditable --locked --version 0.7.6
+# cargo-chef compiles the workspace's dependencies without its source, in a
+# layer whose only inputs are the manifests, the lockfile and the SDK's crates.
+RUN cargo install cargo-chef --locked --version 0.1.78
 WORKDIR /build
-COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local /sdk/cargo-local
-COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local/config.toml /usr/local/cargo/config.toml
+
+# The workspace's source, and the recipe cargo-chef reads from it: its members'
+# manifests and the lockfile. A change to the source alone leaves the recipe as
+# it was.
+FROM chef AS planner
 COPY version.json ./
 COPY protocol/specs/src protocol/specs/src
 # The workspace (packages/rust/Cargo.toml): cargo loads every member
@@ -48,16 +57,29 @@ COPY packages/rust/http-service/Cargo.toml packages/rust/http-service/
 COPY packages/rust/http-service/src packages/rust/http-service/src
 COPY packages/rust/observability/Cargo.toml packages/rust/observability/
 COPY packages/rust/observability/src packages/rust/observability/src
-# The builder stage is the same in each Rust service's Dockerfile
-# (lint:rust-images): it builds every service's binary, so an image built
-# after, or beside, another reuses its stage instead of compiling the
-# workspace again. A spec that does not compile fails here, in the build
-# scripts, never at boot.
 WORKDIR /build/packages/rust
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/build/packages/rust/target \
-    cargo auditable build --release --locked -p xynolog-archivist -p xynolog-dispatcher -p xynolog-gateway && \
-    cp target/release/xynolog-archivist target/release/xynolog-dispatcher target/release/xynolog-gateway /
+RUN cargo chef prepare --recipe-path /recipe.json
+
+# The dependencies compile first, from the recipe, and the binaries after,
+# from the source. A spec that does not compile fails here, in the build
+# scripts, never at boot. The registry and target/ stay in the layers, which
+# is what a build cache keeps; the last step removes target/ once the binaries
+# are out of it.
+FROM chef AS builder
+ARG SDK_ARTIFACT_BUNDLE
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local /sdk/cargo-local
+COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local/config.toml /usr/local/cargo/config.toml
+COPY --from=planner /recipe.json /recipe.json
+WORKDIR /build/packages/rust
+# No --locked: cargo-chef 0.1.78 writes each member's lockfile entry as 0.0.1
+# and leaves its manifest, which names no version, at cargo's 0.0.0, so the
+# skeleton's lockfile is never current. The build below is --locked against
+# the repository's Cargo.lock.
+RUN cargo chef cook --release -p xynolog-archivist -p xynolog-dispatcher -p xynolog-gateway --recipe-path /recipe.json
+COPY --from=planner /build /build
+RUN cargo auditable build --release --locked -p xynolog-archivist -p xynolog-dispatcher -p xynolog-gateway && \
+    cp target/release/xynolog-archivist target/release/xynolog-dispatcher target/release/xynolog-gateway / && \
+    rm -rf target
 
 FROM alpine:3.24
 # git is the Archivist's staging driver's: a knowledge base that syncs git has

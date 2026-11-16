@@ -203,8 +203,8 @@ docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.s
 ```
 
 [`make build`](../Makefile) and the publish workflow pass
-the toolchain the same way. The [Dockerfile](Dockerfile)'s builder stage is the Archivist's
-and the dispatcher's too, and builds all three binaries (`lint:rust-images`). A built image is
+the toolchain the same way. The [Dockerfile](Dockerfile)'s build stages are the Archivist's
+and the dispatcher's too, and build all three binaries (`lint:rust-images`). A built image is
 held to
 [`scripts/check-gateway-image.sh`](../scripts/check-gateway-image.sh):
 no source in it, and `/api/health` served within its start bound.

@@ -103,6 +103,9 @@ jobs:
       - name: Every NOTICE credits what its image ships
         run: node scripts/check-notice-components.mjs
 
+      - name: The Rust images share their build stages
+        run: node scripts/check-rust-images.mjs
+
       # An image builds when this change touches one of its inputs (its Dockerfile's
       # copies, its language's shared code, what every build reads). The Rust images
       # share one compile of the Rust workspace, so the affected ones build together;
@@ -155,6 +158,9 @@ jobs:
           path: ${{ runner.temp }}/sdk-artifacts
 
       - uses: docker/setup-buildx-action@v4.4.1
+      # A run step has no ACTIONS_RUNTIME_TOKEN or ACTIONS_RESULTS_URL; this
+      # exports them, for build-session.sh's buildx to reach GitHub's cache.
+      - uses: crazy-max/ghaction-github-runtime@v4.0.0
       - name: Build the group's images
         env:
           IMAGES: ${{ matrix.group.images }}
