@@ -222,13 +222,56 @@ jobs:
         working-directory: packages/rust
         run: cargo deny --locked check bans sources
 
+  # The Rust workspace's format, lints, tests and dependency boundaries
+  # (`make test-rust`, scripts/test-rust.sh), against the SDK's crates from the
+  # bundle.
+  rust:
+    name: The Rust workspace is formatted, lint-free, tested and within its boundaries
+    needs: sdk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
+
+      - name: Download the SDK bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: sdk-artifacts
+          path: ${{ runner.temp }}/sdk-artifacts
+
+      # The target keeps cargo's registry and target directory here
+      # (scripts/test-rust.sh). It is saved even when the checks fail: what
+      # compiled is still good, and a failing branch is when the next run
+      # comes soonest.
+      - name: Restore cargo's registry and target directory
+        id: cargo
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: ~/.cache/xynolog-images/rust
+          key: ${{ runner.os }}-${{ runner.arch }}-rust-${{ hashFiles('packages/rust/rust-toolchain.toml', 'packages/rust/Cargo.lock', 'sdk.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-rust-
+
+      - name: Run the workspace's checks
+        env:
+          SDK_ARTIFACTS: ${{ runner.temp }}/sdk-artifacts
+        run: make test-rust
+
+      - name: Save cargo's registry and target directory
+        if: always() && steps.cargo.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: ~/.cache/xynolog-images/rust
+          key: ${{ steps.cargo.outputs.cache-primary-key }}
+
   # What the ruleset requires. It waits for every other job, a census holds
   # that list to the workflow's jobs, and it fails when any of them failed or
   # was cancelled. A job skipped by its own condition passes.
   gate:
     name: CI Gate
     if: always()
-    needs: [dco, labels, sdk, checks, model-catalogue, images, advisories, crates]
+    needs: [dco, labels, sdk, checks, model-catalogue, images, advisories, crates, rust]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
