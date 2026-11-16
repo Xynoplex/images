@@ -22,7 +22,9 @@ on the plane.
 | The build (`xynolog-core`'s `build.rs`) | The spec bundles and every component schema compiles, or the gateway does not build; the bus registry names only schemas the spec declares; the service-only types (`xynolog-core`) and the protocol's (`xynolog`) are generated from the schemas, and a schema of a shape the generator does not know fails the build |
 | `protocol/conformance/gateway` | A running gateway conforms: spec-derived probes of every operation, every response and stream message validated against the spec, and hand-written cases for credentials, content, emitting, the stream, the connection bounds, the limits on one principal (a person and an agent alike) and on one process, replicas, readiness, boot refusals, the headers on every response, the environment, and the telemetry census |
 | The gateway's boot | Its route table is exactly the spec's operations — no undeclared route, no declared operation unserved ([src/routes/mod.rs](../src/routes/mod.rs)) — and every Archivist operation it calls is in the Archivist's spec; every suite run boots gateways, so a route added without a spec entry fails CI |
-| `cargo test --workspace` | The tests of the crates the gateway is built from, and the gateway's own unit tests, which run on the in-process plane: among them an emit's key (its digest, which outcomes it holds, its lifetime) and a request whose publish failed being published when sent again. Beside them it relies on the runners for the shared case tables ([Rust SDK test tables](https://github.com/xynolog/sdk/blob/main/rust/sdk/tests/tables.rs)), against the SDK it names its principals with: the principals and the knowledge base's resource identifier, as core and the launcher compute them |
+| `cargo test` (`make test-rust`; CI's rust job, on every run) | The tests of the crates the gateway is built from, and the gateway's own unit tests, which run on the in-process plane: among them an emit's key (its digest, which outcomes it holds, its lifetime) and a request whose publish failed being published when sent again. Beside them it relies on the runners for the shared case tables ([Rust SDK test tables](https://github.com/xynolog/sdk/blob/main/rust/sdk/tests/tables.rs)), against the SDK it names its principals with: the principals and the knowledge base's resource identifier, as core and the launcher compute them |
+| The crates' dependency boundaries ([check-dependency-boundaries.sh](../../packages/rust/scripts/check-dependency-boundaries.sh); `make test-rust`) | No NATS client in `xynolog-core` (but through its `nats` feature), `xynolog-http-service`, `xynolog-observability` or `xynolog-dispatcher-handlers`; no HTTP, git or NATS crate in `xynolog-archivist-record` |
+| `cargo fmt` and `cargo clippy` (`make test-rust`) | The workspace is formatted, and clippy finds nothing in any crate, target or feature |
 | `npm run lint:broker-boundary` | The broker is reached only through its interface: `async_nats` only in `signal/nats.rs`, the dispatcher's JetStream queue and `xynolog-core`'s broker helpers; that plane chosen only in `app.rs`; no NATS client in any TypeScript |
 | `npm run lint:service-environment`, `lint:service-role` | The environment it reads is exactly [variables.json](../../protocol/specs/src/service-environment/variables.json)'s; its role names are the launcher's and core's |
 | `scripts/check-image-crates.mjs` | Every crate it links is under a permitted licence, and credited in the image's NOTICE; every crate that compiles native code in says what, and a library under a licence of its own is credited too |
@@ -32,15 +34,19 @@ on the plane.
 
 ## Running it
 
+From the repository root,
+
 ```bash
-(cd packages/rust && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace && cargo build --release -p xynolog-gateway)
-npm run build:packages
-cd protocol/conformance
-npm ci
-npm run test:gateway
+make test-rust
 ```
 
-The suite needs `nats-server` 2.10 or later on `PATH`.
+runs `cargo fmt`, `cargo clippy`, every crate's tests and the dependency boundaries over the
+whole workspace, as CI does. It runs in the toolchain's image, on a copy of the checkout, against
+the SDK's crates from the SDK artifact bundle (`SDK_REPO` or `SDK_ARTIFACTS`; `make help`).
+
+The conformance suite is protocol's: it runs against a built gateway, named in an implementation
+manifest, as [its README](../../protocol/conformance/gateway/README.md#running-it) says. The suite
+needs `nats-server` 2.10 or later on `PATH`.
 
 ## Load
 

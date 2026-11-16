@@ -173,16 +173,18 @@ fetched at start.
 ## Working on it
 
 The gateway is a member of the repository's Rust workspace, whose root is `packages/rust`
-([Cargo.toml](../packages/rust/Cargo.toml)). The toolchain is the one
-[rust-toolchain.toml](../packages/rust/rust-toolchain.toml) pins; run it in its image
-(`rust:<channel>-alpine`), as the repository runs its other tools, from `packages/rust`:
+([Cargo.toml](../packages/rust/Cargo.toml)). From the repository root,
 
 ```bash
-cargo fmt --all --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace                 # every crate's tests, the gateway's among them
-cargo build --release -p xynolog-gateway   # target/release/xynolog-gateway
+make test-rust
 ```
+
+checks the whole workspace, the gateway among it, as CI does on every pull request: `cargo fmt`,
+`cargo clippy` with every warning an error, every crate's tests, and the crates' dependency
+boundaries. It runs in the image of the toolchain
+[rust-toolchain.toml](../packages/rust/rust-toolchain.toml) pins (`rust:<channel>-bookworm`), on a
+copy of the checkout, against the SDK's crates from the SDK artifact bundle (`SDK_REPO` or
+`SDK_ARTIFACTS`; `make help`). [TESTING.md](docs/TESTING.md) says what each check covers.
 
 The gateway's behavioural contract is the black-box
 [conformance suite](../protocol/conformance/gateway/README.md), run against the built binary

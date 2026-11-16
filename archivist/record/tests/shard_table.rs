@@ -22,7 +22,7 @@ struct Case {
 fn every_key_is_filed_where_the_shared_table_says() {
     let path = concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../../protocol/specs/src/archivist/shard-cases.json"
+        "/../../protocol/specs/src/archivist/shard-cases.json"
     );
     let table: Table = serde_json::from_str(
         &std::fs::read_to_string(path).expect("the shard table is in protocol/specs/"),

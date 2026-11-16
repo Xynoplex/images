@@ -123,7 +123,7 @@ mod tests {
     #[test]
     fn kind_cases() {
         let table: Value = serde_json::from_str(include_str!(
-            "../../../../protocol/specs/src/principals/kind-cases.json"
+            "../../../protocol/specs/src/principals/kind-cases.json"
         ))
         .expect("principals/kind-cases.json is JSON");
         let cases = table["cases"]

@@ -102,7 +102,7 @@ mod tests {
     #[test]
     fn every_identity_case_is_read_as_it_says() {
         let table: Value = serde_json::from_str(include_str!(
-            "../../../../protocol/specs/src/kb-identity/cases.json"
+            "../../../protocol/specs/src/kb-identity/cases.json"
         ))
         .unwrap();
         let (mut refused, mut read) = (0, 0);
