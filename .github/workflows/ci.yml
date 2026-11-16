@@ -118,6 +118,12 @@ jobs:
           groups=$(python3 scripts/changed-images.py "$BASE" "$GITHUB_SHA")
           echo "groups=$groups" >> "$GITHUB_OUTPUT"
 
+      - name: Only the broker's implementations name NATS
+        run: node scripts/check-broker-boundary.mjs
+
+      - name: Every service image is supervision-capable
+        run: bash scripts/audit-supervision.sh
+
   model-catalogue:
     name: Model catalogue matches its pin
     runs-on: ubuntu-latest
