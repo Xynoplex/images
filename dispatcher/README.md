@@ -141,8 +141,8 @@ docker build --build-arg RUST_TOOLCHAIN=$(packages/rust/scripts/rust-toolchain.s
 ```
 
 [`make build`](../Makefile) and the publish workflow pass
-the toolchain the same way. The [Dockerfile](Dockerfile)'s builder stage is the gateway's and
-the Archivist's too, and builds all three binaries (`lint:rust-images`). A built image is
+the toolchain the same way. The [Dockerfile](Dockerfile)'s build stages are the gateway's and
+the Archivist's too, and build all three binaries (`lint:rust-images`). A built image is
 held to
 [`scripts/check-document-image.sh`](../scripts/check-document-image.sh):
 no source and no Node in it, and, with no configuration document mounted, a prompt refusal
