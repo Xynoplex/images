@@ -158,6 +158,9 @@ jobs:
           path: ${{ runner.temp }}/sdk-artifacts
 
       - uses: docker/setup-buildx-action@v4.4.1
+      # A run step has no ACTIONS_RUNTIME_TOKEN or ACTIONS_RESULTS_URL; this
+      # exports them, for build-session.sh's buildx to reach GitHub's cache.
+      - uses: crazy-max/ghaction-github-runtime@v4.0.0
       - name: Build the group's images
         env:
           IMAGES: ${{ matrix.group.images }}

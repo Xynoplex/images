@@ -62,7 +62,16 @@ fi
 for service in "$@"; do
   language="$(language_of "$service")"
   case "$language" in
-    rust) args=(--build-arg "RUST_TOOLCHAIN=$RUST_TOOLCHAIN" --build-arg "SDK_ARTIFACT_BUNDLE=$bundle_id") ;;
+    rust)
+      args=(--build-arg "RUST_TOOLCHAIN=$RUST_TOOLCHAIN" --build-arg "SDK_ARTIFACT_BUNDLE=$bundle_id")
+      # A runner starts with an empty build cache, so on GitHub Actions the Rust
+      # images' layers, the compiled dependencies among them, come from and go
+      # to GitHub's cache (buildx exports it only after a build that succeeds).
+      # The workflow exposes the runtime token buildx's gha cache needs.
+      if [[ "${GITHUB_ACTIONS:-}" == true && "$RT" == docker ]]; then
+        args+=(--cache-from type=gha,scope=rust-builder --cache-to type=gha,scope=rust-builder,mode=max)
+      fi
+      ;;
     python) args=(--build-arg "PYTHON_FLOOR=$PYTHON_FLOOR" --build-arg "SDK_ARTIFACT_BUNDLE=$bundle_id") ;;
     typescript)
       bash "$REPO_ROOT/scripts/build-browser-package.sh" "$REPO_ROOT/$bundle_dir"
