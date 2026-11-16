@@ -1,11 +1,11 @@
-Xynoplex
-Copyright 2025-2026 Xynoplex
+Xynolog
+Copyright 2025-2026 Xynolog
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by Xynoplex.
+This product includes software developed by Xynolog.
 
-This container image (xynoplex-librarian) includes the following third-party
+This container image (xynolog-librarian) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -13,17 +13,17 @@ components:
   tini - MIT License
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (Xynoplex)
-    semiont-graph - Apache-2.0 License (Xynoplex)
-    semiont-inference - Apache-2.0 License (Xynoplex)
-    semiont-librarian - Apache-2.0 License (Xynoplex)
-    semiont-service - Apache-2.0 License (Xynoplex)
-    semiont-vectors - Apache-2.0 License (Xynoplex)
+    xynolog - Apache-2.0 License (Xynolog)
+    xynolog-graph - Apache-2.0 License (Xynolog)
+    xynolog-inference - Apache-2.0 License (Xynolog)
+    xynolog-librarian - Apache-2.0 License (Xynolog)
+    xynolog-service - Apache-2.0 License (Xynolog)
+    xynolog-vectors - Apache-2.0 License (Xynolog)
 
   Python packages installed at build time from https://pypi.org, each at the
   version librarian/uv.lock pins: what those six require, and with every
-  extra of semiont-graph the client each graph database is asked through, and
-  with every extra of semiont-inference the library each model provider is
+  extra of xynolog-graph the client each graph database is asked through, and
+  with every extra of xynolog-inference the library each model provider is
   asked through, each with what it requires.
 
 Each package from pypi.org carries its license text in its

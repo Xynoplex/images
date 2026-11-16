@@ -1,11 +1,11 @@
-Xynoplex
-Copyright 2025-2026 Xynoplex
+Xynolog
+Copyright 2025-2026 Xynolog
 
 This product is licensed under the Apache License, Version 2.0.
 
-This product includes software developed by Xynoplex.
+This product includes software developed by Xynolog.
 
-This container image (xynoplex-gateway) includes the following third-party
+This container image (xynolog-gateway) includes the following third-party
 components:
 
   Alpine Linux - MIT License

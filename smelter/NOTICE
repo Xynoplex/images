@@ -1,7 +1,7 @@
-Xynoplex contributions
-Copyright 2026 Xynoplex.
+Xynolog contributions
+Copyright 2026 Xynolog.
 
-Xynoplex substantially reimplemented the Smelter after August 26, 2026 as a
+Xynolog substantially reimplemented the Smelter after August 26, 2026 as a
 standalone Python service, including its event-driven vector-indexing and
 reconciliation pipeline, PDF text extraction, page anchoring and OCR, per-KB
 index isolation, and service identity and integrations.
@@ -14,7 +14,7 @@ This product is licensed under the Apache License, Version 2.0.
 This product includes software developed by The AI Alliance
 (https://thealliance.ai/).
 
-This container image (xynoplex-smelter) includes the following third-party
+This container image (xynolog-smelter) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -35,10 +35,10 @@ components:
     Installed as Alpine Linux packages it.
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (Xynoplex)
-    semiont-service - Apache-2.0 License (Xynoplex)
-    semiont-smelter - Apache-2.0 License (Xynoplex)
-    semiont-vectors - Apache-2.0 License (Xynoplex)
+    xynolog - Apache-2.0 License (Xynolog)
+    xynolog-service - Apache-2.0 License (Xynolog)
+    xynolog-smelter - Apache-2.0 License (Xynolog)
+    xynolog-vectors - Apache-2.0 License (Xynolog)
 
   Python packages installed at build time from https://pypi.org, each at the
   version smelter/uv.lock pins: what those four require. Among them:

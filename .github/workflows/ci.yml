@@ -100,6 +100,9 @@ jobs:
       - name: Make help lists every public target
         run: python3 build-tools/test_make_help.py --root . --list '<image>=IMAGE_NAMES'
 
+      - name: Every NOTICE credits what its image ships
+        run: node scripts/check-notice-components.mjs
+
       # An image builds when this change touches one of its inputs (its Dockerfile's
       # copies, its language's shared code, what every build reads). The Rust images
       # share one compile of the Rust workspace, so the affected ones build together;
