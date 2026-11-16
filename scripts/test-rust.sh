@@ -10,7 +10,9 @@
 #
 # Cargo's registry and target directory outlive the container, under the XDG
 # cache's xynolog-images/rust, so a run compiles only what changed since the
-# last one. CI's rust job caches that directory.
+# last one. CI's rust job caches that directory. Incremental compilation is
+# off: its session locks are the container user's alone, so the runner could
+# not read them to save the cache, and a restored target gains nothing by it.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
@@ -33,6 +35,7 @@ mkdir -p "$cache/registry" "$cache/target"
   --volume "$cache/registry:/usr/local/cargo/registry" \
   --volume "$cache/target:/target" \
   --env CARGO_TARGET_DIR=/target \
+  --env CARGO_INCREMENTAL=0 \
   "rust:$RUST_TOOLCHAIN-bookworm" \
   bash -euc '
     mkdir /tmp/images
