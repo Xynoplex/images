@@ -1,8 +1,8 @@
-Xynoplex contributions
-Copyright 2026 Xynoplex.
+Xynolog contributions
+Copyright 2026 Xynolog.
 
-This container image includes work created by Xynoplex after August 26, 2026:
-the Python Weaver implementation and Xynoplex's image-specific changes.
+This container image includes work created by Xynolog after August 26, 2026:
+the Python Weaver implementation and Xynolog's image-specific changes.
 
 Upstream attribution
 Copyright 2025-2026 The AI Alliance
@@ -12,7 +12,7 @@ This product is licensed under the Apache License, Version 2.0.
 This product includes software developed by The AI Alliance
 (https://thealliance.ai/).
 
-This container image (xynoplex-weaver) includes the following third-party
+This container image (xynolog-weaver) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -20,14 +20,14 @@ components:
   tini - MIT License
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (Xynoplex)
-    semiont-graph - Apache-2.0 License (Xynoplex)
-    semiont-service - Apache-2.0 License (Xynoplex)
-    semiont-weaver - Apache-2.0 License (Xynoplex)
+    xynolog - Apache-2.0 License (Xynolog)
+    xynolog-graph - Apache-2.0 License (Xynolog)
+    xynolog-service - Apache-2.0 License (Xynolog)
+    xynolog-weaver - Apache-2.0 License (Xynolog)
 
   Python packages installed at build time from https://pypi.org, each at the
   version weaver/uv.lock pins: what those four require, and with every
-  extra of semiont-graph the client each graph database is asked through
+  extra of xynolog-graph the client each graph database is asked through
   (Neo4j's neo4j, Apache TinkerPop's gremlinpython), with what that client
   requires.
 

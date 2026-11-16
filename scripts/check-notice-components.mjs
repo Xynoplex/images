@@ -19,11 +19,15 @@
  *     (a `--from` naming a build stage is not a component).
  *
  * What a NOTICE credits is its two-space-indented `<name> - <licence>` lines.
- * Four-space-indented lines are the npm section, whose shape differs per image
- * (installed packages, bundled libraries, font notices) and is not checked
- * here. Names match on their first word, case-insensitively, with a `.js`
- * suffix dropped: `Node.js` is `node`, `Typst (typesetting compiler, …)` is
- * `typst`.
+ * Names match on their first word, case-insensitively, with a `.js` suffix
+ * dropped: `Node.js` is `node`, `Typst (typesetting compiler, …)` is `typst`.
+ *
+ * A Python image's NOTICE also lists, under "Python packages built into the
+ * image from this repository:", the packages its uv.lock takes from anywhere
+ * but a registry: the SDK's wheel and this repository's own packages. The
+ * names on that list's four-space-indented lines are exactly those. Other
+ * four-space-indented lines (npm packages, bundled libraries, font notices)
+ * differ in shape per image and are not checked.
  */
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -67,6 +71,30 @@ function credited(notice) {
   return out;
 }
 
+const BUILT_HERE = '  Python packages built into the image from this repository:';
+
+function locallyBuilt(lock) {
+  const out = new Set();
+  for (const entry of lock.split(/^\[\[package\]\]$/m).slice(1)) {
+    const name = entry.match(/^name = "([^"]+)"$/m)[1];
+    const source = entry.match(/^source = \{ (\w+) = /m)[1];
+    if (source !== 'registry') out.add(name);
+  }
+  return out;
+}
+
+function listedAsBuiltHere(notice) {
+  const lines = notice.split('\n');
+  const start = lines.indexOf(BUILT_HERE);
+  if (start === -1) return null;
+  const out = new Set();
+  for (const line of lines.slice(start + 1)) {
+    if (!line.startsWith('    ')) break;
+    out.add(line.trim().split(/\s/)[0]);
+  }
+  return out;
+}
+
 const problems = [];
 let checked = 0;
 for (const image of readdirSync(IMAGES).sort()) {
@@ -83,6 +111,17 @@ for (const image of readdirSync(IMAGES).sort()) {
   checked++;
   for (const c of ships) if (!credits.has(c)) problems.push(`${image}/NOTICE does not credit "${c}", which the image ships`);
   for (const c of credits) if (!ships.has(c)) problems.push(`${image}/NOTICE credits "${c}", which the image does not ship`);
+
+  const lock = join(IMAGES, image, 'uv.lock');
+  if (!existsSync(lock)) continue;
+  const built = locallyBuilt(readFileSync(lock, 'utf-8'));
+  const listed = listedAsBuiltHere(readFileSync(notice, 'utf-8'));
+  if (!listed) {
+    problems.push(`${image}/NOTICE has no "${BUILT_HERE.trim()}" list, and ${image}/uv.lock builds ${[...built].join(', ')}`);
+    continue;
+  }
+  for (const p of built) if (!listed.has(p)) problems.push(`${image}/NOTICE does not list "${p}", which ${image}/uv.lock builds from outside a registry`);
+  for (const p of listed) if (!built.has(p)) problems.push(`${image}/NOTICE lists "${p}", which ${image}/uv.lock does not build`);
 }
 
 if (checked === 0) {
@@ -92,7 +131,7 @@ if (checked === 0) {
 if (problems.length > 0) {
   console.error('✗ lint:notice — a NOTICE disagrees with what its image ships:');
   for (const p of problems) console.error(`    ${p}`);
-  console.error("  Credit what the Dockerfile's last stage installs, and nothing it does not.");
+  console.error("  Credit what the Dockerfile's last stage installs and what uv.lock builds outside a registry, and nothing else.");
   process.exit(1);
 }
 console.log(`✓ lint:notice — ${checked} service images credit exactly what they ship`);

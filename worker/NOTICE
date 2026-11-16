@@ -1,7 +1,7 @@
-Xynoplex contributions
-Copyright 2026 Xynoplex.
+Xynolog contributions
+Copyright 2026 Xynolog.
 
-Xynoplex's post-August 26, 2026 Worker work includes the new Python service and
+Xynolog's post-August 26, 2026 Worker work includes the new Python service and
 architecture; the SDK-level `job.claim` interface and worker contract;
 multi-KB operation and per-KB worker identity; and image-specific changes.
 
@@ -13,7 +13,7 @@ This product is licensed under the Apache License, Version 2.0.
 This product includes software developed by The AI Alliance
 (https://thealliance.ai/).
 
-This container image (xynoplex-worker) includes the following third-party
+This container image (xynolog-worker) includes the following third-party
 components:
 
   Alpine Linux - MIT License
@@ -35,14 +35,14 @@ components:
         DejaVu changes are in the public domain.
 
   Python packages built into the image from this repository:
-    semiont - Apache-2.0 License (Xynoplex)
-    semiont-inference - Apache-2.0 License (Xynoplex)
-    semiont-service - Apache-2.0 License (Xynoplex)
-    semiont-worker - Apache-2.0 License (Xynoplex)
+    xynolog - Apache-2.0 License (Xynolog)
+    xynolog-inference - Apache-2.0 License (Xynolog)
+    xynolog-service - Apache-2.0 License (Xynolog)
+    xynolog-worker - Apache-2.0 License (Xynolog)
 
   Python packages installed at build time from https://pypi.org, each at the
   version worker/uv.lock pins: what those four require, and with every
-  extra of semiont-inference the library each model provider is asked
+  extra of xynolog-inference the library each model provider is asked
   through, with what that library requires.
 
 Each package from pypi.org carries its license text in its
