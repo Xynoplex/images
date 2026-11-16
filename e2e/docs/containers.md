@@ -95,7 +95,7 @@ The stack is run from the KB project directory, not this repo. For the
 template KB:
 
 ```sh
-cd /path/to/semiont-template-kb
+cd /path/to/kb-template
 # The documents in .xynolog/stack/ name the :local images, and the
 # Browser's and the worker's own documents name theirs (once):
 perl -pi -e 's#(xynolog-browser):\S+#$1:local#' "$(xynolog settings browser --path)"
