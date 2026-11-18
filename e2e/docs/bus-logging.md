@@ -27,7 +27,7 @@ whose whole name is one a credential goes by (`token`, `password`,
 `apiKey` and the rest of a short list) as `[withheld]`, wherever in a
 payload the member is; everything else of a payload is written as it is.
 The list and the rule are one table,
-[`protocol/specs/src/bus/log-cases.json`](../../protocol/specs/src/bus/log-cases.json),
+[`protocol/specs/src/bus/log-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/bus/log-cases.json),
 which every bus log runs.
 
 Cost when disabled: a single truthy check, zero allocations.
@@ -36,7 +36,7 @@ This is **Tier 1 of the three-tier observability stack** —
 correlation-ID discipline at the transport contract layer. Tier 2
 (OpenTelemetry spans) and Tier 3 (metrics + log correlation) reuse the
 same choke points;
-[`@xynolog/observability`](../../../packages/typescript/observability/README.md)
+[`@xynolog/observability`](https://github.com/xynolog/sdk/blob/main/typescript/observability/README.md)
 lists the three.
 
 ## Choke points

@@ -85,7 +85,7 @@ Node and the npm package `@xynolog/browser`: the built `dist/` plus `server.js`,
 runtime dependencies. The image does not build the SPA; its first stage installs the
 published package from an npm registry. npm is removed from the runtime image. One build,
 three consumers: this image, the package `@xynolog/browser` itself, and
-[`apps/desktop`](../../apps/desktop/), a separate Electron chat client built from its own
+[`apps/desktop`](https://github.com/xynolog/desktop), a separate Electron chat client built from its own
 renderer.
 
 ## Working on it

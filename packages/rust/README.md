@@ -15,6 +15,6 @@ The first four are the Rust SDK's crates, which live in the [SDK repository](htt
 ## Where things are
 
 - One Cargo workspace, rooted here: [`Cargo.toml`](./Cargo.toml) names these crates and the Rust images' (`gateway`, `dispatcher`, `archivist`), beside [`Cargo.lock`](./Cargo.lock), cargo-deny's [`deny.toml`](./deny.toml) and the [`rust-toolchain.toml`](./rust-toolchain.toml) every Rust build takes its compiler from. Run `cargo` here; its build output is `target/`.
-- `cargo test --workspace` here runs every crate's tests. The three services, and the crates only they use (`xynolog-core`, `xynolog-http-service` and `xynolog-observability`), are also held to the protocol by its [conformance suites](../../protocol/conformance/README.md), which run against the built binaries.
+- `cargo test --workspace` here runs every crate's tests. The three services, and the crates only they use (`xynolog-core`, `xynolog-http-service` and `xynolog-observability`), are also held to the protocol by its [conformance suites](https://github.com/xynolog/protocol/blob/main/conformance/README.md), which run against the built binaries.
 
-The other languages, and which SDK a program installs, are in [packages/](../README.md).
+The other languages, and which SDK a program installs, are in the [SDK repository](https://github.com/xynolog/sdk/blob/main/README.md).

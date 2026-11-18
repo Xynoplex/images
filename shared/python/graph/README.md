@@ -148,4 +148,4 @@ them again.
 
 [xynolog]: https://github.com/xynolog/images
 [sdk-python]: https://github.com/xynolog/sdk/tree/main/python
-[codec-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/graph/codec-cases.json
+[codec-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/graph/codec-cases.json

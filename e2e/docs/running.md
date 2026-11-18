@@ -22,8 +22,8 @@ local-dev defaults.
 | `E2E_BROWSER_URL` | `http://localhost:3000` | The Browser the tests drive. |
 | `E2E_GATEWAY_URL` | `http://localhost:4000` | Gateway the sign-in form points at. |
 
-The user must exist in the stack's issuer. The stack flow in the
-[README](../README.md#running-against-a-freshly-built-stack) creates
+The user must exist in the stack's issuer. The stack flow in
+[containers.md](containers.md#restarting-the-stack-on-new-images) creates
 `admin@example.com` / `password` with `xynolog useradd`.
 
 ## Running from a container (recommended on macOS)

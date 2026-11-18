@@ -52,7 +52,7 @@ header.
 **This preserves authentication — it doesn't bypass it.** Getting a media token
 requires a valid session. The full claim format, validation, and OpenAPI spec
 live in the canonical
-[`@xynolog/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md);
+[`@xynolog/http-transport` MEDIA-TOKENS.md](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/docs/MEDIA-TOKENS.md);
 this doc covers how the SPA uses it.
 
 ### Isn't a token in the URL a security hole?
@@ -65,7 +65,7 @@ load-bearing safety property — a leaked media token is cryptographically usele
 against any *other* resource, even one the same user could open with their
 session token. That scoping is exactly why putting it on the URL is acceptable
 where putting a session token there would not be. See the **Threat model**
-section of [MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md).
+section of [MEDIA-TOKENS.md](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/docs/MEDIA-TOKENS.md).
 
 ## React usage
 
@@ -128,7 +128,7 @@ The split is **display vs programmatic**, not text vs binary:
 
 ## Related documentation
 
-- [`@xynolog/http-transport` MEDIA-TOKENS.md](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) — the canonical media-token spec (claims, threat model, OpenAPI)
+- [`@xynolog/http-transport` MEDIA-TOKENS.md](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/docs/MEDIA-TOKENS.md) — the canonical media-token spec (claims, threat model, OpenAPI)
 - [Browser Authentication Architecture](AUTHENTICATION.md) — the SPA's bearer-only session model
 - [Gateway Authentication Guide](../../gateway/docs/AUTHENTICATION.md) — JWT validation, including the `?token=` media path
 - [System Authentication Architecture](../../../docs/operator/administration/AUTHENTICATION.md) — end-to-end auth flows

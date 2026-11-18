@@ -1,7 +1,7 @@
 # Gateway Architecture
 
 How the gateway is put together. What it serves is the spec's
-([protocol/specs/src/openapi.json](../../protocol/specs/src/openapi.json)); this is the code
+([protocol/specs/src/openapi.json](https://github.com/xynolog/protocol/blob/main/specs/src/openapi.json)); this is the code
 that serves it.
 
 ## The crates it is built from
@@ -177,7 +177,7 @@ Opening and closing are presence: `session:joined`, `session:left`.
 ## Limits
 
 What one principal may take and what one process can hold
-([TRANSPORT-HTTP.md § Limits](../../../protocol/contract/TRANSPORT-HTTP.md#limits)).
+([TRANSPORT-HTTP.md § Limits](https://github.com/xynolog/protocol/blob/main/contract/TRANSPORT-HTTP.md#limits)).
 Nothing here asks whether a principal is a person or an agent: a limit's
 coefficient comes from the principal's roles ([src/limits.rs](../src/limits.rs)
 `PrincipalLimit`) — the baseline when it holds none the limit names, and
@@ -254,7 +254,7 @@ relays. The gateway makes no bus request of its own.
 ## Telemetry
 
 `xynolog_observability::telemetry` exports over OTLP/HTTP (protobuf) the spans and
-metrics [protocol/specs/src/service-telemetry/telemetry.json](../../protocol/specs/src/service-telemetry/telemetry.json)
+metrics [protocol/specs/src/service-telemetry/telemetry.json](https://github.com/xynolog/protocol/blob/main/specs/src/service-telemetry/telemetry.json)
 lists for the gateway, and nothing else, under the resource the table lists for
 it: its name, its version and `xynolog.kb`, the DID of the knowledge base its
 document's `kb` names. They are the process's own readings, the gateway's

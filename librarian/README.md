@@ -7,7 +7,7 @@ questions that need the graph the Weaver writes, the vector index the Smelter wr
 model — what a reference could refer to, which resources a text finds, what surrounds an
 annotation or a resource, and what refers to a resource. It records nothing. Every question
 reaches it, and every answer leaves it, on the gateway's event
-[bus](../../protocol/contract/EVENT-BUS.md); its one HTTP route is `/health`, on port 24104. The
+[bus](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md); its one HTTP route is `/health`, on port 24104. The
 launcher starts it with `xynolog start`.
 
 | | |
@@ -16,8 +16,8 @@ launcher starts it with `xynolog start`.
 | Port | 24104 (`/health`, and nothing else: everything it answers is on the bus) |
 | Command | `python -P -m xynolog_librarian --config /etc/xynolog/librarian.json` |
 | Code | Python, in this directory: [`src/xynolog_librarian`](src/xynolog_librarian) |
-| Specification | [protocol/contract/LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) |
-| Judged by | [protocol/conformance/librarian](../../protocol/conformance/librarian/README.md) |
+| Specification | [protocol/contract/LIBRARIAN.md](https://github.com/xynolog/protocol/blob/main/contract/LIBRARIAN.md) |
+| Judged by | [protocol/conformance/librarian](https://github.com/xynolog/protocol/blob/main/conformance/librarian/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -42,7 +42,7 @@ engines are.
 
 **It owns no store, and makes nothing in one.** It reads the graph and the vector index, and
 puts no node, no edge, no collection and no point in either. What it needs of
-[the record](../../protocol/contract/ARCHIVIST.md), and the profiles of the principals a reply
+[the record](https://github.com/xynolog/protocol/blob/main/contract/ARCHIVIST.md), and the profiles of the principals a reply
 names, it asks the Archivist on the bus, each read bounded by its question. A Librarian that
 is stopped and started again has lost nothing.
 
@@ -91,20 +91,20 @@ a status other than 0.
 ## Configuration
 
 It reads one document, the protocol's
-[`LibrarianConfig`](../protocol/specs/src/components/schemas/LibrarianConfig.json), at the path
+[`LibrarianConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/LibrarianConfig.json), at the path
 `--config` names. Whoever starts a Librarian writes it, resolved, and mounts it where the
 image's command looks: `/etc/xynolog/librarian.json`. The Librarian defaults nothing in it.
 
 | Member | |
 | --- | --- |
-| `kb` | the knowledge base it serves ([`KbIdentity`](../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
+| `kb` | the knowledge base it serves ([`KbIdentity`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | the Archivist's host and port |
-| `graph` | the graph database ([`GraphConfig`](../protocol/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
-| `vectors` | the vector index ([`VectorsConfig`](../protocol/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
-| `embedding` | the embedding provider ([`EmbeddingConfig`](../protocol/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, and where it is reached |
-| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](../protocol/specs/src/components/schemas/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
+| `graph` | the graph database ([`GraphConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
+| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
+| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, and where it is reached |
+| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
 | `modelCatalogue` | the path of the model catalogue: what each model of `google`, `openai` and `together` can take, which those providers' APIs do not say. It is read only where an actor's model is one of theirs |
 | `gather.settleTimeoutMs` | how long a gather around a resource waits for the Smelter |
 | `search.semanticFloor` | the least similarity a hit by meaning must have |
@@ -120,7 +120,7 @@ the key of each actor's model. It signs in as itself, and the gateway names it b
 **Its token only reads its own index.** The token it presents to its Qdrant may read its
 knowledge base's three collections and nothing else: Qdrant refuses it every write, and every
 request of another knowledge base's collections.
-[The token cases](../protocol/specs/src/vectors/token-cases.json) state what it says. The
+[The token cases](https://github.com/xynolog/protocol/blob/main/specs/src/vectors/token-cases.json) state what it says. The
 launcher mints it from the key it keeps for a Qdrant it runs, and for one somebody else runs
 is handed it in the variable the stack's `KnowledgeIndex` names
 (`spec.vectors.external.librarianToken`).
@@ -145,13 +145,13 @@ that does not serve an actor's model, and a port it cannot listen on.
 The service, and the five Python packages of this repository it runs on:
 
 - the SDK ([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway;
-- the graph stores ([`shared/python/graph`](../../shared/python/graph/)), which ask a
+- the graph stores ([`shared/python/graph`](../shared/python/graph/)), which ask a
   graph database;
-- the vector stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
+- the vector stores and embedding providers ([`shared/python/vectors`](../shared/python/vectors/)),
   which ask a Qdrant and a provider over HTTP;
-- the inference drivers ([`shared/python/inference`](../../shared/python/inference/)),
+- the inference drivers ([`shared/python/inference`](../shared/python/inference/)),
   which ask a model provider;
-- what every Python service is built on ([`shared/python/service`](../../shared/python/service/)),
+- what every Python service is built on ([`shared/python/service`](../shared/python/service/)),
   which reads its configuration, answers for its health, writes its log, exports its telemetry
   and reads a resource's bytes from the Archivist.
 
@@ -164,8 +164,8 @@ path the launcher writes into `modelCatalogue`.
 **Every graph database's client and every provider's library is in it.** The stores ask each
 database through that database's own client, and the drivers ask each provider through that
 provider's own library. Each is an extra of its package, named for the store or the provider
-(what an install has: [the stores'](../../shared/python/graph/README.md#what-an-install-has),
-[the drivers'](../../shared/python/inference/README.md#what-an-install-has)). The image is
+(what an install has: [the stores'](../shared/python/graph/README.md#what-an-install-has),
+[the drivers'](../shared/python/inference/README.md#what-an-install-has)). The image is
 built with every extra, so it is not rebuilt to be pointed at another database or another
 provider. The vector stores and the embedding providers have no extra: each is asked with
 what every install has.
@@ -197,8 +197,8 @@ uv sync --locked
 uv run pytest
 ```
 
-The [librarian conformance suite](../../protocol/conformance/librarian/README.md) holds a
-Librarian to [LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md), as a process behind a real
+The [librarian conformance suite](https://github.com/xynolog/protocol/blob/main/conformance/librarian/README.md) holds a
+Librarian to [LIBRARIAN.md](https://github.com/xynolog/protocol/blob/main/contract/LIBRARIAN.md), as a process behind a real
 gateway and a real Archivist, reading a Neo4j a real Weaver writes and a Qdrant a real Smelter
 writes.
 
@@ -217,10 +217,10 @@ checks what a built one promises.
 
 ## Related
 
-- [LIBRARIAN.md](../../protocol/contract/LIBRARIAN.md) — what a Librarian does, rule by rule
-- [Gather flow](../../protocol/contract/flows/GATHER.md) · [Match flow](../../protocol/contract/flows/MATCH.md) — the client's side of what it answers
-- [`xynolog-graph`](../../shared/python/graph/), [`xynolog-vectors`](../../shared/python/vectors/)
-  and [`xynolog-inference`](../../shared/python/inference/) — the stores, the embedding
+- [LIBRARIAN.md](https://github.com/xynolog/protocol/blob/main/contract/LIBRARIAN.md) — what a Librarian does, rule by rule
+- [Gather flow](https://github.com/xynolog/protocol/blob/main/contract/flows/GATHER.md) · [Match flow](https://github.com/xynolog/protocol/blob/main/contract/flows/MATCH.md) — the client's side of what it answers
+- [`xynolog-graph`](../shared/python/graph/), [`xynolog-vectors`](../shared/python/vectors/)
+  and [`xynolog-inference`](../shared/python/inference/) — the stores, the embedding
   providers and the drivers it reads and asks through
 - [Gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — the other half of the pair: it holds the record and answers

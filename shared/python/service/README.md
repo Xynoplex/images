@@ -77,4 +77,4 @@ uv run pytest
 [weaver]: ../../../weaver/README.md
 [smelter]: ../../../smelter/README.md
 [sdk-python]: https://github.com/xynolog/sdk/tree/main/python/sdk
-[telemetry]: ../../../protocol/specs/src/service-telemetry/telemetry.json
+[telemetry]: https://github.com/xynolog/protocol/blob/main/specs/src/service-telemetry/telemetry.json
