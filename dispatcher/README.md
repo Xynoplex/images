@@ -154,6 +154,6 @@ that names the document it cannot read.
 - [protocol/contract/WORKER-CONTRACT.md](../protocol/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
 - [xynolog-worker](../worker) — the executor, and a client of this service
 - [xynolog-archivist](../archivist) — keeps the record: the bytes a worker reads through the gateway, and the annotations it commits
-- [Container Topology](../../docs/operator/CONTAINER-TOPOLOGY.md) — where it sits in the fleet
-- [Authentication](../../docs/operator/administration/AUTHENTICATION.md) — the service-account
+- [Container Topology](https://github.com/xynolog/docs/blob/main/operator/CONTAINER-TOPOLOGY.md) — where it sits in the fleet
+- [Authentication](https://github.com/xynolog/docs/blob/main/operator/administration/AUTHENTICATION.md) — the service-account
   and worker-role requirements an issuer must meet

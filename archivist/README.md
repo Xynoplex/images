@@ -117,7 +117,7 @@ log go to the state volume (the document's `stateHome`), at its top; the Librari
 needs of them over the bus. The anchored-text store (`/anchored-text`) holds the text the Smelter
 derives from a PDF, with where each piece of it sits on its page; the Smelter stores each entry
 here over HTTP. No other container mounts the state volume or the anchored-text store either.
-[Where a knowledge base lives on disk](../../docs/architecture/FILESYSTEM.md) has the layout.
+[Where a knowledge base lives on disk](https://github.com/xynolog/docs/blob/main/architecture/FILESYSTEM.md) has the layout.
 
 ## When it starts
 
@@ -184,8 +184,8 @@ that names the document it cannot read.
 
 - [Librarian](../librarian) — the deliberate pair: the Archivist holds the record and answers
   *"what is there?"*; the Librarian searches it and answers *"what is relevant?"*
-- [Knowledge System](../../docs/architecture/KNOWLEDGE-SYSTEM.md) — the actors and the stores
-- [Where a knowledge base lives on disk](../../docs/architecture/FILESYSTEM.md) — the working
+- [Knowledge System](https://github.com/xynolog/docs/blob/main/architecture/KNOWLEDGE-SYSTEM.md) — the actors and the stores
+- [Where a knowledge base lives on disk](https://github.com/xynolog/docs/blob/main/architecture/FILESYSTEM.md) — the working
   tree, the event log, and what is derived from them
-- [Service catalog](../../docs/operator/services/OVERVIEW.md) — what it mounts and reaches, beside
+- [Service catalog](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md) — what it mounts and reaches, beside
   the other services

@@ -359,7 +359,7 @@ The modular architecture ensures maintainability and extensibility, while the pr
 ## Related Documentation
 
 ### React UI Library
-- [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) - Complete annotation system documentation with Provider Pattern architecture
+- [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) - Complete annotation system documentation with Provider Pattern architecture
 - [`@xynolog/react-ui/docs/ANNOTATION-CLICK.md`](../../../packages/typescript/react-ui/docs/ANNOTATION-CLICK.md) - Click and hover coordination
 - [`@xynolog/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) - Source code for the Annotation Registry
 
@@ -372,5 +372,5 @@ The modular architecture ensures maintainability and extensibility, while the pr
 - [RENDERING-ARCHITECTURE.md](../../../packages/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Document rendering pipeline
 
 ### System Documentation
-- [Architecture](../../../docs/architecture/README.md) - Overall system architecture
+- [Architecture](https://github.com/xynolog/docs/blob/main/architecture/README.md) - Overall system architecture
 - [Graph Package](../../../shared/python/graph/) - Graph database implementations (Neo4j, Neptune, JanusGraph)

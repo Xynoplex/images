@@ -145,7 +145,7 @@ function ProtectedLayout() {
 The library owns provider implementations; the Browser owns the
 decision about where to mount them. For the provider/session API reference
 (props, hooks, behavior), see
-[`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md).
+[docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md).
 
 ## Using Library Components
 
@@ -308,7 +308,7 @@ npm run build:packages -- @xynolog/http-transport
 ## Related Documentation
 
 - [`@xynolog/react-ui` README](../../../packages/typescript/react-ui/README.md)
-- [`@xynolog/react-ui` providers](../../../docs/builder/react-ui/SESSION.md)
+- [`@xynolog/react-ui` providers](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md)
 - [`@xynolog/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
 - [API Integration](API-INTEGRATION.md)
 - [Browser Architecture](ARCHITECTURE.md)

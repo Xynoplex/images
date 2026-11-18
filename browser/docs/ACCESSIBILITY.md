@@ -2,7 +2,7 @@
 
 How the Xynolog Browser implements [WCAG 2.1 Level AA](https://www.w3.org/WAI/WCAG21/quickref/) — patterns, primitives, and how to keep new code conformant.
 
-For the user-facing capability claim (what users see, how to verify it), see **[../../../docs/analyst/ACCESSIBILITY.md](../../../docs/analyst/ACCESSIBILITY.md)**. For the keyboard navigation architecture, see **[KEYBOARD-NAV.md](KEYBOARD-NAV.md)**.
+For the user-facing capability claim (what users see, how to verify it), see **[docs' `analyst/ACCESSIBILITY.md`](https://github.com/xynolog/docs/blob/main/analyst/ACCESSIBILITY.md)**. For the keyboard navigation architecture, see **[KEYBOARD-NAV.md](KEYBOARD-NAV.md)**.
 
 ## Compliance baseline
 
@@ -143,9 +143,9 @@ When building or reviewing a UI component:
 
 ### Automated
 
-Component-level [`jest-axe`](https://github.com/nickcolley/jest-axe) assertions live with the components, in `@xynolog/react-ui`'s `*.a11y.test.tsx` files — see [react-ui ACCESSIBILITY.md § Testing](../../../docs/builder/react-ui/ACCESSIBILITY.md#testing) for the pattern. The Browser has no `jest-axe` dependency of its own.
+Component-level [`jest-axe`](https://github.com/nickcolley/jest-axe) assertions live with the components, in `@xynolog/react-ui`'s `*.a11y.test.tsx` files — see [react-ui ACCESSIBILITY.md § Testing](https://github.com/xynolog/docs/blob/main/builder/react-ui/ACCESSIBILITY.md#testing) for the pattern. The Browser has no `jest-axe` dependency of its own.
 
-CI runs accessibility tests on a pull request that changes the Browser or an npm package, in `.github/workflows/ci.yml`: react-ui's axe tests are tests of its suite, and the `lighthouse-accessibility` job audits the built Browser's signed-out pages and fails below a score of 90. `lighthouserc.json` names the pages and the score, and `src/__tests__/lighthouse-urls.test.tsx` holds each page to a route `App` serves. See [docs/contributor/TESTING.md](../../../docs/contributor/TESTING.md) for the testing-overview.
+CI runs accessibility tests on a pull request that changes the Browser or an npm package, in `.github/workflows/ci.yml`: react-ui's axe tests are tests of its suite, and the `lighthouse-accessibility` job audits the built Browser's signed-out pages and fails below a score of 90. `lighthouserc.json` names the pages and the score, and `src/__tests__/lighthouse-urls.test.tsx` holds each page to a route `App` serves. See [docs' `contributor/TESTING.md`](https://github.com/xynolog/docs/blob/main/contributor/TESTING.md) for the testing-overview.
 
 ### Manual
 
@@ -161,7 +161,7 @@ CI runs accessibility tests on a pull request that changes the Browser or an npm
 
 ## See also
 
-- **[../../../docs/analyst/ACCESSIBILITY.md](../../../docs/analyst/ACCESSIBILITY.md)** — user-facing capability claim.
+- **[docs' `analyst/ACCESSIBILITY.md`](https://github.com/xynolog/docs/blob/main/analyst/ACCESSIBILITY.md)** — user-facing capability claim.
 - **[KEYBOARD-NAV.md](KEYBOARD-NAV.md)** — keyboard navigation architecture, custom hooks, and shortcut implementation.
 - [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)

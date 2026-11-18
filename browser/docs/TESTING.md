@@ -95,7 +95,7 @@ There is no `xynolog test` command: the `xynolog` launcher runs knowledge bases,
 not this monorepo's test suite.
 
 For running these in a container, integration-test prerequisites, and the CI
-matrix, see [docs/contributor/TESTING.md](../../../docs/contributor/TESTING.md).
+matrix, see [docs' `contributor/TESTING.md`](https://github.com/xynolog/docs/blob/main/contributor/TESTING.md).
 
 ## Test Stack
 
@@ -592,7 +592,7 @@ src/contexts/__tests__/AuthShell.integration.test.tsx
 ## Related Documentation
 
 ### Testing Guides
-- [System Testing Guide](../../../docs/contributor/TESTING.md) - Testing across all services
+- [System Testing Guide](https://github.com/xynolog/docs/blob/main/contributor/TESTING.md) - Testing across all services
 - [Gateway Testing](../../gateway/docs/TESTING.md) - Gateway API tests
 
 ### Development Guides

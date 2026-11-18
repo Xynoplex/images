@@ -110,9 +110,9 @@ Hooks that need a client — `useMediaToken`, `useResourceContent` — take it a
 an argument rather than reading context, so a host can bring its own session.
 
 **Reference**: see
-[`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md)
+[docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md)
 for the session/provider API and
-[`docs/builder/Usage.md`](../../../docs/builder/Usage.md)
+[docs' `builder/Usage.md`](https://github.com/xynolog/docs/blob/main/builder/Usage.md)
 for the client and bus subscription.
 
 ## Authentication Flow
@@ -127,7 +127,7 @@ A user is always authenticated against a specific Knowledge Base; there is
 
 Switching KBs swaps `activeSession$` atomically. Each `XynologSession` owns its
 own `XynologClient` and the per-KB **bearer token** — a short-lived access token
-([lifetimes](../../../docs/operator/administration/AUTHENTICATION.md#token-lifecycle)),
+([lifetimes](https://github.com/xynolog/docs/blob/main/operator/administration/AUTHENTICATION.md#token-lifecycle)),
 renewed at the issuer from a refresh token, the pair kept in `localStorage`.
 Bearer-only: no cookie, no ambient credential.
 
@@ -200,7 +200,7 @@ SSE connection to `/bus/subscribe` + HTTP POST to `/bus/emit`:
 See [`protocol/contract/EVENT-BUS.md`](../../../protocol/contract/EVENT-BUS.md) and
 [`protocol/contract/CHANNELS.md`](../../../protocol/contract/CHANNELS.md) for
 the bus protocol; see
-[`docs/builder/Usage.md`](../../../docs/builder/Usage.md)
+[docs' `builder/Usage.md`](https://github.com/xynolog/docs/blob/main/builder/Usage.md)
 for the client side.
 
 ## W3C Web Annotation Model
@@ -361,14 +361,14 @@ like `browse:resources-failed`), raised from the promise returned by
 
 ### React UI library
 
-- [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) — provider reference
+- [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) — provider reference
 - [`@xynolog/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
-- [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) — annotation UI components
+- [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) — annotation UI components
 
 ### API client
 
 - [`@xynolog/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
-- [`docs/builder/Usage.md`](../../../docs/builder/Usage.md) — setup, bus subscription, namespace reference
+- [docs' `builder/Usage.md`](https://github.com/xynolog/docs/blob/main/builder/Usage.md) — setup, bus subscription, namespace reference
 - [`@xynolog/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
 
 ### Gateway

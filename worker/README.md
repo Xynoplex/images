@@ -122,7 +122,7 @@ detection call with its items, tokens and anchoring outcomes (the `xynolog.detec
 metrics), so a run's cost, yield and precision can be queried. Its own spans and metrics
 name, as `xynolog.kb`, the knowledge base whose job it was; what a provider's driver
 counts of a generation (`xynolog.inference.*`) names none.
-See [Observability](../../docs/operator/administration/OBSERVABILITY.md) for the full
+See [Observability](https://github.com/xynolog/docs/blob/main/operator/administration/OBSERVABILITY.md) for the full
 inventory and where the metrics flow.
 
 ## Configuration
@@ -144,7 +144,7 @@ defaults nothing in it.
 
 It reads no configuration of a knowledge base: the launcher resolves the shared WorkerPool
 document and the Inference document of each local knowledge base on the worker's list
-([Configuration](../../docs/operator/administration/CONFIGURATION.md#the-worker)) into this
+([Configuration](https://github.com/xynolog/docs/blob/main/operator/administration/CONFIGURATION.md#the-worker)) into this
 document for the worker it starts, and a worker started some other way is given the same
 document.
 
@@ -157,7 +157,7 @@ key. It mounts nothing but the document.
 Started without `--config`, with a document that does not validate or that names one domain
 twice, without the key, or with a named variable unset, it refuses to start before it dials
 anything: one line on stderr that begins `[fatal] ` and says which, and exit status 1. The
-[service catalog](../../docs/operator/services/OVERVIEW.md) states this beside the other
+[service catalog](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md) states this beside the other
 services.
 
 `GET /health` answers once a knowledge base is confirmed, with a
@@ -247,5 +247,5 @@ checks what a built one promises.
 - [WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) — what the worker does, rule by rule
 - [WORKER-CONTRACT.md](../../protocol/contract/WORKER-CONTRACT.md) — the contract every worker keeps
 - [JOBS.md](../../protocol/contract/JOBS.md) — the job protocol, and the dispatcher's side of it
-- [`xynolog-worker` skill](../../docs/builder/skills/xynolog-worker/SKILL.md) — building your own job-claim daemon
-- [Adding a kind of job](../../docs/contributor/ADDING-A-JOB.md) — the path of a new kind of job through the spec, the SDKs, the dispatcher, this service, its suite and its rules
+- [`xynolog-worker` skill](https://github.com/xynolog/docs/blob/main/builder/skills/xynolog-worker/SKILL.md) — building your own job-claim daemon
+- [Adding a kind of job](https://github.com/xynolog/docs/blob/main/contributor/ADDING-A-JOB.md) — the path of a new kind of job through the spec, the SDKs, the dispatcher, this service, its suite and its rules

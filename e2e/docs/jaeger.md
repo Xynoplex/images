@@ -102,7 +102,7 @@ Defaults:
   container named `xynolog-<product>` (a shared one, such as the
   worker) or `xynolog-<kb>-<product>` (a knowledge base's, where `<kb>`
   is its did:web domain made safe for a name:
-  [the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names)).
+  [the launcher's names](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md#the-launchers-names)).
   With several knowledge bases running, a bare product matches several
   and is skipped. The Browser container is omitted because its log
   format is mostly unstructured stdout without timestamps. Override
