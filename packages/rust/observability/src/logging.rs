@@ -76,17 +76,14 @@ fn log(level: LogLevel, message: &str, fields: Value) {
             json!(span_context.span_id().to_string()),
         );
     }
-    let now = chrono::Utc::now();
+    let now = jiff::Timestamp::now();
     let line = match logger.format {
         LogFormat::Json => {
             let mut object = Map::new();
             object.insert("level".to_owned(), json!(level_name(level)));
             object.insert("message".to_owned(), json!(message));
             object.extend(meta);
-            object.insert(
-                "timestamp".to_owned(),
-                json!(now.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string()),
-            );
+            object.insert("timestamp".to_owned(), json!(format!("{now:.3}")));
             Value::Object(object).to_string()
         }
         LogFormat::Simple => {
@@ -97,7 +94,7 @@ fn log(level: LogLevel, message: &str, fields: Value) {
             };
             format!(
                 "{} [{}] {message}{fields}",
-                now.format("%Y-%m-%d %H:%M:%S"),
+                now.strftime("%Y-%m-%d %H:%M:%S"),
                 level_name(level).to_uppercase()
             )
         }

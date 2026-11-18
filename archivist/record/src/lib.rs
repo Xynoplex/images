@@ -77,7 +77,7 @@ pub(crate) fn write_whole(path: &Path, text: &str) -> Result<(), RecordError> {
     let beside = path.with_extension(format!(
         "json.{}.{}.tmp",
         std::process::id(),
-        chrono::Utc::now().timestamp_millis()
+        jiff::Timestamp::now().as_millisecond()
     ));
     std::fs::write(&beside, text).map_err(|e| failed("cannot write", &beside, e))?;
     std::fs::rename(&beside, path).map_err(|e| {

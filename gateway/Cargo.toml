@@ -19,11 +19,11 @@ async-nats = { workspace = true, features = ["ring", "kv", "server_2_10", "nuid"
 axum = { workspace = true, features = ["http1", "tokio", "query"] }
 base64.workspace = true
 bytes.workspace = true
-chrono = { workspace = true, features = ["clock", "std"] }
 futures.workspace = true
 http-body.workspace = true
 hyper = { workspace = true, features = ["server", "http1"] }
 hyper-util = { workspace = true, features = ["tokio"] }
+jiff = { workspace = true, features = ["std"] }
 jsonwebtoken = { workspace = true, features = ["rust_crypto"] }
 opentelemetry = { workspace = true, features = ["trace", "metrics"] }
 percent-encoding.workspace = true
