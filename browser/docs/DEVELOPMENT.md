@@ -3,8 +3,8 @@
 How to work on the Xynolog Browser: running it from source against a real stack, the scripts
 it has, adding a page, and where to look when something is wrong.
 
-Building the whole monorepo, and running your changes as the shipped images, is the
-contributor's [Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md). This page is
+Building the images and the launcher, and running your changes as the shipped images, is the
+contributor's [Local Development](https://github.com/xynolog/docs/blob/main/contributor/LOCAL-DEVELOPMENT.md). This page is
 what is particular to this app.
 
 ## Run it from source against a stack
@@ -46,7 +46,7 @@ rebuild with [`make build`](../../Makefile) and name the
 `:local` image: `ghcr.io/xynolog/xynolog-browser:local` as `spec.image` in the
 Browser's document (`xynolog settings browser --path` prints where it is), and `:local` in the
 knowledge base's `.xynolog/stack/` documents for the services. An image still named `:latest` is the published one, and your change is not in it.
-[Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md) has the loop.
+[Local Development](https://github.com/xynolog/docs/blob/main/contributor/LOCAL-DEVELOPMENT.md) has the loop.
 
 ## Scripts
 
@@ -135,7 +135,7 @@ react-ui's tokens follow it, and Tailwind's `dark:` variant is configured to fol
 attribute (`tailwind.config.js`).
 
 The patterns are in the [Style Guide](style-guide.md), and the tokens and classes in
-react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
+react-ui's [Styles](https://github.com/xynolog/docs/blob/main/builder/react-ui/STYLES.md).
 
 ## When something is wrong
 
@@ -161,5 +161,5 @@ react-ui's [Styles](../../../docs/builder/react-ui/STYLES.md).
 - [Authentication](AUTHENTICATION.md): sessions, sign-in, route protection
 - [Testing](TESTING.md): how the tests are written and run
 - [Container](CONTAINER.md): the image
-- [Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md): the monorepo's loop
+- [Local Development](https://github.com/xynolog/docs/blob/main/contributor/LOCAL-DEVELOPMENT.md): the loop across images, cli and a knowledge base
 - [The launcher](https://github.com/xynolog/cli/blob/main/README.md): every verb and flag

@@ -2,7 +2,7 @@
 
 How the gateway authenticates a request, and where each part of it lives. For
 the whole bearer-only model — the issuer, sign-in, rotation — read the
-[System Authentication Architecture](../../../docs/operator/administration/AUTHENTICATION.md)
+[System Authentication Architecture](https://github.com/xynolog/docs/blob/main/operator/administration/AUTHENTICATION.md)
 first; the `bearerAuth` and `mediaToken` schemes in
 [protocol/specs/src/openapi.json](https://github.com/xynolog/protocol/blob/main/specs/src/openapi.json) are the contract.
 

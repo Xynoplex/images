@@ -54,7 +54,7 @@ fn file_number(name: &str) -> Option<u32> {
 
 /// The time an event is appended: UTC, to the millisecond.
 pub fn now() -> String {
-    chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+    format!("{:.3}", jiff::Timestamp::now())
 }
 
 fn sequence_of(event: &Object) -> Option<u64> {

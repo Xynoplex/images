@@ -76,7 +76,6 @@ components:
     hyper - MIT
     hyper-rustls - Apache-2.0 OR ISC OR MIT
     hyper-util - MIT
-    iana-time-zone - MIT OR Apache-2.0
     icu_collections - Unicode-3.0
     icu_locale_core - Unicode-3.0
     icu_normalizer - Unicode-3.0
@@ -89,6 +88,8 @@ components:
     indexmap - Apache-2.0 OR MIT
     ipnet - MIT OR Apache-2.0
     itoa - MIT OR Apache-2.0
+    jiff - Unlicense OR MIT
+    jiff-core - Unlicense OR MIT
     jsonschema - MIT
     jsonschema-regex - MIT
     jsonschema-value - MIT

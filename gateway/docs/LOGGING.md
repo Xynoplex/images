@@ -28,7 +28,7 @@ written as `[withheld]`
   gateway's lines.
 - `trace_id` and `span_id` — when a trace is active and an OpenTelemetry
   exporter is configured, so a line leads to its trace
-  ([OBSERVABILITY.md](../../../docs/operator/administration/OBSERVABILITY.md)).
+  ([OBSERVABILITY.md](https://github.com/xynolog/docs/blob/main/operator/administration/OBSERVABILITY.md)).
 - `component` — for lines from a subsystem: `bus`, `signal`,
   `archivist-client`, `event-loop-monitor`.
 

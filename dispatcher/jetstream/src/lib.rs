@@ -687,9 +687,8 @@ impl Inner {
 
 /// How long ago an ISO 8601 time was; `None` when it does not parse.
 fn age_of(time: &str) -> Option<Duration> {
-    let then = chrono::DateTime::parse_from_rfc3339(time).ok()?;
-    (chrono::Utc::now() - then.with_timezone(&chrono::Utc))
-        .to_std()
+    let then = time.parse::<jiff::Timestamp>().ok()?;
+    Duration::try_from(jiff::Timestamp::now() - then)
         .ok()
         .or(Some(Duration::ZERO))
 }

@@ -6,7 +6,7 @@ license = "Apache-2.0"
 description = "Xynolog's observability, in Rust: the telemetry a process exports over OTLP, its log lines, and the readings it takes of itself."
 
 [dependencies]
-chrono = { workspace = true, features = ["clock", "std"] }
+jiff = { workspace = true, features = ["std"] }
 opentelemetry = { workspace = true, features = ["trace", "metrics"] }
 opentelemetry_sdk = { workspace = true, features = ["trace", "metrics"] }
 opentelemetry-otlp = { workspace = true, features = ["http-proto", "reqwest-blocking-client", "trace", "metrics"] }

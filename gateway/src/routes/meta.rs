@@ -21,9 +21,7 @@ pub async fn health() -> Response {
             status: "operational".to_owned(),
             message: "Xynolog API is running".to_owned(),
             version: VERSION.to_owned(),
-            timestamp: chrono::Utc::now()
-                .format("%Y-%m-%dT%H:%M:%S%.3fZ")
-                .to_string(),
+            timestamp: format!("{:.3}", jiff::Timestamp::now()),
         },
     )
 }

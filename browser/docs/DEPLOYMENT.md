@@ -12,7 +12,7 @@ How the Xynolog Browser is shipped and run.
 on **port 3000** and its entrypoint is a plain `node node_modules/@xynolog/browser/server.js` — no
 CLI involved.
 
-Image build and publication: [administration/IMAGES.md](../../../docs/operator/administration/IMAGES.md).
+Image build and publication: [administration/IMAGES.md](https://github.com/xynolog/docs/blob/main/operator/administration/IMAGES.md).
 
 ## Running it
 
@@ -29,9 +29,9 @@ The Browser runs what its document says: `stack/browser.yaml` in the launcher's 
 which the first start writes with `ghcr.io/xynolog/xynolog-browser:latest`, 1G and port
 3000. Pin a version by writing it into the document's `spec.image`; `xynolog settings browser`
 shows the document, and `xynolog settings browser --path` prints where it is. See
-[Configuration](../../../docs/operator/administration/CONFIGURATION.md#the-browser),
+[Configuration](https://github.com/xynolog/docs/blob/main/operator/administration/CONFIGURATION.md#the-browser),
 [apps/launcher](https://github.com/xynolog/cli/blob/main/README.md) and
-[administration/DEPLOYMENT.md](../../../docs/operator/administration/DEPLOYMENT.md).
+[administration/DEPLOYMENT.md](https://github.com/xynolog/docs/blob/main/operator/administration/DEPLOYMENT.md).
 
 ## Local development
 
@@ -52,12 +52,12 @@ machine with Docker. Nothing here does it for you. Browser-specific consideratio
   and a person's tokens are held in their web browser. Run as many replicas as you like, with
   no sticky sessions. Its task or pod needs no environment beyond `PORT`.
 
-The full list of what a platform provides: [Deploying Xynolog](../../../docs/operator/administration/DEPLOYMENT.md#your-own-platform).
+The full list of what a platform provides: [Deploying Xynolog](https://github.com/xynolog/docs/blob/main/operator/administration/DEPLOYMENT.md#your-own-platform).
 
 ## Related Documentation
 
 - [DEVELOPMENT.md](DEVELOPMENT.md) — local development
-- [administration/DEPLOYMENT.md](../../../docs/operator/administration/DEPLOYMENT.md) — stack deployment
-- [administration/IMAGES.md](../../../docs/operator/administration/IMAGES.md) — image build/publish
+- [administration/DEPLOYMENT.md](https://github.com/xynolog/docs/blob/main/operator/administration/DEPLOYMENT.md) — stack deployment
+- [administration/IMAGES.md](https://github.com/xynolog/docs/blob/main/operator/administration/IMAGES.md) — image build/publish
 - [CONTAINER.md](CONTAINER.md) — the image: its configuration, contents and tags
-- [CONTAINER-TOPOLOGY.md](../../../docs/operator/CONTAINER-TOPOLOGY.md) — what runs where
+- [CONTAINER-TOPOLOGY.md](https://github.com/xynolog/docs/blob/main/operator/CONTAINER-TOPOLOGY.md) — what runs where

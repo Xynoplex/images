@@ -13,7 +13,7 @@ single `XynologBrowser` singleton that lives in `@xynolog/sdk` and is exposed to
 React via the `XynologProvider` + `useXynolog()` pair in `@xynolog/react-ui`.
 
 For the class-level story (observables, lifetimes, invariants), see
-[SESSION.md in `@xynolog/react-ui`](../../../docs/builder/react-ui/SESSION.md).
+[SESSION.md in `@xynolog/react-ui`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md).
 This doc covers the **Browser-app** concerns: where providers mount,
 how route protection is expressed, how sign-in / sign-out flow, and
 how out-of-tree code signals the provider.
@@ -238,8 +238,8 @@ callback.
 
 ## Related
 
-- [SESSION.md (`@xynolog/react-ui`)](../../../docs/builder/react-ui/SESSION.md)
+- [SESSION.md (`@xynolog/react-ui`)](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md)
   — class model, observables, invariants.
-- [EVENTS.md (`@xynolog/react-ui`)](../../../docs/builder/react-ui/EVENTS.md)
+- [EVENTS.md (`@xynolog/react-ui`)](https://github.com/xynolog/docs/blob/main/builder/react-ui/EVENTS.md)
   — bus architecture, channel routing.
 - [AUTHORIZATION.md](AUTHORIZATION.md) — permission model.

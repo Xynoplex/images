@@ -91,7 +91,7 @@ Authentication is per route: [AUTHENTICATION.md](AUTHENTICATION.md).
 
 **In.** The gateway serves plain HTTP/1.1 on its port and terminates no TLS.
 That is done in front of it, by whatever routes clients to it
-([Deployment](../../../docs/operator/administration/DEPLOYMENT.md), *Ingress
+([Deployment](https://github.com/xynolog/docs/blob/main/operator/administration/DEPLOYMENT.md), *Ingress
 and TLS*). Its credentials are bearer tokens, so a gateway reached from beyond
 its own host with no TLS in front gives them to the network. It sends
 `Strict-Transport-Security` on every response, which a browser honours only on
@@ -265,7 +265,7 @@ read the environment on its own behalf.
 
 ## Related Documentation
 
-- [Container Topology](../../../docs/operator/CONTAINER-TOPOLOGY.md) - what runs where
+- [Container Topology](https://github.com/xynolog/docs/blob/main/operator/CONTAINER-TOPOLOGY.md) - what runs where
 - [Dispatcher](../../dispatcher/README.md) - the job queue, which the gateway only relays
 - [AUTHENTICATION.md](AUTHENTICATION.md) - the identity plane
 - [TESTING.md](TESTING.md) - what checks the gateway

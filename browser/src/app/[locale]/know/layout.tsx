@@ -48,7 +48,7 @@ export function DiscoverEmptyState() {
           </p>
         )}
         <p style={{ color: 'var(--xynolog-color-neutral-400)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-          <a href="https://github.com/xynolog/images/blob/main/docs/KNOWLEDGE-BASES.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--xynolog-color-primary-500)' }}>{t('findKnowledgeBases')}</a>
+          <a href="https://github.com/xynolog/docs/blob/main/KNOWLEDGE-BASES.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--xynolog-color-primary-500)' }}>{t('findKnowledgeBases')}</a>
           {' · '}
           <a href="https://github.com/xynolog/kb-template" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--xynolog-color-primary-500)' }}>{t('createNew')}</a>
         </p>

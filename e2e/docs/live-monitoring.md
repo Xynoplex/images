@@ -35,7 +35,7 @@ dependencies on the host beyond Python (which macOS ships with).
 One per container, filtered to errors and warnings. The gateway and the
 smelter are the knowledge base's, `xynolog-<kb>-<product>`, where `<kb>` is
 its did:web domain made safe for a name; the worker is shared
-([the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names)):
+([the launcher's names](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md#the-launchers-names)):
 
 ```sh
 container logs --follow xynolog-<kb>-gateway 2>&1 \

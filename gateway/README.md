@@ -5,7 +5,7 @@ services dial. It is a Rust binary built against [`protocol/specs/`](https://git
 which is compiled into it, and it serves on port 4000. The launcher starts it, as the
 `xynolog-<kb>-gateway` container, with the rest of the stack (`xynolog start`). `<kb>` is the
 knowledge base's did:web domain made safe for a name
-([the launcher's names](../../docs/operator/services/OVERVIEW.md#the-launchers-names)).
+([the launcher's names](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md#the-launchers-names)).
 
 | | |
 | --- | --- |
@@ -215,4 +215,4 @@ no source in it, and `/api/health` served within its start bound.
 - [AUTHENTICATION.md](docs/AUTHENTICATION.md) — tokens, agents, sign-in
 - [TESTING.md](docs/TESTING.md) — the conformance suite and what each check covers
 - [LOGGING.md](docs/LOGGING.md) — log shape and levels
-- [Services overview](../../docs/operator/services/OVERVIEW.md) — where the gateway sits among the services
+- [Services overview](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md) — where the gateway sits among the services

@@ -5,7 +5,7 @@
 `ghcr.io/xynolog/xynolog-browser`: the Xynolog Browser's built files and a small static
 file server, for `linux/amd64` and `linux/arm64`. How it is run, by the launcher or on your own
 platform, is [Deployment](DEPLOYMENT.md). How every Xynolog image is tagged and verified is
-the operator's [Container Images](../../../docs/operator/administration/IMAGES.md).
+the operator's [Container Images](https://github.com/xynolog/docs/blob/main/operator/administration/IMAGES.md).
 
 ## Run it
 
@@ -78,7 +78,7 @@ file, and serves `/discovery/*` from its mount: a file or a 404, never the app.
   Browser's document when it writes one; the document's `spec.image` decides what runs.
 
 A tag can be moved and a digest cannot. To pin exactly what you verified, reference the image
-by digest ([Container Images](../../../docs/operator/administration/IMAGES.md#supply-chain-verification)).
+by digest ([Container Images](https://github.com/xynolog/docs/blob/main/operator/administration/IMAGES.md#supply-chain-verification)).
 
 ## Building it yourself
 
@@ -100,14 +100,14 @@ docker build \
 
 To run a change that is not published, build every image from your working tree with
 [`make build`](../../Makefile)
-([Local Development](../../../docs/contributor/LOCAL-DEVELOPMENT.md)). Published images come
+([Local Development](https://github.com/xynolog/docs/blob/main/contributor/LOCAL-DEVELOPMENT.md)). Published images come
 from the `publish-browser.yml` workflow: scanned, with an SBOM and build provenance attested.
 
 ## Secrets
 
 The image holds none and needs none. A person's tokens exist only in their own web browser's
 `localStorage` and never pass through this container. The gateway's signing key and its service
-account are the gateway's ([Secrets](../../../docs/operator/services/SECRETS.md)).
+account are the gateway's ([Secrets](https://github.com/xynolog/docs/blob/main/operator/services/SECRETS.md)).
 
 ## Troubleshooting
 
@@ -127,5 +127,5 @@ the refresh token expired or was revoked, or the account was disabled there. The
 
 - [Deployment](DEPLOYMENT.md): running the image, with the launcher or without
 - [Development](DEVELOPMENT.md): running the app from source
-- [Container Topology](../../../docs/operator/CONTAINER-TOPOLOGY.md): how the containers of a stack connect
-- [Container Images](../../../docs/operator/administration/IMAGES.md): every image, its tags and verifying one
+- [Container Topology](https://github.com/xynolog/docs/blob/main/operator/CONTAINER-TOPOLOGY.md): how the containers of a stack connect
+- [Container Images](https://github.com/xynolog/docs/blob/main/operator/administration/IMAGES.md): every image, its tags and verifying one

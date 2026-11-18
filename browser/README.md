@@ -115,8 +115,8 @@ published package.
 
 ## Related
 
-- [Human UI](../../docs/architecture/HUMAN-UI.md) — how the Browser fits the rest of Xynolog
-- [The analyst's guide](../../docs/analyst/README.md) — working in it
+- [Human UI](https://github.com/xynolog/docs/blob/main/architecture/HUMAN-UI.md) — how the Browser fits the rest of Xynolog
+- [The analyst's guide](https://github.com/xynolog/docs/blob/main/analyst/README.md) — working in it
 - This app's documents: [Architecture](docs/ARCHITECTURE.md) · [Development](docs/DEVELOPMENT.md) ·
   [Container](docs/CONTAINER.md) · [Deployment](docs/DEPLOYMENT.md) · [Testing](docs/TESTING.md) ·
   [Authentication](docs/AUTHENTICATION.md) · [Internationalization](docs/INTERNATIONALIZATION.md) ·

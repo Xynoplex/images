@@ -1,7 +1,7 @@
 # Browser Architecture
 
 This document describes how the Xynolog Browser application is built. Where it sits in
-Xynolog as a whole is [Human UI](../../../docs/architecture/HUMAN-UI.md).
+Xynolog as a whole is [Human UI](https://github.com/xynolog/docs/blob/main/architecture/HUMAN-UI.md).
 
 ## Table of Contents
 
@@ -167,7 +167,7 @@ XynologProvider (app root) → XynologBrowser singleton (library-side, outside R
 
 **Token Management:**
 - Bearer-only: every request carries `Authorization: Bearer <jwt>` — there is no cookie and no ambient credential
-- The per-KB session (short-lived access token + long-lived refresh token — TTLs in [Authentication](../../../docs/operator/administration/AUTHENTICATION.md)) is held in memory and persisted per-KB via the storage adapter (localStorage on web), so it survives reload
+- The per-KB session (short-lived access token + long-lived refresh token — TTLs in [Authentication](https://github.com/xynolog/docs/blob/main/operator/administration/AUTHENTICATION.md)) is held in memory and persisted per-KB via the storage adapter (localStorage on web), so it survives reload
 - The browser exposes mutations (`addKb`, `signIn`, `signOut`); `signOut(kbId)` forgets the stored session and revokes the refresh token at the issuer (RFC 7009), so it cannot be exchanged again. The gateway takes no part: it never issued the session. The access token already in hand stays valid until it expires, minutes later.
 
 ### Authentication Hooks
@@ -203,7 +203,7 @@ High-churn entity data and browser-persistent application state are managed as o
 | Browse | `xynolog.browse.annotations(id)` | Annotation lists per resource, updated in-place by enriched SSE events |
 | Browse | `xynolog.browse.entityTypes()` | Entity types, updated via `frame:entity-type-added` bus channel |
 
-These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(xynolog.browse.annotations(resourceId))`. See [`@xynolog/sdk` Usage.md](../../../docs/builder/Usage.md) for the full verb namespace API.
+These update automatically when gateway domain events arrive through the bus gateway (`mark:added`, `yield:updated`, etc.) — no manual cache-invalidation calls needed. Components subscribe via `useObservable(xynolog.browse.annotations(resourceId))`. See [`@xynolog/sdk` Usage.md](https://github.com/xynolog/docs/blob/main/builder/Usage.md) for the full verb namespace API.
 
 **Application state** lives on the `XynologBrowser` singleton (`@xynolog/sdk`) and in `@xynolog/react-ui` hooks:
 
@@ -256,7 +256,7 @@ These providers are framework-independent and can work with Next.js, Vite, or an
 **App-Specific Contexts:**
 - `KeyboardShortcutsProvider` - Keyboard shortcut registration and handling
 
-See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for complete Provider Pattern documentation.
+See [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) for complete Provider Pattern documentation.
 
 ## API Integration
 
@@ -285,7 +285,7 @@ xynolog.yield.delegate({ title: 'Summary', storageUri: 'file://summary.md', cont
 xynolog.frame.addEntityType('Person');       // Promise<void>
 ```
 
-`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@xynolog/sdk` Usage.md](../../../docs/builder/Usage.md) for the full namespace API.
+`StreamObservable<T>` extends RxJS `Observable<T>` and is also `PromiseLike<T>`, so both `.subscribe()` and `await` work without any wrapper. `DelegationObservable` is the same for a delegated job: `.subscribe()` gives the job's events, and `await` its completion. `CacheObservable<T>` extends `Observable<CacheState<T>>` — subscribe (or `useObservable`) for the live pending/ready/failed view, or call `.fresh()` for a one-shot `Promise<T>`. See [`@xynolog/sdk` Usage.md](https://github.com/xynolog/docs/blob/main/builder/Usage.md) for the full namespace API.
 
 ### Caching and Invalidation
 
@@ -434,7 +434,7 @@ keeps the shell mounted rather than tearing it down and rebuilding it.
 - **Protected routes** sit under `AuthShell`, which surfaces the auth-failure modals from the active session's signals (`activeSignals$`). A 401 that can't be refreshed ends the session and `SessionEndedModal` surfaces, saying why.
 - **Switching KBs swaps `activeSession$`** to the new KB's session (with its own `XynologClient` pointing at that KB's gateway) — the `XynologBrowser` singleton handles it, with no per-layout provider or external bridge.
 
-See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for details on the Provider Pattern architecture.
+See [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) for details on the Provider Pattern architecture.
 
 ## Directory Structure
 
@@ -540,7 +540,7 @@ function I18nRoot({ children }: { children: React.ReactNode }) {
 - ✅ Easy to test with mock implementations (`createMockTranslationManager` in `@xynolog/react-ui/test-utils`)
 - ✅ Clear separation of concerns
 
-See [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) for complete documentation.
+See [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) for complete documentation.
 
 ### 2. No Default Values
 
@@ -675,8 +675,8 @@ Panels keep their entries' DOM nodes through React ref callbacks, not through an
 ## Related Documentation
 
 ### React UI Library
-- [`docs/builder/react-ui/SESSION.md`](../../../docs/builder/react-ui/SESSION.md) - Provider Pattern architecture
-- [`docs/builder/react-ui/ANNOTATIONS.md`](../../../docs/builder/react-ui/ANNOTATIONS.md) - Annotation system documentation
+- [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) - Provider Pattern architecture
+- [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) - Annotation system documentation
 - [`@xynolog/react-ui/docs/`](https://github.com/xynolog/sdk/tree/main/typescript/react-ui/docs) - Complete library documentation
 
 ### Browser Documentation
