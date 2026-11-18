@@ -66,7 +66,7 @@ RUN uv sync --project librarian --locked --no-dev --no-editable --all-extras \
       --no-install-package xynolog-service \
       --no-install-package xynolog-vectors && \
     uv pip install --python /opt/venv/bin/python --no-deps \
-      .local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl \
+      .local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl \
       .local/shared-python-packages/xynolog_graph-*.whl \
       .local/shared-python-packages/xynolog_inference-*.whl \
       .local/shared-python-packages/xynolog_service-*.whl \

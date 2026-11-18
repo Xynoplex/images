@@ -1450,8 +1450,8 @@ wheels = [
 
 [[package]]
 name = "xynolog"
-version = "1.2611.0.dev20261118212247+g5126fcb"
-source = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl" }
+version = "1.2611.0.dev20261118222540+g87bb072"
+source = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -1459,7 +1459,7 @@ dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { filename = "xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl", hash = "sha256:fb51df5cd6d4531e264b6146896b011a2df1081a2901cc94373684f3093f3572" },
+    { filename = "xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl", hash = "sha256:6546aa40cc81de45995f34a182896998e59b5b63130c96de496181b1d0dbb799" },
 ]
 
 [package.metadata]
@@ -1507,7 +1507,7 @@ requires-dist = [
     { name = "gremlinpython", marker = "extra == 'neptune'", specifier = ">=3.8,<4" },
     { name = "neo4j", marker = "extra == 'neo4j'", specifier = ">=6.4,<7" },
     { name = "pydantic" },
-    { name = "xynolog", path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl" },
+    { name = "xynolog", path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 
