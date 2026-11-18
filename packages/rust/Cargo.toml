@@ -27,17 +27,16 @@ repository = "https://github.com/xynolog/images"
 # Every crate a member uses, by version, once: a member names the ones it uses
 # with `.workspace = true` and adds the features it needs.
 [workspace.dependencies]
-xynolog = "0.7.3"
-xynolog-codegen = "0.7.3"
+xynolog = "=1.2611.0-dev.20261118212247.g5126fcb"
 xynolog-archivist-record = { path = "../../archivist/record" }
 xynolog-archivist-staging = { path = "../../archivist/staging" }
 xynolog-dispatcher-handlers = { path = "../../dispatcher/handlers" }
 xynolog-dispatcher-jetstream = { path = "../../dispatcher/jetstream" }
 xynolog-core = { path = "core" }
 xynolog-http-service = { path = "http-service" }
-xynolog-http-transport = "0.7.3"
+xynolog-http-transport = "=1.2611.0-dev.20261118212247.g5126fcb"
 xynolog-observability = { path = "observability" }
-xynolog-telemetry = "0.7.3"
+xynolog-telemetry = "=1.2611.0-dev.20261118212247.g5126fcb"
 async-nats = { version = "0.50.0", default-features = false }
 axum = { version = "0.8.9", default-features = false }
 base64 = "0.23.1"

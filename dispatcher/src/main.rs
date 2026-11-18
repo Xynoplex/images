@@ -85,7 +85,7 @@ fn boot() -> Result<(), String> {
     logging::initialize(document.log_level, document.log_format);
     telemetry::initialize(
         "xynolog-dispatcher",
-        xynolog_core::spec::VERSION,
+        xynolog_core::spec::version(),
         Some(&kb_did(&document.kb.domain)),
     )?;
     let runtime = tokio::runtime::Builder::new_multi_thread()

@@ -8,7 +8,7 @@ TYPESCRIPT_IMAGES := browser
 PYTHON_IMAGES := librarian smelter weaver worker
 IMAGE_NAMES := $(RUST_IMAGES) $(TYPESCRIPT_IMAGES) $(PYTHON_IMAGES)
 
-.PHONY: help build shared clean $(IMAGE_NAMES) test-rust stack-up e2e stack-down smoke
+.PHONY: help build shared clean $(IMAGE_NAMES) generate check-generated test-rust stack-up e2e stack-down smoke
 
 # `make help` prints the `##` lines below, in order (build-tools/make-help.awk).
 ##@ Xynolog Images: make [target] [VARIABLE=value ...]
@@ -48,6 +48,15 @@ $(IMAGE_NAMES):
 	@./scripts/build-session.sh "$@"
 
 $(PYTHON_IMAGES): shared
+
+##@ Generated files
+## generate: Write the generated files with the pinned SDK's generator, from the pinned Protocol
+generate:
+	@./scripts/generated.sh generate
+
+## check-generated: Fail when a committed generated file differs from what the generator writes, or no run writes it
+check-generated:
+	@./scripts/generated.sh check
 
 ##@ Test
 ## test-rust: The Rust workspace's format, lints, tests and dependency boundaries, in its toolchain's container

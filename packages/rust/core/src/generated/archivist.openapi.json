@@ -1,0 +1,2448 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Xynolog Archivist",
+    "version": "0.1.0",
+    "description": "The Archivist's HTTP surface: what the gateway (and only the fleet's own services) call to store and read the knowledge base's bytes, read its linked-data descriptions and the text extracted from its content, and read the event log by position, to replay a resource's events and to follow the record; and what the Smelter calls to keep the anchored-text store. Everything else reaches the Archivist over the bus.\n\n**How long a caller waits.** A caller gives the Archivist `x-xynolog-limits.connectSeconds` to take its connection, and `readSeconds` for each part of an answer: for the answer to begin once its request is sent whole, and for each next part of an answer that streams. Past either, the call has failed. A connection not taken within `connectSeconds` means the Archivist cannot be reached: that call is not made again. No bound is put on a whole answer, nor on sending a request: a large upload or a large document takes as long as it takes, as long as it keeps coming.\n\nThe waits nest, so the one inside ends first and is answered: `readSeconds` is longer than the Archivist holds a read of anchored text for the Smelter (`settleWaitSeconds` of `GET /resources/{id}/anchored-text`), and `connectSeconds` and `readSeconds` together, within which the answer to a read the gateway makes begins from the read's first send, its retry included, are shorter than a client's deadline on a request to the gateway (`httpRequestTimeoutMs`, specs/src/client/timing.json), so a read the gateway makes for a client has failed, and the gateway has answered, before the client stops waiting. `lint:spec-protocol` holds the order.",
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://{host}:{port}",
+      "description": "The address the gateway's configuration names (`archivist.host`, `archivist.port`).",
+      "variables": {
+        "host": {
+          "default": "archivist"
+        },
+        "port": {
+          "default": "24103"
+        }
+      }
+    }
+  ],
+  "x-xynolog-limits": {
+    "connectSeconds": 5,
+    "readSeconds": 20
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Liveness",
+        "description": "Answers while the process serves. Public: the launcher probes it before any credential exists.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The Archivist serves.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchivistHealth"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "operationId": "listStreams",
+        "summary": "Every stream of the event log, and where each stands",
+        "description": "Every stream the event log holds, each resource's and `__system__`, with the sequence number of its last event. A service that follows the record reads it as it starts and each time its stream opens again, and reads on only the streams that moved.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The streams.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchivistStreamsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "description": "The event log could not be read.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{resourceId}": {
+      "get": {
+        "operationId": "getResourceEvents",
+        "summary": "One stream's events from one sequence number, a page at a time",
+        "description": "The events of one stream whose sequence number is at least `fromSequence`, in log order: at most `x-xynolog-limits.maxEvents` of them, with the sequence number of the stream's last event. A reader that wants every event from there asks again from the sequence after the last one it was given, until it has the last. A stream is a resource's, or `__system__`, the knowledge base's own. The one read of the event log by position this surface serves: the gateway reads it to replay a scope a subscriber resumes, and a service that follows the record reads it to take what its stream did not deliver.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "x-xynolog-limits": {
+          "maxEvents": 1000
+        },
+        "parameters": [
+          {
+            "name": "resourceId",
+            "in": "path",
+            "required": true,
+            "description": "The resource whose stream is read, or `__system__` for the knowledge base's own; percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          },
+          {
+            "name": "fromSequence",
+            "in": "query",
+            "required": true,
+            "description": "The first sequence number wanted, inclusive.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The events, possibly none, and the stream's last sequence number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchivistEventsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No resource, or `fromSequence` is not an integer of at least 1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "description": "The stream could not be read.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources": {
+      "post": {
+        "operationId": "storeResource",
+        "summary": "Store an upload and record the resource",
+        "description": "The gateway's `POST /resources`, forwarded untouched, with the principal the gateway verified. The Archivist stores the bytes at `storageUri`, outside git, and records the resource — as a clone of the token's source when the upload carries `cloneToken` — attributed to `Xynolog-Principal`. It answers once the resource is recorded. An upload whose `Idempotency-Key` the Archivist holds for the same principal makes nothing new: with the same fields and bytes it is answered with the resource that key made, and with others it is refused 422. One that arrives while the first is still being recorded waits for it. The Archivist holds a key as long as the resource it made.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Xynolog-Principal",
+            "in": "header",
+            "required": true,
+            "description": "The DID of the caller the gateway verified. The record attributes the resource to it. Believed because only a service account can call this route.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Xynolog-Roles",
+            "in": "header",
+            "required": false,
+            "description": "That caller's roles, comma-separated; absent when it has none. A worker's `xynolog-worker` is what obliges its upload to cite a job.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "The uploader's name for this upload, as the gateway received it: the same on every attempt at one upload.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceUpload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The resource is recorded: by this upload, or by the first with its key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateResourceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`Xynolog-Principal` or `Idempotency-Key` is missing; the body is not multipart/form-data, or not a ResourceUpload; the base media type is not supported; or `entityTypes` or `generator` is not what it must be. The message names what is wrong.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "description": "The `Idempotency-Key` names a resource its principal recorded from other fields or other bytes. Nothing is stored or recorded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The bytes could not be stored, or the record refused the resource; the message says why.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/{id}/content": {
+      "get": {
+        "operationId": "getResourceContent",
+        "summary": "A resource's bytes",
+        "description": "The bytes of the resource's representation, streamed, with the media type the record stores.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The bytes, verbatim. A read that fails after the first byte closes the connection rather than end a truncated body as if it were whole.",
+            "headers": {
+              "Content-Type": {
+                "description": "The media type the record stores.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The record holds no such resource, or holds it but not its bytes; `code` says which.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepresentationNotFound"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The bytes could not be read.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/{id}/jsonld": {
+      "get": {
+        "operationId": "getResourceJsonLd",
+        "summary": "A resource's linked-data description",
+        "description": "The descriptor, its annotations, and the annotations elsewhere that reference it — what the gateway serves at its own `GET /resources/{id}/jsonld`.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The description.",
+            "content": {
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetResourceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The record holds no such resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/resources/{id}/annotations": {
+      "get": {
+        "operationId": "getResourceAnnotations",
+        "summary": "A resource's annotations",
+        "description": "Every annotation on the resource, with the people it mentions named, and how many there are: what the gateway serves at its own `GET /resources/{id}/annotations`, and what a service reads directly. Never the bus's: a resource's annotations grow without a bound.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The annotations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAnnotationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The record holds no such resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/resources/{id}/anchored-text": {
+      "get": {
+        "operationId": "getResourceAnchoredText",
+        "summary": "A resource's anchored text",
+        "description": "The text extracted from the resource's content with where each run of it is on a page, as the Smelter stored it under the content's checksum: what the gateway serves at its own `GET /resources/{id}/anchored-text`. The answer is always one of the members of `AnchoredTextAnswer`, and `kind` says which: the text, a stored decline, or why there is none. A resource whose media type has no derived text is answered `no-map` at once, and the store is not read. With no entry stored for one that has, the Archivist waits for the Smelter to say it has settled that content (`smelt:settled`) before it answers, for at most `x-xynolog-limits.settleWaitSeconds`, shorter than the `readSeconds` a caller gives each part of an answer. A resource the record does not hold, and one whose content has no checksum, is answered `unknown`. It never runs an extractor.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "x-xynolog-limits": {
+          "settleWaitSeconds": 15
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The anchored text, a stored decline, or why there is none.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnchoredTextAnswer"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "put": {
+        "operationId": "putResourceAnchoredText",
+        "summary": "Store a resource's anchored text",
+        "description": "Store what the Smelter derived from the bytes of this resource, under their checksum: every resource whose bytes those are has it then. The entry is written whole, beside its name and moved onto it, and replaces one stored under the same checksum. The resource's first representation must have these bytes: content that changed while it was read is derived again from what it is now. Called by the Smelter only; no client writes anchored text.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "x-xynolog-limits": {
+          "maxBodyBytes": 268435456
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnchoredTextWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Stored."
+          },
+          "400": {
+            "description": "The body is no `AnchoredTextWrite`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The record holds no such resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The resource's first representation has other bytes than the checksum the write states, or none; `error` names the checksum it has.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/anchored-text/entries": {
+      "get": {
+        "operationId": "listAnchoredTextEntries",
+        "summary": "The anchored-text store's keys",
+        "description": "The checksum of every set of bytes whose anchored text the store holds under the stamp last stated. Entries stored under another stamp are not listed. Read by the Smelter, to plan what it derives when it starts.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The keys.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnchoredTextEntries"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/resources/{id}/anchored-text/stored": {
+      "get": {
+        "operationId": "getStoredResourceAnchoredText",
+        "summary": "The anchored-text entry stored for a resource's content",
+        "description": "The entry stored for the resource's content, as it is stored, when it is stored under the stamp last stated. The query states the checksum of the content the caller read; content that has changed since is a 409, never another content's entry. Answered at once: unlike `GET /resources/{id}/anchored-text`, it never waits for the Smelter. Read by the Smelter, before it derives a text, to find whether it has already.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The resource, percent-encoded.",
+            "schema": {
+              "$ref": "#/components/schemas/ResourceId"
+            }
+          },
+          {
+            "name": "contentChecksum",
+            "in": "query",
+            "required": true,
+            "description": "The SHA-256 of the content the caller read, as 64 lower-case hexadecimal digits.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The entry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnchoredTextEntry"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The query states no checksum, or one that is not 64 lower-case hexadecimal digits.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The record holds no such resource, or no entry is stored for its content under the stamp last stated; `error` says which.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The resource's first representation has other content than the checksum the query states, or none; `error` names the checksum it has.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/anchored-text/stamp": {
+      "put": {
+        "operationId": "putAnchoredTextStamp",
+        "summary": "State the anchored-text store's stamp",
+        "description": "State the stamp the store's entries are taken under: which PDF reader and which OCR engine derive them. From then on an entry stored under another stamp is answered to no reader and is not listed; nothing is deleted. The stamp is kept across restarts. Stated by the Smelter when it starts, before it reads, lists or writes an entry.",
+        "security": [
+          {
+            "serviceAccount": []
+          }
+        ],
+        "x-xynolog-limits": {
+          "maxBodyBytes": 4096
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnchoredTextStamp"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Stated."
+          },
+          "400": {
+            "description": "The body is no `AnchoredTextStamp`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "InternalError": {
+        "description": "The service failed in a way no other status describes. The body is an ErrorResponse like every other error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "The body is larger than the operation's `x-xynolog-limits.maxBodyBytes`. A body whose Content-Length says so is refused before any of it is read; one sent without a length is refused once more than that has arrived.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No bearer token, or one that does not verify against the knowledge base's trusted issuer or carries no `xynolog-service` role (see the `serviceAccount` scheme). The body never says which.",
+        "headers": {
+          "WWW-Authenticate": {
+            "description": "`Bearer` when no token was presented; `Bearer error=\"invalid_token\"` when one was presented and refused (RFC 6750 §3).",
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer( error=\"invalid_token\")?$"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Agent": {
+        "description": "Web Annotation / W3C PROV Agent. Discriminated by @type — Person, Organization, or Software (named member schemas: AgentPerson, AgentOrganization, AgentSoftware). Software peers are first-class participants, not a sub-class of Person.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/AgentPerson"
+          },
+          {
+            "$ref": "#/components/schemas/AgentOrganization"
+          },
+          {
+            "$ref": "#/components/schemas/AgentSoftware"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "@type",
+          "mapping": {
+            "Person": "./AgentPerson.json",
+            "Organization": "./AgentOrganization.json",
+            "Software": "./AgentSoftware.json"
+          }
+        }
+      },
+      "AgentOrganization": {
+        "description": "An organization — the Organization branch of Agent.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "@type": {
+            "type": "string",
+            "enum": [
+              "Organization"
+            ]
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "name": {
+            "type": "string"
+          },
+          "homepage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "@type",
+          "name"
+        ]
+      },
+      "AgentPerson": {
+        "description": "A human participant — the Person branch of Agent.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "@type": {
+            "type": "string",
+            "enum": [
+              "Person"
+            ]
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri",
+            "description": "DID-shaped identifier (e.g. did:web:host:users:email%40host)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. ABSENT until resolved: a Person is identified by `@id` and nothing else, and what they are called is recorded once per change on the knowledge base's own log and filled in when a record is read. An artifact therefore never freezes a name, which is what lets a correction reach every artifact its subject ever wrote. Absent also means genuinely unknown — a DID this knowledge base has no profile for."
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "email_sha1": {
+            "type": "string"
+          },
+          "homepage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "@type"
+        ]
+      },
+      "AgentSoftware": {
+        "description": "A software peer, the Software branch of Agent: an agent, which is an account as a person is. Its `provider` and `model` are what it says of itself, attributed to it and not checked; the knowledge base reads neither from its DID. Its `name` is no part of what it writes: what it last said it is called is its profile, and readers fill it in, as they do a person's. A generator the knowledge base supplies, for an agent that supplied none, carries `@type` and `@id` alone.",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "@type": {
+            "type": "string",
+            "enum": [
+              "Software"
+            ]
+          },
+          "@id": {
+            "type": "string",
+            "format": "uri",
+            "description": "The agent's DID: did:web:<domain>:agents:<subject>, its account at the knowledge base's issuer"
+          },
+          "name": {
+            "type": "string",
+            "description": "What the agent last said it is called. ABSENT until resolved: filled in from its profile when a record is read, as a Person's name is. Absent also where it has said nothing. Not parsed."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Inference provider (e.g. ollama, anthropic)"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model identifier (e.g. gemma2:27b, claude-3-5-sonnet)"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Inference parameters (temperature, maxTokens, systemPrompt, etc.). Runtime metadata, not part of identity."
+          }
+        },
+        "required": [
+          "@type"
+        ]
+      },
+      "AnchoredText": {
+        "type": "object",
+        "description": "Text paired with the geometry that indexes it — the minimum needed to turn a range of the text, two offsets counted in Unicode code points, into a selection, or a rectangle into a quote. Whole-resource: a producer iterates page by page, but every consumer wants one map.",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Reading-order text of the whole resource."
+          },
+          "items": {
+            "type": "array",
+            "description": "Positioned runs indexing `text`, roughly one per word.",
+            "items": {
+              "$ref": "#/components/schemas/PdfTextItem"
+            }
+          }
+        },
+        "required": [
+          "text",
+          "items"
+        ]
+      },
+      "AnchoredTextAbsent": {
+        "type": "object",
+        "description": "There is no coordinate map to serve, and WHY — the distinction a bare null could not carry.\n\nOne member covers all three absences because none carries a payload; `kind` alone is the fact. Retryability is legible from the name, deliberately: a caller must not need a lookup table to decide whether to come back.",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "not-yet",
+              "no-map",
+              "unknown"
+            ],
+            "description": "Discriminant, sharing the `kind` field with the ExtractedText/ExtractionDeclined members so the whole answer is one flat union.\n\n`not-yet` — the resource's media type has text that is derived by reading its content, and the store holds no entry for this content: the Smelter has not read it yet, or the entry was lost (a loss the Smelter's reconcile pass re-derives). RETRY.\n\n`no-map` — the resource's media type has no derived text, so no entry exists and none will until the type is given a reader. Decided by the media type alone, and answered at once. TERMINAL.\n\n`unknown` — no content identity to look up: the resource is not in the view store, or its primary representation carries no checksum. TERMINAL."
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "AnchoredTextAnswer": {
+        "description": "What a reader gets when it asks for a resource's coordinate map: the map, a stored decline, or a named absence.\n\nDistinct from `ExtractionOutcome` on purpose. That type is what the STORE holds and what an extractor RETURNS — neither of which can ever be 'not yet'. This is the read answer, which can, so widening ExtractionOutcome itself would have put an impossible state into the store's own type.\n\nFlat, one discriminant: every member carries `kind`, rather than nesting an outcome inside a status envelope and giving the wire two `kind` fields at different depths.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ExtractedText"
+          },
+          {
+            "$ref": "#/components/schemas/ExtractionDeclined"
+          },
+          {
+            "$ref": "#/components/schemas/AnchoredTextAbsent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "extracted": "./ExtractedText.json",
+            "declined": "./ExtractionDeclined.json",
+            "not-yet": "./AnchoredTextAbsent.json",
+            "no-map": "./AnchoredTextAbsent.json",
+            "unknown": "./AnchoredTextAbsent.json"
+          }
+        }
+      },
+      "AnchoredTextDeclinedEntry": {
+        "type": "object",
+        "description": "The bytes were declined: no text is extracted from them.",
+        "properties": {
+          "v": {
+            "type": "integer",
+            "enum": [
+              3
+            ],
+            "description": "The entry format."
+          },
+          "stamp": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The stamp the entry was derived under: the PDF reader's and the OCR engine's. A reader takes the entry only when it equals the stamp the Smelter last stated."
+          },
+          "declined": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExtractionDeclinedReason"
+              }
+            ],
+            "description": "Why extraction yielded nothing, by class."
+          }
+        },
+        "required": [
+          "v",
+          "stamp",
+          "declined"
+        ],
+        "additionalProperties": false
+      },
+      "AnchoredTextEntries": {
+        "type": "object",
+        "description": "The keys of the entries the anchored-text store holds under the stamp last stated: one checksum for each set of bytes whose text is stored, in no order.",
+        "properties": {
+          "checksums": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "The SHA-256 of the bytes the text was derived from, as 64 lower-case hexadecimal digits: the key the entry is filed under."
+            }
+          }
+        },
+        "required": [
+          "checksums"
+        ],
+        "additionalProperties": false
+      },
+      "AnchoredTextEntry": {
+        "description": "One entry of the anchored-text store: the file `<ab>/<cd>/<key>.json` under the store's directory, where the key is the SHA-256 of the bytes the text was extracted from, in hex. The Smelter derives it and stores it over the Archivist's HTTP surface (`AnchoredTextWrite`); the Archivist writes it, as compact JSON with `v` and `stamp` first, to a sibling temporary file renamed onto the path. The stamp the Smelter states (`AnchoredTextStamp`) is kept, followed by a newline, in the file `STAMP` at the store's root.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/AnchoredTextExtractedEntry"
+          },
+          {
+            "$ref": "#/components/schemas/AnchoredTextDeclinedEntry"
+          }
+        ]
+      },
+      "AnchoredTextExtractedEntry": {
+        "type": "object",
+        "description": "The text extracted from the bytes, where each word is on the page, and how it was extracted.",
+        "properties": {
+          "v": {
+            "type": "integer",
+            "enum": [
+              3
+            ],
+            "description": "The entry format."
+          },
+          "stamp": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The stamp the entry was derived under: the PDF reader's and the OCR engine's. A reader takes the entry only when it equals the stamp the Smelter last stated."
+          },
+          "text": {
+            "type": "string",
+            "description": "The extracted text."
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "One line of text: the words that share a page, a baseline and a height.",
+              "properties": {
+                "p": {
+                  "type": "integer",
+                  "description": "The page, counted from 1."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "The line's vertical position in PDF points, from the bottom of the page."
+                },
+                "h": {
+                  "type": "number",
+                  "description": "The line's height in PDF points."
+                },
+                "words": {
+                  "type": "array",
+                  "description": "Each word as `[x, width, start, end]`: its horizontal position and width in PDF points, and the offsets of its text in `text`, which are whole numbers of Unicode code points from the start of `text`.",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 4,
+                    "maxItems": 4
+                  }
+                }
+              },
+              "required": [
+                "p",
+                "y",
+                "h",
+                "words"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Where each word of `text` is, line by line, in reading order."
+          },
+          "method": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExtractionMethod"
+              }
+            ],
+            "description": "How the text was extracted."
+          },
+          "pdfClass": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PdfClass"
+              }
+            ],
+            "description": "PDF classification, when the source was a PDF."
+          },
+          "ocrConfidence": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OcrConfidence"
+              }
+            ],
+            "description": "How well the engine read the pixels, when any of this text came from OCR."
+          },
+          "unreadPages": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "1-indexed pages this extraction could not read — present only for partially covered documents (class C)."
+          }
+        },
+        "required": [
+          "v",
+          "stamp",
+          "text",
+          "lines",
+          "method"
+        ],
+        "additionalProperties": false
+      },
+      "AnchoredTextStamp": {
+        "type": "object",
+        "description": "The stamp an anchored-text store's entries are taken under: which PDF reader and which OCR engine derived them. Its writer states it before it writes or lists an entry; an entry stored under another stamp is answered to no reader.",
+        "properties": {
+          "stamp": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "description": "The stamp: no white space, since it is held in a file of one line."
+          }
+        },
+        "required": [
+          "stamp"
+        ],
+        "additionalProperties": false
+      },
+      "AnchoredTextWrite": {
+        "type": "object",
+        "description": "A write of an anchored-text entry for the bytes of one resource: what the Smelter derived from them, and their checksum. The Archivist files the entry under the checksum, so every resource whose bytes those are has it, and refuses the write when the resource's first representation has other bytes.",
+        "properties": {
+          "contentChecksum": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "The SHA-256 of the bytes the text was derived from, as 64 lower-case hexadecimal digits: the key the entry is filed under."
+          },
+          "entry": {
+            "$ref": "#/components/schemas/AnchoredTextEntry"
+          }
+        },
+        "required": [
+          "contentChecksum",
+          "entry"
+        ],
+        "additionalProperties": false
+      },
+      "Annotation": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "type": "string",
+            "enum": [
+              "http://www.w3.org/ns/anno.jsonld"
+            ],
+            "default": "http://www.w3.org/ns/anno.jsonld",
+            "description": "W3C Web Annotation JSON-LD context"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Annotation"
+            ],
+            "default": "Annotation",
+            "description": "W3C Annotation type"
+          },
+          "id": {
+            "$ref": "#/components/schemas/AnnotationId"
+          },
+          "motivation": {
+            "$ref": "#/components/schemas/Motivation"
+          },
+          "target": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              },
+              {
+                "$ref": "#/components/schemas/AnnotationTarget"
+              }
+            ],
+            "description": "W3C Web Annotation target: the id of the resource annotated, when the whole of it is, or an object with source and optional selector (fragment)"
+          },
+          "body": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnnotationBodies"
+              }
+            ],
+            "description": "W3C Web Annotation body. Optional per the W3C spec — annotations whose motivation alone is meaningful (highlighting) legitimately omit it. Present values are either a single body or a non-empty array of bodies; there is no empty array."
+          },
+          "creator": {
+            "$ref": "#/components/schemas/Agent",
+            "description": "Web Annotation creator — who requested the annotation. DERIVED by the knowledge base at write time, never accepted from an emitter (a payload carrying it is refused): the verified emitter of the write, or, when the write cites a job, the verified emitter of the job:create that produced it. A Person for human-requested work; a Software peer for autonomous-agent work."
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the annotation was MADE — the authoring moment, carried from the event that created it. Not when a projection happened to write it: a store that rebuilds from the log must preserve this value, never restamp it."
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "generator": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreAgents"
+              }
+            ],
+            "description": "Web Annotation generator — the Software peer that produced the annotation, when software did. Absent for a person's own annotation. An emitter may supply it to carry the model's parameters, but its identity must be the emitter's own: the knowledge base refuses a generator naming anyone else, and supplies it from the verified emitter when omitted. One producer per write — a write carrying the array form is refused."
+          },
+          "wasAttributedTo": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreAgents"
+              }
+            ],
+            "description": "PROV-O wasAttributedTo — every party responsible for this annotation, DERIVED by the knowledge base from `creator` and the verified executor of the write: `[creator, generator]` when one agent requested the work and software produced it; collapsed to the one agent when requester and producer are the same. Never accepted from an emitter."
+          }
+        },
+        "required": [
+          "@context",
+          "type",
+          "id",
+          "motivation",
+          "target",
+          "created"
+        ]
+      },
+      "AnnotationBodies": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/AnnotationBody"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnnotationBody"
+            },
+            "minItems": 1,
+            "description": "Non-empty array of mixed TextualBody (tagging) and SpecificResource (linking) bodies"
+          }
+        ],
+        "description": "What an annotation's `body` holds: one body, or a non-empty list of them. There is no empty list: an annotation with nothing to say has no `body`."
+      },
+      "AnnotationBody": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/TextualBody"
+          },
+          {
+            "$ref": "#/components/schemas/SpecificResource"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "TextualBody": "./TextualBody.json",
+            "SpecificResource": "./SpecificResource.json"
+          }
+        },
+        "description": "An annotation's body: a TextualBody carries text the annotation states (entity tags, descriptions, comments), a SpecificResource points at what it links to. Tell them apart by `type`, which is required on both and single-valued — a consumer never has to probe for which fields happen to be present."
+      },
+      "AnnotationId": {
+        "type": "string",
+        "description": "An annotation's id: a name, never the annotation's URI. 1 to 128 of the letters `A`–`Z` and `a`–`z`, the digits, `_` and `-`. It is one segment of a URL and one name in a file system, and it is held to that wherever it enters: a gateway refuses a payload that carries anything else. How one is made is no part of the rule.",
+        "pattern": "^[A-Za-z0-9_-]{1,128}$"
+      },
+      "AnnotationSelector": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Selector"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Selector"
+            },
+            "description": "Several selectors of the same segment, each a different way of finding it"
+          }
+        ],
+        "description": "What a target's `selector` holds: one W3C selector, or several of the same segment."
+      },
+      "AnnotationTarget": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SpecificResource"
+            ],
+            "description": "Stated by the annotation of a span: the target is a part of its source, which the selector picks out. An annotation of a resource as a whole states none."
+          },
+          "source": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "The id of the resource being annotated"
+          },
+          "selector": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnnotationSelector"
+              }
+            ],
+            "description": "Optional selector to identify a specific segment of the source resource"
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "description": "W3C Web Annotation target object - source is required, selector is optional"
+      },
+      "ArchivistEventsResponse": {
+        "type": "object",
+        "description": "A page of one stream's events from one sequence number, inclusive, in log order, and the sequence number of the stream's last event: the Archivist's answer to `GET /events/{resourceId}`.",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoredEventResponse"
+            }
+          },
+          "lastSequence": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The sequence number of the stream's last event when it was read: 0 for a stream with none. More events follow the page while its last event's number is below it."
+          }
+        },
+        "required": [
+          "events",
+          "lastSequence"
+        ]
+      },
+      "ArchivistHealth": {
+        "type": "object",
+        "description": "The Archivist's liveness answer: it serves, and the actors it hosts.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The record actors this process hosts."
+          }
+        },
+        "required": [
+          "status",
+          "actors"
+        ]
+      },
+      "ArchivistStream": {
+        "type": "object",
+        "description": "One stream of the event log, and where it stands: the resource it is of, or `__system__` for the knowledge base's own, and the sequence number of its last event.",
+        "properties": {
+          "resourceId": {
+            "$ref": "#/components/schemas/ResourceId"
+          },
+          "lastSequence": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The sequence number of the stream's last event when it was read: 0 for a stream with none."
+          }
+        },
+        "required": [
+          "resourceId",
+          "lastSequence"
+        ],
+        "additionalProperties": false
+      },
+      "ArchivistStreamsResponse": {
+        "type": "object",
+        "description": "Every stream of the event log, `__system__` among them, each with the sequence number of its last event, in no order: the Archivist's answer to `GET /events`.",
+        "properties": {
+          "streams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArchivistStream"
+            }
+          }
+        },
+        "required": [
+          "streams"
+        ],
+        "additionalProperties": false
+      },
+      "BodyPurpose": {
+        "type": "string",
+        "enum": [
+          "assessing",
+          "bookmarking",
+          "classifying",
+          "commenting",
+          "describing",
+          "editing",
+          "highlighting",
+          "identifying",
+          "linking",
+          "moderating",
+          "questioning",
+          "replying",
+          "tagging"
+        ],
+        "description": "W3C Web Annotation body purpose vocabulary - https://www.w3.org/TR/annotation-vocab/#motivation"
+      },
+      "CreateResourceResponse": {
+        "type": "object",
+        "description": "The id of the resource an upload created. The Archivist answers it (200) once it has stored the bytes and recorded the resource, and the gateway forwards it (202), so the id is the one the record minted and its creation event is persisted. What remains asynchronous is downstream projection: graph, views and vectors settle afterwards.",
+        "properties": {
+          "resourceId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "The id of the newly created resource, as the record minted it."
+          }
+        },
+        "required": [
+          "resourceId"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "The body of every error the gateway answers, whatever the status and whatever the route — including a path it does not serve.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "What went wrong, in a sentence."
+          },
+          "code": {
+            "type": "string",
+            "description": "A machine-readable class, when the route defines one."
+          },
+          "hint": {
+            "type": "string",
+            "description": "What the caller can do about it, when there is something to say."
+          },
+          "details": {}
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "EventMetadata": {
+        "type": "object",
+        "description": "Metadata added at persistence time. Part of every StoredEvent. Integrity is provided by git at the commit level (when gitSync is enabled), not by in-event metadata fields.",
+        "properties": {
+          "sequenceNumber": {
+            "type": "integer",
+            "description": "Monotonic position in the event log (ordering authority)"
+          }
+        },
+        "required": [
+          "sequenceNumber"
+        ]
+      },
+      "ExtractedText": {
+        "description": "A successful extraction: the anchored text plus its provenance. The 'extracted' member of ExtractionOutcome, the record the anchored-text store holds.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AnchoredText"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "extracted"
+                ],
+                "description": "Discriminant — both ExtractionOutcome members carry `kind`, single-valued: the category here, the detail in `method`."
+              },
+              "method": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ExtractionMethod"
+                  }
+                ],
+                "description": "How the text was extracted."
+              },
+              "pdfClass": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PdfClass"
+                  }
+                ],
+                "description": "PDF classification, when the source was a PDF."
+              },
+              "ocrConfidence": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/OcrConfidence"
+                  }
+                ],
+                "description": "How well the engine read the pixels, when any of this text came from OCR."
+              },
+              "unreadPages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "description": "1-indexed pages this extraction could not read — present only for partially covered documents (class C)."
+              }
+            },
+            "required": [
+              "kind",
+              "method"
+            ]
+          }
+        ]
+      },
+      "ExtractionDeclined": {
+        "type": "object",
+        "description": "A named decline: extraction ran and yielded nothing, by class. A first-class, cacheable outcome — 'we ran and there was nothing' costs a full recognition pass to discover.",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "declined"
+            ],
+            "description": "Discriminant — both ExtractionOutcome members carry `kind`, single-valued: the category here, the detail in `declined`."
+          },
+          "declined": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExtractionDeclinedReason"
+              }
+            ],
+            "description": "Why extraction yielded nothing, by class."
+          }
+        },
+        "required": [
+          "kind",
+          "declined"
+        ]
+      },
+      "ExtractionDeclinedReason": {
+        "type": "string",
+        "enum": [
+          "no-text-layer",
+          "encrypted",
+          "corrupt",
+          "too-large"
+        ],
+        "description": "Why extraction yielded nothing, by class."
+      },
+      "ExtractionMethod": {
+        "type": "string",
+        "enum": [
+          "text-passthrough",
+          "pdf-text-layer",
+          "table",
+          "form",
+          "ocr"
+        ],
+        "description": "How a text was extracted: a plain text taken as it is, a PDF's text layer read, a grid written as rows, a filled form's values read, or pixels read by OCR."
+      },
+      "FragmentSelector": {
+        "type": "object",
+        "description": "W3C Web Annotation FragmentSelector for media fragment identifiers (RFC 3778 for PDFs)",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "FragmentSelector"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "Media fragment identifier (e.g., 'page=1&viewrect=100,200,50,30' for PDF)",
+            "example": "page=1&viewrect=100,200,50,30"
+          },
+          "conformsTo": {
+            "type": "string",
+            "description": "URI identifying the fragment syntax specification",
+            "example": "http://tools.ietf.org/rfc/rfc3778"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "GetAnnotationsResponse": {
+        "type": "object",
+        "properties": {
+          "annotations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Annotation"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of annotations"
+          },
+          "motivation": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Motivation"
+              }
+            ],
+            "description": "Motivation filter applied (if any)"
+          }
+        },
+        "required": [
+          "annotations",
+          "total"
+        ]
+      },
+      "GetResourceResponse": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "$ref": "#/components/schemas/ResourceDescriptor"
+          },
+          "annotations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Annotation"
+            },
+            "description": "All annotations for the resource (highlights, references, assessments, etc.)"
+          }
+        },
+        "required": [
+          "resource",
+          "annotations"
+        ]
+      },
+      "JobId": {
+        "type": "string",
+        "description": "A job's id. 1 to 128 of the letters `A`–`Z` and `a`–`z`, the digits, `_` and `-`. It is one segment of a URL and one name in a file system, and it is held to that wherever it enters: a gateway refuses a payload that carries anything else. How one is made is no part of the rule.",
+        "pattern": "^[A-Za-z0-9_-]{1,128}$"
+      },
+      "Motivation": {
+        "type": "string",
+        "enum": [
+          "assessing",
+          "commenting",
+          "highlighting",
+          "linking",
+          "tagging"
+        ],
+        "description": "Xynolog-supported W3C Web Annotation motivations - https://www.w3.org/TR/annotation-vocab/#motivation"
+      },
+      "OcrConfidence": {
+        "type": "object",
+        "description": "How well an OCR engine read the pixels.",
+        "properties": {
+          "mean": {
+            "type": "number",
+            "description": "Mean per-word confidence, 0-100."
+          },
+          "lowConfidenceWords": {
+            "type": "integer",
+            "description": "Words the engine was unsure of."
+          },
+          "totalWords": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "mean",
+          "lowConfidenceWords",
+          "totalWords"
+        ]
+      },
+      "OneOrMoreAgents": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Agent"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Agent"
+            },
+            "minItems": 1
+          }
+        ],
+        "description": "One Agent, or a non-empty list of them: the parties PROV-O and the Web Annotation model let a resource or an annotation name in one place, as one agent or several."
+      },
+      "OneOrMoreStrings": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        ],
+        "description": "One string, or a non-empty list of them: a JSON-LD term that may take one value or several."
+      },
+      "OneOrMoreUris": {
+        "oneOf": [
+          {
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "minItems": 1
+          }
+        ],
+        "description": "One URI, or a non-empty list of them: a JSON-LD term that may name one resource or several."
+      },
+      "PdfClass": {
+        "type": "string",
+        "enum": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        "description": "The class a PDF is sorted into, which decides how its text is read. smelter/extraction-cases.json states what each class is."
+      },
+      "PdfTextItem": {
+        "type": "object",
+        "description": "One positioned text run. Coordinates are PDF points with the origin at the bottom-left of the page, Y increasing upward; the flip to canvas pixels happens in the browser.",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Offset into AnchoredText.text, in Unicode code points from its start, inclusive."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Offset into AnchoredText.text, in Unicode code points from its start, exclusive."
+          },
+          "page": {
+            "type": "integer",
+            "description": "1-indexed page number."
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "page",
+          "x",
+          "y",
+          "width",
+          "height"
+        ]
+      },
+      "Representation": {
+        "type": "object",
+        "description": "A specific, byte-addressable rendition of a resource (file/asset/variant).",
+        "required": [
+          "mediaType"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "@id": {
+            "type": "string",
+            "format": "uri",
+            "description": "Stable ID for this representation."
+          },
+          "@type": {
+            "description": "Type(s), e.g., schema:MediaObject.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreStrings"
+              }
+            ]
+          },
+          "mediaType": {
+            "type": "string",
+            "description": "MIME/media type (e.g., text/markdown, image/png)."
+          },
+          "storageUri": {
+            "type": "string",
+            "description": "Working-tree URI identifying where this rendition's bytes live. Only file:// is supported (e.g. file://docs/overview.md). The single home of the storage location: maintained across moves (yield:moved relocates it), absent when the resource has no stored bytes."
+          },
+          "filename": {
+            "type": "string"
+          },
+          "byteSize": {
+            "description": "Size of the payload in bytes.",
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksum": {
+            "description": "The SHA-256 of the bytes, as 64 lower-case hexadecimal digits with nothing before them. Whatever compares the checksums of two representations compares this text.",
+            "type": "string"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "Compression/transfer encoding if applicable."
+          },
+          "language": {
+            "type": "string",
+            "description": "IETF BCP 47 language tag (e.g., en, es-ES)."
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Pixels (images/video)."
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Pixels (images/video)."
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Seconds (audio/video)."
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conformsTo": {
+            "description": "Profile/shape the bytes conform to (e.g., a JSON profile or SVG profile).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreUris"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rel": {
+            "description": "Semantics of this rendition relative to the resource (e.g., original, thumbnail, preview, derived).",
+            "type": "string",
+            "enum": [
+              "original",
+              "thumbnail",
+              "preview",
+              "optimized",
+              "derived",
+              "other"
+            ]
+          }
+        }
+      },
+      "RepresentationNotFound": {
+        "description": "The Archivist's 404 for a resource's bytes: an ErrorResponse whose `code` says which half of the lookup failed — `resource` when the record holds no such resource, `representation` when it holds the resource but not its bytes. Each reader answers the two differently.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ErrorResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "resource",
+                  "representation"
+                ]
+              }
+            },
+            "required": [
+              "code"
+            ]
+          }
+        ]
+      },
+      "ResourceDescriptor": {
+        "type": "object",
+        "description": "Metadata about a resource (1:1 with its URI). JSON-LD subject is @id. Link to concrete bytes via representations.",
+        "required": [
+          "@context",
+          "@id",
+          "name",
+          "representations"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "@context": {
+            "description": "JSON-LD context; URI, object, or array of these.",
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "@id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "The id of the resource being described."
+          },
+          "@type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreStrings"
+              }
+            ],
+            "description": "Type(s) of the resource (IRIs/CURIEs via @context)."
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "identifier": {
+            "description": "Persistent identifiers (e.g., DOI, URN).",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "@id": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "scheme": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          },
+          "about": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreStrings"
+              }
+            ],
+            "description": "Topics (IRIs or strings)."
+          },
+          "sameAs": {
+            "description": "Equivalent/authoritative references.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "isPartOf": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "hasPart": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "license": {
+            "type": "string",
+            "format": "uri"
+          },
+          "version": {
+            "type": "string"
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "wasDerivedFrom": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ResourceId"
+                }
+              }
+            ],
+            "description": "W3C PROV: the resource, or resources, this one was derived from, each by its id"
+          },
+          "wasAttributedTo": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreAgents"
+              }
+            ],
+            "description": "W3C PROV — every party responsible for this resource, derived by the knowledge base at creation from verified identities: `[requester, generator]` for a resource a job produced, collapsed to the one agent when the requester produced it. Never accepted from an emitter."
+          },
+          "generator": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreAgents"
+              }
+            ],
+            "description": "Software peer that produced this resource (W3C Web Annotation model). Its identity is the verified emitter of the create; the parameters are the producer's to state."
+          },
+          "conformsTo": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OneOrMoreUris"
+              }
+            ],
+            "description": "Profile/shape URI this resource description conforms to."
+          },
+          "availableFormats": {
+            "description": "Convenience set summarizing media types across representations.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "representations": {
+            "description": "Managed or referenced byte-level renditions of this resource.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Representation"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Representation"
+                }
+              }
+            ]
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "Application-specific: Whether this resource is archived"
+          },
+          "entityTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Application-specific: Entity types for this resource"
+          },
+          "isDraft": {
+            "type": "boolean",
+            "description": "Application-specific: Whether this resource is a draft"
+          },
+          "sourceAnnotationId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnnotationId"
+              }
+            ],
+            "description": "Application-specific: ID of annotation that triggered generation"
+          },
+          "sourceResourceId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "Application-specific: ID of source resource for clones/derivatives"
+          },
+          "originatedFrom": {
+            "type": "string",
+            "format": "uri",
+            "description": "Original URI from a source knowledge base when this resource was imported"
+          }
+        }
+      },
+      "ResourceId": {
+        "type": "string",
+        "description": "A resource's id: a name, never the resource's URI or a path. 1 to 128 of the letters `A`–`Z` and `a`–`z`, the digits, `_` and `-`. It is one segment of a URL and one name in a file system, and it is held to that wherever it enters: a gateway refuses a payload that carries anything else. How one is made is no part of the rule. `__system__` is the one that names no resource: the scope events about the knowledge base itself are logged under.",
+        "pattern": "^[A-Za-z0-9_-]{1,128}$"
+      },
+      "ResourceUpload": {
+        "type": "object",
+        "description": "The multipart upload that creates a resource. A client sends it to the gateway's `POST /resources`; the gateway forwards it untouched to the Archivist's `POST /resources`, which stores the bytes and records the resource. One body, two hops.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable resource name"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Binary content"
+          },
+          "format": {
+            "type": "string",
+            "description": "Media type of the content (e.g. text/plain, text/markdown, image/png)"
+          },
+          "storageUri": {
+            "type": "string",
+            "description": "Where the content lives (file://... for local). Required — the client names the location; the server does not derive one."
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO 639-1 language code"
+          },
+          "entityTypes": {
+            "type": "string",
+            "description": "JSON-stringified array of entity type names"
+          },
+          "sourceAnnotationId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnnotationId"
+              }
+            ],
+            "description": "For AI-generated resources: the annotation that triggered generation. Nested into generatedFrom.annotationId on the persisted event."
+          },
+          "sourceResourceId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "For AI-generated resources: the source resource the generating annotation lives on. Nested into generatedFrom.resourceId on the persisted event."
+          },
+          "generationPrompt": {
+            "type": "string",
+            "description": "For AI-generated resources: the prompt that drove generation"
+          },
+          "generator": {
+            "type": "string",
+            "description": "For AI-generated resources: JSON-stringified Agent naming the model/worker that produced the content. Its identity must be the uploading agent's own — the knowledge base refuses a generator naming anyone else. `creator` and `wasAttributedTo` are never sent; the knowledge base derives them from the cited job."
+          },
+          "jobId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JobId"
+              }
+            ],
+            "description": "The job this resource fulfils, when a worker is creating it. Forwarded onto yield:create; the knowledge base derives who requested the resource from the cited job's own events, and refuses a worker-role create that cites none. Absent for a person's own upload."
+          },
+          "isDraft": {
+            "type": "string",
+            "description": "'true' or 'false' — whether the resource is a draft"
+          },
+          "cloneToken": {
+            "type": "string",
+            "description": "A clone token from `yield:clone-token-requested`. With it, the resource is created as a clone of the token's source, inheriting its entity types; `language`, `entityTypes` and the generation fields are then not read."
+          },
+          "archiveOriginal": {
+            "type": "string",
+            "description": "With `cloneToken`: 'true' archives the source once the clone exists."
+          }
+        },
+        "required": [
+          "name",
+          "file",
+          "format",
+          "storageUri"
+        ]
+      },
+      "Selector": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/TextPositionSelector"
+          },
+          {
+            "$ref": "#/components/schemas/TextQuoteSelector"
+          },
+          {
+            "$ref": "#/components/schemas/SvgSelector"
+          },
+          {
+            "$ref": "#/components/schemas/FragmentSelector"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "TextPositionSelector": "./TextPositionSelector.json",
+            "TextQuoteSelector": "./TextQuoteSelector.json",
+            "SvgSelector": "./SvgSelector.json",
+            "FragmentSelector": "./FragmentSelector.json"
+          }
+        },
+        "description": "One W3C selector: a way of finding a segment of a resource. Tell them apart by `type`, which is required on each and single-valued."
+      },
+      "SpecificResource": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SpecificResource"
+            ]
+          },
+          "source": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "The id of the resource this body leads to"
+          },
+          "purpose": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BodyPurpose"
+              }
+            ],
+            "description": "Why this body is included"
+          }
+        },
+        "required": [
+          "type",
+          "source"
+        ]
+      },
+      "StoredEventResponse": {
+        "type": "object",
+        "description": "A persisted domain event with metadata. Flat shape — event fields and metadata are peers.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique event ID (UUID)"
+          },
+          "type": {
+            "type": "string",
+            "description": "Event type (flow verb name, e.g. mark:added)"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the event occurred"
+          },
+          "userId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserId"
+              }
+            ],
+            "description": "DID of the user who triggered the event"
+          },
+          "resourceId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceId"
+              }
+            ],
+            "description": "Resource this event affects (absent for system events)"
+          },
+          "version": {
+            "type": "integer",
+            "description": "Event schema version"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Event-type-specific payload"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/EventMetadata"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "timestamp",
+          "userId",
+          "version",
+          "payload",
+          "metadata"
+        ]
+      },
+      "SvgSelector": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SvgSelector"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "SVG markup defining the region (must include xmlns attribute)"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "TextPositionSelector": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "TextPositionSelector"
+            ]
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Offset into the resource's decoded text, exactly as decoded, in Unicode code points from its start: where the selected text starts."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Offset into the resource's decoded text, exactly as decoded, in Unicode code points from its start: just past where the selected text ends."
+          }
+        },
+        "required": [
+          "type",
+          "start",
+          "end"
+        ]
+      },
+      "TextQuoteSelector": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "TextQuoteSelector"
+            ]
+          },
+          "exact": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "suffix": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "exact"
+        ]
+      },
+      "TextualBody": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "TextualBody"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "The text content (e.g., entity type name)"
+          },
+          "purpose": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BodyPurpose"
+              }
+            ],
+            "description": "Why this body is included"
+          },
+          "format": {
+            "type": "string",
+            "description": "MIME type (defaults to text/plain)"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "UserId": {
+        "type": "string",
+        "description": "The identity of whoever did something, a person or a software agent alike: a DID (`did:web:<domain>:users:<subject>`, `did:web:<domain>:agents:<subject>`), with no whitespace in it. Never a name, an address, or a row in a table. What follows `did:` is not constrained further: a subject is the issuer's, percent-encoded, and that encoding leaves some punctuation as it is.",
+        "pattern": "^did:\\S+$"
+      }
+    },
+    "securitySchemes": {
+      "serviceAccount": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "`Authorization: Bearer <JWT>` from the knowledge base's trusted issuer — the issuer and audience the `bearerAuth` scheme of the gateway's API names — carrying `xynolog-service` in its flat `roles` claim: a service account of this knowledge base. People never call the Archivist; the gateway does, as itself, and so do the stack's own services: the Smelter keeps the anchored-text store here."
+      }
+    }
+  }
+}

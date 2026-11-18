@@ -18,5 +18,3 @@ xynolog-dispatcher-handlers.workspace = true
 serde_json.workspace = true
 tokio = { workspace = true, features = ["rt", "sync", "time", "macros"] }
 
-[build-dependencies]
-serde_json.workspace = true

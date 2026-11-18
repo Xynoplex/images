@@ -81,7 +81,7 @@ fn boot() -> Result<i32, String> {
     logging::initialize(config.log_level, config.log_format);
     telemetry::initialize(
         "xynolog-gateway",
-        xynolog_core::spec::VERSION,
+        xynolog_core::spec::version(),
         Some(&identity::kb_did(&config.kb.domain)),
     )?;
     // One worker per CPU the process may use (its cgroup quota and affinity),

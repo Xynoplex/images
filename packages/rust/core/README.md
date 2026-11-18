@@ -11,7 +11,7 @@ crate you want is [`xynolog`](https://github.com/xynolog/sdk/tree/main/rust/sdk)
 
 | Module | What it holds |
 |---|---|
-| `spec` | The spec each service is built against, embedded and checked when it compiles: validators for every component schema, the bus registry and its classification, and the route-table comparison. |
+| `spec` | The spec each service is built against, embedded when it compiles (`src/generated/`, which `make generate` writes): validators for every component schema, the bus registry with each channel's attributes as the SDK states them, and the route-table comparison. |
 | `types`, `config` | The service-only types generated from the spec (the configuration documents, the job record), and reading a configuration document from `--config`, validated before it is used. |
 | `nats` (feature `nats`) | Reaching the messaging broker. Only a crate that implements a broker-backed interface enables it, and CI holds the crates that must not. |
 

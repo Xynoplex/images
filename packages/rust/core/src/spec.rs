@@ -1,21 +1,34 @@
-//! The spec a service is built against, embedded when it is compiled
-//! (build.rs): the protocol's OpenAPI document, the Archivist's, their
-//! component schemas as validators, and the bus registry with the channel
-//! classification packages/codegen/bus/generate-ts.mjs derives from it.
+//! The spec a service is built against, embedded when it is compiled: the
+//! protocol's OpenAPI document, the Archivist's, and their component schemas
+//! as validators, each as make generate bundles them (src/generated/), and the
+//! bus registry, with each channel's attributes as the SDK states them
+//! (`xynolog::channels::CHANNEL_ATTRIBUTES`).
 
 use jsonschema::{Draft, Validator, ValidatorMap};
 use serde_json::Value;
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::sync::OnceLock;
+use xynolog::channels::{CHANNEL_ATTRIBUTES, ChannelDelivery};
+
+const RELEASE: &str = include_str!("../../../../version.json");
+const OPENAPI: &str = include_str!("generated/openapi.json");
+const ARCHIVIST_OPENAPI: &str = include_str!("generated/archivist.openapi.json");
+const SCHEMAS: &str = include_str!("generated/schemas.json");
+const REGISTRY: &str = include_str!("../../../../protocol/specs/src/bus/registry.json");
+
+static VERSION: OnceLock<String> = OnceLock::new();
 
 /// The release this build is: version.json's `version`.
-pub const VERSION: &str = env!("XYNOLOG_VERSION");
-
-const OPENAPI: &str = include_str!(concat!(env!("OUT_DIR"), "/openapi.json"));
-const ARCHIVIST_OPENAPI: &str = include_str!(concat!(env!("OUT_DIR"), "/archivist.openapi.json"));
-const SCHEMAS: &str = include_str!(concat!(env!("OUT_DIR"), "/schemas.json"));
-const REGISTRY: &str = include_str!("../../../../protocol/specs/src/bus/registry.json");
-const CLASSIFICATION: &str = include_str!("bus-classification.json");
+pub fn version() -> &'static str {
+    VERSION.get_or_init(|| {
+        let release: Value = serde_json::from_str(RELEASE)
+            .unwrap_or_else(|e| panic!("the embedded version.json: {e}"));
+        release["version"]
+            .as_str()
+            .unwrap_or_else(|| panic!("the embedded version.json states no version"))
+            .to_owned()
+    })
+}
 
 pub const HTTP_METHODS: [&str; 8] = [
     "get", "put", "post", "delete", "options", "head", "patch", "trace",
@@ -41,8 +54,8 @@ pub struct Spec {
 
 static SPEC: OnceLock<Spec> = OnceLock::new();
 
-/// The spec, parsed once. Everything in it was checked when the service was
-/// built, so a failure here is a build that should not exist.
+/// The spec, parsed once. Everything in it is checked by this crate's tests,
+/// so a failure here is a build that should not exist.
 pub fn spec() -> &'static Spec {
     SPEC.get_or_init(|| Spec::parse().unwrap_or_else(|e| panic!("the embedded spec: {e}")))
 }
@@ -94,21 +107,16 @@ impl Spec {
             );
         }
 
-        let classification: Value =
-            serde_json::from_str(CLASSIFICATION).map_err(|e| e.to_string())?;
-        let mut correlated = HashSet::new();
-        let mut writes = HashSet::new();
-        for (channel, attrs) in classification["channels"]
-            .as_object()
-            .ok_or("the classification lists no channels")?
-        {
-            if attrs["delivery"] == "correlated" {
-                correlated.insert(channel.clone());
-            }
-            if attrs["writes"] == true {
-                writes.insert(channel.clone());
-            }
-        }
+        let correlated = CHANNEL_ATTRIBUTES
+            .iter()
+            .filter(|(_, attrs)| attrs.delivery == Some(ChannelDelivery::Correlated))
+            .map(|(channel, _)| (*channel).to_owned())
+            .collect();
+        let writes = CHANNEL_ATTRIBUTES
+            .iter()
+            .filter(|(_, attrs)| attrs.writes == Some(true))
+            .map(|(channel, _)| (*channel).to_owned())
+            .collect();
 
         Ok(Spec {
             document,
@@ -238,4 +246,60 @@ pub fn route_mismatches<'a>(
             .map(|op| format!("{op} is declared, and nothing serves it")),
     );
     problems
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    // Every component schema compiles on its own, with every schema a $ref
+    // from it follows: one that cannot fails here, never at boot or on a
+    // request.
+    #[test]
+    fn every_component_schema_compiles() {
+        let definitions: Value = serde_json::from_str(SCHEMAS).expect("schemas.json is JSON");
+        let names: Vec<&String> = definitions["definitions"]
+            .as_object()
+            .expect("schemas.json has definitions")
+            .keys()
+            .collect();
+        assert!(!names.is_empty(), "the spec declares no component schemas");
+        for name in names {
+            let mut schema = definitions.clone();
+            schema["$ref"] = json!(format!("#/definitions/{name}"));
+            if let Err(error) = jsonschema::options()
+                .with_draft(Draft::Draft7)
+                .should_validate_formats(true)
+                .build(&schema)
+            {
+                panic!(
+                    "the spec's schema {name} does not compile (a $ref it follows may be at fault): {error}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn the_bus_registry_declares_operations() {
+        assert!(
+            !spec().operations.is_empty(),
+            "the bus registry declares no operations"
+        );
+    }
+
+    #[test]
+    fn every_channel_is_validated_against_a_schema_the_spec_declares() {
+        let spec = spec();
+        for (channel, schema) in &spec.channel_schemas {
+            if let Some(schema) = schema {
+                assert!(
+                    spec.validators
+                        .get(&format!("#/definitions/{schema}"))
+                        .is_some(),
+                    "the bus registry validates {channel} against {schema}, which the spec does not declare"
+                );
+            }
+        }
+    }
 }

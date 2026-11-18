@@ -69,7 +69,6 @@ if (first) {
   for (const member of members) {
     if (!copies(`${member}/Cargo.toml`)) fail(`the build stages do not copy ${member}/Cargo.toml, a member of the workspace`);
     if (!copies(`${member}/src`)) fail(`the build stages do not copy ${member}/src, a member of the workspace`);
-    if (existsSync(join(ROOT, member, 'build.rs')) && !copies(`${member}/build.rs`)) fail(`the build stages do not copy ${member}/build.rs`);
   }
 }
 

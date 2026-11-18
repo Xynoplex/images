@@ -1,5 +1,6 @@
 # Generated from protocol/specs/src/archivist/openapi.json; do not edit.
-# Regenerate: node packages/codegen/schemas/generate-archivist-waits-python.mjs
+# Regenerate: make generate (xynolog/sdk's codegen/lib/images/archivist_waits.ml)
+# ruff: noqa: E501, I001, RUF002, RUF022, RUF100
 
 """How long a caller waits for the Archivist: its document's `x-xynolog-limits`."""
 
