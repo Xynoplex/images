@@ -21,7 +21,6 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Final, Literal, assert_never, final
 
-from pydantic import ValidationError
 from xynolog.annotations import TextSpan, annotation_of_resource, annotation_of_span
 from xynolog.claims import HeldJob, HeldMarkJob, HeldYieldJob
 from xynolog.client import XynologClient
@@ -375,10 +374,9 @@ async def _yield(
 ) -> Outcome:
     try:
         params = held_generation(job.params)
-    except ValidationError as refused:
+    except ValueError as refused:
         # The params crossed the wire as JSON: a job that is no generation's fails here, and not partway through one.
-        lacking = "; ".join(f"{'.'.join(map(str, refusal['loc']))}: {refusal['msg']}" for refusal in refused.errors())
-        raise RuntimeError(f"generation job {job.job_id}: params do not satisfy GenerationJobParams ({lacking})") from None
+        raise RuntimeError(f"generation job {job.job_id}: params do not satisfy GenerationJobParams ({refused})") from None
 
     made = await process_generation_job(inference, params, on_progress=reports.say, cancelled=job.cancelled)
     if isinstance(made, Cancelled):

@@ -170,24 +170,19 @@ def test_a_member_the_document_lacks_is_named_on_a_line_of_its_own(tmp_path: Pat
     assert all(reason.startswith("  ") for reason in reasons)
 
 
-def test_every_reason_is_said_and_not_the_first_alone(tmp_path: Path) -> None:
+def test_the_first_fault_every_sdk_finds_is_the_reason_said(tmp_path: Path) -> None:
+    # The members the schema requires, in the order it states them; then what each holds; then a member it does not name.
     lacking = {name: value for name, value in DOCUMENT.items() if name not in ("port", "logLevel")}
     reasons = refusal_of(tmp_path, {**lacking, "dispatcherUrl": "http://dispatcher"}).split("\n")[1:]
-    assert sorted(reasons) == [
-        "  Missing required property: logLevel",
-        "  Missing required property: port",
-        "  root: unknown property dispatcherUrl",
-    ]
+    assert reasons == ["  Missing required property: port"]
 
 
 def test_a_member_is_known_by_the_name_the_document_gives_it_and_by_no_other(tmp_path: Path) -> None:
     # The SDK's shapes are built in Python by Python's names. A document is held to the wire's.
     renamed = {("knowledge_bases" if name == "knowledgeBases" else name): value for name, value in DOCUMENT.items()}
     reasons = refusal_of(tmp_path, renamed).split("\n")[1:]
-    assert sorted(reasons) == [
-        "  Missing required property: knowledgeBases",
-        "  root: unknown property knowledge_bases",
-    ]
+    assert reasons == ["  Missing required property: knowledgeBases"]
+    assert refusal_of(tmp_path, {**DOCUMENT, "knowledge_bases": []}).split("\n")[1:] == ["  knowledge_bases: is not what the schema states"]
 
 
 @pytest.mark.parametrize(
@@ -202,13 +197,13 @@ def test_a_member_is_known_by_the_name_the_document_gives_it_and_by_no_other(tmp
         (changed(logFormat="pretty"), "logFormat"),
         (changed(knowledgeBases=[]), "knowledgeBases"),
         (changed(knowledgeBases={}), "knowledgeBases"),
-        (changed_at_the_knowledge_base(domain=""), "knowledgeBases[0].domain"),
-        (changed_at_the_knowledge_base(gatewayUrl=""), "knowledgeBases[0].gatewayUrl"),
-        (changed_at_the_knowledge_base(gatewayUrl=4000), "knowledgeBases[0].gatewayUrl"),
-        (changed_at_the_knowledge_base(engines=[]), "knowledgeBases[0].engines"),
-        (changed_at_the_knowledge_base(engines={}), "knowledgeBases[0].engines"),
-        (changed_at_the_knowledge_base(identity="http://issuer"), "knowledgeBases[0].identity"),
-        (changed_at_the_knowledge_base(identity={"issuer": "http://issuer", "clientId": ""}), "knowledgeBases[0].identity.clientId"),
+        (changed_at_the_knowledge_base(domain=""), "knowledgeBases.domain"),
+        (changed_at_the_knowledge_base(gatewayUrl=""), "knowledgeBases.gatewayUrl"),
+        (changed_at_the_knowledge_base(gatewayUrl=4000), "knowledgeBases.gatewayUrl"),
+        (changed_at_the_knowledge_base(engines=[]), "knowledgeBases.engines"),
+        (changed_at_the_knowledge_base(engines={}), "knowledgeBases.engines"),
+        (changed_at_the_knowledge_base(identity="http://issuer"), "knowledgeBases.identity"),
+        (changed_at_the_knowledge_base(identity={"issuer": "http://issuer", "clientId": ""}), "knowledgeBases.identity.clientId"),
     ],
 )
 def test_a_value_that_is_not_the_kind_the_schema_states_is_refused_naming_its_member(
@@ -219,15 +214,13 @@ def test_a_value_that_is_not_the_kind_the_schema_states_is_refused_naming_its_me
     assert reasons[0].startswith(f"  {member}: ")
 
 
-def test_a_member_inside_an_engine_is_named_by_its_place_in_the_document(tmp_path: Path) -> None:
+def test_a_member_inside_an_engine_is_named_by_the_way_to_it(tmp_path: Path) -> None:
+    # The way every SDK names a member: the members it is within, and not which of an array's items.
     second: dict[str, JsonValue] = {**DOCUMENT_ENGINE, "jobs": [], "apiKey": "hunter2-not-a-name"}
     document = changed(knowledgeBases=[KNOWLEDGE_BASE, {**KNOWLEDGE_BASE, "domain": "other.example", "engines": [DOCUMENT_ENGINE, second]}])
-    reasons = refusal_of(tmp_path, document).split("\n")[1:]
-    assert sorted(reason.split(": ", 1)[0] for reason in reasons) == [
-        "  knowledgeBases[1].engines[1]",
-        "  knowledgeBases[1].engines[1].jobs",
-    ]
-    assert "  knowledgeBases[1].engines[1]: unknown property apiKey" in reasons
+    assert refusal_of(tmp_path, document).split("\n")[1:] == ["  knowledgeBases.engines.jobs: is not what the schema states"]
+    unnamed = changed(knowledgeBases=[KNOWLEDGE_BASE, {**KNOWLEDGE_BASE, "engines": [{**DOCUMENT_ENGINE, "apiKey": "hunter2-not-a-name"}]}])
+    assert refusal_of(tmp_path, unnamed).split("\n")[1:] == ["  knowledgeBases.engines.apiKey: is not what the schema states"]
 
 
 SECRET: Final = "sk-conformance-0123456789abcdef"
@@ -269,15 +262,15 @@ SECRET: Final = "sk-conformance-0123456789abcdef"
 )
 def test_no_refusal_repeats_a_value_the_document_held(tmp_path: Path, document: dict[str, JsonValue]) -> None:
     said = refusal_of(tmp_path, document)
-    held_only_as_a_members_name = said.replace(f"unknown property {SECRET}", "")
+    held_only_as_a_members_name = said.replace(f"  {SECRET}: ", "")
     assert SECRET not in held_only_as_a_members_name
 
 
-def test_a_filter_that_states_no_job_type_the_protocol_has_is_refused_by_what_was_expected(tmp_path: Path) -> None:
+def test_a_filter_that_states_no_job_type_the_protocol_has_is_refused_as_the_first_filter_it_could_be(tmp_path: Path) -> None:
+    # No filter's job type is the one it states, so it is read as the first filter, which has parameters it lacks.
     engine: dict[str, JsonValue] = {**DOCUMENT_ENGINE, "jobs": [{"jobType": "smelt"}]}
     (reason,) = refusal_of(tmp_path, changed_at_the_knowledge_base(engines=[engine])).split("\n")[1:]
-    assert reason.startswith("  knowledgeBases[0].engines[0].jobs[0]: ")
-    assert "smelt" not in reason
+    assert reason == "  Missing required property: params"
 
 
 # ── read for another service, and as another shape ──────────────────────

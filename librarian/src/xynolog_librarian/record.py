@@ -17,6 +17,7 @@ from xynolog.bus import Bus
 from xynolog.errors import BusRequestError, TransportError
 from xynolog.identifiers import AnnotationId, ResourceId, UserId
 from xynolog.operations import BROWSE_ANNOTATION_REQUESTED, BROWSE_PROFILES_REQUESTED, BROWSE_RESOURCE_REQUESTED
+from xynolog.required import bounds_of
 from xynolog.types import Annotation, BrowseAnnotationRequest, BrowseProfilesRequest, BrowseResourceRequest, Profile
 
 from xynolog_librarian.reads import Described, Profiles, ProfilesUnread, Record
@@ -29,8 +30,8 @@ READ: Final = (BROWSE_RESOURCE_REQUESTED, BROWSE_ANNOTATION_REQUESTED, BROWSE_PR
 
 def _asked_at_once() -> int:
     """How many principals one request may ask after: the bound the request's own schema states (`BrowseProfilesRequest`)."""
-    bound = BrowseProfilesRequest.model_json_schema()["properties"]["dids"]["maxItems"]
-    if not isinstance(bound, int):
+    bound = bounds_of(BrowseProfilesRequest, "dids").max_items
+    if bound is None:
         raise TypeError("BrowseProfilesRequest states no bound on how many principals one request asks after")
     return bound
 

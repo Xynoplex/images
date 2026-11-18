@@ -50,6 +50,7 @@ from pydantic import JsonValue, TypeAdapter, ValidationError
 from xynolog.errors import XynologError
 from xynolog.identifiers import ResourceId
 from xynolog.model import written
+from xynolog.required import Fault, as_read, read_as
 from xynolog.types import (
     AnchoredTextDeclinedEntry,
     AnchoredTextEntries,
@@ -166,13 +167,13 @@ def _entry_of(outcome: ExtractionOutcome, stamp: str) -> dict[str, JsonValue]:
 def _outcome_of(entry: AnchoredTextEntry) -> ExtractionOutcome:
     """The outcome an entry records: its members without `v` and `stamp`, the `kind` its shape says, and its lines as items.
 
-    Raises `ValidationError` for an entry whose words are no items: an
-    offset that is no whole number, or is below 0.
+    Raises `ValueError` for an entry whose words are no items: an offset
+    that is no whole number, or is below 0.
     """
     wire = written(entry)
     del wire["v"], wire["stamp"]
     if isinstance(entry, AnchoredTextDeclinedEntry):
-        return _OUTCOME.validate_python({"kind": "declined", **wire})
+        return _outcome_read({"kind": "declined", **wire})
     del wire["lines"]
     items: list[JsonValue] = []
     for line in entry.lines:
@@ -187,7 +188,15 @@ def _outcome_of(entry: AnchoredTextEntry) -> ExtractionOutcome:
                 "height": line.h,
             }
             items.append(item)
-    return _OUTCOME.validate_python({"kind": "extracted", "items": items, **wire})
+    return _outcome_read({"kind": "extracted", "items": items, **wire})
+
+
+def _outcome_read(value: JsonValue) -> ExtractionOutcome:
+    """`value` read as an outcome, by the rules every SDK reads the schema by. Raises `ValueError` for one with a fault."""
+    read = as_read(ExtractionOutcome, value)
+    if isinstance(read, Fault):
+        raise ValueError(f"the outcome an entry records is none: {read}")
+    return _OUTCOME.validate_python(read)
 
 
 def _said(answer: httpx.Response) -> str:
@@ -277,11 +286,13 @@ class AnchoredTextStore(AnchoredTexts):
         if answer.status_code != _OK:
             LOG.warning(_UNREAD, extra={"resourceId": resource_id, "contentChecksum": key, "error": _said(answer)})
             return None
+        # No JSON, no entry, or words that are no items: each is a miss.
+        entry = read_as(AnchoredTextEntry, answer.content, _ENTRY.validate_python)
+        if isinstance(entry, Fault) or entry.stamp != self._stamp:
+            return None
         try:
-            entry = _ENTRY.validate_json(answer.content)
-            return _outcome_of(entry) if entry.stamp == self._stamp else None
+            return _outcome_of(entry)
         except ValueError:
-            # No JSON, no entry, or words that are no items: each is a miss. What a model refuses is a `ValueError`.
             return None
 
     @override

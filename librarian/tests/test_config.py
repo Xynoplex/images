@@ -115,7 +115,7 @@ def test_a_settle_bound_that_with_the_wait_for_the_graph_is_not_under_the_held_j
 def test_a_settle_bound_that_is_no_number_above_zero_is_refused_by_the_schema(tmp_path: Path) -> None:
     for stated in (0, -1):
         said = refused(tmp_path, gather={"settleTimeoutMs": stated})
-        assert said.splitlines()[1:] == ["  gather.settleTimeoutMs: Input should be greater than or equal to 1"]
+        assert said.splitlines()[1:] == ["  gather.settleTimeoutMs: is not what the schema states"]
     assert refused(tmp_path, gather={}).splitlines()[1:] == ["  Missing required property: settleTimeoutMs"]
 
 
