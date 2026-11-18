@@ -59,7 +59,7 @@ Issues = "https://github.com/xynolog/images/issues"
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to
@@ -74,7 +74,7 @@ dev = [
     "pyright==1.1.414",
     "pytest>=9.1,<10",
     "pytest-cov==7.1.0",
-    "ruff==0.17.3",
+    "ruff==0.17.4",
 ]
 
 # The version is the repository's, stated once, in version.json.

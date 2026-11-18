@@ -27,10 +27,31 @@ type How = Literal["applied", "nothing", "refused"]
 """How an event was taken: applied by the fold, applied as nothing (the fold has no use for its type), or refused as recorded."""
 
 
+class Place(BaseModel, frozen=True, extra="forbid", strict=True):
+    log: str
+    sequence: int
+
+
+class Failing(BaseModel, frozen=True, extra="forbid", strict=True):
+    log: str
+    sequence: int
+    times: int
+
+
+class Added(BaseModel, frozen=True, extra="forbid", strict=True):
+    log: str
+    type: str
+
+
+class Taking(BaseModel, frozen=True, extra="forbid", strict=True):
+    sequence: int
+    how: How
+
+
 class Fold(BaseModel, frozen=True, extra="forbid", strict=True):
     uses: frozenset[str]
-    refuses: list[tuple[str, int]]
-    fails: list[tuple[str, int, int]]
+    refuses: list[Place]
+    fails: list[Failing]
 
 
 class Start(BaseModel, frozen=True, extra="forbid", strict=True):
@@ -38,11 +59,11 @@ class Start(BaseModel, frozen=True, extra="forbid", strict=True):
 
 
 class Deliver(BaseModel, frozen=True, extra="forbid", strict=True):
-    deliver: tuple[str, int]
+    deliver: Place
 
 
 class Recorded(BaseModel, frozen=True, extra="forbid", strict=True):
-    record: tuple[str, str]
+    record: Added
 
 
 class Drop(BaseModel, frozen=True, extra="forbid", strict=True):
@@ -61,7 +82,7 @@ class Case(BaseModel, frozen=True, extra="forbid", strict=True):
     cursors: dict[str, int]
     with_no_cursor: Annotated[Literal["from-the-first", "own-start"], Field(alias="withNoCursor")]
     steps: list[Start | Deliver | Recorded | Drop | Reopen]
-    taken: dict[str, list[tuple[int, How]]]
+    taken: dict[str, list[Taking]]
     cursors_after: Annotated[dict[str, int], Field(alias="cursorsAfter")]
     stopped: frozenset[str]
     started_own_way: Annotated[frozenset[str], Field(alias="startedOwnWay")]
@@ -69,8 +90,6 @@ class Case(BaseModel, frozen=True, extra="forbid", strict=True):
 
 class Table(BaseModel, frozen=True, extra="forbid", strict=True):
     comment: Annotated[str, Field(alias="$comment")]
-    run_by: Annotated[dict[str, list[str]], Field(alias="runBy")]
-    """Who runs the table, which lint:spec-case-tables holds it to."""
     cases: list[Case]
 
 
@@ -130,8 +149,8 @@ class Projector:
         self.taken: Final[dict[str, list[tuple[int, How]]]] = {}
         self.started_own_way: Final[set[str]] = set()
         self._uses: Final = fold.uses
-        self._refuses: Final = frozenset(fold.refuses)
-        self._failing: Final = {(log, sequence): times for log, sequence, times in fold.fails}
+        self._refuses: Final = frozenset((place.log, place.sequence) for place in fold.refuses)
+        self._failing: Final = {(failing.log, failing.sequence): failing.times for failing in fold.fails}
 
         self.forgotten: Final[list[str]] = []
 
@@ -165,17 +184,18 @@ def test_every_type_the_table_names_is_an_event_of_the_record_and_every_log_and_
             assert 0 <= sequence <= held[log], case.why
         for step in case.steps:
             match step:
-                case Recorded(record=(log, kind)):
+                case Recorded(record=Added(log=log, type=kind)):
                     held.setdefault(log, 0)
                     held[log] += 1
                     named.add(kind)
-                case Deliver(deliver=(log, sequence)):
+                case Deliver(deliver=Place(log=log, sequence=sequence)):
                     assert 1 <= sequence <= held[log], f"{case.why}: {log} {sequence} is delivered before it is recorded"
                 case Start() | Drop() | Reopen():
                     pass
         assert named <= RECORDED, f"{case.why}: {sorted(named - RECORDED)} are no events of the record"
-        places = [*case.fold.refuses, *((log, sequence) for log, sequence, _ in case.fold.fails)]
-        places += [(log, sequence) for log, taken in case.taken.items() for sequence, _ in taken]
+        places = [(place.log, place.sequence) for place in case.fold.refuses]
+        places += [(failing.log, failing.sequence) for failing in case.fold.fails]
+        places += [(log, taking.sequence) for log, taken in case.taken.items() for taking in taken]
         for log, sequence in places:
             assert 1 <= sequence <= held[log], f"{case.why}: the record has no {log} {sequence}"
         for log in (*case.cursors_after, *case.stopped, *case.started_own_way):
@@ -202,17 +222,17 @@ def test_a_follower_takes_each_log_as_the_table_states(case: Case, tmp_path: Pat
             match step:
                 case Start():
                     follower.start()
-                case Deliver(deliver=(log, sequence)):
+                case Deliver(deliver=Place(log=log, sequence=sequence)):
                     follower.delivered(kept.event(log, sequence))
-                case Recorded(record=(log, kind)):
+                case Recorded(record=Added(log=log, type=kind)):
                     kept.add(log, kind)
                 case Drop():
                     follower.dropped()
                 case Reopen():
                     follower.reopened()
             await follower.settled()
-        assert projector.taken == case.taken
-        assert follower.refused == sum(how == "refused" for taken in case.taken.values() for _, how in taken)
+        assert projector.taken == {log: [(taking.sequence, taking.how) for taking in taken] for log, taken in case.taken.items()}
+        assert follower.refused == sum(taking.how == "refused" for taken in case.taken.values() for taking in taken)
         assert follower.stopped == case.stopped
         assert projector.started_own_way == case.started_own_way
         # No case rewinds the record, so no log is forgotten.

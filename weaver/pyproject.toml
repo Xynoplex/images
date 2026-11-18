@@ -43,7 +43,7 @@ neptune = ["xynolog-graph[neptune]"]
 # the tree's spec generates. Each is named, because a source another package
 # states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl" }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118212247+g5126fcb-py3-none-any.whl" }
 xynolog-graph = { path = "../shared/python/graph", editable = true }
 xynolog-service = { path = "../shared/python/service", editable = true }
 
@@ -60,7 +60,7 @@ dev = [
     "pyright==1.1.414",
     "pytest>=9.1,<10",
     "pytest-cov==7.1.0",
-    "ruff==0.17.3",
+    "ruff==0.17.4",
 ]
 
 # The version is the repository's, stated once, in version.json.

@@ -25,13 +25,12 @@ from xynolog.types import (
     Agent,
     AnchoredText,
     AnchoredTextAbsent,
-    AnchoredTextAbsentKind,
     AnchoredTextAnswer,
     Annotation,
     AnnotationBodies,
     ExtractedText,
     ExtractionDeclined,
-    ExtractionDeclinedDeclined,
+    ExtractionDeclinedReason,
     Motivation,
 )
 from xynolog_service.white_space import trimmed
@@ -44,7 +43,13 @@ type ReadText = Callable[[ResourceId], Awaitable[str]]
 type ConsultAnchoredText = Callable[[ResourceId], Awaitable[AnchoredTextAnswer]]
 """How a detection asks for the Smelter's text of a resource: the client's `browse.resource_anchored_text`, on the gateway."""
 
-type Declined = ExtractionDeclinedDeclined | AnchoredTextAbsentKind | Literal["no-extractor", "empty"]
+type AbsentKind = Literal["not-yet", "no-map", "unknown"]
+"""The absences the Smelter answers with: `AnchoredTextAbsent.kind`, which the SDK writes in place.
+
+A test holds the two equal.
+"""
+
+type Declined = ExtractionDeclinedReason | AbsentKind | Literal["no-extractor", "empty"]
 """Why a detection has nothing to read.
 
 The Smelter's own reasons for a PDF it declined, the three absences it can

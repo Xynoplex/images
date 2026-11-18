@@ -126,16 +126,14 @@ def _lines(items: Sequence[PdfTextItem]) -> list[JsonValue]:
     does. A word keeps its own x and width.
     """
     lines: list[JsonValue] = []
-    shared: tuple[float, float, float] | None = None
+    shared: tuple[int, float, float] | None = None
     words: list[JsonValue] = []
     for item in items:
         place = (item.page, item.y, item.height)
         if place != shared:
             shared = place
             words = []
-            # A page is a whole number in an entry. One that is not is left as it is, for the entry's model to refuse.
-            page: JsonValue = int(item.page) if item.page.is_integer() else item.page
-            line: dict[str, JsonValue] = {"p": page, "y": item.y, "h": item.height, "words": words}
+            line: dict[str, JsonValue] = {"p": item.page, "y": item.y, "h": item.height, "words": words}
             lines.append(line)
         word: list[JsonValue] = [item.x, item.width, item.start, item.end]
         words.append(word)
