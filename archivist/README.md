@@ -11,8 +11,8 @@ service that serves HTTP on port 24103, and the launcher starts it with `xynolog
 | Port | 24103 |
 | Command | `/usr/local/bin/xynolog-archivist --config /etc/xynolog/archivist.json` |
 | Code | Rust, in this directory: [src](src), and its crates [record](record) and [staging](staging) |
-| Specification | [protocol/contract/ARCHIVIST.md](../protocol/contract/ARCHIVIST.md) |
-| Judged by | [protocol/conformance/archivist](../protocol/conformance/archivist/README.md) |
+| Specification | [protocol/contract/ARCHIVIST.md](https://github.com/xynolog/protocol/blob/main/contract/ARCHIVIST.md) |
+| Judged by | [protocol/conformance/archivist](https://github.com/xynolog/protocol/blob/main/conformance/archivist/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -61,7 +61,7 @@ with `POST /bus/subscribe` (SSE) and publishes with `POST /bus/emit`. Every comm
 (creating resources and annotations among them) and every `browse:*` read it answers passes
 through the gateway, whether the gateway's bus runs in-process or on NATS. The Archivist never
 connects to NATS. It publishes each persisted event the same way, as an ordinary event: once
-globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](../protocol/contract/EVENT-BUS.md).
+globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md).
 
 **HTTP, for bytes and a few reads of the record.**
 
@@ -80,7 +80,7 @@ globally, and once scoped to its resource when it names one. See [EVENT-BUS.md](
 | `GET /events` | every stream of the event log, `__system__` among them, each with the sequence number of its last event | a service that follows the record, when it starts and each time its stream opens again |
 | `GET /events/:resourceId?fromSequence=N` | one stream's events from a sequence number, at most `maxEvents` of them, and the sequence number of its last event; `__system__` is the knowledge base's own stream | the gateway, when a client resumes its subscription with a `lastEventId`; a service that follows the record, for what its stream did not deliver |
 
-The contract is [protocol/specs/src/archivist/openapi.json](../protocol/specs/src/archivist/openapi.json): every
+The contract is [protocol/specs/src/archivist/openapi.json](https://github.com/xynolog/protocol/blob/main/specs/src/archivist/openapi.json): every
 status each route answers and its body — a missing resource's bytes are a 404 whose `code` is
 `resource` or `representation` — and the headers. The Archivist's conformance suite checks every
 reply against it, and the gateway's holds its stand-in Archivist to it.
@@ -129,7 +129,7 @@ which is what makes that ordering enforceable.
 ## Configuration
 
 It reads one configuration document, an
-[`ArchivistConfig`](../protocol/specs/src/components/schemas/ArchivistConfig.json), from the path its
+[`ArchivistConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/ArchivistConfig.json), from the path its
 `--config` flag names; the image passes `/etc/xynolog/archivist.json`. The document names the
 gateway, the issuer, the knowledge base's root, the state volume, the anchored-text store, the
 engine for each job and each Librarian actor, the port, and the staging bounds. Mount the knowledge base, the state volume and
@@ -159,8 +159,8 @@ Its three crates, `xynolog-archivist`, `xynolog-archivist-record` and
 cargo test -p xynolog-archivist -p xynolog-archivist-record -p xynolog-archivist-staging
 ```
 
-runs their tests. The [conformance suite](../protocol/conformance/archivist/README.md) holds a
-built Archivist to [ARCHIVIST.md](../protocol/contract/ARCHIVIST.md).
+runs their tests. The [conformance suite](https://github.com/xynolog/protocol/blob/main/conformance/archivist/README.md) holds a
+built Archivist to [ARCHIVIST.md](https://github.com/xynolog/protocol/blob/main/contract/ARCHIVIST.md).
 
 ## Building it
 

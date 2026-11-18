@@ -175,4 +175,4 @@ The test mock reads `messages/en.json` which is generated. Run `npm test` (which
 
 - [i18next Documentation](https://www.i18next.com/)
 - [react-i18next Documentation](https://react.i18next.com/)
-- [@xynolog/react-ui documentation](../../../packages/typescript/react-ui/README.md)
+- [@xynolog/react-ui documentation](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/README.md)

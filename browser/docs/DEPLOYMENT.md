@@ -30,7 +30,7 @@ which the first start writes with `ghcr.io/xynolog/xynolog-browser:latest`, 1G a
 3000. Pin a version by writing it into the document's `spec.image`; `xynolog settings browser`
 shows the document, and `xynolog settings browser --path` prints where it is. See
 [Configuration](https://github.com/xynolog/docs/blob/main/operator/administration/CONFIGURATION.md#the-browser),
-[apps/launcher](../../../apps/launcher/README.md) and
+[apps/launcher](https://github.com/xynolog/cli/blob/main/README.md) and
 [administration/DEPLOYMENT.md](https://github.com/xynolog/docs/blob/main/operator/administration/DEPLOYMENT.md).
 
 ## Local development

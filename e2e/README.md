@@ -97,9 +97,7 @@ nothing installs them here, so the declared and installed versions diverge
 silently until someone runs `npm ci`; a hard-coded tag would make a third.
 
 **Nothing else catches this on a laptop.** `e2e` is not a root
-workspace, so its dependencies are installed only by a person deciding to, or
-by [Stack Smoke](#how-ci-runs-the-suite), which runs `npm ci` before every
-run. After a Dependabot bump, sync before running:
+workspace, so its dependencies are installed only by a person deciding to. After a Dependabot bump, sync before running:
 
 ```sh
 npm ci        # installs the lockfile EXACTLY; never rewrites it
@@ -198,9 +196,7 @@ nor `gemma3:1b` answered them correctly within their timeouts.
 
 ## Scope
 
-- **Not a gate on pull requests.** Stack Smoke runs the default tier nightly
-  (see [How CI runs the suite](#how-ci-runs-the-suite)); otherwise run it
-  against a stack you brought up.
+- **Not a gate on pull requests.** Run it against a stack you brought up.
 - **Seeded.** Playwright's global setup ([`scripts/seed.ts`](scripts/seed.ts))
   authenticates through `@xynolog/sdk` and uploads the fixtures the specs
   assume: text resources for the annotation specs, PDFs for the PDF specs.

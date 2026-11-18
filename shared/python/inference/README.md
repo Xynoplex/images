@@ -227,4 +227,4 @@ holds.
 
 [xynolog]: https://github.com/xynolog/images
 [models-dev]: https://models.dev
-[sdk-python]: ../sdk/
+[sdk-python]: https://github.com/xynolog/sdk/tree/main/python/sdk

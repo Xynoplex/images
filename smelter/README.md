@@ -16,8 +16,8 @@ on the bus, in the index and in the anchored-text store. The launcher starts it 
 | Port | 24101 (`/health`, and nothing else: everything it does is on the bus, in the index and in the anchored-text store) |
 | Command | `python -P -m xynolog_smelter --config /etc/xynolog/smelter.json` |
 | Code | Python, in this directory: [`src/xynolog_smelter`](src/xynolog_smelter) |
-| Specification | [protocol/contract/SMELTER.md](../../protocol/contract/SMELTER.md) |
-| Judged by | [protocol/conformance/smelter](../../protocol/conformance/smelter/README.md) |
+| Specification | [protocol/contract/SMELTER.md](https://github.com/xynolog/protocol/blob/main/contract/SMELTER.md) |
+| Judged by | [protocol/conformance/smelter](https://github.com/xynolog/protocol/blob/main/conformance/smelter/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -120,18 +120,18 @@ minute ends the start.
 ## Configuration
 
 It reads one document, the protocol's
-[`SmelterConfig`](../protocol/specs/src/components/schemas/SmelterConfig.json), at the path
+[`SmelterConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/SmelterConfig.json), at the path
 `--config` names. The launcher writes it for the Smelter it starts, resolved, and mounts it at
 `/etc/xynolog/smelter.json`. Whoever starts a Smelter another way writes the same document.
 
 | Member | |
 | --- | --- |
-| `kb` | the knowledge base it serves ([`KbIdentity`](../protocol/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
+| `kb` | the knowledge base it serves ([`KbIdentity`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/KbIdentity.json)): its name and its domain |
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | where the Archivist listens: the host and the port it reads bytes from, and keeps the anchored-text store at |
-| `embedding` | the embedding provider ([`EmbeddingConfig`](../protocol/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, where it is reached, and, for a provider that takes a key, the name of the variable that holds it |
-| `vectors` | the vector index ([`VectorsConfig`](../protocol/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is reached, and, for a Qdrant, the name of the variable that holds the token the Smelter presents to it |
+| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, where it is reached, and, for a provider that takes a key, the name of the variable that holds it |
+| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is reached, and, for a Qdrant, the name of the variable that holds the token the Smelter presents to it |
 | `chunking` | the two numbers a text is cut by: a chunk's size, and how much of it the next repeats |
 | `pdfsAtOnce` | how many PDFs it works on at once |
 | `cursorsPath` | the file its cursors are kept in, on the container's own disk |
@@ -156,7 +156,7 @@ at least one.
 the knowledge base it serves by its DID (`xynolog.kb`): what every service says of its own
 process, how many points its index holds (`xynolog.vector.index.size`), and a span for each
 frame it sends and receives on the bus
-([SMELTER.md § Telemetry](../../protocol/contract/SMELTER.md#telemetry)). The launcher sets the
+([SMELTER.md § Telemetry](https://github.com/xynolog/protocol/blob/main/contract/SMELTER.md#telemetry)). The launcher sets the
 endpoint for a stack it runs. Without it the Smelter exports nothing, unless
 `OTEL_CONSOLE_EXPORTER=true` asks for its spans and metrics on stdout. Its log lines carry the
 trace and the span they were written in.
@@ -172,16 +172,16 @@ that a token of global manage alone, so the Smelter's token reaches every knowle
 collections on the Qdrant it is asked of. The launcher mints it from the key it keeps for a
 Qdrant it runs, and for one somebody else runs is handed it in the variable the stack's
 `KnowledgeIndex` names (`spec.vectors.external.smelterToken`).
-[The token cases](../protocol/specs/src/vectors/token-cases.json) state what it says.
+[The token cases](https://github.com/xynolog/protocol/blob/main/specs/src/vectors/token-cases.json) state what it says.
 
 ## What the image carries
 
 The image, `ghcr.io/xynolog/xynolog-smelter`, carries the service and the three
 Python packages of this repository it runs on: the SDK
 ([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway; the vector
-stores and embedding providers ([`shared/python/vectors`](../../shared/python/vectors/)),
+stores and embedding providers ([`shared/python/vectors`](../shared/python/vectors/)),
 which ask a Qdrant and a provider over HTTP; and what every Python service is built on
-([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
+([`shared/python/service`](../shared/python/service/)), which reads its configuration,
 answers for its health, writes its log and exports its telemetry. All four are built into
 the image from the commit it is published from, and carry
 [`version.json`](../version.json)'s version. Everything else in its environment is what
@@ -206,18 +206,18 @@ The code is in [`src/xynolog_smelter`](src/xynolog_smelter).
 | --- | --- |
 | `service.py`, `config.py` | The process: what it is started with, what it refuses to start on, the order it starts in, how it stops |
 | `smelter.py` | The Smelter: how it takes a run of a resource's events, what each does to the index, the one place a resource is declined, the decision it signals, reconcile, the rebuild command |
-| `reconcile.py` | The work a start plans, as [`reconcile-cases.json`](../protocol/specs/src/smelter/reconcile-cases.json) states it |
+| `reconcile.py` | The work a start plans, as [`reconcile-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/smelter/reconcile-cases.json) states it |
 | `index_stamp.py` | What made the index, which the index states: an index made by another model, or cut another way, is made again when the Smelter starts |
 | `telemetry.py` | The number of points the index holds, as the gauge of it reads it |
 | `record.py` | What it reads of the record over the bus: the catalog and a resource's description |
-| `chunking.py` | How a text is cut, as [`chunk-cases.json`](../protocol/specs/src/text/chunk-cases.json) states it |
-| `extraction.py`, `anchoring.py`, `tables.py`, `ocr_text.py` | A PDF's text by its class, as [`extraction-cases.json`](../protocol/specs/src/smelter/extraction-cases.json) states it |
+| `chunking.py` | How a text is cut, as [`chunk-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/text/chunk-cases.json) states it |
+| `extraction.py`, `anchoring.py`, `tables.py`, `ocr_text.py` | A PDF's text by its class, as [`extraction-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/smelter/extraction-cases.json) states it |
 | `pdf_reader.py`, `pdfium.py`; `ocr_engine.py`, `tesseract.py`; `scripted.py` | What reads a PDF and what reads a scanned page, each behind a protocol whose second implementation answers what a test states |
-| `anchored_text_store.py`, `stamp.py` | The Archivist's anchored-text store as the Smelter keeps it, each entry as its [schema](../protocol/specs/src/components/schemas/AnchoredTextEntry.json) states it |
+| `anchored_text_store.py`, `stamp.py` | The Archivist's anchored-text store as the Smelter keeps it, each entry as its [schema](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/AnchoredTextEntry.json) states it |
 
 How it follows the record, what reads a resource's bytes and its annotations, the reader that
 asks the Archivist for them and for the record by position, and what white space is are every
-Python service's, in [`xynolog-service`](../../shared/python/service/README.md) (`follower`,
+Python service's, in [`xynolog-service`](../shared/python/service/README.md) (`follower`,
 `content`, `archivist`, `white_space`).
 
 ```sh
@@ -225,7 +225,7 @@ uv sync --locked
 uv run pytest        # needs the `tesseract` program, with its English data
 ```
 
-The tests read the PDFs in [`protocol/specs/src/smelter/fixtures`](../protocol/specs/src/smelter/fixtures),
+The tests read the PDFs in [`protocol/specs/src/smelter/fixtures`](https://github.com/xynolog/protocol/tree/main/specs/src/smelter/fixtures),
 which [`make-pdf-fixtures.py`](tools/fixtures/scripts/make-pdf-fixtures.py) writes.
 
 ## Building it
@@ -243,11 +243,11 @@ checks what a built one promises.
 
 ## Related
 
-- [SMELTER.md](../../protocol/contract/SMELTER.md) — what a Smelter does, rule by rule
-- [smelter conformance suite](../../protocol/conformance/smelter/README.md) — holds a Smelter to
+- [SMELTER.md](https://github.com/xynolog/protocol/blob/main/contract/SMELTER.md) — what a Smelter does, rule by rule
+- [smelter conformance suite](https://github.com/xynolog/protocol/blob/main/conformance/smelter/README.md) — holds a Smelter to
   each rule, as a process behind a real gateway, a real Archivist and a real Qdrant, with an
   embedding provider the suite plays
-- [`xynolog-vectors`](../../shared/python/vectors/) — the vector stores and the embedding
+- [`xynolog-vectors`](../shared/python/vectors/) — the vector stores and the embedding
   providers, and what the index holds
 - [gateway](../gateway) — the bus it rides
 - [Archivist](../archivist) — serves the bytes, keeps the anchored-text store the Smelter

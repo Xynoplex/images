@@ -598,7 +598,6 @@ src/contexts/__tests__/AuthShell.integration.test.tsx
 ### Development Guides
 - [Development Guide](DEVELOPMENT.md) - Local development workflows
 - [Browser Architecture](ARCHITECTURE.md) - High-level system design
-- [Contributing Guide](../../../CONTRIBUTING.md) - Contribution guidelines
 
 ### External Resources
 - [Vitest Documentation](https://vitest.dev/)

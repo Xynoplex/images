@@ -224,7 +224,7 @@ uv run pytest tests/qdrant_live.py   # against a real Qdrant
 The second run is told where a Qdrant is by `QDRANT_HOST`, and the API key
 it was started with by `QDRANT_API_KEY`. It is a Qdrant started as the
 launcher starts one: the image
-[`qdrant-image.sh`](../../go/launcher/scripts/qdrant-image.sh) prints, with
+[`qdrant-image.sh`](https://github.com/xynolog/cli/blob/main/internal/launcher/scripts/qdrant-image.sh) prints, with
 `QDRANT__SERVICE__API_KEY` set to the key and `QDRANT__SERVICE__JWT_RBAC`
 to `true`. The run mints each service's token from the key, as the launcher
 does, and holds what the Qdrant allows each and refuses it. It deletes every
@@ -233,8 +233,8 @@ without either variable.
 
 [xynolog]: https://github.com/xynolog/images
 [sdk-python]: https://github.com/xynolog/sdk/tree/main/python
-[payload-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/payload-cases.json
-[store-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/store-cases.json
-[token-cases]: https://github.com/xynolog/images/blob/main/protocol/specs/src/vectors/token-cases.json
-[vectors-config]: https://github.com/xynolog/images/blob/main/protocol/specs/src/components/schemas/VectorsConfig.json
-[embedding-config]: https://github.com/xynolog/images/blob/main/protocol/specs/src/components/schemas/EmbeddingConfig.json
+[payload-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/payload-cases.json
+[store-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/store-cases.json
+[token-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/token-cases.json
+[vectors-config]: https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json
+[embedding-config]: https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json

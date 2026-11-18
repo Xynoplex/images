@@ -195,10 +195,10 @@ SSE connection to `/bus/subscribe` + HTTP POST to `/bus/emit`:
 - **Request-response queries** — `Bus.request` generates a correlationId, subscribes to the result channel, and emits the request. The client filters incoming events by correlationId.
 - **Fire-and-forget commands** — `actor.emit(channel, payload)` POSTs to `/bus/emit`; results arrive as separate events.
 - **Live domain events** — `mark:added`, `mark:body-updated`, etc. flow on resource-scoped channels. Subscribing to a resource's `browse.*(id)` live queries adds those channels to the bus actor's subscription — freshness follows observation, with the SDK driving the transport's internal `subscribeToResource` — and drops them when the last subscriber unsubscribes.
-- **Resumption** — when the stream reopens after a drop, the gateway replays each resource scope's persisted events from the last one the client received, or emits `bus:resume-gap` when it cannot; `BrowseNamespace` refetches only what replay does not cover. See [`protocol/contract/CACHE-SEMANTICS.md`](../../../protocol/contract/CACHE-SEMANTICS.md) (B13).
+- **Resumption** — when the stream reopens after a drop, the gateway replays each resource scope's persisted events from the last one the client received, or emits `bus:resume-gap` when it cannot; `BrowseNamespace` refetches only what replay does not cover. See [`protocol/contract/CACHE-SEMANTICS.md`](https://github.com/xynolog/protocol/blob/main/contract/CACHE-SEMANTICS.md) (B13).
 
-See [`protocol/contract/EVENT-BUS.md`](../../../protocol/contract/EVENT-BUS.md) and
-[`protocol/contract/CHANNELS.md`](../../../protocol/contract/CHANNELS.md) for
+See [`protocol/contract/EVENT-BUS.md`](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md) and
+[`protocol/contract/CHANNELS.md`](https://github.com/xynolog/protocol/blob/main/contract/CHANNELS.md) for
 the bus protocol; see
 [docs' `builder/Usage.md`](https://github.com/xynolog/docs/blob/main/builder/Usage.md)
 for the client side.
@@ -308,10 +308,10 @@ answers `job:created` with its `jobId`. The worker then reports on
 client; the SDK keeps the frames that carry its job's `jobId` and delivers
 them as the verb's delegation: the job's events, then its completion.
 
-[`protocol/contract/EVENT-BUS.md`](../../../protocol/contract/EVENT-BUS.md) and
-[`protocol/contract/TRANSPORT-HTTP.md`](../../../protocol/contract/TRANSPORT-HTTP.md)
+[`protocol/contract/EVENT-BUS.md`](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md) and
+[`protocol/contract/TRANSPORT-HTTP.md`](https://github.com/xynolog/protocol/blob/main/contract/TRANSPORT-HTTP.md)
 specify the emit and the correlated reply;
-[`protocol/contract/JOBS.md`](../../../protocol/contract/JOBS.md) specifies jobs.
+[`protocol/contract/JOBS.md`](https://github.com/xynolog/protocol/blob/main/contract/JOBS.md) specifies jobs.
 
 ## Error Handling
 
@@ -362,14 +362,14 @@ like `browse:resources-failed`), raised from the promise returned by
 ### React UI library
 
 - [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) — provider reference
-- [`@xynolog/react-ui/docs/ARCHITECTURE.md`](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
+- [`@xynolog/react-ui/docs/ARCHITECTURE.md`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/ARCHITECTURE.md) — architectural overview
 - [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) — annotation UI components
 
 ### API client
 
-- [`@xynolog/http-transport/README.md`](../../../packages/typescript/http-transport/README.md) — API overview
+- [`@xynolog/http-transport/README.md`](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/README.md) — API overview
 - [docs' `builder/Usage.md`](https://github.com/xynolog/docs/blob/main/builder/Usage.md) — setup, bus subscription, namespace reference
-- [`@xynolog/http-transport/docs/API-Reference.md`](../../../packages/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
+- [`@xynolog/http-transport/docs/API-Reference.md`](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/docs/API-Reference.md) — HTTP transport reference (`HttpTransport`, `TokenRefresher`, `APIError`)
 
 ### Gateway
 
@@ -377,8 +377,8 @@ like `browse:resources-failed`), raised from the promise returned by
 
 ### Protocol
 
-- [`protocol/contract/EVENT-BUS.md`](../../../protocol/contract/EVENT-BUS.md) — bus protocol semantics
-- [`protocol/contract/CHANNELS.md`](../../../protocol/contract/CHANNELS.md) — channel inventory
+- [`protocol/contract/EVENT-BUS.md`](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md) — bus protocol semantics
+- [`protocol/contract/CHANNELS.md`](https://github.com/xynolog/protocol/blob/main/contract/CHANNELS.md) — channel inventory
 
 ### External
 

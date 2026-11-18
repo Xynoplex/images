@@ -3,7 +3,7 @@
 **Where a worker asks what to do and reports back.** The dispatcher owns a knowledge base's job
 queue: a [worker](../worker) claims each job here and reports its progress and outcome here. It
 is a Rust service. It serves `/health` on port 24105 and nothing else; all its real traffic is
-the gateway's [bus](../protocol/contract/EVENT-BUS.md). The launcher (`xynolog start`) starts it.
+the gateway's [bus](https://github.com/xynolog/protocol/blob/main/contract/EVENT-BUS.md). The launcher (`xynolog start`) starts it.
 
 | | |
 | --- | --- |
@@ -11,8 +11,8 @@ the gateway's [bus](../protocol/contract/EVENT-BUS.md). The launcher (`xynolog s
 | Port | 24105 (`/health`, and nothing else: everything it answers is on the bus) |
 | Command | `/usr/local/bin/xynolog-dispatcher --config /etc/xynolog/dispatcher.json` |
 | Code | Rust, in this directory: [src](src), and its crates [handlers](handlers) and [jetstream](jetstream) |
-| Specification | [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) |
-| Judged by | [protocol/conformance/dispatcher](../protocol/conformance/dispatcher/README.md) |
+| Specification | [protocol/contract/JOBS.md](https://github.com/xynolog/protocol/blob/main/contract/JOBS.md) |
+| Judged by | [protocol/conformance/dispatcher](https://github.com/xynolog/protocol/blob/main/conformance/dispatcher/README.md) |
 | Published | to no package index: the image only |
 
 ## What it does
@@ -51,7 +51,7 @@ Three things, and nothing else:
   resource's stream), and for `job:queued`, the queue's own broadcast that wakes parked
   workers.
 - **The messaging broker (NATS JetStream), directly**, for the queue itself. Job state lives
-  in JetStream, in the layout [protocol/specs/src/jobs/storage.json](../protocol/specs/src/jobs/storage.json)
+  in JetStream, in the layout [protocol/specs/src/jobs/storage.json](https://github.com/xynolog/protocol/blob/main/specs/src/jobs/storage.json)
   states, so the dispatcher holds no state tree and mounts nothing.
 - **The Archivist, over the bus**, for the two validations `job:create` makes: the knowledge
   base's registered entity types (`browse:entity-types-requested`) and tag schemas
@@ -95,7 +95,7 @@ concurrent workers never share a job.
 
 ## Configuration
 
-One document, `DispatcherConfig` in [protocol/specs/](../protocol/specs/src/components/schemas/DispatcherConfig.json),
+One document, `DispatcherConfig` in [protocol/specs/](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/DispatcherConfig.json),
 at the path `--config` names. The launcher writes it, resolved, and mounts it where the image's
 `CMD` passes it: `/etc/xynolog/dispatcher.json`. Started without `--config`, or with a path that
 names no file, the dispatcher refuses to start and says which; a document that does not validate
@@ -103,7 +103,7 @@ is refused naming each failing field. **Secrets are never values in it:** a fiel
 names the environment variable holding it.
 
 Every other variable it reads, what sets it and what it changes, is in
-[`protocol/specs/src/service-environment/variables.json`](../protocol/specs/src/service-environment/variables.json).
+[`protocol/specs/src/service-environment/variables.json`](https://github.com/xynolog/protocol/blob/main/specs/src/service-environment/variables.json).
 Among them:
 
 - **`XYNOLOG_OIDC_CLIENT_ID`** / **`XYNOLOG_OIDC_CLIENT_SECRET`** — this process's own service
@@ -121,7 +121,7 @@ installs or fetches nothing at start.
 ## Working on it
 
 The judge of all three crates is the black-box suite in
-[`protocol/conformance/dispatcher`](../protocol/conformance/dispatcher), which drives the binary as
+[`protocol/conformance/dispatcher`](https://github.com/xynolog/protocol/tree/main/conformance/dispatcher), which drives the binary as
 a process on the wire.
 
 The suite reaches the dispatcher through a gateway, which refuses a payload that is not its
@@ -150,8 +150,8 @@ that names the document it cannot read.
 
 ## Related
 
-- [protocol/contract/JOBS.md](../protocol/contract/JOBS.md) — what it does, channel by channel
-- [protocol/contract/WORKER-CONTRACT.md](../protocol/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
+- [protocol/contract/JOBS.md](https://github.com/xynolog/protocol/blob/main/contract/JOBS.md) — what it does, channel by channel
+- [protocol/contract/WORKER-CONTRACT.md](https://github.com/xynolog/protocol/blob/main/contract/WORKER-CONTRACT.md) — the worker's side, which every SDK has
 - [xynolog-worker](../worker) — the executor, and a client of this service
 - [xynolog-archivist](../archivist) — keeps the record: the bytes a worker reads through the gateway, and the annotations it commits
 - [Container Topology](https://github.com/xynolog/docs/blob/main/operator/CONTAINER-TOPOLOGY.md) — where it sits in the fleet

@@ -1,11 +1,11 @@
 # Gateway Testing
 
 The gateway's behavioural contract is one suite, and it lives outside this
-crate: [`protocol/conformance/gateway`](../../../protocol/conformance/gateway/README.md).
+crate: [`protocol/conformance/gateway`](https://github.com/xynolog/protocol/blob/main/conformance/gateway/README.md).
 It is black-box. It starts gateway processes, talks to them over HTTP and SSE,
 and checks what they answer against the protocol as `protocol/specs/` states it — the
 OpenAPI document and the bus registry — and as
-[TRANSPORT-HTTP.md](../../../protocol/contract/TRANSPORT-HTTP.md) states the
+[TRANSPORT-HTTP.md](https://github.com/xynolog/protocol/blob/main/contract/TRANSPORT-HTTP.md) states the
 semantics a schema cannot hold. It imports nothing from the gateway, so it
 checks any implementation that answers to the same spec.
 
@@ -18,7 +18,7 @@ on the plane.
 | Where | Checks |
 |---|---|
 | `npm run lint:spec-protocol` (repository root) | The spec states the whole protocol: every operation says whether it is public; every response has a body schema, every error body is an `ErrorResponse`, every 401 a challenge; the stream's messages, frame and id formats are schemas; every JSON body has a `maxBodyBytes` and a 413; the limits are positive integers; the gateway's waits for the Archivist end inside a client's deadline |
-| `npm run lint:spec-identifiers` (repository root) | The spec names its ids: every property named for an id refers to its kind's schema, and every string [`protocol/specs/src/identifiers/kinds.json`](../../protocol/specs/src/identifiers/kinds.json) says a kind accepts or refuses agrees with that kind's pattern |
+| `npm run lint:spec-identifiers` (repository root) | The spec names its ids: every property named for an id refers to its kind's schema, and every string [`protocol/specs/src/identifiers/kinds.json`](https://github.com/xynolog/protocol/blob/main/specs/src/identifiers/kinds.json) says a kind accepts or refuses agrees with that kind's pattern |
 | The build (`xynolog-core`'s `build.rs`) | The spec bundles and every component schema compiles, or the gateway does not build; the bus registry names only schemas the spec declares; the service-only types (`xynolog-core`) and the protocol's (`xynolog`) are generated from the schemas, and a schema of a shape the generator does not know fails the build |
 | `protocol/conformance/gateway` | A running gateway conforms: spec-derived probes of every operation, every response and stream message validated against the spec, and hand-written cases for credentials, content, emitting, the stream, the connection bounds, the limits on one principal (a person and an agent alike) and on one process, replicas, readiness, boot refusals, the headers on every response, the environment, and the telemetry census |
 | The gateway's boot | Its route table is exactly the spec's operations — no undeclared route, no declared operation unserved ([src/routes/mod.rs](../src/routes/mod.rs)) — and every Archivist operation it calls is in the Archivist's spec; every suite run boots gateways, so a route added without a spec entry fails CI |
@@ -26,7 +26,7 @@ on the plane.
 | The crates' dependency boundaries ([check-dependency-boundaries.sh](../../packages/rust/scripts/check-dependency-boundaries.sh); `make test-rust`) | No NATS client in `xynolog-core` (but through its `nats` feature), `xynolog-http-service`, `xynolog-observability` or `xynolog-dispatcher-handlers`; no HTTP, git or NATS crate in `xynolog-archivist-record` |
 | `cargo fmt` and `cargo clippy` (`make test-rust`) | The workspace is formatted, and clippy finds nothing in any crate, target or feature |
 | `npm run lint:broker-boundary` | The broker is reached only through its interface: `async_nats` only in `signal/nats.rs`, the dispatcher's JetStream queue and `xynolog-core`'s broker helpers; that plane chosen only in `app.rs`; no NATS client in any TypeScript |
-| `npm run lint:service-environment`, `lint:service-role` | The environment it reads is exactly [variables.json](../../protocol/specs/src/service-environment/variables.json)'s; its role names are the launcher's and core's |
+| `npm run lint:service-environment`, `lint:service-role` | The environment it reads is exactly [variables.json](https://github.com/xynolog/protocol/blob/main/specs/src/service-environment/variables.json)'s; its role names are the launcher's and core's |
 | `scripts/check-image-crates.mjs` | Every crate it links is under a permitted licence, and credited in the image's NOTICE; every crate that compiles native code in says what, and a library under a licence of its own is credited too |
 | `cargo deny` ([deny.toml](../../packages/rust/deny.toml); CI's crates job, on every run) | Every crate comes from crates.io, named by a version, not a wildcard |
 | `build-tools/advisories.py` ([advisories.toml](../../advisories.toml); CI's advisories job, on every run) | No crate the workspace locks has a published advisory, except those ignored with a reason, and an ignore that stops matching fails |
@@ -45,7 +45,7 @@ whole workspace, as CI does. It runs in the toolchain's image, on a copy of the 
 the SDK's crates from the SDK artifact bundle (`SDK_REPO` or `SDK_ARTIFACTS`; `make help`).
 
 The conformance suite is protocol's: it runs against a built gateway, named in an implementation
-manifest, as [its README](../../protocol/conformance/gateway/README.md#running-it) says. The suite
+manifest, as [its README](https://github.com/xynolog/protocol/blob/main/conformance/gateway/README.md#running-it) says. The suite
 needs `nats-server` 2.10 or later on `PATH`.
 
 ## Load

@@ -10,7 +10,7 @@ what is particular to this app.
 ## Run it from source against a stack
 
 The Browser is a client, so it needs a knowledge base to talk to. Start one with the
-[`xynolog` launcher](../../../apps/launcher/README.md), from a knowledge base's directory, and then
+[`xynolog` launcher](https://github.com/xynolog/cli/blob/main/README.md), from a knowledge base's directory, and then
 serve the app from source in place of the stack's own Browser.
 
 ```bash
@@ -162,4 +162,4 @@ react-ui's [Styles](https://github.com/xynolog/docs/blob/main/builder/react-ui/S
 - [Testing](TESTING.md): how the tests are written and run
 - [Container](CONTAINER.md): the image
 - [Local Development](https://github.com/xynolog/docs/blob/main/contributor/LOCAL-DEVELOPMENT.md): the loop across images, cli and a knowledge base
-- [The launcher](../../../apps/launcher/README.md): every verb and flag
+- [The launcher](https://github.com/xynolog/cli/blob/main/README.md): every verb and flag

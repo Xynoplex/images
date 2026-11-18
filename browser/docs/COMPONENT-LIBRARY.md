@@ -307,8 +307,8 @@ npm run build:packages -- @xynolog/http-transport
 
 ## Related Documentation
 
-- [`@xynolog/react-ui` README](../../../packages/typescript/react-ui/README.md)
+- [`@xynolog/react-ui` README](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/README.md)
 - [`@xynolog/react-ui` providers](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md)
-- [`@xynolog/react-ui` architecture](../../../packages/typescript/react-ui/docs/ARCHITECTURE.md)
+- [`@xynolog/react-ui` architecture](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/ARCHITECTURE.md)
 - [API Integration](API-INTEGRATION.md)
 - [Browser Architecture](ARCHITECTURE.md)

@@ -239,7 +239,7 @@ ResourceViewerPage
 
 Callers of `ResourceViewerPage` do not manage media tokens; the component handles it internally. The `useMediaToken` hook is available from `@xynolog/react-ui` for any component that needs a token-authenticated URL independently.
 
-See [`@xynolog/http-transport/docs/MEDIA-TOKENS.md`](../../../packages/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
+See [`@xynolog/http-transport/docs/MEDIA-TOKENS.md`](https://github.com/xynolog/sdk/blob/main/typescript/http-transport/docs/MEDIA-TOKENS.md) for the full specification including the JWT format and `POST /api/tokens/media` endpoint.
 
 ### UI State (React Context)
 
@@ -291,7 +291,7 @@ xynolog.frame.addEntityType('Person');       // Promise<void>
 
 There are no query keys to manage. Each live `browse.*` query is backed by an internal `Cache` primitive keyed by its resource id. Caches refresh themselves in response to gateway **domain events** delivered over the bus gateway — call sites never invalidate anything by hand. `mark:added`, for example, refetches the resource's annotation list and history, and `frame:entity-type-added` refetches the entity types.
 
-The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynolog/core` at build); [CACHE-SEMANTICS.md](../../../protocol/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
+The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynolog/core` at build); [CACHE-SEMANTICS.md](https://github.com/xynolog/protocol/blob/main/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
 
 ### Error Handling
 
@@ -507,7 +507,7 @@ packages/typescript/react-ui/src/      # Reusable React components library
 
 **Note**: `AuthErrorDisplay` is framework-agnostic and lives in `packages/typescript/react-ui/src/features/auth/`. Signing in is not a component: the Browser sends the user to the knowledge base's issuer and completes the exchange on its callback route. The Browser provides React Router-specific wrappers that handle routing, translations, and auth state.
 
-See [`@xynolog/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) for documentation on the reusable component library.
+See [`@xynolog/react-ui/docs/`](https://github.com/xynolog/sdk/tree/main/typescript/react-ui/docs) for documentation on the reusable component library.
 
 ## Key Design Patterns
 
@@ -677,13 +677,13 @@ Panels keep their entries' DOM nodes through React ref callbacks, not through an
 ### React UI Library
 - [docs' `builder/react-ui/SESSION.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/SESSION.md) - Provider Pattern architecture
 - [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) - Annotation system documentation
-- [`@xynolog/react-ui/docs/`](../../../packages/typescript/react-ui/docs/) - Complete library documentation
+- [`@xynolog/react-ui/docs/`](https://github.com/xynolog/sdk/tree/main/typescript/react-ui/docs) - Complete library documentation
 
 ### Browser Documentation
 - [AUTHENTICATION.md](AUTHENTICATION.md) - Authentication and authorization
 - [AUTHORIZATION.md](AUTHORIZATION.md) - Permission model
-- [RENDERING-ARCHITECTURE.md](../../../packages/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Rendering pipeline and component hierarchy
-- [CODEMIRROR-INTEGRATION.md](../../../packages/typescript/react-ui/docs/CODEMIRROR-INTEGRATION.md) - AnnotateView rendering with CodeMirror
+- [RENDERING-ARCHITECTURE.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Rendering pipeline and component hierarchy
+- [CODEMIRROR-INTEGRATION.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/CODEMIRROR-INTEGRATION.md) - AnnotateView rendering with CodeMirror
 - [ANNOTATIONS.md](ANNOTATIONS.md) - Annotation UI/UX and workflows
-- [ANNOTATION-RENDERING-PRINCIPLES.md](../../../packages/typescript/react-ui/docs/ANNOTATION-RENDERING-PRINCIPLES.md) - Rendering axioms and correctness properties
+- [ANNOTATION-RENDERING-PRINCIPLES.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/ANNOTATION-RENDERING-PRINCIPLES.md) - Rendering axioms and correctness properties
 - [KEYBOARD-NAV.md](KEYBOARD-NAV.md) - Keyboard navigation implementation

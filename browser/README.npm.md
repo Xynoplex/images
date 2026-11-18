@@ -38,5 +38,5 @@ only environment variable it needs is `PORT`.
 ## Links
 
 - [Xynolog GitHub](https://github.com/xynolog/images)
-- [Xynolog launcher](https://github.com/xynolog/images/tree/main/apps/launcher)
+- [Xynolog launcher](https://github.com/xynolog/cli)
 - [Documentation](https://github.com/xynolog/images#readme)

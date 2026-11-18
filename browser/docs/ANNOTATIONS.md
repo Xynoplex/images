@@ -4,7 +4,7 @@
 
 The Xynolog annotation system enables users to mark up documents with highlights, comments, assessments, tags, and references, creating a rich knowledge graph. Built on the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/), annotations are standards-compliant objects with motivations following the W3C specification.
 
-This document describes the Browser UI patterns, component architecture, user workflows, and the annotation registry system. For the complete W3C implementation across all gateway components (API, Event Store, and Graph Database), see [W3C-WEB-ANNOTATION.md](../../../protocol/contract/W3C-WEB-ANNOTATION.md).
+This document describes the Browser UI patterns, component architecture, user workflows, and the annotation registry system. For the complete W3C implementation across all gateway components (API, Event Store, and Graph Database), see [W3C-WEB-ANNOTATION.md](https://github.com/xynolog/protocol/blob/main/contract/W3C-WEB-ANNOTATION.md).
 
 ## Supported Annotation Types
 
@@ -69,7 +69,7 @@ ResourceViewerPage (page shell; composes the resource-viewer page state unit)
 5. **Submit** → The panel calls `session.client.mark.submit(...)`; the mark state unit calls `client.mark.annotation(...)`, which resolves once the gateway confirms, and clears the pending annotation
 6. **Refresh** → The gateway persists the annotation to the Event Store (with materialized views) and Graph Database; the resulting `mark:added` refreshes the SDK's `browse.annotations` live query, the views re-render, and the created annotation sparkles
 
-For complete architecture details on how annotations flow through the gateway data storage components, see [W3C-WEB-ANNOTATION.md](../../../protocol/contract/W3C-WEB-ANNOTATION.md).
+For complete architecture details on how annotations flow through the gateway data storage components, see [W3C-WEB-ANNOTATION.md](https://github.com/xynolog/protocol/blob/main/contract/W3C-WEB-ANNOTATION.md).
 
 ## Annotation Registry
 
@@ -77,7 +77,7 @@ For complete architecture details on how annotations flow through the gateway da
 
 The Annotation Registry is provided by `@xynolog/react-ui` and is a centralized system that provides a **single source of truth** for all annotation type metadata. This eliminates hard-coded lists scattered across the codebase.
 
-**Implementation**: [`@xynolog/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts)
+**Implementation**: [`@xynolog/react-ui/src/lib/annotation-registry.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/lib/annotation-registry.ts)
 
 ### Design Philosophy
 
@@ -169,7 +169,7 @@ announceAnnotationCreated(annotation); // 'Highlight created', 'Comment created'
 The registry holds every per-motivation fact, but supporting another motivation takes more than a registry entry. It touches:
 
 - `protocol/specs/src/components/schemas/Motivation.json` — the `Motivation` enum must admit it (then regenerate the types in `@xynolog/core`), and a type guard in `@xynolog/core` recognizes it
-- [`@xynolog/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) — its annotator
+- [`@xynolog/react-ui/src/lib/annotation-registry.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/lib/annotation-registry.ts) — its annotator
 - `packages/typescript/react-ui/src/types/annotation-props.ts` and `packages/typescript/react-ui/src/lib/annotation-groups.ts` — `AnnotationsCollection` and the grouping that fills it have one bucket per motivation
 - `packages/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx` — its tab, and a panel for it
 - `packages/typescript/react-ui/src/styles/motivations/` — the stylesheet for its `annotation-<type>` class
@@ -178,13 +178,13 @@ The registry holds every per-motivation fact, but supporting another motivation 
 
 The registry is imported and used in `@xynolog/react-ui`:
 
-- [`@xynolog/react-ui/src/lib/annotation-overlay.ts`](../../../packages/typescript/react-ui/src/lib/annotation-overlay.ts) - Annotation overlay (BrowseView)
-- [`@xynolog/react-ui/src/lib/codemirror-logic.ts`](../../../packages/typescript/react-ui/src/lib/codemirror-logic.ts) - CodeMirror decoration classes
-- [`@xynolog/react-ui/src/components/resource/BrowseView.tsx`](../../../packages/typescript/react-ui/src/components/resource/BrowseView.tsx) - Browse mode rendering
-- [`@xynolog/react-ui/src/components/resource/AnnotateView.tsx`](../../../packages/typescript/react-ui/src/components/resource/AnnotateView.tsx) - Annotate mode rendering
-- [`@xynolog/react-ui/src/components/resource/ResourceViewer.tsx`](../../../packages/typescript/react-ui/src/components/resource/ResourceViewer.tsx) - Click handlers
-- [`@xynolog/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx`](../../../packages/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx) - Grouping and tabs
-- [`@xynolog/react-ui/src/state/shell-state-unit.ts`](../../../packages/typescript/react-ui/src/state/shell-state-unit.ts) - Motivation → panel tab
+- [`@xynolog/react-ui/src/lib/annotation-overlay.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/lib/annotation-overlay.ts) - Annotation overlay (BrowseView)
+- [`@xynolog/react-ui/src/lib/codemirror-logic.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/lib/codemirror-logic.ts) - CodeMirror decoration classes
+- [`@xynolog/react-ui/src/components/resource/BrowseView.tsx`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/components/resource/BrowseView.tsx) - Browse mode rendering
+- [`@xynolog/react-ui/src/components/resource/AnnotateView.tsx`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/components/resource/AnnotateView.tsx) - Annotate mode rendering
+- [`@xynolog/react-ui/src/components/resource/ResourceViewer.tsx`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/components/resource/ResourceViewer.tsx) - Click handlers
+- [`@xynolog/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/components/resource/panels/UnifiedAnnotationsPanel.tsx) - Grouping and tabs
+- [`@xynolog/react-ui/src/state/shell-state-unit.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/state/shell-state-unit.ts) - Motivation → panel tab
 
 ### Benefits
 
@@ -360,17 +360,17 @@ The modular architecture ensures maintainability and extensibility, while the pr
 
 ### React UI Library
 - [docs' `builder/react-ui/ANNOTATIONS.md`](https://github.com/xynolog/docs/blob/main/builder/react-ui/ANNOTATIONS.md) - Complete annotation system documentation with Provider Pattern architecture
-- [`@xynolog/react-ui/docs/ANNOTATION-CLICK.md`](../../../packages/typescript/react-ui/docs/ANNOTATION-CLICK.md) - Click and hover coordination
-- [`@xynolog/react-ui/src/lib/annotation-registry.ts`](../../../packages/typescript/react-ui/src/lib/annotation-registry.ts) - Source code for the Annotation Registry
+- [`@xynolog/react-ui/docs/ANNOTATION-CLICK.md`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/ANNOTATION-CLICK.md) - Click and hover coordination
+- [`@xynolog/react-ui/src/lib/annotation-registry.ts`](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/src/lib/annotation-registry.ts) - Source code for the Annotation Registry
 
 ### W3C Web Annotation Implementation
-- [W3C-WEB-ANNOTATION.md](../../../protocol/contract/W3C-WEB-ANNOTATION.md) - Complete W3C implementation across all components (UI, API, Event Store, Graph)
+- [W3C-WEB-ANNOTATION.md](https://github.com/xynolog/protocol/blob/main/contract/W3C-WEB-ANNOTATION.md) - Complete W3C implementation across all components (UI, API, Event Store, Graph)
 
 ### Browser Documentation
-- [CODEMIRROR-INTEGRATION.md](../../../packages/typescript/react-ui/docs/CODEMIRROR-INTEGRATION.md) - Document rendering and editor implementation
-- [ANNOTATION-RENDERING-PRINCIPLES.md](../../../packages/typescript/react-ui/docs/ANNOTATION-RENDERING-PRINCIPLES.md) - Rendering axioms and correctness properties
-- [RENDERING-ARCHITECTURE.md](../../../packages/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Document rendering pipeline
+- [CODEMIRROR-INTEGRATION.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/CODEMIRROR-INTEGRATION.md) - Document rendering and editor implementation
+- [ANNOTATION-RENDERING-PRINCIPLES.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/ANNOTATION-RENDERING-PRINCIPLES.md) - Rendering axioms and correctness properties
+- [RENDERING-ARCHITECTURE.md](https://github.com/xynolog/sdk/blob/main/typescript/react-ui/docs/RENDERING-ARCHITECTURE.md) - Document rendering pipeline
 
 ### System Documentation
 - [Architecture](https://github.com/xynolog/docs/blob/main/architecture/README.md) - Overall system architecture
-- [Graph Package](../../../shared/python/graph/) - Graph database implementations (Neo4j, Neptune, JanusGraph)
+- [Graph Package](../../shared/python/graph/) - Graph database implementations (Neo4j, Neptune, JanusGraph)

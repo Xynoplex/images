@@ -5,7 +5,7 @@
 **The worker claims queued jobs and runs them against a model**: the detection passes, the
 generation and the other long-running work that a request cannot wait on. It is a Python
 service, answers for its health on port 24100, and is started by the
-[launcher](../../apps/launcher/README.md) (`xynolog start`) as a shared service: one worker
+[launcher](https://github.com/xynolog/cli/blob/main/README.md) (`xynolog start`) as a shared service: one worker
 serves every knowledge base on its list at once, each apart from the others.
 
 | | |
@@ -14,13 +14,13 @@ serves every knowledge base on its list at once, each apart from the others.
 | Port | 24100 (`/health`, and nothing else) |
 | Command | `python -P -m xynolog_worker --config /etc/xynolog/worker.json` |
 | Code | Python, in this directory: [`src/xynolog_worker`](src/xynolog_worker) |
-| Specification | [protocol/contract/WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) |
-| Judged by | [protocol/conformance/worker-service](../../protocol/conformance/worker-service/README.md) |
+| Specification | [protocol/contract/WORKER-SERVICE.md](https://github.com/xynolog/protocol/blob/main/contract/WORKER-SERVICE.md) |
+| Judged by | [protocol/conformance/worker-service](https://github.com/xynolog/protocol/blob/main/conformance/worker-service/README.md) |
 | Published | to no package index: the image only |
 
 What the worker does is written rule by rule in
-[WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md), and the
-[worker-service conformance suite](../../protocol/conformance/worker-service/README.md) holds an
+[WORKER-SERVICE.md](https://github.com/xynolog/protocol/blob/main/contract/WORKER-SERVICE.md), and the
+[worker-service conformance suite](https://github.com/xynolog/protocol/blob/main/conformance/worker-service/README.md) holds an
 implementation to each rule. This page is the image, and how it is run.
 
 ## What it does
@@ -100,7 +100,7 @@ said each refusal already.
 Each call to the model is given **ten minutes**, and while one is under way the job reports
 where it stands every fifteen seconds. A held job that stalls starts its knowledge base again,
 loudly; and a running job nothing has touched for long enough is recovered by the dispatcher's
-sweep ([JOBS.md](../../protocol/contract/JOBS.md#periodic-work)).
+sweep ([JOBS.md](https://github.com/xynolog/protocol/blob/main/contract/JOBS.md#periodic-work)).
 
 A text is asked about in pieces sized from the model's limits. A piece whose answer cannot
 be used for its size is **asked again in halves** before it is allowed to fail the job.
@@ -116,7 +116,7 @@ When a job does fail, the service classes the failure:
 ## What it reports
 
 With `OTEL_EXPORTER_OTLP_ENDPOINT` set it exports, as `xynolog-worker`, the rows
-[`protocol/specs/src/service-telemetry/telemetry.json`](../protocol/specs/src/service-telemetry/telemetry.json)
+[`protocol/specs/src/service-telemetry/telemetry.json`](https://github.com/xynolog/protocol/blob/main/specs/src/service-telemetry/telemetry.json)
 lists for the worker: a span and an outcome for every job, every generation, and every
 detection call with its items, tokens and anchoring outcomes (the `xynolog.detection.*`
 metrics), so a run's cost, yield and precision can be queried. Its own spans and metrics
@@ -128,7 +128,7 @@ inventory and where the metrics flow.
 ## Configuration
 
 A JSON document, named by `--config` (the image passes `/etc/xynolog/worker.json`), whose
-schema is [`WorkerConfig`](../protocol/specs/src/components/schemas/WorkerConfig.json). The worker
+schema is [`WorkerConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerConfig.json). The worker
 defaults nothing in it.
 
 | Member | |
@@ -161,7 +161,7 @@ anything: one line on stderr that begins `[fatal] ` and says which, and exit sta
 services.
 
 `GET /health` answers once a knowledge base is confirmed, with a
-[`WorkerHealth`](../protocol/specs/src/components/schemas/WorkerHealth.json):
+[`WorkerHealth`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerHealth.json):
 `{"status": "ok", "knowledgeBases": [...]}`, each knowledge base in the document's order with
 its `domain` and `state` (`starting`, `working` or `refused`), and, while it is `working`, the
 agent's `did` there and its `engines`. Each engine is its `engine` (`provider` and `model`),
@@ -173,9 +173,9 @@ the `jobs` it claims, and what its claims say of themselves: `lastQueuedEventAt`
 
 The service, and the three Python packages of this repository it runs on: the SDK
 ([the Xynolog SDK](https://github.com/xynolog/sdk)), its client of the gateway; the
-inference drivers ([`shared/python/inference`](../../shared/python/inference/)), which
+inference drivers ([`shared/python/inference`](../shared/python/inference/)), which
 ask a model provider; and what every Python service is built on
-([`shared/python/service`](../../shared/python/service/)), which reads its configuration,
+([`shared/python/service`](../shared/python/service/)), which reads its configuration,
 answers for its health, writes its log and exports its telemetry. All four are built into
 the image from the commit it is published from, and carry
 [`version.json`](../version.json)'s version. Everything else in its environment is what
@@ -184,12 +184,12 @@ starts.
 
 **Every provider's library is in it.** The drivers ask each provider through that provider's
 own library, which their package brings as an extra named for the provider
-([what an install has](../../shared/python/inference/README.md#what-an-install-has)). The
+([what an install has](../shared/python/inference/README.md#what-an-install-has)). The
 image is built with every extra, so it is not rebuilt to be pointed at another provider.
 
 **The service can be configured for any of the seven providers the protocol names:**
 `anthropic`, `google`, `llamacpp`, `ollama`, `openai`, `together` and `vllm`. An engine of its
-document ([`WorkerEngineConfig`](../protocol/specs/src/components/schemas/WorkerEngineConfig.json))
+document ([`WorkerEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerEngineConfig.json))
 names one of them, and a document that names another is refused when the service starts. A
 model of `google`, `openai` or `together` is asked with what the model catalogue says of it,
 which the image carries at `/usr/share/xynolog/model-catalogue.json` and the document names
@@ -244,8 +244,8 @@ checks what a built one promises.
 
 ## Related
 
-- [WORKER-SERVICE.md](../../protocol/contract/WORKER-SERVICE.md) — what the worker does, rule by rule
-- [WORKER-CONTRACT.md](../../protocol/contract/WORKER-CONTRACT.md) — the contract every worker keeps
-- [JOBS.md](../../protocol/contract/JOBS.md) — the job protocol, and the dispatcher's side of it
+- [WORKER-SERVICE.md](https://github.com/xynolog/protocol/blob/main/contract/WORKER-SERVICE.md) — what the worker does, rule by rule
+- [WORKER-CONTRACT.md](https://github.com/xynolog/protocol/blob/main/contract/WORKER-CONTRACT.md) — the contract every worker keeps
+- [JOBS.md](https://github.com/xynolog/protocol/blob/main/contract/JOBS.md) — the job protocol, and the dispatcher's side of it
 - [`xynolog-worker` skill](https://github.com/xynolog/docs/blob/main/builder/skills/xynolog-worker/SKILL.md) — building your own job-claim daemon
 - [Adding a kind of job](https://github.com/xynolog/docs/blob/main/contributor/ADDING-A-JOB.md) — the path of a new kind of job through the spec, the SDKs, the dispatcher, this service, its suite and its rules
