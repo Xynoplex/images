@@ -18,7 +18,7 @@ The gateway is a member of the repository's Rust workspace
 | `xynolog-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
 | `xynolog-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
 | `xynolog-http-transport` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/http-transport) | Signing in as a service account, to reach the Archivist |
-| `xynolog-codegen` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
+| `xynolog-codegen` | [Rust SDK](https://github.com/xynolog/sdk/tree/93a6c5fb1fc1cd7e6792dfa84a88921ea79c0208/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
 
 ## Built against the spec
 
