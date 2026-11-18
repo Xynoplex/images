@@ -18,7 +18,7 @@ A knowledge base's containers are named `xynolog-<kb>-<product>`, where
 runs its gateway as `xynolog-example.org-my-kb-gateway`. The Browser, the
 worker, Ollama and Jaeger are shared by every knowledge base, and keep
 `xynolog-<name>`. See
-[the launcher's names](../../../docs/operator/services/OVERVIEW.md#the-launchers-names).
+[the launcher's names](https://github.com/xynolog/docs/blob/main/operator/services/OVERVIEW.md#the-launchers-names).
 
 **Key fact:** `make build` builds all eight images from this checkout and tags
 them `ghcr.io/xynolog/xynolog-<service>:local`. It does not publish npm

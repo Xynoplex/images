@@ -18,7 +18,7 @@ no request has no `cid=`.
 
 The `trace=` suffix is present only when an OTel SDK is initialized in
 the process and a span is active when the line is emitted (Tier 2, the
-traces of [Observability](../../../docs/operator/administration/OBSERVABILITY.md)). It's the
+traces of [Observability](https://github.com/xynolog/docs/blob/main/operator/administration/OBSERVABILITY.md)). It's the
 first 8 hex of the W3C trace-id, so it correlates the grep timeline
 with the span tree in any APM UI.
 
