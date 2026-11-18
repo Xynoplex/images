@@ -7,7 +7,7 @@ license = "Apache-2.0"
 description = "The dispatcher's handlers and the job queue they drive, as a contract: no broker in this crate's dependencies."
 
 [dependencies]
-chrono = { workspace = true, features = ["clock", "std"] }
+jiff = { workspace = true, features = ["std"] }
 xynolog.workspace = true
 xynolog-observability.workspace = true
 serde = { workspace = true, features = ["derive"] }

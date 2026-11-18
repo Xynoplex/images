@@ -21,7 +21,7 @@ use xynolog_core::types::ArchivistConfig;
 /// A clone token: the resource it lets its holder copy, and until when.
 pub struct CloneToken {
     pub resource_id: String,
-    pub expires_at: chrono::DateTime<chrono::Utc>,
+    pub expires_at: jiff::Timestamp,
 }
 
 pub struct Archivist {

@@ -9,8 +9,8 @@ description = "The dispatcher's job queue on NATS JetStream, behind the handlers
 [dependencies]
 async-nats = { workspace = true, features = ["ring", "kv", "server_2_10", "nuid"] }
 bytes.workspace = true
-chrono = { workspace = true, features = ["clock", "std"] }
 futures.workspace = true
+jiff = { workspace = true, features = ["std"] }
 xynolog.workspace = true
 xynolog-core = { workspace = true, features = ["nats"] }
 xynolog-observability.workspace = true
