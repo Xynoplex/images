@@ -46,9 +46,7 @@ pub trait Vocabulary: Send + Sync + 'static {
 
 /// Now, as the record writes times: ISO 8601, milliseconds, UTC.
 pub fn now() -> String {
-    chrono::Utc::now()
-        .format("%Y-%m-%dT%H:%M:%S%.3fZ")
-        .to_string()
+    format!("{:.3}", jiff::Timestamp::now())
 }
 
 /// Refuses entity types the knowledge base does not register, naming each.

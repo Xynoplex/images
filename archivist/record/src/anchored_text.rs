@@ -146,9 +146,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!(
             "anchored-text-{}-{}",
             std::process::id(),
-            chrono::Utc::now()
-                .timestamp_nanos_opt()
-                .expect("now is in range")
+            jiff::Timestamp::now().as_nanosecond()
         ));
         std::fs::create_dir_all(&dir).expect("a temporary directory");
         dir

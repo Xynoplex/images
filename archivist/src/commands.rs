@@ -709,10 +709,10 @@ pub async fn job(archivist: &Archivist, channel: &str, command: &Object) -> Answ
 // ── Clone tokens ──────────────────────────────────────────────────────────
 
 /// How long a clone token lets its holder copy.
-const TOKEN_LIFETIME: chrono::Duration = chrono::Duration::minutes(15);
+const TOKEN_LIFETIME: jiff::SignedDuration = jiff::SignedDuration::from_mins(15);
 
-fn instant(at: chrono::DateTime<chrono::Utc>) -> String {
-    at.to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+fn instant(at: jiff::Timestamp) -> String {
+    format!("{at:.3}")
 }
 
 /// The resource a token names and when it expires. An expired token is
@@ -722,7 +722,7 @@ fn token_of(archivist: &Archivist, token: &str) -> Result<(String, String), Refu
     let Some(held) = tokens.get(token) else {
         return Err("Invalid or expired token".into());
     };
-    if chrono::Utc::now() > held.expires_at {
+    if jiff::Timestamp::now() > held.expires_at {
         tokens.remove(token);
         return Err("Token expired".into());
     }
@@ -753,7 +753,7 @@ pub async fn clone_token(archivist: &Archivist, command: &Object) -> Answered {
             .map(|byte| format!("{byte:02x}"))
             .collect::<String>()
     );
-    let expires_at = chrono::Utc::now() + TOKEN_LIFETIME;
+    let expires_at = jiff::Timestamp::now() + TOKEN_LIFETIME;
     locked(&archivist.tokens).insert(
         token.clone(),
         CloneToken {

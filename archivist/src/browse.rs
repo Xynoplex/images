@@ -96,8 +96,8 @@ fn millis(descriptor: &Value) -> i64 {
     descriptor
         .get("dateCreated")
         .and_then(Value::as_str)
-        .and_then(|at| chrono::DateTime::parse_from_rfc3339(at).ok())
-        .map_or(0, |at| at.timestamp_millis())
+        .and_then(|at| at.parse::<jiff::Timestamp>().ok())
+        .map_or(0, jiff::Timestamp::as_millisecond)
 }
 
 pub async fn resources(archivist: &Archivist, request: &Object) -> Answered {
@@ -360,10 +360,11 @@ pub async fn knowledge_base(archivist: &Archivist, _: &Object) -> Answered {
 }
 
 fn modified(metadata: Option<&std::fs::Metadata>) -> String {
-    let at: chrono::DateTime<chrono::Utc> = metadata
+    let at = metadata
         .and_then(|m| m.modified().ok())
-        .map_or(chrono::DateTime::UNIX_EPOCH, Into::into);
-    at.to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+        .and_then(|modified| jiff::Timestamp::try_from(modified).ok())
+        .unwrap_or(jiff::Timestamp::UNIX_EPOCH);
+    format!("{at:.3}")
 }
 
 /// The directories and regular files at a path of the working tree.
