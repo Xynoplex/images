@@ -91,7 +91,7 @@ a status other than 0.
 ## Configuration
 
 It reads one document, the protocol's
-[`LibrarianConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/LibrarianConfig.json), at the path
+[`LibrarianConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/librarian/LibrarianConfig.json), at the path
 `--config` names. Whoever starts a Librarian writes it, resolved, and mounts it where the
 image's command looks: `/etc/xynolog/librarian.json`. The Librarian defaults nothing in it.
 
@@ -101,10 +101,10 @@ image's command looks: `/etc/xynolog/librarian.json`. The Librarian defaults not
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | the Archivist's host and port |
-| `graph` | the graph database ([`GraphConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
-| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
-| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, and where it is reached |
-| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
+| `graph` | the graph database ([`GraphConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/graph/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
+| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/vectors/VectorsConfig.json)): its kind, where it is, and, for a Qdrant, the name of the variable that holds the token the Librarian presents to it |
+| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/embedding/EmbeddingConfig.json)): its kind, its model, and where it is reached |
+| `matcher`, `gatherer` | each actor's engine ([`LibrarianEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/librarian/LibrarianEngineConfig.json)): a provider and a model, the provider's address, and the name of the variable that holds its key, where it takes one |
 | `modelCatalogue` | the path of the model catalogue: what each model of `google`, `openai` and `together` can take, which those providers' APIs do not say. It is read only where an actor's model is one of theirs |
 | `gather.settleTimeoutMs` | how long a gather around a resource waits for the Smelter |
 | `search.semanticFloor` | the least similarity a hit by meaning must have |

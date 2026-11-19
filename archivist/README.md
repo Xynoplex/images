@@ -129,7 +129,7 @@ which is what makes that ordering enforceable.
 ## Configuration
 
 It reads one configuration document, an
-[`ArchivistConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/ArchivistConfig.json), from the path its
+[`ArchivistConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/archivist/ArchivistConfig.json), from the path its
 `--config` flag names; the image passes `/etc/xynolog/archivist.json`. The document names the
 gateway, the issuer, the knowledge base's root, the state volume, the anchored-text store, the
 engine for each job and each Librarian actor, the port, and the staging bounds. Mount the knowledge base, the state volume and

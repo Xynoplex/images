@@ -128,7 +128,7 @@ inventory and where the metrics flow.
 ## Configuration
 
 A JSON document, named by `--config` (the image passes `/etc/xynolog/worker.json`), whose
-schema is [`WorkerConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerConfig.json). The worker
+schema is [`WorkerConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/worker/WorkerConfig.json). The worker
 defaults nothing in it.
 
 | Member | |
@@ -161,7 +161,7 @@ anything: one line on stderr that begins `[fatal] ` and says which, and exit sta
 services.
 
 `GET /health` answers once a knowledge base is confirmed, with a
-[`WorkerHealth`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerHealth.json):
+[`WorkerHealth`](https://github.com/xynolog/protocol/blob/main/specs/src/worker/WorkerHealth.json):
 `{"status": "ok", "knowledgeBases": [...]}`, each knowledge base in the document's order with
 its `domain` and `state` (`starting`, `working` or `refused`), and, while it is `working`, the
 agent's `did` there and its `engines`. Each engine is its `engine` (`provider` and `model`),
@@ -189,7 +189,7 @@ image is built with every extra, so it is not rebuilt to be pointed at another p
 
 **The service can be configured for any of the seven providers the protocol names:**
 `anthropic`, `google`, `llamacpp`, `ollama`, `openai`, `together` and `vllm`. An engine of its
-document ([`WorkerEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WorkerEngineConfig.json))
+document ([`WorkerEngineConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/worker/WorkerEngineConfig.json))
 names one of them, and a document that names another is refused when the service starts. A
 model of `google`, `openai` or `together` is asked with what the model catalogue says of it,
 which the image carries at `/usr/share/xynolog/model-catalogue.json` and the document names

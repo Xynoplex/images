@@ -236,5 +236,5 @@ without either variable.
 [payload-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/payload-cases.json
 [store-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/store-cases.json
 [token-cases]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/token-cases.json
-[vectors-config]: https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json
-[embedding-config]: https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json
+[vectors-config]: https://github.com/xynolog/protocol/blob/main/specs/src/vectors/VectorsConfig.json
+[embedding-config]: https://github.com/xynolog/protocol/blob/main/specs/src/embedding/EmbeddingConfig.json
