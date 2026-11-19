@@ -291,7 +291,7 @@ xynolog.frame.addEntityType('Person');       // Promise<void>
 
 There are no query keys to manage. Each live `browse.*` query is backed by an internal `Cache` primitive keyed by its resource id. Caches refresh themselves in response to gateway **domain events** delivered over the bus gateway — call sites never invalidate anything by hand. `mark:added`, for example, refetches the resource's annotation list and history, and `frame:entity-type-added` refetches the entity types.
 
-The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (`packages/codegen/schemas/generate-cache-refresh.mjs` makes it a module of `@xynolog/core` at build); [CACHE-SEMANTICS.md](https://github.com/xynolog/protocol/blob/main/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
+The table of what each event does to which cache is `protocol/specs/src/client/refresh.json` (the SDK's generator, [`codegen/lib/cache_refresh`](https://github.com/xynolog/sdk/tree/main/codegen/lib/cache_refresh), writes it into `@xynolog/core` as [`cache-refresh.ts`](https://github.com/xynolog/sdk/blob/main/typescript/core/src/cache-refresh.ts)); [CACHE-SEMANTICS.md](https://github.com/xynolog/protocol/blob/main/contract/CACHE-SEMANTICS.md) states the contract. A stream reopened after a drop, and a detected event gap (`bus:resume-gap`), have rows of their own, so no update is silently missed.
 
 ### Error Handling
 
