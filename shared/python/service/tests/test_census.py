@@ -194,14 +194,14 @@ def test_a_dependency_the_sdk_bounds_is_named_here_without_a_bound_of_its_own() 
 
 def test_the_sdk_source_is_the_pinned_artifact() -> None:
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
-    expected = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl"
+    expected = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl"
     assert sources == {"xynolog": {"path": expected}}
     # The lockfile points to the same immutable local artifact.
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
     assert taken_from["xynolog"] == {
-        "path": "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl"
+        "path": "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl"
     }
     assert taken_from["xynolog-service"] == {"editable": "."}
 

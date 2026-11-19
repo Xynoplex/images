@@ -36,7 +36,7 @@ dependencies = [
 
 # The pinned SDK artifact supplies this package's public types.
 [tool.uv.sources]
-xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" }
+xynolog = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" }
 
 # The checkers and the formatter are the SDK's, at the SDK's versions:
 # tests/test_census.py holds these pins, and the strictness below, to

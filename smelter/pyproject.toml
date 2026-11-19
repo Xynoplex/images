@@ -41,7 +41,7 @@ dependencies = [
 # types the tree's spec generates. Each is named, because a source another
 # package states for the SDK is read only where that package is the project.
 [tool.uv.sources]
-xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" }
+xynolog = { path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" }
 xynolog-service = { path = "../shared/python/service", editable = true }
 xynolog-vectors = { path = "../shared/python/vectors", editable = true }
 

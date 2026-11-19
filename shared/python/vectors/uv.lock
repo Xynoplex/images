@@ -866,8 +866,8 @@ wheels = [
 
 [[package]]
 name = "xynolog"
-version = "1.2611.0.dev20261118222540+g87bb072"
-source = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" }
+version = "1.2611.0.dev20261119002312+g9484319"
+source = { path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -875,7 +875,7 @@ dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { filename = "xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl", hash = "sha256:6546aa40cc81de45995f34a182896998e59b5b63130c96de496181b1d0dbb799" },
+    { filename = "xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl", hash = "sha256:bc0b5ffa155530a462d964acaabd659e0407f720787290da78abebaf61eacde4" },
 ]
 
 [package.metadata]
@@ -910,7 +910,7 @@ dev = [
 requires-dist = [
     { name = "httpx" },
     { name = "pydantic" },
-    { name = "xynolog", path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261118222540+g87bb072-py3-none-any.whl" },
+    { name = "xynolog", path = "../../../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" },
 ]
 
 [package.metadata.requires-dev]
