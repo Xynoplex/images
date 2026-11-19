@@ -120,7 +120,7 @@ minute ends the start.
 ## Configuration
 
 It reads one document, the protocol's
-[`SmelterConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/SmelterConfig.json), at the path
+[`SmelterConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/smelter/SmelterConfig.json), at the path
 `--config` names. The launcher writes it for the Smelter it starts, resolved, and mounts it at
 `/etc/xynolog/smelter.json`. Whoever starts a Smelter another way writes the same document.
 
@@ -130,8 +130,8 @@ It reads one document, the protocol's
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | where the Archivist listens: the host and the port it reads bytes from, and keeps the anchored-text store at |
-| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/EmbeddingConfig.json)): its kind, its model, where it is reached, and, for a provider that takes a key, the name of the variable that holds it |
-| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/VectorsConfig.json)): its kind, where it is reached, and, for a Qdrant, the name of the variable that holds the token the Smelter presents to it |
+| `embedding` | the embedding provider ([`EmbeddingConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/embedding/EmbeddingConfig.json)): its kind, its model, where it is reached, and, for a provider that takes a key, the name of the variable that holds it |
+| `vectors` | the vector index ([`VectorsConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/vectors/VectorsConfig.json)): its kind, where it is reached, and, for a Qdrant, the name of the variable that holds the token the Smelter presents to it |
 | `chunking` | the two numbers a text is cut by: a chunk's size, and how much of it the next repeats |
 | `pdfsAtOnce` | how many PDFs it works on at once |
 | `cursorsPath` | the file its cursors are kept in, on the container's own disk |
@@ -213,7 +213,7 @@ The code is in [`src/xynolog_smelter`](src/xynolog_smelter).
 | `chunking.py` | How a text is cut, as [`chunk-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/text/chunk-cases.json) states it |
 | `extraction.py`, `anchoring.py`, `tables.py`, `ocr_text.py` | A PDF's text by its class, as [`extraction-cases.json`](https://github.com/xynolog/protocol/blob/main/specs/src/smelter/extraction-cases.json) states it |
 | `pdf_reader.py`, `pdfium.py`; `ocr_engine.py`, `tesseract.py`; `scripted.py` | What reads a PDF and what reads a scanned page, each behind a protocol whose second implementation answers what a test states |
-| `anchored_text_store.py`, `stamp.py` | The Archivist's anchored-text store as the Smelter keeps it, each entry as its [schema](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/AnchoredTextEntry.json) states it |
+| `anchored_text_store.py`, `stamp.py` | The Archivist's anchored-text store as the Smelter keeps it, each entry as its [schema](https://github.com/xynolog/protocol/blob/main/specs/src/archivist/AnchoredTextEntry.json) states it |
 
 How it follows the record, what reads a resource's bytes and its annotations, the reader that
 asks the Archivist for them and for the record by position, and what white space is are every

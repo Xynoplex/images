@@ -95,7 +95,7 @@ concurrent workers never share a job.
 
 ## Configuration
 
-One document, `DispatcherConfig` in [protocol/specs/](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/DispatcherConfig.json),
+One document, `DispatcherConfig` in [protocol/specs/](https://github.com/xynolog/protocol/blob/main/specs/src/dispatcher/DispatcherConfig.json),
 at the path `--config` names. The launcher writes it, resolved, and mounts it where the image's
 `CMD` passes it: `/etc/xynolog/dispatcher.json`. Started without `--config`, or with a path that
 names no file, the dispatcher refuses to start and says which; a document that does not validate

@@ -116,7 +116,7 @@ frames reach the broker, export what telemetry is buffered, and exit.
 ## Configuration
 
 One document: a JSON `GatewayConfig`
-([schema](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/GatewayConfig.json)) at the path its `--config`
+([schema](https://github.com/xynolog/protocol/blob/main/specs/src/gateway/GatewayConfig.json)) at the path its `--config`
 flag names, bind-mounted read-only. Without `--config`, the gateway refuses to start; the
 image passes `/etc/xynolog/gateway.json`, where the launcher mounts the document. The
 launcher writes it from the knowledge base's stack documents and its committed identity:

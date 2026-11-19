@@ -102,7 +102,7 @@ them.
 ## Configuration
 
 It reads one document, the protocol's
-[`WeaverConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/WeaverConfig.json), at the path `--config`
+[`WeaverConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/weaver/WeaverConfig.json), at the path `--config`
 names. The launcher writes it for the Weaver it starts, resolved, and mounts it at
 `/etc/xynolog/weaver.json`. Whoever starts a Weaver another way writes the same document.
 
@@ -112,7 +112,7 @@ names. The launcher writes it for the Weaver it starts, resolved, and mounts it 
 | `gatewayUrl` | the gateway: its route to the bus |
 | `identity.issuer` | where its service account signs in |
 | `archivist` | where the Archivist listens: it reads the record by position there, and a resource's annotations |
-| `graph` | the graph database ([`GraphConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
+| `graph` | the graph database ([`GraphConfig`](https://github.com/xynolog/protocol/blob/main/specs/src/graph/GraphConfig.json)): its kind, where it is reached, and the name of the variable that holds its password |
 | `cursorsPath` | the file it keeps its cursors in ([`CursorsPath`](https://github.com/xynolog/protocol/blob/main/specs/src/components/schemas/CursorsPath.json)) |
 | `port` | the port `/health` answers on |
 | `logLevel`, `logFormat` | how it logs |
