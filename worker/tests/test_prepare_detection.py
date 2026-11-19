@@ -8,7 +8,7 @@ builder, so that what follows the media type is seen: a text is anchored by
 offsets, and a PDF by rectangles.
 """
 
-from typing import Final, final
+from typing import Final, final, get_args
 
 import pytest
 from aio import run
@@ -18,12 +18,11 @@ from xynolog.types import (
     Agent,
     AgentSoftware,
     AnchoredTextAbsent,
-    AnchoredTextAbsentKind,
     AnchoredTextAnswer,
     Annotation,
     ExtractedText,
     ExtractionDeclined,
-    ExtractionDeclinedDeclined,
+    ExtractionDeclinedReason,
     FragmentSelector,
     PdfTextItem,
     Selector,
@@ -31,7 +30,7 @@ from xynolog.types import (
     TextQuoteSelector,
 )
 
-from xynolog_worker.detection.prepare_detection import DetectionDecline, DetectionSource, prepare_detection
+from xynolog_worker.detection.prepare_detection import AbsentKind, DetectionDecline, DetectionSource, prepare_detection
 
 RESOURCE: Final = ResourceId("res-prep")
 GENERATOR: Final[Agent] = AgentSoftware(type="Software", id="did:web:test.local:agents:xynolog-worker", provider="test", model="test")
@@ -183,16 +182,20 @@ def test_a_pdf_whose_text_is_nothing_but_white_space_is_declined_as_empty() -> N
 
 
 @pytest.mark.parametrize("reason", ["encrypted", "corrupt", "no-text-layer", "too-large"])
-def test_a_pdf_the_smelter_declined_is_declined_with_the_smelter_s_reason(reason: ExtractionDeclinedDeclined) -> None:
+def test_a_pdf_the_smelter_declined_is_declined_with_the_smelter_s_reason(reason: ExtractionDeclinedReason) -> None:
     # N2.
     reads, consult = Reads("alpha"), Consult(ExtractionDeclined(kind="declined", declined=reason))
     assert prepared("application/pdf", reads, consult) == DetectionDecline(declined=reason)
     assert reads.asked == []
 
 
-@pytest.mark.parametrize("kind", ["not-yet", "no-map", "unknown"])
+def test_the_absences_are_the_sdks() -> None:
+    assert get_args(AbsentKind.__value__) == get_args(AnchoredTextAbsent.model_fields["kind"].annotation)
+
+
+@pytest.mark.parametrize("kind", get_args(AbsentKind.__value__))
 def test_a_pdf_the_smelter_has_no_text_of_is_declined_by_the_name_of_the_absence_and_asked_about_once(
-    kind: AnchoredTextAbsentKind,
+    kind: AbsentKind,
 ) -> None:
     # N4 and N5: `not-yet` is for a later attempt to find, and the other two will not change. Nothing is read in its place.
     reads, consult = Reads("alpha"), Consult(AnchoredTextAbsent(kind=kind))

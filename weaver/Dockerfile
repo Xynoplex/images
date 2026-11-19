@@ -57,7 +57,7 @@ RUN uv sync --project weaver --locked --no-dev --no-editable --all-extras \
       --no-install-package xynolog-graph \
       --no-install-package xynolog-service && \
     uv pip install --python /opt/venv/bin/python --no-deps \
-      .local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl \
+      .local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl \
       .local/shared-python-packages/xynolog_graph-*.whl \
       .local/shared-python-packages/xynolog_service-*.whl
 

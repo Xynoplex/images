@@ -18,24 +18,23 @@ The gateway is a member of the repository's Rust workspace
 | `xynolog-http-service` | [packages/rust/http-service](../../packages/rust/http-service) | Connections a service can close from its side, the bearer credential, and the verifier of the trusted issuer's tokens |
 | `xynolog-observability` | [packages/rust/observability](../../packages/rust/observability) | What exports that telemetry, logging and the process's readings of itself |
 | `xynolog-http-transport` | [Rust SDK](https://github.com/xynolog/sdk/tree/main/rust/http-transport) | Signing in as a service account, to reach the Archivist |
-| `xynolog-codegen` | [Rust SDK](https://github.com/xynolog/sdk/tree/93a6c5fb1fc1cd7e6792dfa84a88921ea79c0208/rust/codegen) | Nothing at run time: the core's and the SDK's build scripts bundle the spec and generate their types with it |
 
 ## Built against the spec
 
-The spec is compiled into the binary.
-[xynolog-core's build.rs](../../packages/rust/core/build.rs) reads
-`protocol/specs/src` — the bundles in `protocol/specs/` are gitignored build output — and writes
-three documents the binary embeds: the protocol's OpenAPI document, the
-Archivist's, and the component schemas as JSON Schema draft 7 (OpenAPI 3.0's
-`nullable` made a type). It compiles every schema while it builds, so a
-malformed spec fails the build, never a boot or a request, and it generates the
-Rust types of the configuration documents from their schemas. The binary also
-embeds the bus registry and
-[bus-classification.json](../../packages/rust/core/src/bus-classification.json),
-which `packages/codegen/bus/generate-ts.mjs` derives from the registry beside core's
-TypeScript table. `xynolog_core::spec` reads them: validators by schema name,
-each channel's schema, the registry's operations, and which channels are
-replies and which write. [src/limits.rs](../src/limits.rs) reads what the
+The spec is compiled into the binary. `make generate` (the SDK's generator,
+at the commit `sdk.lock` pins) bundles `protocol/specs/src` into
+[xynolog-core's generated directory](../../packages/rust/core/src/generated):
+the protocol's OpenAPI document, the Archivist's, and the component schemas as
+JSON Schema draft 7 (OpenAPI 3.0's `nullable` made a type), and the Rust types
+of the schemas [service-schemas.json](../../packages/rust/core/service-schemas.json)
+names, the configuration documents among them; `make check-generated` holds
+the committed files to what it writes. The binary embeds those three documents
+and the bus registry, and takes each channel's attributes from the SDK
+(`xynolog::channels::CHANNEL_ATTRIBUTES`). `xynolog_core::spec` reads them:
+validators by schema name, each channel's schema, the registry's operations,
+and which channels are replies and which write; its tests compile every
+schema, so a malformed spec fails `make test-rust`, never a boot or a
+request. [src/limits.rs](../src/limits.rs) reads what the
 gateway alone enforces: the limits (`x-xynolog-limits`, `maxItems`), and, for
 an operation that takes JSON, its body's schema and `maxBodyBytes`, which
 [src/http.rs](../src/http.rs)'s `json_body` holds a body to: one its

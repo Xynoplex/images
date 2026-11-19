@@ -59,7 +59,7 @@ RUN uv sync --project smelter --locked --no-dev --no-editable \
       --no-install-package xynolog-service \
       --no-install-package xynolog-vectors && \
     uv pip install --python /opt/venv/bin/python --no-deps \
-      .local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl \
+      .local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl \
       .local/shared-python-packages/xynolog_service-*.whl \
       .local/shared-python-packages/xynolog_vectors-*.whl
 

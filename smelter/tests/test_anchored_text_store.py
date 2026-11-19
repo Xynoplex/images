@@ -23,16 +23,16 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 from aio import run
-from pydantic import JsonValue, TypeAdapter, ValidationError
+from pydantic import JsonValue, TypeAdapter
 from spec import JsonObject, objects, text, thing
 from xynolog.errors import SignInError, XynologError
 from xynolog.identifiers import ResourceId
 from xynolog.types import (
     AnchoredTextEntry,
     ExtractedText,
-    ExtractedTextOcrConfidence,
     ExtractionDeclined,
     ExtractionOutcome,
+    OcrConfidence,
     PdfTextItem,
 )
 from xynolog_service.archivist import Authorizes
@@ -51,7 +51,7 @@ ENTRY: Final = TypeAdapter[AnchoredTextEntry](AnchoredTextEntry)
 OBJECT: Final = TypeAdapter[JsonObject](JsonObject)
 
 
-def item(start: int, end: int, *, page: float = 1, x: float = 72, y: float = 720, width: float = 30, height: float = 12) -> PdfTextItem:
+def item(start: int, end: int, *, page: int = 1, x: float = 72, y: float = 720, width: float = 30, height: float = 12) -> PdfTextItem:
     """A word of a text, at these offsets. Where nothing else is said it is on the first page, at one place."""
     return PdfTextItem(start=start, end=end, page=page, x=x, y=y, width=width, height=height)
 
@@ -65,7 +65,7 @@ WHOLE: Final = ExtractedText(
     items=WORDS,
     method="ocr",
     pdf_class="C",
-    ocr_confidence=ExtractedTextOcrConfidence(mean=91.5, low_confidence_words=1, total_words=2),
+    ocr_confidence=OcrConfidence(mean=91.5, low_confidence_words=1, total_words=2),
     unread_pages=[2],
 )
 EMPTY: Final = ExtractedText(kind="extracted", text="", items=[], method="pdf-text-layer", pdf_class="A")
@@ -541,18 +541,6 @@ def test_an_account_that_could_not_sign_in_fails_a_write_and_misses_a_read() -> 
             with pytest.raises(StoreFailed, match="could not sign in"):
                 await store.write(RESOURCE, KEY, EXTRACTED)
             assert await store.read(RESOURCE, KEY) is None
-            assert archivist.asked == []
-
-    run(scenario())
-
-
-def test_an_item_on_a_page_that_is_no_whole_number_makes_no_entry_and_nothing_is_sent() -> None:
-    outcome = ExtractedText(kind="extracted", text="alpha", items=[item(0, 5, page=1.5)], method="ocr")
-
-    async def scenario() -> None:
-        async with PlayedArchivist() as archivist, store_of(archivist) as store:
-            with pytest.raises(ValidationError):
-                await store.write(RESOURCE, KEY, outcome)
             assert archivist.asked == []
 
     run(scenario())

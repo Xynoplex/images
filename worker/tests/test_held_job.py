@@ -418,7 +418,7 @@ def test_a_location_whose_extension_is_the_format_s_in_any_case_says_nothing(
 def test_params_that_are_no_generation_s_fail_the_job_with_no_class_before_anything_is_made(monkeypatch: pytest.MonkeyPatch) -> None:
     parties = Parties()
     asked = making(monkeypatch, markdown())
-    # No title, and nowhere to store it.
+    # No title, and nowhere to store it: the first fault every SDK finds is said.
     run(worked(parties, job("job-y", "yield", {"context": CONTEXT}), answering("unused")))
 
     assert asked == []
@@ -426,9 +426,7 @@ def test_params_that_are_no_generation_s_fail_the_job_with_no_class_before_anyth
     (failure,) = parties.sent("job:fail")
     error = failure["error"]
     assert isinstance(error, str)
-    assert error.startswith("generation job job-y: params do not satisfy GenerationJobParams (")
-    assert "title" in error
-    assert "storageUri" in error
+    assert error == "generation job job-y: params do not satisfy GenerationJobParams (it has no `title`)"
     assert "failureClass" not in failure
     assert failure["willRetry"] is True
     assert parties.content.calls == []

@@ -1,0 +1,22 @@
+{
+  "$comment": "The component schemas only the services read: the configuration documents, and what a service keeps or answers of its own. make generate writes their Rust types, and those of every schema they reach that the SDK does not declare, into src/generated/service_types.rs; a schema the SDK declares is its type (xynolog::types).",
+  "schemas": [
+    "KbIdentity",
+    "GatewayConfig",
+    "DispatcherConfig",
+    "JobRecord",
+    "DispatcherHealth",
+    "ArchivistConfig",
+    "ArchivistEngines",
+    "ArchivistHealth",
+    "ResourceView",
+    "ResourceAnnotations",
+    "EntityTypesProjection",
+    "TagSchemasProjection",
+    "ProfilesProjection",
+    "StorageUriEntry",
+    "AnchoredTextEntry",
+    "AnchoredTextExtractedEntry",
+    "AnchoredTextDeclinedEntry"
+  ]
+}

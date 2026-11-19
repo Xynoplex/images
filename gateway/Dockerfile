@@ -49,9 +49,9 @@ COPY dispatcher/Cargo.toml dispatcher/
 COPY dispatcher/src dispatcher/src
 COPY dispatcher/handlers/Cargo.toml dispatcher/handlers/
 COPY dispatcher/handlers/src dispatcher/handlers/src
-COPY dispatcher/jetstream/Cargo.toml dispatcher/jetstream/build.rs dispatcher/jetstream/
+COPY dispatcher/jetstream/Cargo.toml dispatcher/jetstream/
 COPY dispatcher/jetstream/src dispatcher/jetstream/src
-COPY packages/rust/core/Cargo.toml packages/rust/core/build.rs packages/rust/core/
+COPY packages/rust/core/Cargo.toml packages/rust/core/
 COPY packages/rust/core/src packages/rust/core/src
 COPY packages/rust/http-service/Cargo.toml packages/rust/http-service/
 COPY packages/rust/http-service/src packages/rust/http-service/src
@@ -61,10 +61,9 @@ WORKDIR /build/packages/rust
 RUN cargo chef prepare --recipe-path /recipe.json
 
 # The dependencies compile first, from the recipe, and the binaries after,
-# from the source. A spec that does not compile fails here, in the build
-# scripts, never at boot. The registry and target/ stay in the layers, which
-# is what a build cache keeps; the last step removes target/ once the binaries
-# are out of it.
+# from the source. The registry and target/ stay in the layers, which is what
+# a build cache keeps; the last step removes target/ once the binaries are out
+# of it.
 FROM chef AS builder
 ARG SDK_ARTIFACT_BUNDLE
 COPY .local/sdk-artifacts/${SDK_ARTIFACT_BUNDLE}/cargo-local /sdk/cargo-local

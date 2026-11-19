@@ -12,7 +12,8 @@
 //!   settled when the job ends, and redelivered after the acknowledgement
 //!   window when the dispatcher that held it stops.
 //!
-//! The layout — stream, subjects, consumer, bucket — is protocol/specs/src/jobs/storage.json's.
+//! The layout — stream, subjects, consumer, bucket — is protocol/specs/src/jobs/storage.json's,
+//! as the SDK states it (`xynolog::job_storage`).
 
 #![forbid(unsafe_code)]
 
@@ -27,6 +28,7 @@ use tokio::sync::mpsc::UnboundedSender;
 use tokio::task::JoinHandle;
 use xynolog::claims::will_retry_after;
 use xynolog::job_filter::job_matches_filter;
+use xynolog::job_storage::{JOBS_BUCKET, JOBS_CONSUMER, JOBS_STREAM, JOBS_SUBJECT_ROOT};
 use xynolog::types::{
     FailureClass, Job, JobCancelled, JobCancelledStatus, JobComplete, JobCompleteStatus, JobFailed,
     JobFailedStatus, JobFilter, JobId, JobMetadata, JobParams, JobPending, JobPendingStatus,
@@ -40,8 +42,6 @@ use xynolog_dispatcher_handlers::queue::{
     Checkpoint, Claim, FailOutcome, JobQueue, QueueError, Stats,
 };
 use xynolog_observability::logging;
-
-include!(concat!(env!("OUT_DIR"), "/storage.rs"));
 
 /// Past this many revision conflicts on one transition, something is wrong.
 const MAX_CAS_ATTEMPTS: usize = 20;

@@ -92,7 +92,7 @@ fn boot() -> Result<(), String> {
     };
     telemetry::initialize(
         "xynolog-archivist",
-        xynolog_core::spec::VERSION,
+        xynolog_core::spec::version(),
         Some(&kb_did(&domain)),
     )?;
     let runtime = tokio::runtime::Builder::new_multi_thread()

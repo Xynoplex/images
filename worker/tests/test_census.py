@@ -171,7 +171,7 @@ def test_the_sdk_the_inference_drivers_and_the_service_package_are_the_ones_in_t
     # that package is the project, so without the SDK's own line here the SDK would come from an index.
     sources = table(table(table(toml(PROJECT / "pyproject.toml")["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"},
+        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl"},
         "xynolog-inference": {"path": "../../shared/python/inference", "editable": True},
         "xynolog-service": {"path": "../../shared/python/service", "editable": True},
     }
@@ -181,7 +181,9 @@ def test_the_sdk_the_inference_drivers_and_the_service_package_are_the_ones_in_t
     locked = toml(PROJECT / "uv.lock")["package"]
     assert isinstance(locked, list)
     taken_from = {table(package, "a package")["name"]: table(package, "a package")["source"] for package in locked}
-    assert taken_from["xynolog"] == {"path": "../.local/sdk-artifacts/current/python/xynolog-0.7.3-py3-none-any.whl"}
+    assert taken_from["xynolog"] == {
+        "path": "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl"
+    }
     assert taken_from["xynolog-inference"] == {"editable": "../../shared/python/inference"}
     assert taken_from["xynolog-service"] == {"editable": "../../shared/python/service"}
     assert taken_from["xynolog-worker"] == {"editable": "."}

@@ -38,10 +38,10 @@ from typing import Final, final
 
 from xynolog.types import (
     ExtractedText,
-    ExtractedTextOcrConfidence,
-    ExtractedTextPdfClass,
     ExtractionDeclined,
     ExtractionOutcome,
+    OcrConfidence,
+    PdfClass,
     PdfTextItem,
 )
 
@@ -209,12 +209,12 @@ def _shaped(layer: _Layer, fields: Sequence[FormField]) -> ExtractedText:
     return ExtractedText(kind="extracted", text=layer.text, items=_items(layer), method="pdf-text-layer", pdf_class="A")
 
 
-def _summary(confidences: Sequence[float]) -> ExtractedTextOcrConfidence | None:
+def _summary(confidences: Sequence[float]) -> OcrConfidence | None:
     """How well the engine read, over every word it read. `None` where it read no word."""
     if not confidences:
         return None
     mean = sum(confidences) / len(confidences)
-    return ExtractedTextOcrConfidence(
+    return OcrConfidence(
         # To a tenth, and a half of a tenth goes up.
         mean=math.floor(mean * 10 + 0.5) / 10,
         low_confidence_words=sum(1 for confidence in confidences if confidence < _LOW_CONFIDENCE),
@@ -287,7 +287,7 @@ class PdfExtractor:
         read_from = {int(item.page) for item in recovered.items}
         unread = [page for page in without_text if page not in read_from]
         # C is said in place of A alone: a form and a grid keep their class.
-        pdf_class: ExtractedTextPdfClass | None = shaped.pdf_class
+        pdf_class: PdfClass | None = shaped.pdf_class
         if pdf_class == "A":
             pdf_class = "C"
         if not recovered.text:

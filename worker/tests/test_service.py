@@ -315,7 +315,7 @@ def test_a_service_that_does_not_start_says_why_once_on_stderr_and_exits_with_st
 
 
 @pytest.mark.usefixtures("unconfigured")
-def test_a_document_the_schema_refuses_is_said_with_each_reason_on_a_line_of_its_own(
+def test_a_document_the_schema_refuses_is_said_with_its_first_fault_on_a_line_of_its_own(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     lacking = {name: value for name, value in DOCUMENT.items() if name not in ("port", "knowledgeBases")}
@@ -325,7 +325,7 @@ def test_a_document_the_schema_refuses_is_said_with_each_reason_on_a_line_of_its
     assert main() == 1
     head, *reasons = capsys.readouterr().err.splitlines()
     assert head == f"[fatal] {document} is not a worker configuration document (WorkerConfig):"
-    assert sorted(reasons) == ["  Missing required property: knowledgeBases", "  Missing required property: port"]
+    assert reasons == ["  Missing required property: knowledgeBases"]
 
 
 # ── the knowledge bases, each apart ─────────────────────────────────────

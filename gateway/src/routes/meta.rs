@@ -11,7 +11,7 @@ use xynolog::types::{
     HealthResponse, ProtectedResourceMetadata, ProtectedResourceMetadataBearerMethodsSupportedItem,
     StatusResponse, StatusResponseFeatures, UserResponse,
 };
-use xynolog_core::spec::{VERSION, spec};
+use xynolog_core::spec::{spec, version};
 
 /// `GET /api/health`, and `GET /` — where a person who typed the host lands.
 pub async fn health() -> Response {
@@ -20,7 +20,7 @@ pub async fn health() -> Response {
         &HealthResponse {
             status: "operational".to_owned(),
             message: "Xynolog API is running".to_owned(),
-            version: VERSION.to_owned(),
+            version: version().to_owned(),
             timestamp: format!("{:.3}", jiff::Timestamp::now()),
         },
     )
@@ -30,7 +30,7 @@ pub async fn health() -> Response {
 /// version and the URL this gateway is reached at.
 pub async fn openapi(State(app): State<Arc<App>>) -> Response {
     let mut document = spec().document.clone();
-    document["info"]["version"] = json!(VERSION);
+    document["info"]["version"] = json!(version());
     document["servers"] = json!([{ "url": app.config.public_url, "description": "API Server" }]);
     json_response(StatusCode::OK, &document)
 }
@@ -58,7 +58,7 @@ pub async fn status(Authenticated(principal): Authenticated) -> Response {
         StatusCode::OK,
         &StatusResponse {
             status: "operational".to_owned(),
-            version: VERSION.to_owned(),
+            version: version().to_owned(),
             features: StatusResponseFeatures {
                 semantic_content: "planned".to_owned(),
                 collaboration: "planned".to_owned(),

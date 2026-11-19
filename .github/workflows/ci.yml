@@ -35,7 +35,7 @@ jobs:
     name: SDK bundle from the pinned SDK commit
     runs-on: ubuntu-latest
     env:
-      SDK_LANGUAGES: typescript python rust
+      SDK_LANGUAGES: typescript python rust codegen
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -228,6 +228,29 @@ jobs:
         working-directory: packages/rust
         run: cargo deny --locked check bans sources
 
+  # The committed generated files are what the generator the bundle carries
+  # writes from the pinned Protocol (`make check-generated`,
+  # scripts/generated.sh).
+  generated:
+    name: The generated files are what the pinned SDK's generator writes
+    needs: sdk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
+
+      - name: Download the SDK bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: sdk-artifacts
+          path: ${{ runner.temp }}/sdk-artifacts
+
+      - name: Check the generated files
+        env:
+          SDK_ARTIFACTS: ${{ runner.temp }}/sdk-artifacts
+        run: make check-generated
+
   # The Rust workspace's format, lints, tests and dependency boundaries
   # (`make test-rust`, scripts/test-rust.sh), against the SDK's crates from the
   # bundle.
@@ -277,7 +300,7 @@ jobs:
   gate:
     name: CI Gate
     if: always()
-    needs: [dco, labels, sdk, checks, model-catalogue, images, advisories, crates, rust]
+    needs: [dco, labels, sdk, checks, model-catalogue, images, advisories, crates, generated, rust]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1

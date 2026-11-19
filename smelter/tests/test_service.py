@@ -128,7 +128,7 @@ def test_a_document_that_cannot_be_read_or_is_no_json_is_refused_by_its_path(tmp
     assert refusal(["--config", str(path)], ACCOUNT).startswith(f"{path} is not JSON: ")
 
 
-def test_a_document_that_is_not_the_schemas_is_refused_naming_each_member_and_no_value(tmp_path: Path) -> None:
+def test_a_document_that_is_not_the_schemas_is_refused_naming_its_first_fault_and_no_value(tmp_path: Path) -> None:
     document: dict[str, JsonValue] = {
         **without("pdfsAtOnce"),
         "port": "24101",
@@ -138,15 +138,8 @@ def test_a_document_that_is_not_the_schemas_is_refused_naming_each_member_and_no
     path = written(tmp_path, document)
     said = refusal(["--config", path], ACCOUNT)
     assert said.splitlines()[0] == f"{path} is not a smelter configuration document (SmelterConfig):"
-    assert sorted(said.splitlines()[1:]) == sorted(
-        [
-            "  Missing required property: apiKeyEnv",
-            "  embedding.voyage: unknown property apiKey",
-            "  Missing required property: pdfsAtOnce",
-            "  port: Input should be a valid integer",
-            "  root: unknown property extra",
-        ]
-    )
+    # The first fault every SDK finds: the members the schema requires, in the order it states them, come first.
+    assert said.splitlines()[1:] == ["  Missing required property: pdfsAtOnce"]
     # A key written where its variable's name belongs is never said back.
     assert "hunter2" not in said
 
@@ -193,10 +186,11 @@ def test_nothing_the_document_leaves_out_is_supplied_and_each_is_refused_by_name
 
 def test_an_embedding_provider_or_an_index_of_no_stated_kind_is_refused_without_saying_what_was_written(tmp_path: Path) -> None:
     untold = written(tmp_path, {**DOCUMENT, "embedding": lacking(OLLAMA, "type")})
-    assert refusal(["--config", untold], ACCOUNT).splitlines()[1:] == ["  embedding: Unable to extract tag using discriminator 'type'"]
-    for part in ("embedding", "vectors"):
+    assert refusal(["--config", untold], ACCOUNT).splitlines()[1:] == ["  Missing required property: type"]
+    # No kind's tag is the one it states, so it is read as the first kind, which has members it lacks.
+    for part, lacked in (("embedding", "model"), ("vectors", "host")):
         said = refusal(["--config", written(tmp_path, {**DOCUMENT, part: {"type": "hunter2"}})], ACCOUNT)
-        assert said.splitlines()[1:] == [f"  {part}: is not what the schema states (union_tag_invalid)"]
+        assert said.splitlines()[1:] == [f"  Missing required property: {lacked}"]
         assert "hunter2" not in said
 
 

@@ -9,11 +9,13 @@ answered the description as the spec's shape for its motivation; and whoever
 holds a `yield` job is answered its description.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Final, final
 
-from pydantic import TypeAdapter, ValidationError
+from pydantic import JsonValue, TypeAdapter, ValidationError
 from xynolog.model import written
+from xynolog.required import Fault, as_read
 from xynolog.types import (
     AssessingJobParams,
     CommentingJobParams,
@@ -43,8 +45,6 @@ type HeldMark = HighlightingJobParams | CommentingJobParams | AssessingJobParams
 _DESCRIPTION: Final = TypeAdapter[MarkJobParams](MarkJobParams)
 _ADDED: Final = frozenset(field.alias or name for name, field in JobParams.model_fields.items())
 """What the Dispatcher adds to a job's params, by the names the wire gives them."""
-_NO_SUCH_MOTIVATION: Final = frozenset({"union_tag_invalid", "union_tag_not_found"})
-"""How the description's shape refuses params that state none of its motivations."""
 _MOTIVATION: Final = TypeAdapter[Motivation](Motivation)
 
 
@@ -56,6 +56,14 @@ def motivation_of(params: JobParams) -> Motivation | None:
         return None
 
 
+def _held_as[D](declared: object, stated: JsonValue, decode: Callable[[JsonValue], D]) -> D:
+    """`stated` read as a `declared` by the rules every SDK reads the schema by, and decoded. Raises `ValueError` naming its first fault."""
+    read = as_read(declared, stated)
+    if isinstance(read, Fault):
+        raise ValueError(str(read))
+    return decode(read)
+
+
 def held_mark(params: JobParams) -> HeldMark | None:
     """The `mark` job `params` are, or `None` where they are none this holder can run.
 
@@ -64,16 +72,13 @@ def held_mark(params: JobParams) -> HeldMark | None:
     schema the Dispatcher resolves: a `schemaId` alone names a schema this
     holder cannot read.
 
-    Raises `pydantic.ValidationError` for params that state a motivation and
-    are not its shape. They are refused, and not taken for another job.
+    Raises `ValueError` for params that state a motivation and are not its
+    shape. They are refused, and not taken for another job.
     """
-    stated = {name: value for name, value in written(params).items() if name not in _ADDED}
-    try:
-        description = _DESCRIPTION.validate_python(stated)
-    except ValidationError as refused:
-        if all(error["type"] in _NO_SUCH_MOTIVATION for error in refused.errors()):
-            return None
-        raise
+    if motivation_of(params) is None:
+        return None
+    stated: dict[str, JsonValue] = {name: value for name, value in written(params).items() if name not in _ADDED}
+    description = _held_as(MarkJobParams, stated, _DESCRIPTION.validate_python)
     if isinstance(description, TaggingJobParams):
         return None if params.schema_ is None else HeldTagging(params=description, schema=params.schema_)
     return description
@@ -82,8 +87,7 @@ def held_mark(params: JobParams) -> HeldMark | None:
 def held_generation(params: JobParams) -> GenerationJobParams:
     """The `yield` job `params` are: its description.
 
-    Raises `pydantic.ValidationError` for params that are not a `yield`
-    job's: its title, where it is stored and the context it is made from are
-    each required.
+    Raises `ValueError` for params that are not a `yield` job's: its title,
+    where it is stored and the context it is made from are each required.
     """
-    return GenerationJobParams.model_validate(written(params))
+    return _held_as(GenerationJobParams, written(params), GenerationJobParams.model_validate)

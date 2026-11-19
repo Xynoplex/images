@@ -3066,7 +3066,7 @@ checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
 
 [[package]]
 name = "xynolog"
-version = "0.7.3"
+version = "1.2611.0-dev.20261119002312.g9484319"
 dependencies = [
  "base64 0.23.1",
  "bytes",
@@ -3083,7 +3083,6 @@ dependencies = [
  "tokio-stream",
  "uuid",
  "windows-sys 0.61.2",
- "xynolog-codegen",
 ]
 
 [[package]]
@@ -3138,13 +3137,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "xynolog-codegen"
-version = "0.7.3"
-dependencies = [
- "serde_json",
-]
-
-[[package]]
 name = "xynolog-core"
 version = "0.0.0"
 dependencies = [
@@ -3156,7 +3148,6 @@ dependencies = [
  "serde_json",
  "tokio",
  "xynolog",
- "xynolog-codegen",
  "xynolog-observability",
 ]
 
@@ -3262,7 +3253,7 @@ dependencies = [
 
 [[package]]
 name = "xynolog-http-transport"
-version = "0.7.3"
+version = "1.2611.0-dev.20261119002312.g9484319"
 dependencies = [
  "base64 0.23.1",
  "bytes",
@@ -3296,7 +3287,7 @@ dependencies = [
 
 [[package]]
 name = "xynolog-telemetry"
-version = "0.7.3"
+version = "1.2611.0-dev.20261119002312.g9484319"
 dependencies = [
  "opentelemetry",
  "xynolog",

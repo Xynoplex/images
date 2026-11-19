@@ -16,7 +16,7 @@ from typing import Final, final, override
 
 import pytest
 from aio import run
-from xynolog.types import ExtractedText, ExtractedTextOcrConfidence, ExtractionDeclined, ExtractionOutcome, PdfTextItem
+from xynolog.types import ExtractedText, ExtractionDeclined, ExtractionOutcome, OcrConfidence, PdfTextItem
 
 from xynolog_smelter.anchoring import anchor_runs
 from xynolog_smelter.extraction import LARGEST_PDF_BYTES, PdfExtractor
@@ -246,7 +246,7 @@ def test_a_scan_is_read_by_the_engine_and_every_word_is_an_item_that_selects_it(
     assert out.unread_pages is None
     assert quoted(out) == ["RECOVERED", "FROM", "THE", "SCAN"]
     assert pages(out) == [1, 1, 1, 1]
-    assert out.ocr_confidence == ExtractedTextOcrConfidence(mean=90.0, low_confidence_words=0, total_words=4)
+    assert out.ocr_confidence == OcrConfidence(mean=90.0, low_confidence_words=0, total_words=4)
 
 
 def test_a_word_read_from_pixels_is_placed_on_its_page_by_the_matrix_that_placed_its_image() -> None:
@@ -280,7 +280,7 @@ def test_the_texts_of_one_pages_images_are_a_line_feed_apart_and_two_pages_an_em
 def test_how_sure_the_engine_was_is_summed_up_over_every_word_it_read() -> None:
     out = extracted(scanned(scan(1)), {pixels(1).rgb: sure(30.0, 59.0, 60.0, 95.0)})
     # Two words are under 60, and one at 60 is not.
-    assert out.ocr_confidence == ExtractedTextOcrConfidence(mean=61.0, low_confidence_words=2, total_words=4)
+    assert out.ocr_confidence == OcrConfidence(mean=61.0, low_confidence_words=2, total_words=4)
 
 
 def test_the_mean_is_stated_to_a_tenth_and_a_half_of_a_tenth_goes_up() -> None:
@@ -356,7 +356,7 @@ def test_what_the_engine_reads_of_a_page_with_no_text_follows_the_documents_own_
     # The words of the page with text select what they did, and the engine's are past all 19 code points of that text.
     assert quoted(out) == ["native", "page", "text", "TEXT", "FROM", "THE", "SCANNED", "PAGE"]
     assert spans(out)[3:] == [(19, 23), (24, 28), (29, 32), (33, 40), (41, 45)]
-    assert out.ocr_confidence == ExtractedTextOcrConfidence(mean=90.0, low_confidence_words=0, total_words=5)
+    assert out.ocr_confidence == OcrConfidence(mean=90.0, low_confidence_words=0, total_words=5)
 
 
 def test_only_the_images_of_pages_with_no_text_are_decoded() -> None:

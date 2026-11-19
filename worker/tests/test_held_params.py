@@ -10,7 +10,7 @@ for its motivation, and it is only given for params that holder can run. A
 from typing import Final, get_args
 
 import pytest
-from pydantic import JsonValue, ValidationError
+from pydantic import JsonValue
 from xynolog.types import (
     AssessingJobParams,
     CommentingJobParams,
@@ -92,7 +92,8 @@ def test_a_tagging_job_is_taken_only_with_the_schema_the_dispatcher_resolved() -
 def test_params_that_state_a_motivation_and_are_not_its_shape_are_refused_and_not_taken_for_another_job(
     params: dict[str, JsonValue],
 ) -> None:
-    with pytest.raises(ValidationError):
+    # Its first fault, as every SDK says it.
+    with pytest.raises(ValueError, match=r"^(it has no|its) `\w+`"):
         held_mark(held(params))
 
 
@@ -130,6 +131,5 @@ def test_a_yield_job_s_params_are_answered_as_its_description() -> None:
 @pytest.mark.parametrize("lacking", ["title", "storageUri", "context"])
 def test_params_that_lack_what_every_yield_job_states_are_refused(lacking: str) -> None:
     stated: dict[str, JsonValue] = {"title": "Ouranos", "storageUri": "file://generated/ouranos.md", "context": CONTEXT}
-    with pytest.raises(ValidationError) as refused:
+    with pytest.raises(ValueError, match=f"^it has no `{lacking}`$"):
         held_generation(held({name: value for name, value in stated.items() if name != lacking}))
-    assert [(error["type"], error["loc"]) for error in refused.value.errors()] == [("missing", (lacking,))]

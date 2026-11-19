@@ -101,7 +101,7 @@ def test_a_document_that_cannot_be_read_or_is_no_json_is_refused_by_its_path(tmp
     assert refusal(["--config", str(path)], {**ACCOUNT, **PASSWORD}).startswith(f"{path} is not JSON: ")
 
 
-def test_a_document_that_is_not_the_schemas_is_refused_naming_each_member_and_no_value(tmp_path: Path) -> None:
+def test_a_document_that_is_not_the_schemas_is_refused_naming_its_first_fault_and_no_value(tmp_path: Path) -> None:
     document: dict[str, JsonValue] = {
         **without("cursorsPath"),
         "port": "24102",
@@ -111,15 +111,8 @@ def test_a_document_that_is_not_the_schemas_is_refused_naming_each_member_and_no
     path = written(tmp_path, document)
     said = refusal(["--config", path], {**ACCOUNT, **PASSWORD})
     assert said.splitlines()[0] == f"{path} is not a weaver configuration document (WeaverConfig):"
-    assert sorted(said.splitlines()[1:]) == sorted(
-        [
-            "  Missing required property: passwordEnv",
-            "  graph.neo4j: unknown property password",
-            "  Missing required property: cursorsPath",
-            "  port: Input should be a valid integer",
-            "  root: unknown property extra",
-        ]
-    )
+    # The first fault every SDK finds: the members the schema requires, in the order it states them, come first.
+    assert said.splitlines()[1:] == ["  Missing required property: cursorsPath"]
     # A password written where its variable's name belongs is never said back.
     assert "hunter2" not in said
 
@@ -127,7 +120,8 @@ def test_a_document_that_is_not_the_schemas_is_refused_naming_each_member_and_no
 def test_a_kind_of_graph_database_the_schema_does_not_name_is_refused_without_saying_what_was_written(tmp_path: Path) -> None:
     path = written(tmp_path, {**DOCUMENT, "graph": {"type": "hunter2"}})
     said = refusal(["--config", path], {**ACCOUNT, **PASSWORD})
-    assert said.splitlines()[1:] == ["  graph: is not what the schema states (union_tag_invalid)"]
+    # No kind's tag is the one it states, so it is read as the first kind, which has members it lacks.
+    assert said.splitlines()[1:] == ["  Missing required property: uri"]
     assert "hunter2" not in said
 
 
