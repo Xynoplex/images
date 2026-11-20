@@ -24,14 +24,13 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { repositoryFiles } from '../../.github/scripts/checks/repository-files.mjs';
-import { withoutComments } from '../../.github/scripts/checks/source-text.mjs';
+import { repositoryFiles } from '../.github/scripts/checks/repository-files.mjs';
+import { withoutComments } from '../.github/scripts/checks/source-text.mjs';
 
-const ROOT = fileURLToPath(new URL('../..', import.meta.url));
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 
-const rustSource = (file) => /^(apps|images|packages)\/(?!desktop\/)(?:[^/]+\/)+src\/.*\.rs$/.test(file);
+const rustSource = (file) => /^(?:[^/]+\/)+src\/.*\.rs$/.test(file);
 const javascriptSource = (file) =>
-  /^(apps|images|packages)\//.test(file) &&
   /\.(ts|tsx|mts|cts|js|mjs|cjs)$/.test(file) &&
   !/(^|\/)__tests__\/|\.(test|spec)\.[^/]+$/.test(file);
 

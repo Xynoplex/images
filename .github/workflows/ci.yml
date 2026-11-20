@@ -118,6 +118,12 @@ jobs:
           groups=$(python3 scripts/changed-images.py "$BASE" "$GITHUB_SHA")
           echo "groups=$groups" >> "$GITHUB_OUTPUT"
 
+      - name: Only the broker's implementations name NATS
+        run: node scripts/check-broker-boundary.mjs
+
+      - name: Every service image is supervision-capable
+        run: bash scripts/audit-supervision.sh
+
   model-catalogue:
     name: Model catalogue matches its pin
     runs-on: ubuntu-latest
@@ -201,13 +207,17 @@ jobs:
   # cargo-deny's bans and sources checks (packages/rust/deny.toml). Advisories are
   # the advisories job's, with every other lockfile's.
   # The workspace takes the SDK's crates from the bundle, by the patch the Rust
-  # images' Dockerfiles install, at the path they put them.
+  # images' Dockerfiles install, at the path they put them. The services link
+  # those crates, so the environment they read is checked against protocol's
+  # table here, where the crates' source is staged.
   crates:
-    name: Every crate comes from crates.io, by version
+    name: Every crate comes from crates.io, by version, and reads only the environment the table lists
     needs: sdk
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
 
       - name: Download the SDK bundle
         uses: actions/download-artifact@v8
@@ -227,6 +237,24 @@ jobs:
       - name: Check the workspace's crates
         working-directory: packages/rust
         run: cargo deny --locked check bans sources
+
+      - name: Each Rust service reads exactly the environment protocol's table lists
+        run: node scripts/check-service-environment.mjs /sdk/cargo-local
+
+      # Every crate each service binary links, on each platform the images are
+      # built for, is under a permitted licence and credited in its image's NOTICE.
+      - name: Every crate a service binary links is permitted and credited
+        working-directory: packages/rust
+        run: |
+          mkdir "$RUNNER_TEMP/crates"
+          cargo metadata --format-version 1 --locked > "$RUNNER_TEMP/crates/metadata.json"
+          for binary in xynolog-gateway xynolog-dispatcher xynolog-archivist; do
+            for target in x86_64-unknown-linux-musl aarch64-unknown-linux-musl; do
+              cargo tree --locked -p "$binary" -e normal,no-proc-macro --target "$target" --prefix none --format '{p}' \
+                > "$RUNNER_TEMP/crates/linked-$binary-$target.txt"
+            done
+          done
+          node ../../scripts/check-image-crates.mjs "$RUNNER_TEMP/crates"
 
   # The committed generated files are what the generator the bundle carries
   # writes from the pinned Protocol (`make check-generated`,
