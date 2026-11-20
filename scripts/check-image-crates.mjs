@@ -21,7 +21,7 @@
  * a linked crate with `links` that NATIVE does not describe fails the check, and
  * so does an entry for a crate that is not linked.
  *
- * Usage (the Rust CI job runs it), over a directory holding both:
+ * Usage (CI's crates job runs it), over a directory holding both:
  *   cargo metadata --format-version 1 --locked > <dir>/metadata.json
  *   cargo tree --locked -p <binary> -e normal,no-proc-macro --target <target> --prefix none --format '{p}' \
  *     > <dir>/linked-<binary>-<target>.txt                          # per binary, per target
@@ -31,9 +31,9 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadPolicy } from '../../.github/scripts/license-policy.mjs';
+import { loadPolicy } from '../.github/scripts/license-policy.mjs';
 
-const ROOT = fileURLToPath(new URL('../..', import.meta.url));
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 /** Each image that ships a Rust binary: the binary's package, and the image's NOTICE. */
 const IMAGES = [
   { service: 'gateway', binary: 'xynolog-gateway', notice: 'gateway/NOTICE' },
@@ -64,7 +64,7 @@ if (!directory || rest.length > 0) {
 
 const metadata = JSON.parse(readFileSync(join(directory, 'metadata.json'), 'utf8'));
 const packages = new Map(metadata.packages.map((p) => [`${p.name} v${p.version}`, p]));
-const members = new Set(metadata.workspace_members);
+const CRATES_IO = 'registry+https://github.com/rust-lang/crates.io-index';
 
 /**
  * What `binary` links, over every platform's listing: each crate from
@@ -82,8 +82,11 @@ function linkedBy(binary) {
       const named = /^(\S+ v\S+)( \(.*\))?$/.exec(line);
       const pkg = named && packages.get(named[1]);
       if (!pkg) throw new Error(`${listing}: metadata.json has no package for "${line}"`);
-      // The workspace's own crates are the repository's, under its licence.
-      if (members.has(pkg.id)) continue;
+      // A crate by path is Xynolog's own, which the NOTICE credits as a whole:
+      // the workspace's, or the SDK's, which the bundle stages and the
+      // workspace patches in. Every other crate comes from crates.io.
+      if (pkg.source === null) continue;
+      if (pkg.source !== CRATES_IO) throw new Error(`${listing}: ${pkg.name} v${pkg.version} comes from ${pkg.source}, not crates.io`);
       linked.set(pkg.name, pkg.license ?? null);
       if (pkg.links) native.add(pkg.name);
     }

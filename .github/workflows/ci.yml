@@ -241,6 +241,21 @@ jobs:
       - name: Each Rust service reads exactly the environment protocol's table lists
         run: node scripts/check-service-environment.mjs /sdk/cargo-local
 
+      # Every crate each service binary links, on each platform the images are
+      # built for, is under a permitted licence and credited in its image's NOTICE.
+      - name: Every crate a service binary links is permitted and credited
+        working-directory: packages/rust
+        run: |
+          mkdir "$RUNNER_TEMP/crates"
+          cargo metadata --format-version 1 --locked > "$RUNNER_TEMP/crates/metadata.json"
+          for binary in xynolog-gateway xynolog-dispatcher xynolog-archivist; do
+            for target in x86_64-unknown-linux-musl aarch64-unknown-linux-musl; do
+              cargo tree --locked -p "$binary" -e normal,no-proc-macro --target "$target" --prefix none --format '{p}' \
+                > "$RUNNER_TEMP/crates/linked-$binary-$target.txt"
+            done
+          done
+          node ../../scripts/check-image-crates.mjs "$RUNNER_TEMP/crates"
+
   # The committed generated files are what the generator the bundle carries
   # writes from the pinned Protocol (`make check-generated`,
   # scripts/generated.sh).
