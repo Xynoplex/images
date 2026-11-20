@@ -189,6 +189,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.4.1
 
+      # Each leg keeps its layers in GitHub's cache under a scope of its own:
+      # the service and the runner's architecture, which tell the gateway's,
+      # the dispatcher's and the archivist's two legs apart. In one scope
+      # shared by every leg, each leg's export would replace the others'
+      # index, and the next run's legs would find little of their own.
+      - name: Cache scope
+        id: cache
+        run: echo "scope=publish-${{ matrix.service }}-${{ runner.arch }}" >> "$GITHUB_OUTPUT"
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4.8.0
         with:
@@ -204,8 +213,8 @@ jobs:
       # For an emulated multi-arch leg, amd64 OS-package CVEs cover arm64 too
       # since base layers share package versions, and OS/library licenses are
       # platform-independent, so one build feeds both gates. Both builds share
-      # the GHA cache; the publishing build below is a near-instant cache hit on
-      # the scanned platform.
+      # the leg's GHA cache scope; the publishing build below is a near-instant
+      # cache hit on the scanned platform.
       - name: Build image (${{ matrix.scan }}, for scan + SBOM)
         uses: docker/build-push-action@v7
         with:
@@ -215,8 +224,8 @@ jobs:
           load: true
           tags: xynolog-${{ matrix.service }}:scan
           build-args: ${{ steps.args.outputs.args }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ steps.cache.outputs.scope }}
+          cache-to: type=gha,scope=${{ steps.cache.outputs.scope }},mode=max
 
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
@@ -319,8 +328,8 @@ jobs:
           push: ${{ !inputs.dry_run }}
           tags: ${{ steps.tags.outputs.tags }}
           build-args: ${{ steps.args.outputs.args }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ steps.cache.outputs.scope }}
+          cache-to: type=gha,scope=${{ steps.cache.outputs.scope }},mode=max
 
       # One architecture, untagged: the manifest job names it. The push rides
       # the same negated boolean as the tagged build above.
@@ -334,8 +343,8 @@ jobs:
           platforms: ${{ matrix.platforms }}
           outputs: type=image,name=${{ steps.tags.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ !inputs.dry_run }}
           build-args: ${{ steps.args.outputs.args }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ steps.cache.outputs.scope }}
+          cache-to: type=gha,scope=${{ steps.cache.outputs.scope }},mode=max
 
       - name: Record this architecture's digest
         if: ${{ matrix.arch && !inputs.dry_run }}
