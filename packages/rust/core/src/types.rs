@@ -3,6 +3,6 @@
 //! generate writes them from the spec and service-schemas.json. A protocol
 //! schema they reach is the SDK's type (`xynolog::types`).
 
-use xynolog::{member, schema};
+use xynolog::schema;
 
 include!("generated/service_types.rs");

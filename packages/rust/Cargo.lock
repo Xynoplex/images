@@ -3066,7 +3066,7 @@ checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
 
 [[package]]
 name = "xynolog"
-version = "1.2611.0-dev.20261119002312.g9484319"
+version = "1.2611.0-dev.20261120131050.g548e4fb"
 dependencies = [
  "base64 0.23.1",
  "bytes",
@@ -3253,7 +3253,7 @@ dependencies = [
 
 [[package]]
 name = "xynolog-http-transport"
-version = "1.2611.0-dev.20261119002312.g9484319"
+version = "1.2611.0-dev.20261120131050.g548e4fb"
 dependencies = [
  "base64 0.23.1",
  "bytes",
@@ -3287,7 +3287,7 @@ dependencies = [
 
 [[package]]
 name = "xynolog-telemetry"
-version = "1.2611.0-dev.20261119002312.g9484319"
+version = "1.2611.0-dev.20261120131050.g548e4fb"
 dependencies = [
  "opentelemetry",
  "xynolog",

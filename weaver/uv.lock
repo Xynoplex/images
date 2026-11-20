@@ -1822,8 +1822,8 @@ wheels = [
 
 [[package]]
 name = "xynolog"
-version = "1.2611.0.dev20261119002312+g9484319"
-source = { path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" }
+version = "1.2611.0.dev20261120131050+g548e4fb"
+source = { path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl" }
 dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
@@ -1831,7 +1831,7 @@ dependencies = [
     { name = "pydantic" },
 ]
 wheels = [
-    { filename = "xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl", hash = "sha256:bc0b5ffa155530a462d964acaabd659e0407f720787290da78abebaf61eacde4" },
+    { filename = "xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl", hash = "sha256:b8d9a613e2e574eb01a7adb9fb259122e5c1640034b640c1cdcaf8cd18e4db43" },
 ]
 
 [package.metadata]
@@ -1869,7 +1869,7 @@ requires-dist = [
     { name = "gremlinpython", marker = "extra == 'neptune'", specifier = ">=3.8,<4" },
     { name = "neo4j", marker = "extra == 'neo4j'", specifier = ">=6.4,<7" },
     { name = "pydantic" },
-    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl" },
 ]
 provides-extras = ["janusgraph", "neo4j", "neptune"]
 
@@ -1902,7 +1902,7 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.30,<2" },
     { name = "opentelemetry-sdk", specifier = ">=1.30,<2" },
     { name = "pydantic" },
-    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl" },
 ]
 
 [package.metadata.requires-dev]
@@ -1949,7 +1949,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pydantic" },
-    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl" },
+    { name = "xynolog", path = "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl" },
     { name = "xynolog-graph", editable = "../shared/python/graph" },
     { name = "xynolog-graph", extras = ["janusgraph"], marker = "extra == 'janusgraph'", editable = "../shared/python/graph" },
     { name = "xynolog-graph", extras = ["neo4j"], marker = "extra == 'neo4j'", editable = "../shared/python/graph" },

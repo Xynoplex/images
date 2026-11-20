@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.1.1",
   "info": {
     "title": "Xynolog Archivist",
     "version": "0.1.0",
@@ -73,7 +73,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "500": {
             "description": "The event log could not be read.",
@@ -144,7 +144,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "500": {
             "description": "The stream could not be read.",
@@ -233,7 +233,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "422": {
             "description": "The `Idempotency-Key` names a resource its principal recorded from other fields or other bytes. Nothing is stored or recorded.",
@@ -300,7 +300,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "404": {
             "description": "The record holds no such resource, or holds it but not its bytes; `code` says which.",
@@ -358,7 +358,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "404": {
             "description": "The record holds no such resource.",
@@ -409,7 +409,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "404": {
             "description": "The record holds no such resource.",
@@ -463,7 +463,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -518,7 +518,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "404": {
             "description": "The record holds no such resource.",
@@ -571,7 +571,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -632,7 +632,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "404": {
             "description": "The record holds no such resource, or no entry is stored for its content under the stamp last stated; `error` says which.",
@@ -698,7 +698,7 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "$ref": "#/components/responses/ArchivistUnauthorized"
           },
           "413": {
             "$ref": "#/components/responses/PayloadTooLarge"
@@ -712,6 +712,25 @@
   },
   "components": {
     "responses": {
+      "ArchivistUnauthorized": {
+        "description": "No bearer token, or one that does not verify against the knowledge base's trusted issuer or carries no `xynolog-service` role (see the `serviceAccount` scheme). The body never says which.",
+        "headers": {
+          "WWW-Authenticate": {
+            "description": "`Bearer` when no token was presented; `Bearer error=\"invalid_token\"` when one was presented and refused (RFC 6750 §3).",
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer( error=\"invalid_token\")?$"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
       "InternalError": {
         "description": "The service failed in a way no other status describes. The body is an ErrorResponse like every other error.",
         "content": {
@@ -724,25 +743,6 @@
       },
       "PayloadTooLarge": {
         "description": "The body is larger than the operation's `x-xynolog-limits.maxBodyBytes`. A body whose Content-Length says so is refused before any of it is read; one sent without a length is refused once more than that has arrived.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "No bearer token, or one that does not verify against the knowledge base's trusted issuer or carries no `xynolog-service` role (see the `serviceAccount` scheme). The body never says which.",
-        "headers": {
-          "WWW-Authenticate": {
-            "description": "`Bearer` when no token was presented; `Bearer error=\"invalid_token\"` when one was presented and refused (RFC 6750 §3).",
-            "schema": {
-              "type": "string",
-              "pattern": "^Bearer( error=\"invalid_token\")?$"
-            }
-          }
-        },
         "content": {
           "application/json": {
             "schema": {
@@ -769,9 +769,9 @@
         "discriminator": {
           "propertyName": "@type",
           "mapping": {
-            "Person": "./AgentPerson.json",
-            "Organization": "./AgentOrganization.json",
-            "Software": "./AgentSoftware.json"
+            "Person": "#/components/schemas/AgentPerson",
+            "Organization": "#/components/schemas/AgentOrganization",
+            "Software": "#/components/schemas/AgentSoftware"
           }
         }
       },
@@ -932,11 +932,11 @@
         "discriminator": {
           "propertyName": "kind",
           "mapping": {
-            "extracted": "./ExtractedText.json",
-            "declined": "./ExtractionDeclined.json",
-            "not-yet": "./AnchoredTextAbsent.json",
-            "no-map": "./AnchoredTextAbsent.json",
-            "unknown": "./AnchoredTextAbsent.json"
+            "extracted": "#/components/schemas/ExtractedText",
+            "declined": "#/components/schemas/ExtractionDeclined",
+            "not-yet": "#/components/schemas/AnchoredTextAbsent",
+            "no-map": "#/components/schemas/AnchoredTextAbsent",
+            "unknown": "#/components/schemas/AnchoredTextAbsent"
           }
         }
       },
@@ -957,11 +957,7 @@
             "description": "The stamp the entry was derived under: the PDF reader's and the OCR engine's. A reader takes the entry only when it equals the stamp the Smelter last stated."
           },
           "declined": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ExtractionDeclinedReason"
-              }
-            ],
+            "$ref": "#/components/schemas/ExtractionDeclinedReason",
             "description": "Why extraction yielded nothing, by class."
           }
         },
@@ -1063,27 +1059,15 @@
             "description": "Where each word of `text` is, line by line, in reading order."
           },
           "method": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ExtractionMethod"
-              }
-            ],
+            "$ref": "#/components/schemas/ExtractionMethod",
             "description": "How the text was extracted."
           },
           "pdfClass": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PdfClass"
-              }
-            ],
+            "$ref": "#/components/schemas/PdfClass",
             "description": "PDF classification, when the source was a PDF."
           },
           "ocrConfidence": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OcrConfidence"
-              }
-            ],
+            "$ref": "#/components/schemas/OcrConfidence",
             "description": "How well the engine read the pixels, when any of this text came from OCR."
           },
           "unreadPages": {
@@ -1175,11 +1159,7 @@
             "description": "W3C Web Annotation target: the id of the resource annotated, when the whole of it is, or an object with source and optional selector (fragment)"
           },
           "body": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AnnotationBodies"
-              }
-            ],
+            "$ref": "#/components/schemas/AnnotationBodies",
             "description": "W3C Web Annotation body. Optional per the W3C spec — annotations whose motivation alone is meaningful (highlighting) legitimately omit it. Present values are either a single body or a non-empty array of bodies; there is no empty array."
           },
           "creator": {
@@ -1196,19 +1176,11 @@
             "format": "date-time"
           },
           "generator": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreAgents"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreAgents",
             "description": "Web Annotation generator — the Software peer that produced the annotation, when software did. Absent for a person's own annotation. An emitter may supply it to carry the model's parameters, but its identity must be the emitter's own: the knowledge base refuses a generator naming anyone else, and supplies it from the verified emitter when omitted. One producer per write — a write carrying the array form is refused."
           },
           "wasAttributedTo": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreAgents"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreAgents",
             "description": "PROV-O wasAttributedTo — every party responsible for this annotation, DERIVED by the knowledge base from `creator` and the verified executor of the write: `[creator, generator]` when one agent requested the work and software produced it; collapsed to the one agent when requester and producer are the same. Never accepted from an emitter."
           }
         },
@@ -1249,8 +1221,8 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "TextualBody": "./TextualBody.json",
-            "SpecificResource": "./SpecificResource.json"
+            "TextualBody": "#/components/schemas/TextualBody",
+            "SpecificResource": "#/components/schemas/SpecificResource"
           }
         },
         "description": "An annotation's body: a TextualBody carries text the annotation states (entity tags, descriptions, comments), a SpecificResource points at what it links to. Tell them apart by `type`, which is required on both and single-valued — a consumer never has to probe for which fields happen to be present."
@@ -1286,19 +1258,11 @@
             "description": "Stated by the annotation of a span: the target is a part of its source, which the selector picks out. An annotation of a resource as a whole states none."
           },
           "source": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "The id of the resource being annotated"
           },
           "selector": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AnnotationSelector"
-              }
-            ],
+            "$ref": "#/components/schemas/AnnotationSelector",
             "description": "Optional selector to identify a specific segment of the source resource"
           }
         },
@@ -1410,11 +1374,7 @@
         "description": "The id of the resource an upload created. The Archivist answers it (200) once it has stored the bytes and recorded the resource, and the gateway forwards it (202), so the id is the one the record minted and its creation event is persisted. What remains asynchronous is downstream projection: graph, views and vectors settle afterwards.",
         "properties": {
           "resourceId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "The id of the newly created resource, as the record minted it."
           }
         },
@@ -1474,27 +1434,15 @@
                 "description": "Discriminant — both ExtractionOutcome members carry `kind`, single-valued: the category here, the detail in `method`."
               },
               "method": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/ExtractionMethod"
-                  }
-                ],
+                "$ref": "#/components/schemas/ExtractionMethod",
                 "description": "How the text was extracted."
               },
               "pdfClass": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/PdfClass"
-                  }
-                ],
+                "$ref": "#/components/schemas/PdfClass",
                 "description": "PDF classification, when the source was a PDF."
               },
               "ocrConfidence": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/OcrConfidence"
-                  }
-                ],
+                "$ref": "#/components/schemas/OcrConfidence",
                 "description": "How well the engine read the pixels, when any of this text came from OCR."
               },
               "unreadPages": {
@@ -1524,11 +1472,7 @@
             "description": "Discriminant — both ExtractionOutcome members carry `kind`, single-valued: the category here, the detail in `declined`."
           },
           "declined": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ExtractionDeclinedReason"
-              }
-            ],
+            "$ref": "#/components/schemas/ExtractionDeclinedReason",
             "description": "Why extraction yielded nothing, by class."
           }
         },
@@ -1571,12 +1515,16 @@
           "value": {
             "type": "string",
             "description": "Media fragment identifier (e.g., 'page=1&viewrect=100,200,50,30' for PDF)",
-            "example": "page=1&viewrect=100,200,50,30"
+            "examples": [
+              "page=1&viewrect=100,200,50,30"
+            ]
           },
           "conformsTo": {
             "type": "string",
             "description": "URI identifying the fragment syntax specification",
-            "example": "http://tools.ietf.org/rfc/rfc3778"
+            "examples": [
+              "http://tools.ietf.org/rfc/rfc3778"
+            ]
           }
         },
         "required": [
@@ -1598,10 +1546,12 @@
             "description": "Total number of annotations"
           },
           "motivation": {
-            "nullable": true,
-            "allOf": [
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Motivation"
+              },
+              {
+                "type": "null"
               }
             ],
             "description": "Motivation filter applied (if any)"
@@ -1784,12 +1734,8 @@
             "description": "Stable ID for this representation."
           },
           "@type": {
-            "description": "Type(s), e.g., schema:MediaObject.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreStrings"
-              }
-            ]
+            "$ref": "#/components/schemas/OneOrMoreStrings",
+            "description": "Type(s), e.g., schema:MediaObject."
           },
           "mediaType": {
             "type": "string",
@@ -1843,12 +1789,8 @@
             "format": "date-time"
           },
           "conformsTo": {
-            "description": "Profile/shape the bytes conform to (e.g., a JSON profile or SVG profile).",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreUris"
-              }
-            ]
+            "$ref": "#/components/schemas/OneOrMoreUris",
+            "description": "Profile/shape the bytes conform to (e.g., a JSON profile or SVG profile)."
           },
           "tags": {
             "type": "array",
@@ -1933,19 +1875,11 @@
             ]
           },
           "@id": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "The id of the resource being described."
           },
           "@type": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreStrings"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreStrings",
             "description": "Type(s) of the resource (IRIs/CURIEs via @context)."
           },
           "name": {
@@ -1986,11 +1920,7 @@
             ]
           },
           "about": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreStrings"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreStrings",
             "description": "Topics (IRIs or strings)."
           },
           "sameAs": {
@@ -2045,27 +1975,15 @@
             "description": "W3C PROV: the resource, or resources, this one was derived from, each by its id"
           },
           "wasAttributedTo": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreAgents"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreAgents",
             "description": "W3C PROV — every party responsible for this resource, derived by the knowledge base at creation from verified identities: `[requester, generator]` for a resource a job produced, collapsed to the one agent when the requester produced it. Never accepted from an emitter."
           },
           "generator": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreAgents"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreAgents",
             "description": "Software peer that produced this resource (W3C Web Annotation model). Its identity is the verified emitter of the create; the parameters are the producer's to state."
           },
           "conformsTo": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OneOrMoreUris"
-              }
-            ],
+            "$ref": "#/components/schemas/OneOrMoreUris",
             "description": "Profile/shape URI this resource description conforms to."
           },
           "availableFormats": {
@@ -2105,19 +2023,11 @@
             "description": "Application-specific: Whether this resource is a draft"
           },
           "sourceAnnotationId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AnnotationId"
-              }
-            ],
+            "$ref": "#/components/schemas/AnnotationId",
             "description": "Application-specific: ID of annotation that triggered generation"
           },
           "sourceResourceId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "Application-specific: ID of source resource for clones/derivatives"
           },
           "originatedFrom": {
@@ -2162,19 +2072,11 @@
             "description": "JSON-stringified array of entity type names"
           },
           "sourceAnnotationId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AnnotationId"
-              }
-            ],
+            "$ref": "#/components/schemas/AnnotationId",
             "description": "For AI-generated resources: the annotation that triggered generation. Nested into generatedFrom.annotationId on the persisted event."
           },
           "sourceResourceId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "For AI-generated resources: the source resource the generating annotation lives on. Nested into generatedFrom.resourceId on the persisted event."
           },
           "generationPrompt": {
@@ -2186,11 +2088,7 @@
             "description": "For AI-generated resources: JSON-stringified Agent naming the model/worker that produced the content. Its identity must be the uploading agent's own — the knowledge base refuses a generator naming anyone else. `creator` and `wasAttributedTo` are never sent; the knowledge base derives them from the cited job."
           },
           "jobId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/JobId"
-              }
-            ],
+            "$ref": "#/components/schemas/JobId",
             "description": "The job this resource fulfils, when a worker is creating it. Forwarded onto yield:create; the knowledge base derives who requested the resource from the cited job's own events, and refuses a worker-role create that cites none. Absent for a person's own upload."
           },
           "isDraft": {
@@ -2231,10 +2129,10 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "TextPositionSelector": "./TextPositionSelector.json",
-            "TextQuoteSelector": "./TextQuoteSelector.json",
-            "SvgSelector": "./SvgSelector.json",
-            "FragmentSelector": "./FragmentSelector.json"
+            "TextPositionSelector": "#/components/schemas/TextPositionSelector",
+            "TextQuoteSelector": "#/components/schemas/TextQuoteSelector",
+            "SvgSelector": "#/components/schemas/SvgSelector",
+            "FragmentSelector": "#/components/schemas/FragmentSelector"
           }
         },
         "description": "One W3C selector: a way of finding a segment of a resource. Tell them apart by `type`, which is required on each and single-valued."
@@ -2249,19 +2147,11 @@
             ]
           },
           "source": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "The id of the resource this body leads to"
           },
           "purpose": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BodyPurpose"
-              }
-            ],
+            "$ref": "#/components/schemas/BodyPurpose",
             "description": "Why this body is included"
           }
         },
@@ -2288,19 +2178,11 @@
             "description": "When the event occurred"
           },
           "userId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UserId"
-              }
-            ],
+            "$ref": "#/components/schemas/UserId",
             "description": "DID of the user who triggered the event"
           },
           "resourceId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ResourceId"
-              }
-            ],
+            "$ref": "#/components/schemas/ResourceId",
             "description": "Resource this event affects (absent for system events)"
           },
           "version": {
@@ -2409,11 +2291,7 @@
             "description": "The text content (e.g., entity type name)"
           },
           "purpose": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BodyPurpose"
-              }
-            ],
+            "$ref": "#/components/schemas/BodyPurpose",
             "description": "Why this body is included"
           },
           "format": {

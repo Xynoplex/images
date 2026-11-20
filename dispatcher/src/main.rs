@@ -25,10 +25,10 @@ use xynolog::identity::kb_did;
 use xynolog::timing::BUS_REQUEST_TIMEOUT;
 use xynolog::transport::{Envelope, Transport};
 use xynolog::types::{BrowseEntityTypesRequest, BrowseTagSchemasRequest, BusFrame, TagSchema};
-use xynolog_core::config::{self, Document};
-use xynolog_core::types::{
+use xynolog::types::{
     DispatcherConfig, DispatcherHealth, DispatcherHealthQueue, DispatcherHealthStatus,
 };
+use xynolog_core::config::{self, Document};
 use xynolog_dispatcher_handlers::admission::{Refusal, Vocabulary};
 use xynolog_dispatcher_handlers::handlers::{COMMANDS, Handlers, Reply};
 use xynolog_dispatcher_handlers::queue::{JobQueue, Stats};
