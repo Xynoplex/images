@@ -13,9 +13,6 @@
     "start": "node server.js"
   },
   "dependencies": {},
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xynolog/images.git",
