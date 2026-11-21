@@ -11,12 +11,12 @@ use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 use tokio::sync::mpsc::UnboundedSender;
 use xynolog::channels::{Channel, MarkAdded, MarkBodyUpdated};
+use xynolog::types::ArchivistConfig;
 use xynolog::types::CommandErrorCode;
 use xynolog_archivist_record::kb::Committed;
 use xynolog_archivist_record::record::Record;
 use xynolog_archivist_record::{Object, SYSTEM};
 use xynolog_archivist_staging::Staging;
-use xynolog_core::types::ArchivistConfig;
 
 /// A clone token: the resource it lets its holder copy, and until when.
 pub struct CloneToken {

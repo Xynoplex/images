@@ -250,7 +250,7 @@ def test_what_the_source_imports_the_manifest_requires() -> None:
 def test_the_sdk_and_the_packages_it_is_built_on_are_the_ones_in_this_repository() -> None:
     sources = table(table(table(MANIFEST["tool"], "tool")["uv"], "uv")["sources"], "sources")
     assert sources == {
-        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261119002312+g9484319-py3-none-any.whl"},
+        "xynolog": {"path": "../.local/sdk-artifacts/current/python/xynolog-1.2611.0.dev20261120131050+g548e4fb-py3-none-any.whl"},
         "xynolog-graph": {"path": "../../shared/python/graph", "editable": True},
         "xynolog-inference": {"path": "../../shared/python/inference", "editable": True},
         "xynolog-service": {"path": "../../shared/python/service", "editable": True},
