@@ -34,7 +34,7 @@ jobs:
   # and the advisories and crates jobs, which run every time, resolve against
   # it.
   sdk:
-    uses: xynolog/sdk/.github/workflows/upstream.yml@172968e80d9e0cb29e2057acb33246360ebc13ed
+    uses: xynolog/sdk/.github/workflows/upstream.yml@52c59e698b3ee821113f350539f521f6c9df6e1d
     with:
       languages: typescript python rust codegen
       release: false
