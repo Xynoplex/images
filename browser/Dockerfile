@@ -1,6 +1,8 @@
 # Stage 1: install (npm runs here, then is discarded).
 FROM node:26-alpine AS installer
-ARG XYNOLOG_BROWSER_VERSION=latest
+# Both are required: the package built for this image (scripts/build-browser-package.sh),
+# at the repository's version.
+ARG XYNOLOG_BROWSER_VERSION
 ARG BROWSER_PACKAGE_DIR
 WORKDIR /app
 COPY ${BROWSER_PACKAGE_DIR}/ /sdk-artifacts/browser/

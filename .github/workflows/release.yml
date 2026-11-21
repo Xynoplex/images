@@ -1,0 +1,47 @@
+name: Release
+
+# Application tagging (versioning R17): a person pushes the signed tag
+# v<version> for the commit whose version.json names that version, YY.M.N.
+# This checks the release and pushes nothing: that the tag is the release
+# signer's, on a commit main holds, and that upstream.lock.json names only
+# released upstreams, whose SDK bundle downloads and verifies against its
+# digest. Publishing follows, dispatched at the tag:
+# publish-service-images.yml and publish-browser.yml.
+on:
+  push:
+    tags: ['v*']
+
+permissions: {}
+
+jobs:
+  version:
+    name: The release version.json names
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - id: release
+        run: scripts/release-version.sh >> "$GITHUB_OUTPUT"
+
+  # The pushed tag is v<version>, signed by the release signer, on a commit
+  # main holds.
+  tag:
+    needs: version
+    permissions:
+      contents: read
+    uses: xynolog/.github/.github/workflows/release-tag.yml@a70ee7f6c3e7321ef54a071c78504c20e2669110
+    with:
+      tags: ${{ needs.version.outputs.tag }}
+
+  # Every SDK language an image installs.
+  upstream:
+    needs: tag
+    permissions:
+      contents: read
+    uses: xynolog/sdk/.github/workflows/upstream.yml@172968e80d9e0cb29e2057acb33246360ebc13ed
+    with:
+      languages: typescript python rust
+      release: true

@@ -105,13 +105,12 @@ merges them with `@xynolog/react-ui`'s on the `pre*` hooks and writes `messages/
 
 ## Building it
 
-The image does not build the app: it installs a published `@xynolog/browser` from an npm
-registry, `NPM_REGISTRY` (npm's own by default), at the version `XYNOLOG_BROWSER_VERSION`
-(`latest` by default). [`make build`](../Makefile) builds
-this directory's package, publishes it to the Verdaccio it starts, and builds the image
-against that registry, tagged `ghcr.io/xynolog/xynolog-browser:local`;
-[`publish-browser.yml`](../.github/workflows/publish-browser.yml) builds it from the
-published package.
+The image does not build the app: it installs the `@xynolog/browser` package that
+[`scripts/build-browser-package.sh`](../scripts/build-browser-package.sh) builds from this
+directory and the SDK bundle, at `version.json`'s version. The package is never published to a
+registry. [`make build`](../Makefile) packs it and builds the image, tagged
+`ghcr.io/xynolog/xynolog-browser:local`; [`publish-browser.yml`](../.github/workflows/publish-browser.yml)
+does the same at a release tag.
 
 ## Related
 
