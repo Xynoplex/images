@@ -21,6 +21,8 @@ RUNTIME="$(detect_container_runtime)"
     tar -xzf /sdk-bundle/typescript/xynolog-react-ui-*.tgz \
       -C /packages/typescript/react-ui --strip-components=1 package/translations
     cp -a /source/browser/. /tmp/browser/
+    # Beside the app, as in the repository: the build reads its version there.
+    cp /source/version.json /tmp/version.json
     python3 /source/build-tools/prepare-sdk-package.py /sdk-bundle /tmp/browser/package.json
     cd /tmp/browser
     npm install --no-audit --no-fund
@@ -30,7 +32,8 @@ RUNTIME="$(detect_container_runtime)"
     # The lock this install resolved, for the advisory scan; nothing commits one.
     cp /tmp/browser/package-lock.json /source/.local/browser-lock/package-lock.json
     cp /source/browser/server.js /tmp/browser-publish/server.js
-    cp /source/browser/package.publish.json /tmp/browser-publish/package.json
+    # The package takes the version in version.json, the browser image version.
+    node -e '"'"'const fs = require("node:fs"); const p = JSON.parse(fs.readFileSync("/source/browser/package.publish.json", "utf8")); p.version = JSON.parse(fs.readFileSync("/source/version.json", "utf8")).version; fs.writeFileSync("/tmp/browser-publish/package.json", JSON.stringify(p, null, 2) + "\n");'"'"'
     cp -a /tmp/browser/dist /tmp/browser-publish/dist
     cd /tmp
     npm pack /tmp/browser-publish --pack-destination /source/.local/browser-package
